@@ -1,0 +1,16 @@
+{
+  "name": "StackerDAOs",
+  "short_name": "StackerDAOs",
+  "icons": [
+    {
+      "src": "/img/logo.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    }
+  ],
+  "background_color": "#000",
+  "description": "Build digitally native communities",
+  "display": "fullscreen",
+  "start_url": "/",
+  "theme_color": "#000"
+}
