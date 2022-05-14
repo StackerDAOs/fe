@@ -69,7 +69,7 @@ export const AppNavbar = ({ daoName, address }) => {
       <Box as='nav'>
         <Container py={{ base: '4', lg: '5' }}>
           <HStack justify='space-around' spacing='8'>
-            <Link href='/'>
+            <Link href={`/dashboard/${daoName}`}>
               <Image
                 cursor='pointer'
                 height='35px'
@@ -89,15 +89,19 @@ export const AppNavbar = ({ daoName, address }) => {
                         'Activity',
                         'Extensions',
                       ].map((item) => (
-                        <Tab
-                          key={item}
-                          fontSize='md'
-                          color='gray.900'
-                          _first={{ display: 'none' }}
-                          _selected={{ color: 'light.900' }}
+                        <Link
+                          href={`/dashboard/dao/${item?.toLocaleLowerCase()}`}
                         >
-                          {item}
-                        </Tab>
+                          <Tab
+                            key={item}
+                            fontSize='md'
+                            color='gray.900'
+                            _first={{ display: 'none' }}
+                            _selected={{ color: 'light.900' }}
+                          >
+                            {item}
+                          </Tab>
+                        </Link>
                       ))}
                     </TabList>
                   </Tabs>
