@@ -6,9 +6,14 @@ import {
   ButtonGroup,
   Button,
   Container,
+  Flex,
   HStack,
   IconButton,
   Image,
+  Tab,
+  Tabs,
+  TabList,
+  TabIndicator,
   useBreakpointValue,
   useColorMode,
 } from '@chakra-ui/react';
@@ -29,7 +34,7 @@ import { fetchNamesByAddress } from 'micro-stacks/api';
 // Utils
 import { truncate } from '@utils/truncate-str';
 
-export const Navbar = () => {
+export const AppNavbar = ({ daoName, address }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [bns, setBns] = useState<string | undefined>('');
   const { currentStxAddress } = useUser();
@@ -63,7 +68,7 @@ export const Navbar = () => {
     <Box as='section' height='5vh'>
       <Box as='nav'>
         <Container py={{ base: '4', lg: '5' }}>
-          <HStack justify='space-between'>
+          <HStack justify='space-around' spacing='8'>
             <Link href='/'>
               <Image
                 cursor='pointer'
@@ -74,14 +79,33 @@ export const Navbar = () => {
             </Link>
             {isDesktop ? (
               <>
-                <HStack spacing='5'>
-                  <ButtonGroup color='white' spacing='8'>
-                    <ProjectsPopover />
-                  </ButtonGroup>
-                  <Link href='/dashboard/dao'>
-                    <Button color='white'>Use app</Button>
-                  </Link>
-                </HStack>
+                <Flex justify='space-between' flex='1'>
+                  <Tabs color='white' isFitted variant='unstyled'>
+                    <TabList>
+                      {[
+                        null,
+                        'Proposals',
+                        'Vault',
+                        'Activity',
+                        'Extensions',
+                      ].map((item) => (
+                        <Tab
+                          key={item}
+                          fontSize='md'
+                          color='gray.900'
+                          _first={{ display: 'none' }}
+                          _selected={{ color: 'light.900' }}
+                        >
+                          {item}
+                        </Tab>
+                      ))}
+                    </TabList>
+                  </Tabs>
+                  <HStack spacing='3'>
+                    <Button color='white'>{daoName}</Button>
+                    <Button color='white'>{address}</Button>
+                  </HStack>
+                </Flex>
               </>
             ) : (
               <IconButton

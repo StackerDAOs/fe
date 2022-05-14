@@ -6,9 +6,6 @@ import { withMicroStacks } from 'common';
 // Framer
 import { AnimatePresence } from 'framer-motion';
 
-// Components
-import { Navbar } from '@components/Navbar';
-
 import theme from 'theme';
 
 function App({ Component, pageProps }: any) {
@@ -19,7 +16,6 @@ function App({ Component, pageProps }: any) {
         <title>StackerDAOs</title>
         <meta name='description' content='StackerDAOs' />
       </Head>
-      <Navbar />
       <AnimatePresence
         exitBeforeEnter
         onExitComplete={() => window.scrollTo(0, 0)}

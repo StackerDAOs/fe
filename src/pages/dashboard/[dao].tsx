@@ -1,24 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import {
+  Badge,
   Box,
   Button,
   Container,
   Divider,
-  Grid,
-  GridItem,
   Heading,
-  Icon,
-  SimpleGrid,
   Stack,
   HStack,
   VStack,
+  SimpleGrid,
   Text,
   Tabs,
   TabList,
   Tab,
-  TabPanel,
-  TabPanels,
   useToast,
   useColorModeValue as mode,
 } from '@chakra-ui/react';
@@ -29,13 +26,17 @@ import { useStore as useDaoStore } from 'store/CreateDaoStore';
 
 // Components
 import { Card } from '@components/Card';
-import { DashboardProfile } from '@components/DashboardProfile';
+import { AppLayout } from '@components/Layout/AppLayout';
 import { Stat } from '@components/Stat';
 import { VerticalStep } from '@components/VerticalStep';
 import { ActivityList } from '@components/ActivityList';
 import { VaultTransactionList } from '@components/VaultTransactionList';
 import { ProposalList } from '@components/ProposalList';
 import { MemberList } from '@components/MemberList';
+import { RadioButton, RadioButtonGroup } from '@components/RadioButtonGroup';
+
+// Widgets
+import { CreateProposalButton } from '@widgets/CreateProposalButton';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -85,15 +86,18 @@ const DAODashboard = () => {
   const { name } = useDaoStore();
   const isDisabled = currentStep !== maxSteps;
 
-  useEffect(() => {
-    if (!isSignedIn) router.push('/');
-  }, []);
   const toast = useToast();
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
     enter: { opacity: 1, x: 0, y: 0 },
     exit: { opacity: 0, x: 0, y: 0 },
+  };
+
+  const SLIDE_UP_BUTTON_VARIANTS = {
+    hidden: { opacity: 0, x: 0, y: 15 },
+    enter: { opacity: 1, x: 0, y: 0 },
+    exit: { opacity: 0, x: 0, y: -15 },
   };
 
   // usePolling(() => {
@@ -195,6 +199,88 @@ const DAODashboard = () => {
     },
   ];
 
+  const DemoCard = (
+    <Card
+      minH='auto'
+      mx='auto'
+      px={{ base: '6', md: '6' }}
+      py={{ base: '6', md: '6' }}
+    >
+      <VStack maxW='xl' spacing='6' alignItems='baseline'>
+        <Heading
+          size='sm'
+          fontWeight='regular'
+          color={mode('base.900', 'light.900')}
+        >
+          Almost ready to launch {''}
+          <Text
+            as='span'
+            maxW='xl'
+            color={mode('base.900', 'light.900')}
+            bgGradient={mode(
+              'linear(to-br, secondaryGradient.900, secondary.900)',
+              'linear(to-br, primaryGradient.900, primary.900)',
+            )}
+            bgClip='text'
+          >
+            {name || 'StackerDAO'}
+          </Text>
+        </Heading>
+        <Text
+          maxW='xl'
+          color={mode('base.900', 'light.900')}
+          style={{ margin: '7.5px 0 10px 0' }}
+        >
+          <Text
+            as='span'
+            maxW='xl'
+            mx='auto'
+            fontSize='md'
+            fontWeight='semibold'
+          >
+            Review & deploy
+          </Text>
+          {''} your extensions first!
+        </Text>
+        <Stack spacing='1'>
+          {steps.map((step, id) => (
+            <VerticalStep
+              key={id}
+              payload={step.payload}
+              cursor='pointer'
+              title={step.title}
+              isActive={currentStep === id}
+              isCompleted={currentStep > id}
+              isLastStep={steps.length === id + 1}
+            />
+          ))}
+        </Stack>
+        <Button
+          color='white'
+          isFullWidth
+          bgGradient={mode(
+            'linear(to-br, secondaryGradient.900, secondary.900)',
+            'linear(to-br, primaryGradient.900, primary.900)',
+          )}
+          px='8'
+          my='8'
+          mx='auto'
+          size='lg'
+          fontSize='lg'
+          fontWeight='regular'
+          onClick={() => {
+            setDeployed(true);
+          }}
+          disabled={isDisabled}
+          _hover={isDisabled ? { opacity: 0.9 } : { opacity: 0.8 }}
+          _active={{ opacity: 1 }}
+        >
+          Launch {name || 'StackerDAO'}
+        </Button>
+      </VStack>
+    </Card>
+  );
+
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -203,194 +289,188 @@ const DAODashboard = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Box as='section' overflowY='auto' pt='10' mt='10'>
-        <Container maxW='7xl'>
-          <Stack spacing={{ base: '8', lg: '6' }}>
-            <Grid templateColumns='repeat(6, 1fr)' gap={50}>
-              <GridItem colSpan={4}>
-                <Card
-                  bg='transparent'
-                  px={{ base: '6', md: '6' }}
-                  py={{ base: '6', md: '6' }}
-                >
-                  <HStack maxW='xl' spacing='3' alignItems='baseline'>
-                    <Box
-                      w='45px'
-                      h='45px'
-                      borderRadius='50%'
-                      bgGradient='linear(to-l, secondaryGradient.900, secondary.900)'
-                    />
-                    <Heading
-                      size='lg'
-                      pb='6'
-                      fontWeight='regular'
-                      color={mode('base.900', 'light.900')}
-                    >
-                      {name || 'StackerDAO'}
-                    </Heading>
-                  </HStack>
-                  <SimpleGrid columns={{ base: 1, md: 3 }} maxW='lg'>
-                    <Stat fontSize='sm' title='Created'>
-                      Mar 21, 2022
-                    </Stat>
-                    <Stat fontSize='sm' title='Members'>
-                      4269
-                    </Stat>
-                    <Stat fontSize='sm' title='Open Proposals'>
-                      2
-                    </Stat>
-                  </SimpleGrid>
-                </Card>
-                <Stack pt={{ base: '4', md: '6' }} w='auto'>
-                  <Tabs
-                    defaultIndex={0}
-                    onChange={(index) => setTabIndex(index)}
-                  >
-                    <TabList border='none' color={mode('base.700', 'base.400')}>
-                      {['Activity', 'Vault', 'Proposals', 'Members'].map(
-                        (title, index) => (
-                          <Tab
-                            key={index}
-                            _selected={{
-                              color: mode('base.900', 'light.900'),
-                              fontWeight: 'semibold',
-                            }}
-                            fontSize='md'
-                          >
-                            <HStack spacing='2'>
-                              <Text>{title}</Text>
-                            </HStack>
-                          </Tab>
-                        ),
-                      )}
-                    </TabList>
-                    <TabPanels>
-                      <TabPanel>
-                        <ActivityList />
-                      </TabPanel>
-                      <TabPanel>
-                        <VaultTransactionList />
-                      </TabPanel>
-                      <TabPanel>
-                        <ProposalList />
-                      </TabPanel>
-                      <TabPanel>
-                        <MemberList />
-                      </TabPanel>
-                    </TabPanels>
-                  </Tabs>
-                </Stack>
-              </GridItem>
-              <GridItem rowSpan={2} colSpan={2}>
-                {deployed ? (
-                  <VStack spacing='5'>
-                    <Card
-                      minH='auto'
-                      mx='auto'
-                      px={{ base: '6', md: '6' }}
-                      py={{ base: '6', md: '6' }}
-                    >
-                      <DashboardProfile />
-                    </Card>
-                    <Card
-                      minH='auto'
-                      mx='auto'
-                      px={{ base: '6', md: '6' }}
-                      py={{ base: '6', md: '6' }}
-                    >
-                      <DashboardProfile />
-                    </Card>
-                  </VStack>
-                ) : (
-                  <Card
-                    minH='auto'
-                    mx='auto'
-                    px={{ base: '6', md: '6' }}
-                    py={{ base: '6', md: '6' }}
-                  >
-                    <VStack maxW='xl' spacing='6' alignItems='baseline'>
-                      <Heading
-                        size='sm'
-                        fontWeight='regular'
-                        color={mode('base.900', 'light.900')}
-                      >
-                        Almost ready to launch {''}
-                        <Text
-                          as='span'
-                          maxW='xl'
-                          color={mode('base.900', 'light.900')}
-                          bgGradient={mode(
-                            'linear(to-br, secondaryGradient.900, secondary.900)',
-                            'linear(to-br, primaryGradient.900, primary.900)',
-                          )}
-                          bgClip='text'
-                        >
-                          {name || 'StackerDAO'}
-                        </Text>
-                      </Heading>
-                      <Text
-                        maxW='xl'
-                        color={mode('base.900', 'light.900')}
-                        style={{ margin: '7.5px 0 10px 0' }}
-                      >
-                        <Text
-                          as='span'
-                          maxW='xl'
-                          mx='auto'
-                          fontSize='md'
-                          fontWeight='semibold'
-                        >
-                          Review & deploy
-                        </Text>
-                        {''} your extensions first!
-                      </Text>
-                      <Stack spacing='1'>
-                        {steps.map((step, id) => (
-                          <VerticalStep
-                            key={id}
-                            payload={step.payload}
-                            cursor='pointer'
-                            title={step.title}
-                            isActive={currentStep === id}
-                            isCompleted={currentStep > id}
-                            isLastStep={steps.length === id + 1}
-                          />
-                        ))}
-                      </Stack>
-                      <Button
-                        color='white'
-                        isFullWidth
-                        bgGradient={mode(
-                          'linear(to-br, secondaryGradient.900, secondary.900)',
-                          'linear(to-br, primaryGradient.900, primary.900)',
-                        )}
-                        px='8'
-                        my='8'
-                        mx='auto'
-                        size='lg'
-                        fontSize='lg'
-                        fontWeight='regular'
-                        onClick={() => {
-                          setDeployed(true);
-                        }}
-                        disabled={isDisabled}
-                        _hover={
-                          isDisabled ? { opacity: 0.9 } : { opacity: 0.8 }
-                        }
-                        _active={{ opacity: 1 }}
-                      >
-                        Launch {name || 'StackerDAO'}
-                      </Button>
-                    </VStack>
-                  </Card>
+      <Box as='section' bgGradient='linear(to-b, base.900, base.800)'>
+        <Container maxW='4xl' mt='6' pt='6'>
+          <Stack spacing={{ base: '8', lg: '6' }} mt='4'>
+            <Box textAlign='center' maxW='900px' my='6'>
+              <Heading
+                as='h1'
+                size='xl'
+                fontWeight='extrabold'
+                maxW='48rem'
+                mx='auto'
+                lineHeight='1.2'
+                letterSpacing='tight'
+                bgGradient={mode(
+                  'linear(to-br, secondaryGradient.900, secondary.900)',
+                  'linear(to-br, primaryGradient.900, primary.900)',
                 )}
-              </GridItem>
-            </Grid>
+                bgClip='text'
+              >
+                {name || 'StackerDAO'}
+              </Heading>
+
+              <Text pb='4' maxW='xl' mx='auto' fontSize='lg' color='gray.900'>
+                Unleashing the ownership economy. No-code platform, dev tools, &
+                legal tech to build & manage #Bitcoin DAOs via @Stacks.
+              </Text>
+              <CreateProposalButton title='Create proposal' />
+            </Box>
+            <Stack w='auto'>
+              <Box as='section' bg='bg-surface'>
+                <Container>
+                  <Stack spacing='5'>
+                    <Stack
+                      spacing='4'
+                      mb='6'
+                      direction={{ base: 'column', md: 'row' }}
+                      justify='space-between'
+                      color='white'
+                    >
+                      <Box>
+                        <Text fontSize='2xl' fontWeight='medium'>
+                          Proposals
+                        </Text>
+                        <Text color='gray.900' fontSize='sm'>
+                          All registered users in the overview
+                        </Text>
+                      </Box>
+                      <RadioButtonGroup defaultValue='all'>
+                        <RadioButton value='all' bg='base.900'>
+                          All
+                        </RadioButton>
+                        <RadioButton value='active' bg='base.900'>
+                          Active
+                        </RadioButton>
+                        <RadioButton value='submitted' bg='base.900'>
+                          Submitted
+                        </RadioButton>
+                        <RadioButton value='completed' bg='base.900'>
+                          Completed
+                        </RadioButton>
+                      </RadioButtonGroup>
+                    </Stack>
+                  </Stack>
+                  <SimpleGrid columns={2} spacing='4' py='4' color='white'>
+                    <Card
+                      minH='auto'
+                      mx='auto'
+                      px={{ base: '6', md: '6' }}
+                      py={{ base: '6', md: '6' }}
+                      border='1px solid rgb(134, 143, 152)'
+                    >
+                      <Stack
+                        spacing={{ base: '5', md: '6' }}
+                        justify='space-between'
+                      >
+                        <Badge
+                          maxW='fit-content'
+                          variant='subtle'
+                          colorScheme={'green'}
+                          px='3'
+                          py='2'
+                        >
+                          <HStack spacing='2'>
+                            <Text>Name available</Text>
+                          </HStack>
+                        </Badge>
+                        <Stack spacing='1'>
+                          <Text fontSize='lg' fontWeight='medium'>
+                            Send funds
+                          </Text>
+                          <Text fontSize='sm' color='muted'>
+                            A new version is available. Please upgrade for the
+                            best experience.
+                          </Text>
+                        </Stack>
+                        <Box>
+                          <Button color='primary'>View proposal</Button>
+                        </Box>
+                      </Stack>
+                    </Card>
+                    <Card
+                      minH='auto'
+                      mx='auto'
+                      px={{ base: '6', md: '6' }}
+                      py={{ base: '6', md: '6' }}
+                      border='1px solid rgb(134, 143, 152)'
+                    >
+                      <Stack
+                        spacing={{ base: '5', md: '6' }}
+                        justify='space-between'
+                      >
+                        <Badge
+                          maxW='fit-content'
+                          variant='subtle'
+                          colorScheme={'green'}
+                          px='3'
+                          py='2'
+                        >
+                          <HStack spacing='2'>
+                            <Text>Name available</Text>
+                          </HStack>
+                        </Badge>
+                        <Stack spacing='1'>
+                          <Text fontSize='lg' fontWeight='medium'>
+                            Updates Available
+                          </Text>
+                          <Text fontSize='sm' color='muted'>
+                            A new version is available. Please upgrade for the
+                            best experience.
+                          </Text>
+                        </Stack>
+                        <Box>
+                          <Button color='primary'>View proposal</Button>
+                        </Box>
+                      </Stack>
+                    </Card>
+                    <Card
+                      minH='auto'
+                      mx='auto'
+                      px={{ base: '6', md: '6' }}
+                      py={{ base: '6', md: '6' }}
+                      border='1px solid rgb(134, 143, 152)'
+                    >
+                      <Stack
+                        spacing={{ base: '5', md: '6' }}
+                        justify='space-between'
+                      >
+                        <Badge
+                          maxW='fit-content'
+                          variant='subtle'
+                          colorScheme={'green'}
+                          px='3'
+                          py='2'
+                        >
+                          <HStack spacing='2'>
+                            <Text>Name available</Text>
+                          </HStack>
+                        </Badge>
+                        <Stack spacing='1'>
+                          <Text fontSize='lg' fontWeight='medium'>
+                            Updates Available
+                          </Text>
+                          <Text fontSize='sm' color='muted'>
+                            A new version is available. Please upgrade for the
+                            best experience.
+                          </Text>
+                        </Stack>
+                        <Box>
+                          <Button color='primary'>View proposal</Button>
+                        </Box>
+                      </Stack>
+                    </Card>
+                  </SimpleGrid>
+                </Container>
+              </Box>
+            </Stack>
           </Stack>
         </Container>
       </Box>
     </motion.div>
   );
 };
+
+DAODashboard.getLayout = (page: any) => <AppLayout>{page}</AppLayout>;
 
 export default DAODashboard;
