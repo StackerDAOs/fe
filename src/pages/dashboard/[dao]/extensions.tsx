@@ -73,7 +73,7 @@ import { usePolling } from '@common/hooks/use-polling';
 //   delay: number | null;
 // }
 
-const DAODashboard = () => {
+const Extensions = () => {
   const { isSignedIn } = useAuth();
   const currentStxAddress = useCurrentStxAddress();
   const { network } = useNetwork();
@@ -199,88 +199,6 @@ const DAODashboard = () => {
     },
   ];
 
-  const DemoCard = (
-    <Card
-      minH='auto'
-      mx='auto'
-      px={{ base: '6', md: '6' }}
-      py={{ base: '6', md: '6' }}
-    >
-      <VStack maxW='xl' spacing='6' alignItems='baseline'>
-        <Heading
-          size='sm'
-          fontWeight='regular'
-          color={mode('base.900', 'light.900')}
-        >
-          Almost ready to launch {''}
-          <Text
-            as='span'
-            maxW='xl'
-            color={mode('base.900', 'light.900')}
-            bgGradient={mode(
-              'linear(to-br, secondaryGradient.900, secondary.900)',
-              'linear(to-br, primaryGradient.900, primary.900)',
-            )}
-            bgClip='text'
-          >
-            {name || 'StackerDAO'}
-          </Text>
-        </Heading>
-        <Text
-          maxW='xl'
-          color={mode('base.900', 'light.900')}
-          style={{ margin: '7.5px 0 10px 0' }}
-        >
-          <Text
-            as='span'
-            maxW='xl'
-            mx='auto'
-            fontSize='md'
-            fontWeight='semibold'
-          >
-            Review & deploy
-          </Text>
-          {''} your extensions first!
-        </Text>
-        <Stack spacing='1'>
-          {steps.map((step, id) => (
-            <VerticalStep
-              key={id}
-              payload={step.payload}
-              cursor='pointer'
-              title={step.title}
-              isActive={currentStep === id}
-              isCompleted={currentStep > id}
-              isLastStep={steps.length === id + 1}
-            />
-          ))}
-        </Stack>
-        <Button
-          color='white'
-          isFullWidth
-          bgGradient={mode(
-            'linear(to-br, secondaryGradient.900, secondary.900)',
-            'linear(to-br, primaryGradient.900, primary.900)',
-          )}
-          px='8'
-          my='8'
-          mx='auto'
-          size='lg'
-          fontSize='lg'
-          fontWeight='regular'
-          onClick={() => {
-            setDeployed(true);
-          }}
-          disabled={isDisabled}
-          _hover={isDisabled ? { opacity: 0.9 } : { opacity: 0.8 }}
-          _active={{ opacity: 1 }}
-        >
-          Launch {name || 'StackerDAO'}
-        </Button>
-      </VStack>
-    </Card>
-  );
-
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -307,7 +225,7 @@ const DAODashboard = () => {
                 )}
                 bgClip='text'
               >
-                {name || 'StackerDAO'}
+                {name || 'StackerDAO'} Extensions
               </Heading>
 
               <Text pb='4' maxW='xl' mx='auto' fontSize='lg' color='gray.900'>
@@ -470,6 +388,6 @@ const DAODashboard = () => {
   );
 };
 
-DAODashboard.getLayout = (page: any) => <AppLayout>{page}</AppLayout>;
+Extensions.getLayout = (page: any) => <AppLayout>{page}</AppLayout>;
 
-export default DAODashboard;
+export default Extensions;
