@@ -1,3 +1,5 @@
+import { FiBarChart, FiFileText, FiGrid, FiMousePointer, FiRepeat, FiShield } from 'react-icons/fi';
+
 export const steps = [
   {
     title: 'Members',
@@ -154,5 +156,20 @@ export const whitelistAssets = [
     symbol: 'ALEX',
     icon: 'https://uploads-ssl.webflow.com/61202e49cdb38130154c0900/613eca73cd6715469da40555_ALEX_logo_TM_stacked_large.png',
     contractAddress: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.age000-governance-token',
+  },
+]
+
+export const items = [
+  {
+    title: 'Megapont DAO',
+    description: 'Powered by $MEGACOIN',
+    href: '/megapont',
+    icon: 'https://www.megapont.com/images/logo.svg',
+  },
+  {
+    title: 'Stacks Mfers',
+    description: 'just a bunch of mfers on stacks',
+    href: '/mfers',
+    icon: 'https://stxnft.mypinata.cloud/ipfs/QmUL7yELAmF1wnbqt6yaNLmCVbBa7BSbSNXYKijpku2r45/1.png?img-width=240&img-fit=contain&img-quality=60&img-onerror=redirect&img-fit=pad&img-format=webp',
   },
 ]

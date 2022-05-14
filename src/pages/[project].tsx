@@ -20,10 +20,9 @@ import { standardPrincipalCV } from 'micro-stacks/clarity';
 // import { StacksMocknet } from 'micro-stacks/network';
 // import { fetchTransactionsList } from 'micro-stacks/api';
 
-// Components
 import { DefaultLayout } from '@components/Layout/DefaultLayout';
 
-const Index = () => {
+const Project = () => {
   const { currentStxAddress } = useUser();
   const { network } = useNetwork();
 
@@ -96,7 +95,7 @@ const Index = () => {
                 letterSpacing='tight'
                 color={mode('base.900', 'light.900')}
               >
-                Build your community on {''}
+                Move the {''}
                 <Text
                   as='span'
                   mt='4'
@@ -104,15 +103,13 @@ const Index = () => {
                   maxW='xl'
                   mx='auto'
                   color={mode('base.900', 'light.900')}
-                  bgGradient={mode(
-                    'linear(to-br, secondary.900, secondaryGradient.900)',
-                    'linear(to-br, primaryGradient.900, primary.900)',
-                  )}
+                  bgGradient='linear(to-br, #E61F0F, #E6B10F)'
                   bgClip='text'
                   fontStyle='italic'
                 >
-                  Bitcoin
+                  MEGA {''}
                 </Text>
+                DAO forward.
               </Heading>
               <Text
                 mt='4'
@@ -122,8 +119,9 @@ const Index = () => {
                 fontSize='lg'
                 color='gray.900'
               >
-                Unleashing the ownership economy. No-code platform, dev tools, &
-                legal tech to build & manage #Bitcoin DAOs via @Stacks.
+                $MEGACOIN is the token for the web3 community on Stacks. MEGA is
+                the governance token for Megapont and the community initiatives
+                that move the space towards a better, more decentralised future.
               </Text>
               <Stack
                 direction='row'
@@ -141,10 +139,7 @@ const Index = () => {
                   >
                     <Button
                       color='white'
-                      bgGradient={mode(
-                        'linear(to-br, secondaryGradient.900, secondary.900)',
-                        'linear(to-br, primaryGradient.900, primary.900)',
-                      )}
+                      bgGradient='linear(to-br, #E61F0F, #E6B10F)'
                       p='6'
                       my='8'
                       size='lg'
@@ -153,28 +148,7 @@ const Index = () => {
                       _hover={{ opacity: 0.9 }}
                       _active={{ opacity: 1 }}
                     >
-                      Launch a DAO
-                    </Button>
-                  </motion.div>
-                </Link>
-                <Link href={{ pathname: '/dashboard/dao' }}>
-                  <motion.div
-                    variants={SLIDE_UP_BUTTON_VARIANTS}
-                    initial={SLIDE_UP_BUTTON_VARIANTS.hidden}
-                    animate={SLIDE_UP_BUTTON_VARIANTS.enter}
-                    exit={SLIDE_UP_BUTTON_VARIANTS.exit}
-                    transition={{ duration: 0.8, type: 'linear' }}
-                  >
-                    <Button
-                      color='white'
-                      p='6'
-                      my='8'
-                      size='lg'
-                      fontSize='lg'
-                      fontWeight='regular'
-                      _hover={{ opacity: 0.9 }}
-                    >
-                      Join the Discord
+                      Join $MEGA DAO
                     </Button>
                   </motion.div>
                 </Link>
@@ -268,6 +242,6 @@ const Index = () => {
   );
 };
 
-Index.getLayout = (page: any) => <DefaultLayout>{page}</DefaultLayout>;
+Project.getLayout = (page: any) => <DefaultLayout>{page}</DefaultLayout>;
 
-export default Index;
+export default Project;

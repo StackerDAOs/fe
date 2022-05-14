@@ -37,11 +37,9 @@ export const VaultTransactionList = () => {
     <Box color={mode('base.900', 'light.900')}>
       <Stack spacing='5'>
         <Stack spacing='1'>
-          <Text fontSize='md' fontWeight='regular' textTransform='uppercase'>
-            Top assets
-          </Text>
           <SimpleGrid
             maxW='md'
+            mt='6'
             py={{ base: '2', md: '2', lg: '2' }}
             columns={{ base: 1, md: 3 }}
             color={mode('base.900', 'light.900')}

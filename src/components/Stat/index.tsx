@@ -15,7 +15,7 @@ export const Stat = (props: StatProps) => {
   return (
     <Box {...rest}>
       <Flex as='dl' direction='column-reverse'>
-        <Box as='dt' color={mode('base.500', 'base.300')}>
+        <Box as='dt' color={mode('gray.900', 'gray.900')}>
           {title}
         </Box>
       </Flex>

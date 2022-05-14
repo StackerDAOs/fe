@@ -27,15 +27,7 @@ export const ActivityList = () => {
       pointerEvents={isActivated ? 'auto' : 'none'}
       style={isActivated ? { cursor: 'default' } : { cursor: 'not-allowed' }}
     >
-      <Stack spacing='5'>
-        <Stack spacing='1'>
-          <Text fontSize='md' fontWeight='regular' textTransform='uppercase'>
-            Recent activity
-          </Text>
-          <Text fontSize='sm' color='base.400'>
-            Please pay the outstanding amount by the end of the following month.
-          </Text>
-        </Stack>
+      <Stack>
         <Box>
           {[
             {
