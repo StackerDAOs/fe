@@ -13,9 +13,11 @@ import {
   VStack,
   SimpleGrid,
   Text,
+  Tab,
   Tabs,
   TabList,
-  Tab,
+  TabPanel,
+  TabPanels,
   useToast,
   useColorModeValue as mode,
 } from '@chakra-ui/react';
@@ -24,22 +26,23 @@ import {
 import { useStore } from 'store/DeployStepStore';
 import { useStore as useDaoStore } from 'store/CreateDaoStore';
 
+// Data
+import { proposals } from '@utils/data';
+
 // Components
 import { Card } from '@components/Card';
 import { AppLayout } from '@components/Layout/AppLayout';
-import { Stat } from '@components/Stat';
-import { VerticalStep } from '@components/VerticalStep';
-import { ActivityList } from '@components/ActivityList';
-import { VaultTransactionList } from '@components/VaultTransactionList';
-import { ProposalList } from '@components/ProposalList';
-import { MemberList } from '@components/MemberList';
 import { RadioButton, RadioButtonGroup } from '@components/RadioButtonGroup';
+import { DataTable } from '@components/DataTable';
 
 // Widgets
 import { CreateProposalButton } from '@widgets/CreateProposalButton';
 
 //  Animation
 import { motion } from 'framer-motion';
+
+// Icons
+import { FaCheck, FaTimes, FaArrowRight } from 'react-icons/fa';
 
 // Stacks
 import {
@@ -78,6 +81,7 @@ const DAODashboard = () => {
   const currentStxAddress = useCurrentStxAddress();
   const { network } = useNetwork();
   const router = useRouter();
+  const { dao } = router.query;
 
   // Store
   const [_, setTabIndex] = useState(0);
@@ -142,145 +146,6 @@ const DAODashboard = () => {
     handleContractCall();
   };
 
-  const steps = [
-    {
-      title: 'Members',
-      extensionName: 'membershipExtension',
-      payload: {
-        header: 'Membership Contract',
-        action: { title: 'Deploy', event: handleClick },
-        button: { title: 'Membership', type: 'primary' },
-      },
-    },
-    {
-      title: 'Vault',
-      extensionName: 'vaultExtension',
-      payload: {
-        header: 'Vault Contract',
-        action: { title: 'Deploy', event: handleClick },
-        button: { title: 'Vault', type: 'primary' },
-      },
-    },
-    {
-      title: 'Submitting Proposals',
-      extensionName: 'proposalExtension',
-      payload: {
-        header: 'Proposal Contract',
-        action: { title: 'Deploy', event: handleClick },
-        button: { title: 'Submitting Proposals', type: 'primary' },
-      },
-    },
-    {
-      title: 'Voting on Proposals',
-      extensionName: 'votingExtension',
-      payload: {
-        header: 'Voting Contract',
-        action: { title: 'Deploy', event: handleClick },
-        button: { title: 'Voting on Proposals', type: 'primary' },
-      },
-    },
-    {
-      title: 'Emergency Proposals',
-      extensionName: 'emergencyExtension',
-      payload: {
-        header: 'Emergency Proposal Contract',
-        action: { title: 'Deploy', event: handleClick },
-        button: { title: 'Emergency Proposals', type: 'primary' },
-      },
-    },
-    {
-      title: 'Emergency Team',
-      extensionName: 'emergencyExtension',
-      payload: {
-        header: 'Emergency Team Contract',
-        action: { title: 'Deploy', event: handleClick },
-        button: { title: 'Emergency Team', type: 'primary' },
-      },
-    },
-  ];
-
-  const DemoCard = (
-    <Card
-      minH='auto'
-      mx='auto'
-      px={{ base: '6', md: '6' }}
-      py={{ base: '6', md: '6' }}
-    >
-      <VStack maxW='xl' spacing='6' alignItems='baseline'>
-        <Heading
-          size='sm'
-          fontWeight='regular'
-          color={mode('base.900', 'light.900')}
-        >
-          Almost ready to launch {''}
-          <Text
-            as='span'
-            maxW='xl'
-            color={mode('base.900', 'light.900')}
-            bgGradient={mode(
-              'linear(to-br, secondaryGradient.900, secondary.900)',
-              'linear(to-br, primaryGradient.900, primary.900)',
-            )}
-            bgClip='text'
-          >
-            {name || 'StackerDAO'}
-          </Text>
-        </Heading>
-        <Text
-          maxW='xl'
-          color={mode('base.900', 'light.900')}
-          style={{ margin: '7.5px 0 10px 0' }}
-        >
-          <Text
-            as='span'
-            maxW='xl'
-            mx='auto'
-            fontSize='md'
-            fontWeight='semibold'
-          >
-            Review & deploy
-          </Text>
-          {''} your extensions first!
-        </Text>
-        <Stack spacing='1'>
-          {steps.map((step, id) => (
-            <VerticalStep
-              key={id}
-              payload={step.payload}
-              cursor='pointer'
-              title={step.title}
-              isActive={currentStep === id}
-              isCompleted={currentStep > id}
-              isLastStep={steps.length === id + 1}
-            />
-          ))}
-        </Stack>
-        <Button
-          color='white'
-          isFullWidth
-          bgGradient={mode(
-            'linear(to-br, secondaryGradient.900, secondary.900)',
-            'linear(to-br, primaryGradient.900, primary.900)',
-          )}
-          px='8'
-          my='8'
-          mx='auto'
-          size='lg'
-          fontSize='lg'
-          fontWeight='regular'
-          onClick={() => {
-            setDeployed(true);
-          }}
-          disabled={isDisabled}
-          _hover={isDisabled ? { opacity: 0.9 } : { opacity: 0.8 }}
-          _active={{ opacity: 1 }}
-        >
-          Launch {name || 'StackerDAO'}
-        </Button>
-      </VStack>
-    </Card>
-  );
-
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -289,180 +154,199 @@ const DAODashboard = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Box as='section' bgGradient='linear(to-b, base.900, base.800)'>
-        <Container maxW='4xl' mt='6' pt='6'>
+      <Box as='section'>
+        <Container maxW='5xl' mt='6' pt='6'>
           <Stack spacing={{ base: '8', lg: '6' }} mt='4'>
-            <Box textAlign='center' maxW='900px' my='6'>
-              <Heading
-                as='h1'
-                size='xl'
-                fontWeight='extrabold'
-                maxW='48rem'
-                mx='auto'
-                lineHeight='1.2'
-                letterSpacing='tight'
-                bgGradient={mode(
-                  'linear(to-br, secondaryGradient.900, secondary.900)',
-                  'linear(to-br, primaryGradient.900, primary.900)',
-                )}
-                bgClip='text'
-              >
-                {name || 'StackerDAO'}
-              </Heading>
+            <Container>
+              <Box maxW='900px' mt={{ base: '3', lg: '6' }}>
+                <Heading
+                  as='h1'
+                  size='xl'
+                  fontWeight='extrabold'
+                  maxW='48rem'
+                  lineHeight='1.2'
+                  letterSpacing='tight'
+                  bgGradient={mode(
+                    'linear(to-br, secondaryGradient.900, secondary.900)',
+                    'linear(to-br, primaryGradient.900, primary.900)',
+                  )}
+                  bgClip='text'
+                >
+                  {name || 'StackerDAO'}
+                </Heading>
 
-              <Text pb='4' maxW='xl' mx='auto' fontSize='lg' color='gray.900'>
-                Unleashing the ownership economy. No-code platform, dev tools, &
-                legal tech to build & manage #Bitcoin DAOs via @Stacks.
-              </Text>
-            </Box>
-            <Stack w='auto'>
-              <Box as='section' bg='bg-surface'>
-                <Container>
-                  <Stack spacing='5'>
-                    <Stack
-                      spacing='4'
-                      mb='6'
-                      direction={{ base: 'column', md: 'row' }}
-                      justify='space-between'
-                      color='white'
-                    >
-                      <Box>
-                        <Text fontSize='2xl' fontWeight='medium'>
-                          Proposals
-                        </Text>
-                        <Text color='gray.900' fontSize='sm'>
-                          All registered users in the overview
-                        </Text>
-                      </Box>
-                      <RadioButtonGroup defaultValue='all'>
-                        <RadioButton value='all' bg='base.900'>
-                          All
-                        </RadioButton>
-                        <RadioButton value='active' bg='base.900'>
-                          Active
-                        </RadioButton>
-                        <RadioButton value='submitted' bg='base.900'>
-                          Submitted
-                        </RadioButton>
-                        <RadioButton value='completed' bg='base.900'>
-                          Completed
-                        </RadioButton>
-                      </RadioButtonGroup>
-                    </Stack>
-                  </Stack>
-                  <SimpleGrid columns={2} spacing='4' py='4' color='white'>
-                    <Card
-                      minH='auto'
-                      mx='auto'
-                      px={{ base: '6', md: '6' }}
-                      py={{ base: '6', md: '6' }}
-                      border='1px solid rgb(134, 143, 152)'
-                    >
-                      <Stack
-                        spacing={{ base: '5', md: '6' }}
-                        justify='space-between'
-                      >
-                        <Badge
-                          maxW='fit-content'
-                          variant='subtle'
-                          colorScheme={'green'}
-                          px='3'
-                          py='2'
-                        >
-                          <HStack spacing='2'>
-                            <Text>Name available</Text>
-                          </HStack>
-                        </Badge>
-                        <Stack spacing='1'>
-                          <Text fontSize='lg' fontWeight='medium'>
-                            Send funds
-                          </Text>
-                          <Text fontSize='sm' color='muted'>
-                            A new version is available. Please upgrade for the
-                            best experience.
-                          </Text>
-                        </Stack>
-                        <Box>
-                          <Button color='primary'>View proposal</Button>
-                        </Box>
-                      </Stack>
-                    </Card>
-                    <Card
-                      minH='auto'
-                      mx='auto'
-                      px={{ base: '6', md: '6' }}
-                      py={{ base: '6', md: '6' }}
-                      border='1px solid rgb(134, 143, 152)'
-                    >
-                      <Stack
-                        spacing={{ base: '5', md: '6' }}
-                        justify='space-between'
-                      >
-                        <Badge
-                          maxW='fit-content'
-                          variant='subtle'
-                          colorScheme={'green'}
-                          px='3'
-                          py='2'
-                        >
-                          <HStack spacing='2'>
-                            <Text>Name available</Text>
-                          </HStack>
-                        </Badge>
-                        <Stack spacing='1'>
-                          <Text fontSize='lg' fontWeight='medium'>
-                            Updates Available
-                          </Text>
-                          <Text fontSize='sm' color='muted'>
-                            A new version is available. Please upgrade for the
-                            best experience.
-                          </Text>
-                        </Stack>
-                        <Box>
-                          <Button color='primary'>View proposal</Button>
-                        </Box>
-                      </Stack>
-                    </Card>
-                    <Card
-                      minH='auto'
-                      mx='auto'
-                      px={{ base: '6', md: '6' }}
-                      py={{ base: '6', md: '6' }}
-                      border='1px solid rgb(134, 143, 152)'
-                    >
-                      <Stack
-                        spacing={{ base: '5', md: '6' }}
-                        justify='space-between'
-                      >
-                        <Badge
-                          maxW='fit-content'
-                          variant='subtle'
-                          colorScheme={'green'}
-                          px='3'
-                          py='2'
-                        >
-                          <HStack spacing='2'>
-                            <Text>Name available</Text>
-                          </HStack>
-                        </Badge>
-                        <Stack spacing='1'>
-                          <Text fontSize='lg' fontWeight='medium'>
-                            Updates Available
-                          </Text>
-                          <Text fontSize='sm' color='muted'>
-                            A new version is available. Please upgrade for the
-                            best experience.
-                          </Text>
-                        </Stack>
-                        <Box>
-                          <Button color='primary'>View proposal</Button>
-                        </Box>
-                      </Stack>
-                    </Card>
-                  </SimpleGrid>
-                </Container>
+                <Text pb='4' maxW='xl' fontSize='md' color='gray.900'>
+                  Unleashing the ownership economy. No-code platform, dev tools,
+                  & legal tech to build & manage #Bitcoin DAOs via @Stacks.
+                </Text>
               </Box>
-            </Stack>
+            </Container>
+            <Container>
+              <Stack spacing='5'>
+                <Stack
+                  spacing='4'
+                  mb='6'
+                  direction={{ base: 'column', md: 'row' }}
+                  justify='space-between'
+                  color='white'
+                >
+                  <Box>
+                    <Text fontSize='2xl' fontWeight='medium'>
+                      Create a proposal
+                    </Text>
+                    <Text color='gray.900' fontSize='sm'>
+                      Select from a variety of proposals to get started.
+                    </Text>
+                  </Box>
+                  <Link href={`/dashboard/${dao}/proposals`}>
+                    <Box
+                      display='flex'
+                      alignItems='center'
+                      cursor='pointer'
+                      _hover={{ textDecoration: 'underline' }}
+                    >
+                      <Text fontSize='md' px='1'>
+                        Go to proposals
+                      </Text>
+                      <FaArrowRight fontSize='13' />
+                    </Box>
+                  </Link>
+                </Stack>
+              </Stack>
+              <SimpleGrid
+                columns={{ base: 1, md: 2, lg: 3 }}
+                spacing='12'
+                pb='4'
+                color='white'
+              >
+                {proposals.map(({ type, description, status, result }) => {
+                  return (
+                    <Card
+                      bg='base.900'
+                      position='relative'
+                      px={{ base: '6', md: '6' }}
+                      py={{ base: '6', md: '6' }}
+                      border='1px solid rgb(134, 143, 152)'
+                      _hover={{ cursor: 'pointer', bg: 'base.800' }}
+                    >
+                      <Stack
+                        spacing={{ base: '0', md: '2' }}
+                        justify='space-between'
+                      >
+                        <HStack>
+                          <Badge
+                            size='sm'
+                            maxW='fit-content'
+                            variant='subtle'
+                            colorScheme={
+                              status === 'COMPLETE'
+                                ? 'white'
+                                : status === 'ACTIVE'
+                                ? 'green'
+                                : 'yellow'
+                            }
+                            px='3'
+                            py='2'
+                          >
+                            <HStack spacing='2'>
+                              <Text>{status}</Text>
+                            </HStack>
+                          </Badge>
+                          {status === 'COMPLETE' && (
+                            <Badge
+                              size='sm'
+                              maxW='fit-content'
+                              variant='subtle'
+                              colorScheme={result ? 'green' : 'red'}
+                              px='3'
+                              py='2'
+                            >
+                              <HStack spacing='1'>
+                                {result ? (
+                                  <>
+                                    <FaCheck />
+                                    <Text>Approved</Text>
+                                  </>
+                                ) : (
+                                  <>
+                                    <FaTimes />
+                                    <Text>Failed</Text>
+                                  </>
+                                )}
+                              </HStack>
+                            </Badge>
+                          )}
+                        </HStack>
+                        <Stack spacing='1'>
+                          <Text fontSize='lg' fontWeight='medium'>
+                            {type}
+                          </Text>
+                          <Text fontSize='sm' color='gray.900'>
+                            {description}
+                          </Text>
+                        </Stack>
+                      </Stack>
+                    </Card>
+                  );
+                })}
+              </SimpleGrid>
+            </Container>
+            <Container>
+              <Stack spacing='5'>
+                <Stack
+                  spacing='4'
+                  mb='6'
+                  direction={{ base: 'column', md: 'row' }}
+                  justify='space-between'
+                  color='white'
+                >
+                  <Box>
+                    <Text fontSize='2xl' fontWeight='medium'>
+                      Assets
+                    </Text>
+                    <Text color='gray.900' fontSize='sm'>
+                      List of shared assets owned by the DAO.
+                    </Text>
+                  </Box>
+                  <Link href={`/dashboard/${dao}/vault`}>
+                    <Box
+                      display='flex'
+                      alignItems='center'
+                      cursor='pointer'
+                      _hover={{ textDecoration: 'underline' }}
+                    >
+                      <Text fontSize='md' px='1'>
+                        Go to vault
+                      </Text>
+                      <FaArrowRight fontSize='13' />
+                    </Box>
+                  </Link>
+                </Stack>
+              </Stack>
+              <Tabs color='white' variant='unstyled'>
+                <TabList>
+                  {['Tokens', 'NFTs'].map((item) => (
+                    <Tab
+                      key={item}
+                      fontSize='sm'
+                      color='gray.900'
+                      _first={{ paddingLeft: '0' }}
+                      _selected={{ color: 'light.900' }}
+                    >
+                      {item}
+                    </Tab>
+                  ))}
+                </TabList>
+                <TabPanels>
+                  <TabPanel px='0'>
+                    <DataTable />
+                  </TabPanel>
+                  <TabPanel px='0'>
+                    <DataTable />
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            </Container>
           </Stack>
         </Container>
       </Box>

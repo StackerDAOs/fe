@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { Box, HStack, useBreakpointValue } from '@chakra-ui/react';
 
 // Store
@@ -12,9 +11,6 @@ import { motion } from 'framer-motion';
 import { AppNavbar } from '@components/AppNavbar';
 
 export const AppLayout = ({ children }: any) => {
-  const router = useRouter();
-  const { dao } = router.query;
-  console.log(dao);
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
     enter: { opacity: 1, x: 0, y: 0 },
@@ -29,7 +25,7 @@ export const AppLayout = ({ children }: any) => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <AppNavbar daoName={dao} address={'ryan.btc'} />
+      <AppNavbar />
       {children}
     </motion.div>
   );

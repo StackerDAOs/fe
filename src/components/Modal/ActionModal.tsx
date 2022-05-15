@@ -61,6 +61,7 @@ export const ActionModal = ({ payload, children }: any) => {
         isCentered
         isOpen={isOpen}
         onClose={onClose}
+        size='full'
       >
         <ModalOverlay />
         <ModalContent
@@ -69,7 +70,6 @@ export const ActionModal = ({ payload, children }: any) => {
         >
           <ModalHeader>{payload.header}</ModalHeader>
           {children}
-
           <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={payload.action.event}>
               {payload.action.title}
