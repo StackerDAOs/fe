@@ -173,3 +173,26 @@ export const items = [
     icon: 'https://stxnft.mypinata.cloud/ipfs/QmUL7yELAmF1wnbqt6yaNLmCVbBa7BSbSNXYKijpku2r45/1.png?img-width=240&img-fit=contain&img-quality=60&img-onerror=redirect&img-fit=pad&img-format=webp',
   },
 ]
+
+export const proposals = [
+  {
+    type: 'Transfer assets',
+    description:
+      'This proposal transfers assets from one account to another.',
+    status: 'ACTIVE',
+    result: null,
+  },
+  {
+    type: 'Generic proposal',
+    description: 'Create a staking contract for $MEGA',
+    status: 'PENDING',
+    result: null,
+  },
+  {
+    type: 'Funding proposal',
+    description:
+      'This proposal creates a simple dev fund that pays developers on a monthly basis.',
+    status: 'COMPLETE',
+    result: false,
+  },
+];

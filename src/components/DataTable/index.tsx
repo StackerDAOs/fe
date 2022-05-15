@@ -25,14 +25,9 @@ export const DataTable = (props: TableProps) => (
           borderBottom={`1px solid #1F2129`}
           cursor='pointer'
           _hover={{
-            bg: mode('light.700', 'base.700'),
+            bg: 'base.800',
           }}
         >
-          <Td border='none'>
-            <Badge size='md' colorScheme='base'>
-              {member.status}
-            </Badge>
-          </Td>
           <Td border='none'>
             <HStack spacing='3'>
               <Avatar name={member.name} src={member.avatarUrl} boxSize='6' />
@@ -43,6 +38,11 @@ export const DataTable = (props: TableProps) => (
                 </Badge>
               </Text>
             </HStack>
+          </Td>
+          <Td border='none'>
+            <Badge size='md' colorScheme='base'>
+              {member.status}
+            </Badge>
           </Td>
           <Td border='none'>
             <Text color='muted'>{member.role}</Text>

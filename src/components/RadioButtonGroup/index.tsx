@@ -83,7 +83,12 @@ export const RadioButton = (props: RadioButtonProps) => {
       <Button
         id={id}
         as='div'
+        bg='base.900'
+        color='gray.900'
+        _active={{ color: 'light.900', bg: 'base.800' }}
+        _checked={{ color: 'light.900', bg: 'base.800' }}
         _focus={{ boxShadow: 'none' }}
+        _hover={{ color: 'light.900', bg: 'base.800' }}
         {...checkboxProps}
         {...rest}
       />
