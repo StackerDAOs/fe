@@ -7,7 +7,9 @@ import {
   Button,
   Container,
   Divider,
+  Flex,
   Heading,
+  IconButton,
   Stack,
   HStack,
   VStack,
@@ -33,7 +35,9 @@ import { proposals } from '@utils/data';
 import { Card } from '@components/Card';
 import { AppLayout } from '@components/Layout/AppLayout';
 import { RadioButton, RadioButtonGroup } from '@components/RadioButtonGroup';
+import { DashboardProfile } from '@components/DashboardProfile';
 import { DataTable } from '@components/DataTable';
+import { Stat } from '@components/Stat';
 
 // Widgets
 import { CreateProposalButton } from '@widgets/CreateProposalButton';
@@ -158,34 +162,60 @@ const DAODashboard = () => {
         <Container maxW='5xl' mt='6' pt='6'>
           <Stack spacing={{ base: '8', lg: '6' }} mt='4'>
             <Container>
-              <Box maxW='900px' mt={{ base: '3', lg: '6' }}>
-                <Heading
-                  as='h1'
-                  size='xl'
-                  fontWeight='extrabold'
-                  maxW='48rem'
-                  lineHeight='1.2'
-                  letterSpacing='tight'
-                  bgGradient={mode(
-                    'linear(to-br, secondaryGradient.900, secondary.900)',
-                    'linear(to-br, primaryGradient.900, primary.900)',
-                  )}
-                  bgClip='text'
-                >
-                  {name || 'StackerDAO'}
-                </Heading>
+              <Stack
+                spacing='4'
+                mb='2'
+                direction={{ base: 'column', md: 'row' }}
+                justify='space-between'
+                align='center'
+                color='white'
+              >
+                <VStack maxW='xl' spacing='3' alignItems='baseline'>
+                  <HStack>
+                    <Box
+                      w='50px'
+                      h='50px'
+                      borderRadius='50%'
+                      bgGradient='linear(to-l, primaryGradient.900, primary.900)'
+                    />
+                    <Heading
+                      size='lg'
+                      pb='2'
+                      fontWeight='regular'
+                      color={mode('base.900', 'light.900')}
+                    >
+                      {name || 'StackerDAO'}
+                    </Heading>
+                  </HStack>
+                </VStack>
+              </Stack>
+              <Stack
+                spacing='4'
+                mb='6'
+                direction={{ base: 'column', md: 'row' }}
+                justify='space-between'
+                align='center'
+                color='white'
+              >
+                <SimpleGrid columns={{ base: 1, md: 3 }} maxW='lg'>
+                  <Stat fontSize='sm' title='Members'>
+                    4269
+                  </Stat>
+                  <Stat fontSize='sm' title='Total assets'>
+                    4
+                  </Stat>
 
-                <Text pb='4' maxW='xl' fontSize='md' color='gray.900'>
-                  Unleashing the ownership economy. No-code platform, dev tools,
-                  & legal tech to build & manage #Bitcoin DAOs via @Stacks.
-                </Text>
-              </Box>
+                  <Stat fontSize='sm' title='Open Proposals'>
+                    2
+                  </Stat>
+                </SimpleGrid>
+              </Stack>
             </Container>
             <Container>
               <Stack spacing='5'>
                 <Stack
                   spacing='4'
-                  mb='6'
+                  my='3'
                   direction={{ base: 'column', md: 'row' }}
                   justify='space-between'
                   color='white'
@@ -295,7 +325,7 @@ const DAODashboard = () => {
               <Stack spacing='5'>
                 <Stack
                   spacing='4'
-                  mb='6'
+                  my='3'
                   direction={{ base: 'column', md: 'row' }}
                   justify='space-between'
                   color='white'

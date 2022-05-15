@@ -1,58 +1,65 @@
 import * as React from 'react';
 import {
-  Button,
+  Badge,
+  Box,
   Heading,
+  IconButton,
+  HStack,
   VStack,
+  SimpleGrid,
   Text,
   useColorModeValue as mode,
 } from '@chakra-ui/react';
 
+// Components
+import { Stat } from '@components/Stat';
+
+import { FaMoneyBill } from 'react-icons/fa';
+
 export const DashboardProfile = () => {
   return (
-    <VStack maxW='xl' spacing='5' alignItems='baseline'>
-      <Heading
-        size='sm'
-        fontWeight='regular'
-        color={mode('base.900', 'light.900')}
-      >
-        You have {''}
-        <Text
-          as='span'
-          maxW='xl'
-          color={mode('base.900', 'light.900')}
-          bgGradient={mode(
-            'linear(to-br, secondaryGradient.900, secondary.900)',
-            'linear(to-br, primaryGradient.900, primary.900)',
-          )}
-          bgClip='text'
+    <VStack spacing='5' alignItems='center' px='5'>
+      <HStack>
+        <Badge
+          size='md'
+          maxW='fit-content'
+          variant='subtle'
+          bg='base.800'
+          px='3'
+          py='2'
         >
-          3 mfers
-        </Text>
-      </Heading>
-      <Text
-        maxW='xl'
-        color={mode('base.900', 'light.900')}
-        style={{ margin: '5px 0 10px 0' }}
-      >
-        Representing{' '}
-        <Text as='span' maxW='xl' mx='auto' fontSize='md' fontWeight='semibold'>
-          3% of the total supply
-        </Text>
-      </Text>
-      <Button
-        color='white'
-        isFullWidth
-        bgGradient={mode(
-          'linear(to-br, secondaryGradient.900, secondary.900)',
-          'linear(to-br, primaryGradient.900, primary.900)',
-        )}
-        size='md'
-        fontSize='md'
-        fontWeight='regular'
-        _active={{ opacity: 1 }}
-      >
-        Create a proposal
-      </Button>
+          <HStack spacing='1'>
+            <Text>My Holdings</Text>
+          </HStack>
+        </Badge>
+      </HStack>
+
+      <HStack spacing='3'>
+        <IconButton
+          size='sm'
+          bg='primaryGradient.900'
+          color='light.900'
+          aria-label='Search database'
+          icon={<FaMoneyBill />}
+        />
+        {''}
+        <Stat fontSize='sm' title='Members'>
+          4269
+        </Stat>
+      </HStack>
+      <HStack spacing='3'>
+        <IconButton
+          size='sm'
+          bg='primaryGradient.900'
+          color='light.900'
+          aria-label='Search database'
+          icon={<FaMoneyBill />}
+        />
+        {''}
+        <Stat fontSize='sm' title='Members'>
+          4269
+        </Stat>
+      </HStack>
     </VStack>
   );
 };
