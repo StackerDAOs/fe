@@ -19,7 +19,7 @@ export const CreateProposalButton = ({ title }: any) => {
         {title}
       </Button>
 
-      <Drawer onClose={onClose} isOpen={isOpen} size='lg'>
+      <Drawer onClose={onClose} isOpen={isOpen} size='2xl' placement='bottom'>
         <DrawerOverlay />
         <DrawerContent bg='base.800' color='light.900' p='6'>
           <DrawerCloseButton />

@@ -160,72 +160,22 @@ const DAODashboard = () => {
     >
       <Box as='section'>
         <Container maxW='5xl' mt='6' pt='6'>
-          <Stack spacing={{ base: '8', lg: '6' }} mt='4'>
-            <Container>
-              <Stack
-                spacing='4'
-                mb='2'
-                direction={{ base: 'column', md: 'row' }}
-                justify='space-between'
-                align='center'
-                color='white'
-              >
-                <VStack maxW='xl' spacing='3' alignItems='baseline'>
-                  <HStack>
-                    <Box
-                      w='50px'
-                      h='50px'
-                      borderRadius='50%'
-                      bgGradient='linear(to-l, primaryGradient.900, primary.900)'
-                    />
-                    <Heading
-                      size='lg'
-                      pb='2'
-                      fontWeight='regular'
-                      color={mode('base.900', 'light.900')}
-                    >
-                      {name || 'StackerDAO'}
-                    </Heading>
-                  </HStack>
-                </VStack>
-              </Stack>
-              <Stack
-                spacing='4'
-                mb='6'
-                direction={{ base: 'column', md: 'row' }}
-                justify='space-between'
-                align='center'
-                color='white'
-              >
-                <SimpleGrid columns={{ base: 1, md: 3 }} maxW='lg'>
-                  <Stat fontSize='sm' title='Members'>
-                    4269
-                  </Stat>
-                  <Stat fontSize='sm' title='Total assets'>
-                    4
-                  </Stat>
-
-                  <Stat fontSize='sm' title='Open Proposals'>
-                    2
-                  </Stat>
-                </SimpleGrid>
-              </Stack>
-            </Container>
+          <Stack spacing={{ base: '8', lg: '6' }}>
             <Container>
               <Stack spacing='5'>
                 <Stack
-                  spacing='4'
-                  my='3'
+                  spacing='42'
+                  mb='3'
                   direction={{ base: 'column', md: 'row' }}
                   justify='space-between'
                   color='white'
                 >
                   <Box>
                     <Text fontSize='2xl' fontWeight='medium'>
-                      Create a proposal
+                      Inbox
                     </Text>
                     <Text color='gray.900' fontSize='sm'>
-                      Select from a variety of proposals to get started.
+                      The latest action items for the DAO.
                     </Text>
                   </Box>
                   <Link href={`/dashboard/${dao}/proposals`}>
@@ -236,7 +186,7 @@ const DAODashboard = () => {
                       _hover={{ textDecoration: 'underline' }}
                     >
                       <Text fontSize='md' px='1'>
-                        Go to proposals
+                        View more
                       </Text>
                       <FaArrowRight fontSize='13' />
                     </Box>
@@ -245,14 +195,13 @@ const DAODashboard = () => {
               </Stack>
               <SimpleGrid
                 columns={{ base: 1, md: 2, lg: 3 }}
-                spacing='12'
+                spacing='6'
                 pb='4'
                 color='white'
               >
                 {proposals.map(({ type, description, status, result }) => {
                   return (
                     <Card
-                      bg='base.900'
                       position='relative'
                       px={{ base: '6', md: '6' }}
                       py={{ base: '6', md: '6' }}
@@ -263,50 +212,6 @@ const DAODashboard = () => {
                         spacing={{ base: '0', md: '2' }}
                         justify='space-between'
                       >
-                        <HStack>
-                          <Badge
-                            size='sm'
-                            maxW='fit-content'
-                            variant='subtle'
-                            colorScheme={
-                              status === 'COMPLETE'
-                                ? 'white'
-                                : status === 'ACTIVE'
-                                ? 'green'
-                                : 'yellow'
-                            }
-                            px='3'
-                            py='2'
-                          >
-                            <HStack spacing='2'>
-                              <Text>{status}</Text>
-                            </HStack>
-                          </Badge>
-                          {status === 'COMPLETE' && (
-                            <Badge
-                              size='sm'
-                              maxW='fit-content'
-                              variant='subtle'
-                              colorScheme={result ? 'green' : 'red'}
-                              px='3'
-                              py='2'
-                            >
-                              <HStack spacing='1'>
-                                {result ? (
-                                  <>
-                                    <FaCheck />
-                                    <Text>Approved</Text>
-                                  </>
-                                ) : (
-                                  <>
-                                    <FaTimes />
-                                    <Text>Failed</Text>
-                                  </>
-                                )}
-                              </HStack>
-                            </Badge>
-                          )}
-                        </HStack>
                         <Stack spacing='1'>
                           <Text fontSize='lg' fontWeight='medium'>
                             {type}
@@ -321,6 +226,7 @@ const DAODashboard = () => {
                 })}
               </SimpleGrid>
             </Container>
+
             <Container>
               <Stack spacing='5'>
                 <Stack
