@@ -159,7 +159,7 @@ const DAODashboard = () => {
       transition={{ duration: 0.75, type: 'linear' }}
     >
       <Box as='section'>
-        <Container maxW='5xl' mt='6' pt='6'>
+        <Container maxW='5xl'>
           <Stack spacing={{ base: '8', lg: '6' }}>
             <Container>
               <Stack spacing='5'>
