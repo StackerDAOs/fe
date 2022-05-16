@@ -196,3 +196,33 @@ export const proposals = [
     result: false,
   },
 ];
+
+export const extensions = [
+  {
+    type: '$ALEX Staking',
+    description:
+      'Transfer assets to the ALEX staking protocol and earn a yield.',
+    status: 'ACTIVE',
+    result: null,
+  },
+  {
+    type: 'CityCoins Mining',
+    description: 'Start mining CityCoins ($MIA, $NYC)',
+    status: 'PENDING',
+    result: null,
+  },
+  {
+    type: 'Delegation Voting',
+    description:
+      'Add the ability to delegate your voting power to other members of the community.',
+    status: 'COMPLETE',
+    result: false,
+  },
+  {
+    type: 'Governance Token',
+    description:
+      'Launch your own Governance Token to manage your community.',
+    status: 'PENDING',
+    result: false,
+  },
+];

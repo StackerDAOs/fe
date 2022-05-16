@@ -39,17 +39,14 @@ export const ActionModal = ({ payload, children }: any) => {
         <Button
           maxW='md'
           color='white'
-          bgGradient={mode(
-            'linear(to-br, secondaryGradient.900, secondary.900)',
-            'linear(to-br, primaryGradient.900, primary.900)',
-          )}
-          bgClip='text'
-          border={mode('1px solid #624AF2', '1px solid #EB00FF')}
+          bg='base.800'
+          border='1px solid'
+          borderColor='base.500'
           size='md'
-          fontSize='md'
+          fontSize='sm'
           fontWeight='regular'
           _hover={{ opacity: 0.9 }}
-          _active={{ opacity: 0.9 }}
+          _active={{ opacity: 1 }}
           onClick={onOpen}
         >
           {payload.button.title}

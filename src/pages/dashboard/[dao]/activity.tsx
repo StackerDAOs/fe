@@ -158,29 +158,7 @@ const Activity = () => {
     >
       <Box as='section'>
         <Container maxW='5xl' mt='6' pt='6'>
-          <Stack spacing={{ base: '8', lg: '6' }} mt='4'>
-            <Box maxW='900px' m={{ base: '3', lg: '6' }}>
-              <Heading
-                as='h1'
-                size='xl'
-                fontWeight='extrabold'
-                maxW='48rem'
-                lineHeight='1.2'
-                letterSpacing='tight'
-                bgGradient={mode(
-                  'linear(to-br, secondaryGradient.900, secondary.900)',
-                  'linear(to-br, primaryGradient.900, primary.900)',
-                )}
-                bgClip='text'
-              >
-                Activity
-              </Heading>
-
-              <Text pb='4' maxW='xl' fontSize='md' color='gray.900'>
-                Unleashing the ownership economy. No-code platform, dev tools, &
-                legal tech to build & manage #Bitcoin DAOs via @Stacks.
-              </Text>
-            </Box>
+          <Stack spacing={{ base: '8', lg: '6' }}>
             <Stack w='auto'>
               <Box as='section'>
                 <Container>

@@ -2,20 +2,17 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import {
-  Badge,
   Box,
   Button,
+  ButtonGroup,
   Container,
-  Divider,
-  Heading,
   Stack,
-  HStack,
-  VStack,
-  SimpleGrid,
   Text,
+  Tab,
   Tabs,
   TabList,
-  Tab,
+  TabPanel,
+  TabPanels,
   useToast,
   useColorModeValue as mode,
 } from '@chakra-ui/react';
@@ -28,24 +25,15 @@ import { useStore as useDaoStore } from 'store/CreateDaoStore';
 import { proposals } from '@utils/data';
 
 // Components
-import { Card } from '@components/Card';
 import { AppLayout } from '@components/Layout/AppLayout';
-import { Stat } from '@components/Stat';
-import { VerticalStep } from '@components/VerticalStep';
-import { ActivityList } from '@components/ActivityList';
-import { VaultTransactionList } from '@components/VaultTransactionList';
-import { ProposalList } from '@components/ProposalList';
-import { MemberList } from '@components/MemberList';
-import { RadioButton, RadioButtonGroup } from '@components/RadioButtonGroup';
-
-// Widgets
-import { CreateProposalButton } from '@widgets/CreateProposalButton';
+import { DataTable } from '@components/DataTable';
+import { VaultActionPopover } from '@components/VaultActionPopover';
 
 //  Animation
 import { motion } from 'framer-motion';
 
 // Icons
-import { FaCheck, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaArrowDown } from 'react-icons/fa';
 
 // Stacks
 import {
@@ -84,6 +72,7 @@ const Vault = () => {
   const currentStxAddress = useCurrentStxAddress();
   const { network } = useNetwork();
   const router = useRouter();
+  const { dao } = router.query;
 
   // Store
   const [_, setTabIndex] = useState(0);
@@ -158,146 +147,52 @@ const Vault = () => {
     >
       <Box as='section'>
         <Container maxW='5xl' mt='6' pt='6'>
-          <Stack spacing={{ base: '8', lg: '6' }} mt='4'>
-            <Box maxW='900px' m={{ base: '3', lg: '6' }}>
-              <Heading
-                as='h1'
-                size='xl'
-                fontWeight='extrabold'
-                maxW='48rem'
-                lineHeight='1.2'
-                letterSpacing='tight'
-                bgGradient={mode(
-                  'linear(to-br, secondaryGradient.900, secondary.900)',
-                  'linear(to-br, primaryGradient.900, primary.900)',
-                )}
-                bgClip='text'
-              >
-                Vault
-              </Heading>
-
-              <Text pb='4' maxW='xl' fontSize='md' color='gray.900'>
-                Unleashing the ownership economy. No-code platform, dev tools, &
-                legal tech to build & manage #Bitcoin DAOs via @Stacks.
-              </Text>
-            </Box>
+          <Stack spacing={{ base: '8', lg: '6' }}>
             <Stack w='auto'>
               <Box as='section'>
                 <Container>
                   <Stack spacing='5'>
                     <Stack
                       spacing='4'
-                      mb='6'
+                      mb='3'
                       direction={{ base: 'column', md: 'row' }}
                       justify='space-between'
                       color='white'
                     >
                       <Box>
                         <Text fontSize='2xl' fontWeight='medium'>
-                          Proposals
+                          Assets
                         </Text>
                         <Text color='gray.900' fontSize='sm'>
-                          All registered users in the overview
+                          List of shared assets owned by the DAO.
                         </Text>
                       </Box>
-                      <RadioButtonGroup defaultValue='all'>
-                        <RadioButton value='all' bg='base.900'>
-                          All
-                        </RadioButton>
-                        <RadioButton value='active' bg='base.900'>
-                          Active
-                        </RadioButton>
-                        <RadioButton value='submitted' bg='base.900'>
-                          Submitted
-                        </RadioButton>
-                        <RadioButton value='completed' bg='base.900'>
-                          Completed
-                        </RadioButton>
-                      </RadioButtonGroup>
+                      <VaultActionPopover />
                     </Stack>
                   </Stack>
-                  <SimpleGrid
-                    columns={{ base: 1, md: 2, lg: 2 }}
-                    spacing='4'
-                    py='4'
-                    color='white'
-                  >
-                    {proposals.map(({ type, description, status, result }) => {
-                      return (
-                        <Card
-                          position='relative'
-                          minH='250px'
-                          mx='auto'
-                          px={{ base: '6', md: '6' }}
-                          py={{ base: '6', md: '6' }}
-                          border='1px solid rgb(134, 143, 152)'
+                  <Tabs color='white' variant='unstyled'>
+                    <TabList>
+                      {['Tokens', 'NFTs'].map((item) => (
+                        <Tab
+                          key={item}
+                          fontSize='sm'
+                          color='gray.900'
+                          _first={{ paddingLeft: '0' }}
+                          _selected={{ color: 'light.900' }}
                         >
-                          <Stack
-                            spacing={{ base: '5', md: '6' }}
-                            justify='space-between'
-                          >
-                            <HStack>
-                              <Badge
-                                size='sm'
-                                maxW='fit-content'
-                                variant='subtle'
-                                colorScheme={
-                                  status === 'COMPLETE'
-                                    ? 'white'
-                                    : status === 'ACTIVE'
-                                    ? 'green'
-                                    : 'yellow'
-                                }
-                                px='3'
-                                py='2'
-                              >
-                                <HStack spacing='2'>
-                                  <Text>{status}</Text>
-                                </HStack>
-                              </Badge>
-                              {status === 'COMPLETE' && (
-                                <Badge
-                                  size='sm'
-                                  maxW='fit-content'
-                                  variant='subtle'
-                                  colorScheme={result ? 'green' : 'red'}
-                                  px='3'
-                                  py='2'
-                                >
-                                  <HStack spacing='1'>
-                                    {result ? (
-                                      <>
-                                        <FaCheck />
-                                        <Text>Approved</Text>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <FaTimes />
-                                        <Text>Failed</Text>
-                                      </>
-                                    )}
-                                  </HStack>
-                                </Badge>
-                              )}
-                            </HStack>
-                            <Stack spacing='1'>
-                              <Text fontSize='lg' fontWeight='medium'>
-                                {type}
-                              </Text>
-                              <Text fontSize='sm' color='gray.900'>
-                                {description}
-                              </Text>
-                            </Stack>
-                          </Stack>
-                          <Box p='5' position='absolute' bottom='0' left='0'>
-                            <Button bg='base.600' _hover={{ bg: 'base.500' }}>
-                              View details
-                            </Button>
-                          </Box>
-                        </Card>
-                      );
-                    })}
-                  </SimpleGrid>
+                          {item}
+                        </Tab>
+                      ))}
+                    </TabList>
+                    <TabPanels>
+                      <TabPanel px='0'>
+                        <DataTable />
+                      </TabPanel>
+                      <TabPanel px='0'>
+                        <DataTable />
+                      </TabPanel>
+                    </TabPanels>
+                  </Tabs>
                 </Container>
               </Box>
             </Stack>

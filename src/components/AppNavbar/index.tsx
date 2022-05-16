@@ -31,7 +31,8 @@ import { Card } from '@components/Card';
 
 // Icons
 import { FiMenu } from 'react-icons/fi';
-import { FaCircle, FaBell } from 'react-icons/fa';
+import { MdSettings } from 'react-icons/md';
+import { FaInbox, FaSignOutAlt, FaExchangeAlt, FaBell } from 'react-icons/fa';
 
 // Components
 import { WalletConnectButton } from '@components/WalletConnectButton';
@@ -111,7 +112,7 @@ export const AppNavbar = () => {
                 <Flex justify='space-between' flex='1'>
                   <Tabs color='white' isFitted variant='unstyled'>
                     <TabList>
-                      {['Proposals', 'Vault', 'Extensions'].map((item) => (
+                      {['Vault', 'Proposals', 'Extensions'].map((item) => (
                         <Link
                           href={`/dashboard/${dao}/${item?.toLocaleLowerCase()}`}
                         >
@@ -206,14 +207,17 @@ export const AppNavbar = () => {
                                           bg: 'base.800',
                                         }}
                                       >
-                                        <Text
-                                          px='2'
-                                          fontSize='sm'
-                                          fontWeight='regular'
-                                          color='white'
-                                        >
-                                          Settings
-                                        </Text>
+                                        <HStack>
+                                          <FaInbox color='white' />
+                                          <Text
+                                            px='2'
+                                            fontSize='sm'
+                                            fontWeight='regular'
+                                            color='white'
+                                          >
+                                            Inbox
+                                          </Text>
+                                        </HStack>
                                       </Card>
                                       <Card
                                         bg='base.900'
@@ -226,14 +230,17 @@ export const AppNavbar = () => {
                                           bg: 'base.800',
                                         }}
                                       >
-                                        <Text
-                                          px='2'
-                                          fontSize='sm'
-                                          fontWeight='regular'
-                                          color='white'
-                                        >
-                                          Switch Account
-                                        </Text>
+                                        <HStack>
+                                          <MdSettings color='white' />
+                                          <Text
+                                            px='2'
+                                            fontSize='sm'
+                                            fontWeight='regular'
+                                            color='white'
+                                          >
+                                            Settings
+                                          </Text>
+                                        </HStack>
                                       </Card>
                                       <Card
                                         bg='base.900'
@@ -246,15 +253,41 @@ export const AppNavbar = () => {
                                           bg: 'base.800',
                                         }}
                                       >
-                                        <Text
-                                          px='2'
-                                          fontSize='sm'
-                                          fontWeight='regular'
-                                          color='white'
-                                          onClick={signOut}
-                                        >
-                                          Disconnect
-                                        </Text>
+                                        <HStack>
+                                          <FaExchangeAlt color='white' />
+                                          <Text
+                                            px='2'
+                                            fontSize='sm'
+                                            fontWeight='regular'
+                                            color='white'
+                                          >
+                                            Switch account
+                                          </Text>
+                                        </HStack>
+                                      </Card>
+                                      <Card
+                                        bg='base.900'
+                                        border='none'
+                                        minW='150px'
+                                        px={{ base: '2', md: '2' }}
+                                        py={{ base: '2', md: '2' }}
+                                        _hover={{
+                                          cursor: 'pointer',
+                                          bg: 'base.800',
+                                        }}
+                                      >
+                                        <HStack>
+                                          <FaSignOutAlt color='white' />
+                                          <Text
+                                            px='2'
+                                            fontSize='sm'
+                                            fontWeight='regular'
+                                            color='white'
+                                            onClick={signOut}
+                                          >
+                                            Disconnect
+                                          </Text>
+                                        </HStack>
                                       </Card>
                                     </Stack>
                                   </Stack>
