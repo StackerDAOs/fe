@@ -25,6 +25,7 @@ import { Card } from '@components/Card';
 import { AppLayout } from '@components/Layout/AppLayout';
 import { RadioButton, RadioButtonGroup } from '@components/RadioButtonGroup';
 import { VaultActionPopover } from '@components/VaultActionPopover';
+import { FilterPopover } from '@components/FilterPopover';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -134,63 +135,6 @@ const Proposals = () => {
     handleContractCall();
   };
 
-  const steps = [
-    {
-      title: 'Members',
-      extensionName: 'membershipExtension',
-      payload: {
-        header: 'Membership Contract',
-        action: { title: 'Deploy', event: handleClick },
-        button: { title: 'Membership', type: 'primary' },
-      },
-    },
-    {
-      title: 'Vault',
-      extensionName: 'vaultExtension',
-      payload: {
-        header: 'Vault Contract',
-        action: { title: 'Deploy', event: handleClick },
-        button: { title: 'Vault', type: 'primary' },
-      },
-    },
-    {
-      title: 'Submitting Proposals',
-      extensionName: 'proposalExtension',
-      payload: {
-        header: 'Proposal Contract',
-        action: { title: 'Deploy', event: handleClick },
-        button: { title: 'Submitting Proposals', type: 'primary' },
-      },
-    },
-    {
-      title: 'Voting on Proposals',
-      extensionName: 'votingExtension',
-      payload: {
-        header: 'Voting Contract',
-        action: { title: 'Deploy', event: handleClick },
-        button: { title: 'Voting on Proposals', type: 'primary' },
-      },
-    },
-    {
-      title: 'Emergency Proposals',
-      extensionName: 'emergencyExtension',
-      payload: {
-        header: 'Emergency Proposal Contract',
-        action: { title: 'Deploy', event: handleClick },
-        button: { title: 'Emergency Proposals', type: 'primary' },
-      },
-    },
-    {
-      title: 'Emergency Team',
-      extensionName: 'emergencyExtension',
-      payload: {
-        header: 'Emergency Team Contract',
-        action: { title: 'Deploy', event: handleClick },
-        button: { title: 'Emergency Team', type: 'primary' },
-      },
-    },
-  ];
-
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -200,7 +144,7 @@ const Proposals = () => {
       transition={{ duration: 0.75, type: 'linear' }}
     >
       <Box as='section'>
-        <Container maxW='5xl' mt='6' pt='6'>
+        <Container maxW='5xl'>
           <Stack spacing={{ base: '8', lg: '6' }}>
             <Stack w='auto'>
               <Box as='section'>
@@ -232,72 +176,74 @@ const Proposals = () => {
                   >
                     {proposals.map(({ type, description, status, result }) => {
                       return (
-                        <Card
-                          bg='base.900'
-                          position='relative'
-                          px={{ base: '6', md: '6' }}
-                          py={{ base: '6', md: '6' }}
-                          border='1px solid rgb(134, 143, 152)'
-                          _hover={{ cursor: 'pointer', bg: 'base.800' }}
-                        >
-                          <Stack
-                            spacing={{ base: '0', md: '2' }}
-                            justify='space-between'
+                        <Link href={`/dashboard/${dao}/proposals/create`}>
+                          <Card
+                            bg='base.900'
+                            position='relative'
+                            px={{ base: '6', md: '6' }}
+                            py={{ base: '6', md: '6' }}
+                            border='1px solid rgb(134, 143, 152)'
+                            _hover={{ cursor: 'pointer', bg: 'base.800' }}
                           >
-                            <HStack>
-                              <Badge
-                                size='sm'
-                                maxW='fit-content'
-                                variant='subtle'
-                                colorScheme={
-                                  status === 'COMPLETE'
-                                    ? 'white'
-                                    : status === 'ACTIVE'
-                                    ? 'green'
-                                    : 'yellow'
-                                }
-                                px='3'
-                                py='2'
-                              >
-                                <HStack spacing='2'>
-                                  <Text>{status}</Text>
-                                </HStack>
-                              </Badge>
-                              {status === 'COMPLETE' && (
+                            <Stack
+                              spacing={{ base: '0', md: '2' }}
+                              justify='space-between'
+                            >
+                              <HStack>
                                 <Badge
                                   size='sm'
                                   maxW='fit-content'
                                   variant='subtle'
-                                  colorScheme={result ? 'green' : 'red'}
+                                  colorScheme={
+                                    status === 'COMPLETE'
+                                      ? 'white'
+                                      : status === 'ACTIVE'
+                                      ? 'green'
+                                      : 'yellow'
+                                  }
                                   px='3'
                                   py='2'
                                 >
-                                  <HStack spacing='1'>
-                                    {result ? (
-                                      <>
-                                        <FaCheck />
-                                        <Text>Approved</Text>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <FaTimes />
-                                        <Text>Failed</Text>
-                                      </>
-                                    )}
+                                  <HStack spacing='2'>
+                                    <Text>{status}</Text>
                                   </HStack>
                                 </Badge>
-                              )}
-                            </HStack>
-                            <Stack spacing='1'>
-                              <Text fontSize='lg' fontWeight='medium'>
-                                {type}
-                              </Text>
-                              <Text fontSize='sm' color='gray.900'>
-                                {description}
-                              </Text>
+                                {status === 'COMPLETE' && (
+                                  <Badge
+                                    size='sm'
+                                    maxW='fit-content'
+                                    variant='subtle'
+                                    colorScheme={result ? 'green' : 'red'}
+                                    px='3'
+                                    py='2'
+                                  >
+                                    <HStack spacing='1'>
+                                      {result ? (
+                                        <>
+                                          <FaCheck />
+                                          <Text>Approved</Text>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <FaTimes />
+                                          <Text>Failed</Text>
+                                        </>
+                                      )}
+                                    </HStack>
+                                  </Badge>
+                                )}
+                              </HStack>
+                              <Stack spacing='1'>
+                                <Text fontSize='lg' fontWeight='medium'>
+                                  {type}
+                                </Text>
+                                <Text fontSize='sm' color='gray.900'>
+                                  {description}
+                                </Text>
+                              </Stack>
                             </Stack>
-                          </Stack>
-                        </Card>
+                          </Card>
+                        </Link>
                       );
                     })}
                   </SimpleGrid>
@@ -320,20 +266,7 @@ const Proposals = () => {
                           All registered users in the overview
                         </Text>
                       </Box>
-                      <RadioButtonGroup defaultValue='all'>
-                        <RadioButton value='all' bg='base.900'>
-                          All
-                        </RadioButton>
-                        <RadioButton value='active' bg='base.900'>
-                          Active
-                        </RadioButton>
-                        <RadioButton value='pending' bg='base.900'>
-                          Pending
-                        </RadioButton>
-                        <RadioButton value='completed' bg='base.900'>
-                          Completed
-                        </RadioButton>
-                      </RadioButtonGroup>
+                      <FilterPopover />
                     </Stack>
                   </Stack>
                   <SimpleGrid

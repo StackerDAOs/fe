@@ -183,8 +183,8 @@ export const proposals = [
     result: null,
   },
   {
-    type: 'Generic proposal',
-    description: 'Create a staking contract for $MEGA',
+    type: 'Add new asset',
+    description: 'This proposal whitelists a new asset to the vault.',
     status: 'PENDING',
     result: null,
   },

@@ -1,51 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import {
-  Badge,
-  Box,
-  Button,
-  Container,
-  Divider,
-  Heading,
-  Stack,
-  HStack,
-  VStack,
-  SimpleGrid,
-  Text,
-  Tabs,
-  TabList,
-  Tab,
-  useToast,
-  useColorModeValue as mode,
-} from '@chakra-ui/react';
+import { Box, Container, Stack, Text, useToast } from '@chakra-ui/react';
 
 // Store
 import { useStore } from 'store/DeployStepStore';
 import { useStore as useDaoStore } from 'store/CreateDaoStore';
 
-// Data
-import { proposals } from '@utils/data';
-
 // Components
-import { Card } from '@components/Card';
 import { AppLayout } from '@components/Layout/AppLayout';
-import { Stat } from '@components/Stat';
-import { VerticalStep } from '@components/VerticalStep';
-import { ActivityList } from '@components/ActivityList';
-import { VaultTransactionList } from '@components/VaultTransactionList';
-import { ProposalList } from '@components/ProposalList';
-import { MemberList } from '@components/MemberList';
-import { RadioButton, RadioButtonGroup } from '@components/RadioButtonGroup';
-
-// Widgets
-import { CreateProposalButton } from '@widgets/CreateProposalButton';
+import { DataTable } from '@components/DataTable';
+import { FilterPopover } from '@components/FilterPopover';
 
 //  Animation
 import { motion } from 'framer-motion';
-
-// Icons
-import { FaCheck, FaTimes } from 'react-icons/fa';
 
 // Stacks
 import {
@@ -157,7 +125,7 @@ const Activity = () => {
       transition={{ duration: 0.75, type: 'linear' }}
     >
       <Box as='section'>
-        <Container maxW='5xl' mt='6' pt='6'>
+        <Container maxW='5xl'>
           <Stack spacing={{ base: '8', lg: '6' }}>
             <Stack w='auto'>
               <Box as='section'>
@@ -165,117 +133,23 @@ const Activity = () => {
                   <Stack spacing='5'>
                     <Stack
                       spacing='4'
-                      mb='6'
+                      mb='3'
                       direction={{ base: 'column', md: 'row' }}
                       justify='space-between'
                       color='white'
                     >
                       <Box>
                         <Text fontSize='2xl' fontWeight='medium'>
-                          Proposals
+                          Activity
                         </Text>
                         <Text color='gray.900' fontSize='sm'>
-                          All registered users in the overview
+                          View the latest transactions for the DAO.
                         </Text>
                       </Box>
-                      <RadioButtonGroup defaultValue='all'>
-                        <RadioButton value='all' bg='base.900'>
-                          All
-                        </RadioButton>
-                        <RadioButton value='active' bg='base.900'>
-                          Active
-                        </RadioButton>
-                        <RadioButton value='submitted' bg='base.900'>
-                          Submitted
-                        </RadioButton>
-                        <RadioButton value='completed' bg='base.900'>
-                          Completed
-                        </RadioButton>
-                      </RadioButtonGroup>
+                      <FilterPopover />
                     </Stack>
                   </Stack>
-                  <SimpleGrid
-                    columns={{ base: 1, md: 2, lg: 2 }}
-                    spacing='4'
-                    py='4'
-                    color='white'
-                  >
-                    {proposals.map(({ type, description, status, result }) => {
-                      return (
-                        <Card
-                          position='relative'
-                          minH='250px'
-                          mx='auto'
-                          px={{ base: '6', md: '6' }}
-                          py={{ base: '6', md: '6' }}
-                          border='1px solid rgb(134, 143, 152)'
-                        >
-                          <Stack
-                            spacing={{ base: '5', md: '6' }}
-                            justify='space-between'
-                          >
-                            <HStack>
-                              <Badge
-                                size='sm'
-                                maxW='fit-content'
-                                variant='subtle'
-                                colorScheme={
-                                  status === 'COMPLETE'
-                                    ? 'white'
-                                    : status === 'ACTIVE'
-                                    ? 'green'
-                                    : 'yellow'
-                                }
-                                px='3'
-                                py='2'
-                              >
-                                <HStack spacing='2'>
-                                  <Text>{status}</Text>
-                                </HStack>
-                              </Badge>
-                              {status === 'COMPLETE' && (
-                                <Badge
-                                  size='sm'
-                                  maxW='fit-content'
-                                  variant='subtle'
-                                  colorScheme={result ? 'green' : 'red'}
-                                  px='3'
-                                  py='2'
-                                >
-                                  <HStack spacing='1'>
-                                    {result ? (
-                                      <>
-                                        <FaCheck />
-                                        <Text>Approved</Text>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <FaTimes />
-                                        <Text>Failed</Text>
-                                      </>
-                                    )}
-                                  </HStack>
-                                </Badge>
-                              )}
-                            </HStack>
-                            <Stack spacing='1'>
-                              <Text fontSize='lg' fontWeight='medium'>
-                                {type}
-                              </Text>
-                              <Text fontSize='sm' color='gray.900'>
-                                {description}
-                              </Text>
-                            </Stack>
-                          </Stack>
-                          <Box p='5' position='absolute' bottom='0' left='0'>
-                            <Button bg='base.600' _hover={{ bg: 'base.500' }}>
-                              View details
-                            </Button>
-                          </Box>
-                        </Card>
-                      );
-                    })}
-                  </SimpleGrid>
+                  <DataTable />
                 </Container>
               </Box>
             </Stack>
