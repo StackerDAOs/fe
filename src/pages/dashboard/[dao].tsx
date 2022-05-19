@@ -12,6 +12,7 @@ import {
   IconButton,
   Stack,
   HStack,
+  Image,
   VStack,
   SimpleGrid,
   Text,
@@ -29,11 +30,15 @@ import { useStore } from 'store/DeployStepStore';
 import { useStore as useDaoStore } from 'store/CreateDaoStore';
 
 // Data
-import { proposals } from '@utils/data';
+import { inbox } from '@utils/data';
+
+// Utils
+import { truncate } from '@utils/truncate-str';
 
 // Components
 import { Card } from '@components/Card';
 import { AppLayout } from '@components/Layout/AppLayout';
+import { Banner } from '@components/Banner';
 import { RadioButton, RadioButtonGroup } from '@components/RadioButtonGroup';
 import { DashboardProfile } from '@components/DashboardProfile';
 import { DataTable } from '@components/DataTable';
@@ -164,72 +169,6 @@ const DAODashboard = () => {
             <Container>
               <Stack spacing='5'>
                 <Stack
-                  spacing='42'
-                  mb='3'
-                  direction={{ base: 'column', md: 'row' }}
-                  justify='space-between'
-                  color='white'
-                >
-                  <Box>
-                    <Text fontSize='2xl' fontWeight='medium'>
-                      Inbox
-                    </Text>
-                    <Text color='gray.900' fontSize='sm'>
-                      The latest action items for the DAO.
-                    </Text>
-                  </Box>
-                  <Link href={`/dashboard/${dao}/proposals`}>
-                    <Box
-                      display='flex'
-                      alignItems='center'
-                      cursor='pointer'
-                      _hover={{ textDecoration: 'underline' }}
-                    >
-                      <Text fontSize='md' px='1'>
-                        View more
-                      </Text>
-                      <FaArrowRight fontSize='13' />
-                    </Box>
-                  </Link>
-                </Stack>
-              </Stack>
-              <SimpleGrid
-                columns={{ base: 1, md: 2, lg: 3 }}
-                spacing='6'
-                pb='4'
-                color='white'
-              >
-                {proposals.map(({ type, description, status, result }) => {
-                  return (
-                    <Card
-                      position='relative'
-                      px={{ base: '6', md: '6' }}
-                      py={{ base: '6', md: '6' }}
-                      border='1px solid rgb(134, 143, 152)'
-                      _hover={{ cursor: 'pointer', bg: 'base.800' }}
-                    >
-                      <Stack
-                        spacing={{ base: '0', md: '2' }}
-                        justify='space-between'
-                      >
-                        <Stack spacing='1'>
-                          <Text fontSize='lg' fontWeight='medium'>
-                            {type}
-                          </Text>
-                          <Text fontSize='sm' color='gray.900'>
-                            {description}
-                          </Text>
-                        </Stack>
-                      </Stack>
-                    </Card>
-                  );
-                })}
-              </SimpleGrid>
-            </Container>
-
-            <Container>
-              <Stack spacing='5'>
-                <Stack
                   spacing='4'
                   my='3'
                   direction={{ base: 'column', md: 'row' }}
@@ -286,6 +225,7 @@ const DAODashboard = () => {
           </Stack>
         </Container>
       </Box>
+      {/* {true && <Banner />} */}
     </motion.div>
   );
 };

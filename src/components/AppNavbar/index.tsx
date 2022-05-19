@@ -92,10 +92,9 @@ export const AppNavbar = () => {
         position='fixed'
         w='100%'
         bg='base.900'
-        backdropFilter='saturate(180%) blur(5px)'
-        borderColor='base.700'
-        borderBottom='1px solid'
         zIndex='9999'
+        borderBottom='1px solid'
+        borderColor='base.500'
       >
         <Container py={{ base: '4', lg: '5' }}>
           <HStack justify='space-around' spacing='2'>

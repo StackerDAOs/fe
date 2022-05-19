@@ -174,18 +174,38 @@ export const items = [
   },
 ]
 
-export const proposals = [
+export const inbox = [
   {
     type: 'Transfer assets',
     description:
       'This proposal transfers assets from one account to another.',
     status: 'ACTIVE',
+    logo: 'https://assets.website-files.com/618b0aafa4afde65f2fe38fe/618b0aafa4afde5f2afe3a33_icons-cards%20(2).svg',
     result: null,
   },
   {
     type: 'Add new asset',
     description: 'This proposal whitelists a new asset to the vault.',
     status: 'PENDING',
+    logo: 'https://assets.website-files.com/618b0aafa4afde65f2fe38fe/618b0aafa4afde0ffcfe3a49_icons-cards%20(1).svg',
+    result: null,
+  },
+];
+
+export const proposals = [
+  {
+    type: 'Transfer assets',
+    description:
+      'This proposal transfers assets from one account to another.',
+    status: 'ACTIVE',
+    logo: 'https://assets.website-files.com/618b0aafa4afde65f2fe38fe/618b0aafa4afde5f2afe3a33_icons-cards%20(2).svg',
+    result: null,
+  },
+  {
+    type: 'Add new asset',
+    description: 'This proposal whitelists a new asset to the vault.',
+    status: 'PENDING',
+    logo: 'https://assets.website-files.com/618b0aafa4afde65f2fe38fe/618b0aafa4afde0ffcfe3a49_icons-cards%20(1).svg',
     result: null,
   },
   {
@@ -193,6 +213,7 @@ export const proposals = [
     description:
       'This proposal creates a simple dev fund that pays developers on a monthly basis.',
     status: 'COMPLETE',
+    logo: 'https://assets.website-files.com/618b0aafa4afde65f2fe38fe/618b0aafa4afde6ca8fe3a32_icons-cards%20(4).svg',
     result: false,
   },
 ];
