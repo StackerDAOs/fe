@@ -61,7 +61,7 @@ export const AppLayout = ({ children }: any) => {
       <AppNavbar />
       <Box as='section'>
         <Container maxW='5xl' mt='6' pt='6'>
-          <Stack spacing={{ base: '8', lg: '6' }} my='8'>
+          <Stack spacing={{ base: '8', lg: '6' }} my='3'>
             <Container>
               <Stack
                 spacing='4'
