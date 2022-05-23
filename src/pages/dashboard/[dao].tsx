@@ -14,7 +14,7 @@ import {
   HStack,
   Image,
   VStack,
-  SimpleGrid,
+  StackDivider,
   Text,
   Tab,
   Tabs,
@@ -36,22 +36,37 @@ import { inbox } from '@utils/data';
 import { truncate } from '@utils/truncate-str';
 
 // Components
-import { Card } from '@components/Card';
 import { AppLayout } from '@components/Layout/AppLayout';
 import { Banner } from '@components/Banner';
-import { RadioButton, RadioButtonGroup } from '@components/RadioButtonGroup';
-import { DashboardProfile } from '@components/DashboardProfile';
 import { DataTable } from '@components/DataTable';
 import { Stat } from '@components/Stat';
 
-// Widgets
-import { CreateProposalButton } from '@widgets/CreateProposalButton';
+const stats = [
+  {
+    label: 'Total Assets',
+    value: '$71,887',
+    delta: { value: '$3,218 vs last week', isUpwardsTrend: true },
+    path: 'vault',
+  },
+  {
+    label: 'Proposals',
+    value: '3',
+    delta: { value: '2 active, 1 pending', isUpwardsTrend: true },
+    path: 'proposals',
+  },
+  {
+    label: 'Voting Weight',
+    value: '2.87%',
+    delta: { value: '> 0.5% required', isUpwardsTrend: true },
+    path: 'delegate',
+  },
+];
 
 //  Animation
 import { motion } from 'framer-motion';
 
 // Icons
-import { FaCheck, FaTimes, FaArrowRight } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
 
 // Stacks
 import {
@@ -230,6 +245,70 @@ const DAODashboard = () => {
   );
 };
 
-DAODashboard.getLayout = (page: any) => <AppLayout>{page}</AppLayout>;
+DAODashboard.getLayout = (page: any) => {
+  return (
+    <AppLayout
+      header={
+        <Stack spacing={{ base: '8', lg: '6' }} my='3'>
+          <Container>
+            <Stack
+              spacing='4'
+              mb='2'
+              direction={{ base: 'column', md: 'row' }}
+              justify='flex-start'
+              align='center'
+              color='white'
+            >
+              <VStack maxW='xl' spacing='3' alignItems='baseline'>
+                <HStack>
+                  <Box
+                    w='50px'
+                    h='50px'
+                    borderRadius='50%'
+                    bgGradient='linear(to-l, secondaryGradient.900, secondary.900)'
+                  />
+                  <Heading
+                    size='xl'
+                    pb='2'
+                    fontWeight='regular'
+                    color='light.900'
+                  >
+                    StackerDAO
+                  </Heading>
+                </HStack>
+              </VStack>
+            </Stack>
+            <Stack
+              spacing='4'
+              mb='6'
+              direction={{ base: 'column', md: 'row' }}
+              justify='center'
+              align='center'
+              color='white'
+            >
+              <Stack
+                w='100%'
+                direction={{ base: 'column', md: 'row' }}
+                divider={<StackDivider borderColor='base.500' />}
+              >
+                {stats.map((stat, id) => (
+                  <Stat
+                    key={id}
+                    id={id}
+                    flex='1'
+                    _first={{ pl: '0' }}
+                    {...stat}
+                  />
+                ))}
+              </Stack>
+            </Stack>
+          </Container>
+        </Stack>
+      }
+    >
+      {page}
+    </AppLayout>
+  );
+};
 
 export default DAODashboard;

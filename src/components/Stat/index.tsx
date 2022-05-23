@@ -33,7 +33,6 @@ const FADE_IN_VARIANTS = {
 
 export const Stat = (props: Props) => {
   const { id, path, label, value, delta, ...boxProps } = props;
-  console.log({ props });
   const [isHovered, setHovered] = useState(false);
   return (
     <Link href={`/dashboard/dao/${path}`}>
