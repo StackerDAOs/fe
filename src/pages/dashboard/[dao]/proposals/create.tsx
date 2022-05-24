@@ -23,7 +23,7 @@ import { useStore as useDaoStore } from 'store/CreateDaoStore';
 import { useStep } from '@common/hooks/use-step';
 
 // Data
-import { steps } from '@utils/data';
+import { transferAssetsSteps } from '@utils/data';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
@@ -78,7 +78,7 @@ const CreateProposal = () => {
 
   // Store
   const [currentStep, { setStep }] = useStep({
-    maxStep: steps.length,
+    maxStep: transferAssetsSteps.length,
     initialStep: 0,
   });
 
@@ -181,8 +181,8 @@ const CreateProposal = () => {
                 Transfer Assets
               </Text>
               <Text
-                fontSize='sm'
-                maxW='sm'
+                fontSize='md'
+                maxW='md'
                 bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
                 bgClip='text'
               >
@@ -192,7 +192,10 @@ const CreateProposal = () => {
             </Box>
           </Stack>
           <Box py='5'>
-            <SimpleGrid columns={2}>
+            <SimpleGrid
+              columns={{ base: 1, md: 1, lg: 2 }}
+              alignItems='baseline'
+            >
               <Box as='section'>
                 <VStack
                   align='left'
@@ -202,7 +205,7 @@ const CreateProposal = () => {
                   justify='space-between'
                   color='white'
                 >
-                  {steps.map((step, id) => (
+                  {transferAssetsSteps.map((step, id) => (
                     <VerticalStep
                       key={id}
                       cursor='pointer'
@@ -211,7 +214,7 @@ const CreateProposal = () => {
                       description={step.description}
                       isActive={currentStep === id}
                       isCompleted={currentStep > id}
-                      isLastStep={steps.length === id + 1}
+                      isLastStep={transferAssetsSteps.length === id + 1}
                     />
                   ))}
                 </VStack>

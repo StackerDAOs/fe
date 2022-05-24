@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  Box,
   BoxProps,
   Button,
   Modal,
@@ -26,6 +27,7 @@ import { ActionModal } from '@components/Modal';
 
 interface StepProps extends BoxProps {
   title: string;
+  description: string;
   isCompleted: boolean;
   isActive: boolean;
   isLastStep: boolean;
@@ -33,8 +35,15 @@ interface StepProps extends BoxProps {
 }
 
 export const VerticalStep = (props: StepProps) => {
-  const { isActive, isCompleted, isLastStep, title, payload, ...stackProps } =
-    props;
+  const {
+    isActive,
+    isCompleted,
+    isLastStep,
+    title,
+    description,
+    payload,
+    ...stackProps
+  } = props;
   const { currentStep, setStep } = useStore();
 
   const handleClick = () => {
@@ -54,7 +63,7 @@ export const VerticalStep = (props: StepProps) => {
           />
         )}
       </Stack>
-      <Stack spacing='0.5' pb={isLastStep ? '0' : '8'}>
+      <Stack spacing='0.5' pb='2'>
         {isActive && payload ? (
           <ActionModal payload={payload}>
             <ModalBody pb={6}>
@@ -78,13 +87,18 @@ export const VerticalStep = (props: StepProps) => {
             </ModalBody>
           </ActionModal>
         ) : (
-          <Text
-            color={mode('base.900', 'light.900')}
-            fontWeight='regular'
-            fontSize='md'
-          >
-            {title}
-          </Text>
+          <>
+            <Text
+              color={mode('base.900', 'light.900')}
+              fontWeight='regular'
+              fontSize='md'
+            >
+              {title}
+            </Text>
+            <Text color='gray.900' fontSize='sm'>
+              {description}
+            </Text>
+          </>
         )}
       </Stack>
     </Stack>

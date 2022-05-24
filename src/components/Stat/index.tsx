@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import {
   Box,
@@ -34,8 +35,10 @@ const FADE_IN_VARIANTS = {
 export const Stat = (props: Props) => {
   const { id, path, label, value, delta, ...boxProps } = props;
   const [isHovered, setHovered] = useState(false);
+  const router = useRouter();
+  const { dao } = router.query;
   return (
-    <Link href={`/dashboard/dao/${path}`}>
+    <Link href={`/dashboard/${dao}/${path}`}>
       <Box
         px={{ base: '4', md: '6' }}
         py={{ base: '5', md: '3' }}

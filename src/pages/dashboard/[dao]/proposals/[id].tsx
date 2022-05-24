@@ -30,6 +30,8 @@ import { steps } from '@utils/data';
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
 import { Card } from '@components/Card';
+import { FilterPopover } from '@components/FilterPopover';
+import { DataTable } from '@components/DataTable';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -170,7 +172,7 @@ const ProposalView = () => {
             </Stack>
           </Stack>
           <Box py='5'>
-            <SimpleGrid columns={2}>
+            <SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} alignItems='center'>
               <Box as='section'>
                 <VStack
                   align='left'
@@ -293,7 +295,7 @@ const ProposalView = () => {
                   </Box>
                 </VStack>
               </Box>
-              <Box as='section' display='flex' alignItems='center'>
+              <Box as='section' display='flex' justifyContent='center'>
                 <Container>
                   <Card
                     border='1px solid rgb(134, 143, 152)'
@@ -443,6 +445,42 @@ const ProposalView = () => {
               </Box>
             </SimpleGrid>
           </Box>
+          <motion.div
+            variants={FADE_IN_VARIANTS}
+            initial={FADE_IN_VARIANTS.hidden}
+            animate={FADE_IN_VARIANTS.enter}
+            exit={FADE_IN_VARIANTS.exit}
+            transition={{ duration: 0.75, type: 'linear' }}
+          >
+            <Box as='section'>
+              <Stack spacing={{ base: '8', lg: '6' }}>
+                <Stack w='auto'>
+                  <Box as='section'>
+                    <Stack spacing='5'>
+                      <Stack
+                        spacing='4'
+                        mb='3'
+                        direction={{ base: 'column', md: 'row' }}
+                        justify='space-between'
+                        color='white'
+                      >
+                        <Box>
+                          <Text fontSize='2xl' fontWeight='medium'>
+                            Activity
+                          </Text>
+                          <Text color='gray.900' fontSize='sm'>
+                            View the latest transactions for the DAO.
+                          </Text>
+                        </Box>
+                        <FilterPopover />
+                      </Stack>
+                    </Stack>
+                    <DataTable />
+                  </Box>
+                </Stack>
+              </Stack>
+            </Box>
+          </motion.div>
         </Container>
       </Box>
     </motion.div>

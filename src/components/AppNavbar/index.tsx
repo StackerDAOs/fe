@@ -111,7 +111,7 @@ export const AppNavbar = () => {
                 <Flex justify='space-between' flex='1'>
                   <Tabs color='white' isFitted variant='unstyled'>
                     <TabList>
-                      {['Vault', 'Proposals', 'Extensions', 'Delegates'].map(
+                      {['Vault', 'Governance', 'Extensions', 'Delegates'].map(
                         (item) => (
                           <Link
                             href={`/dashboard/${dao}/${item?.toLocaleLowerCase()}`}
@@ -135,7 +135,7 @@ export const AppNavbar = () => {
                   </Tabs>
                   <HStack spacing='3'>
                     <ButtonGroup spacing='6' alignItems='center'>
-                      <Link href='/dashboard/dao/activity'>
+                      <Link href={`/dashboard/${dao}/activity`}>
                         <HStack position='relative' cursor='pointer'>
                           <FaBell fontSize='1.25rem' color='white' />
                           <Circle

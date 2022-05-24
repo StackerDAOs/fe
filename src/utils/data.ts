@@ -57,6 +57,25 @@ export const steps = [
   },
 ];
 
+export const transferAssetsSteps = [
+  {
+    title: 'Asset Type',
+    description: 'Choose the type of asset you want to transfer',
+  },
+  {
+    title: 'Select Asset',
+    description: 'Select the asset you want to transfer',
+  },
+  {
+    title: 'Proposal Details',
+    description: 'Provide details about the proposal',
+  },
+  {
+    title: 'Review & Submit',
+    description: 'Review and submit the proposal',
+  },
+];
+
 export const paths = [
   {
     path: '/communities/get-started',
@@ -194,19 +213,19 @@ export const inbox = [
 
 export const stats = [
   {
-    label: 'Total Assets',
-    value: '$71,887',
-    delta: { value: '$3,218 vs last week', isUpwardsTrend: true },
+    label: 'Vault',
+    value: '885.79 STX',
+    delta: { value: '0 pending transactions', isUpwardsTrend: true },
     path: 'vault',
   },
   {
     label: 'Proposals',
     value: '3',
     delta: { value: '2 active, 1 pending', isUpwardsTrend: true },
-    path: 'proposals',
+    path: 'governance',
   },
   {
-    label: 'Voting Weight',
+    label: 'Governance',
     value: '2.87%',
     delta: { value: '> 0.5% required', isUpwardsTrend: true },
     path: 'delegates',

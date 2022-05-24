@@ -58,106 +58,6 @@ const Proposals = () => {
                   <Stack spacing='5'>
                     <Stack
                       spacing='4'
-                      mb='3'
-                      direction={{ base: 'column', md: 'row' }}
-                      justify='space-between'
-                      color='white'
-                    >
-                      <Box>
-                        <Text fontSize='2xl' fontWeight='medium'>
-                          Create a proposal
-                        </Text>
-                        <Text color='gray.900' fontSize='sm'>
-                          Select from a variety of proposals to get started.
-                        </Text>
-                      </Box>
-                      <VaultActionPopover />
-                    </Stack>
-                  </Stack>
-                  <SimpleGrid
-                    columns={{ base: 1, md: 2, lg: 3 }}
-                    spacing='6'
-                    pb='4'
-                    color='white'
-                  >
-                    {proposals.map(({ type, description, status, result }) => {
-                      return (
-                        <Link href={`/dashboard/${dao}/proposals/create`}>
-                          <Card
-                            bg='base.900'
-                            position='relative'
-                            px={{ base: '6', md: '6' }}
-                            py={{ base: '6', md: '6' }}
-                            border='1px solid rgb(134, 143, 152)'
-                            _hover={{ cursor: 'pointer', bg: 'base.800' }}
-                          >
-                            <Stack
-                              spacing={{ base: '0', md: '2' }}
-                              justify='space-between'
-                            >
-                              <HStack>
-                                <Badge
-                                  size='sm'
-                                  maxW='fit-content'
-                                  variant='subtle'
-                                  colorScheme={
-                                    status === 'COMPLETE'
-                                      ? 'white'
-                                      : status === 'ACTIVE'
-                                      ? 'green'
-                                      : 'yellow'
-                                  }
-                                  px='3'
-                                  py='2'
-                                >
-                                  <HStack spacing='2'>
-                                    <Text>{status}</Text>
-                                  </HStack>
-                                </Badge>
-                                {status === 'COMPLETE' && (
-                                  <Badge
-                                    size='sm'
-                                    maxW='fit-content'
-                                    variant='subtle'
-                                    colorScheme={result ? 'green' : 'red'}
-                                    px='3'
-                                    py='2'
-                                  >
-                                    <HStack spacing='1'>
-                                      {result ? (
-                                        <>
-                                          <FaCheck />
-                                          <Text>Approved</Text>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <FaTimes />
-                                          <Text>Failed</Text>
-                                        </>
-                                      )}
-                                    </HStack>
-                                  </Badge>
-                                )}
-                              </HStack>
-                              <Stack spacing='1'>
-                                <Text fontSize='lg' fontWeight='medium'>
-                                  {type}
-                                </Text>
-                                <Text fontSize='sm' color='gray.900'>
-                                  {description}
-                                </Text>
-                              </Stack>
-                            </Stack>
-                          </Card>
-                        </Link>
-                      );
-                    })}
-                  </SimpleGrid>
-                </Container>
-                <Container>
-                  <Stack spacing='5'>
-                    <Stack
-                      spacing='4'
                       my='6'
                       direction={{ base: 'column', md: 'row' }}
                       justify='space-between'
@@ -172,7 +72,10 @@ const Proposals = () => {
                           All registered users in the overview
                         </Text>
                       </Box>
-                      <FilterPopover />
+                      <HStack spacing='8'>
+                        <VaultActionPopover />
+                        <FilterPopover />
+                      </HStack>
                     </Stack>
                   </Stack>
                   <SimpleGrid
