@@ -1,22 +1,11 @@
 import { useRouter } from 'next/router';
-import {
-  Box,
-  Container,
-  Stack,
-  Text,
-  Tab,
-  Tabs,
-  TabList,
-  TabPanel,
-  TabPanels,
-  useToast,
-} from '@chakra-ui/react';
+import { Box, Container, Stack, Text, useToast } from '@chakra-ui/react';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
 import { DataTable } from '@components/DataTable';
+import { FilterPopover } from '@components/FilterPopover';
 import { Header } from '@components/Header';
-import { VaultActionPopover } from '@components/VaultActionPopover';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -40,25 +29,11 @@ import {
   createAssetInfo,
 } from 'micro-stacks/transactions';
 
-import { usePolling } from '@common/hooks/use-polling';
-
-// import { Notification } from '@components/Notification';
-// import { CloseButton } from '@components/CloseButton';
-// import { useCallFunction } from '@common/hooks/use-call-function';
-// import { useTransaction } from '@common/hooks/use-transaction';
-// import ContractCallButton from 'widgets/ContractCallButton';
-
-// interface State {
-//   txId: string | null;
-//   delay: number | null;
-// }
-
-const Vault = () => {
+const Delegates = () => {
   const { isSignedIn } = useAuth();
   const currentStxAddress = useCurrentStxAddress();
   const { network } = useNetwork();
   const router = useRouter();
-  const { dao } = router.query;
 
   const toast = useToast();
 
@@ -140,38 +115,16 @@ const Vault = () => {
                     >
                       <Box>
                         <Text fontSize='2xl' fontWeight='medium'>
-                          Assets
+                          Activity
                         </Text>
                         <Text color='gray.900' fontSize='sm'>
-                          List of shared assets owned by the DAO.
+                          View the latest transactions for the DAO.
                         </Text>
                       </Box>
-                      <VaultActionPopover />
+                      <FilterPopover />
                     </Stack>
                   </Stack>
-                  <Tabs color='white' variant='unstyled'>
-                    <TabList>
-                      {['Tokens', 'NFTs'].map((item) => (
-                        <Tab
-                          key={item}
-                          fontSize='sm'
-                          color='gray.900'
-                          _first={{ paddingLeft: '0' }}
-                          _selected={{ color: 'light.900' }}
-                        >
-                          {item}
-                        </Tab>
-                      ))}
-                    </TabList>
-                    <TabPanels>
-                      <TabPanel px='0'>
-                        <DataTable />
-                      </TabPanel>
-                      <TabPanel px='0'>
-                        <DataTable />
-                      </TabPanel>
-                    </TabPanels>
-                  </Tabs>
+                  <DataTable />
                 </Container>
               </Box>
             </Stack>
@@ -182,8 +135,8 @@ const Vault = () => {
   );
 };
 
-Vault.getLayout = (page: any) => {
+Delegates.getLayout = (page: any) => {
   return <AppLayout header={<Header />}>{page}</AppLayout>;
 };
 
-export default Vault;
+export default Delegates;

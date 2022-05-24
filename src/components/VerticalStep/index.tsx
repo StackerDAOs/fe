@@ -50,16 +50,12 @@ export const VerticalStep = (props: StepProps) => {
           <Divider
             orientation='vertical'
             borderWidth='1px'
-            borderColor={
-              isCompleted
-                ? mode('secondary.900', 'primaryGradient.900')
-                : 'inherit'
-            }
+            borderColor={isCompleted ? 'light.900' : 'gray.900'}
           />
         )}
       </Stack>
       <Stack spacing='0.5' pb={isLastStep ? '0' : '8'}>
-        {isActive ? (
+        {isActive && payload ? (
           <ActionModal payload={payload}>
             <ModalBody pb={6}>
               <FormControl>

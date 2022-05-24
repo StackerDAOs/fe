@@ -30,7 +30,9 @@ export const FilterPopover = () => (
     {({ isOpen, onClose }) => (
       <>
         <PopoverTrigger>
-          <Button variant='link' rightIcon={<FilterIcon isOpen={isOpen} />} />
+          <Button variant='link' leftIcon={<FilterIcon isOpen={isOpen} />}>
+            Filter
+          </Button>
         </PopoverTrigger>
         <PopoverContent _focus={{ outline: 'none' }} width='auto' bg='base.900'>
           <SimpleGrid columns={{ base: 1 }}>

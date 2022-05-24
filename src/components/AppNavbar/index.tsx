@@ -111,24 +111,26 @@ export const AppNavbar = () => {
                 <Flex justify='space-between' flex='1'>
                   <Tabs color='white' isFitted variant='unstyled'>
                     <TabList>
-                      {['Vault', 'Proposals', 'Extensions'].map((item) => (
-                        <Link
-                          href={`/dashboard/${dao}/${item?.toLocaleLowerCase()}`}
-                        >
-                          <Tab
-                            key={item}
-                            fontSize='sm'
-                            color={
-                              isSelected(item.toLowerCase())
-                                ? 'light.900'
-                                : 'gray.900'
-                            }
-                            _hover={{ color: 'light.800' }}
+                      {['Vault', 'Proposals', 'Extensions', 'Delegates'].map(
+                        (item) => (
+                          <Link
+                            href={`/dashboard/${dao}/${item?.toLocaleLowerCase()}`}
                           >
-                            {item}
-                          </Tab>
-                        </Link>
-                      ))}
+                            <Tab
+                              key={item}
+                              fontSize='sm'
+                              color={
+                                isSelected(item.toLowerCase())
+                                  ? 'light.900'
+                                  : 'gray.900'
+                              }
+                              _hover={{ color: 'light.800' }}
+                            >
+                              {item}
+                            </Tab>
+                          </Link>
+                        ),
+                      )}
                     </TabList>
                   </Tabs>
                   <HStack spacing='3'>

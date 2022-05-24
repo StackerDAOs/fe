@@ -192,6 +192,27 @@ export const inbox = [
   },
 ];
 
+export const stats = [
+  {
+    label: 'Total Assets',
+    value: '$71,887',
+    delta: { value: '$3,218 vs last week', isUpwardsTrend: true },
+    path: 'vault',
+  },
+  {
+    label: 'Proposals',
+    value: '3',
+    delta: { value: '2 active, 1 pending', isUpwardsTrend: true },
+    path: 'proposals',
+  },
+  {
+    label: 'Voting Weight',
+    value: '2.87%',
+    delta: { value: '> 0.5% required', isUpwardsTrend: true },
+    path: 'delegates',
+  },
+];
+
 export const proposals = [
   {
     type: 'Transfer assets',

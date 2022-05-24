@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import {
   Box,
   Container,
@@ -20,28 +19,6 @@ import { motion } from 'framer-motion';
 
 // Components
 import { AppNavbar } from '@components/AppNavbar';
-import { Stat } from '@components/Stat';
-
-const stats = [
-  {
-    label: 'Total Assets',
-    value: '$71,887',
-    delta: { value: '$3,218 vs last week', isUpwardsTrend: true },
-    path: 'vault',
-  },
-  {
-    label: 'Proposals',
-    value: '3',
-    delta: { value: '2 active, 1 pending', isUpwardsTrend: true },
-    path: 'proposals',
-  },
-  {
-    label: 'Voting Weight',
-    value: '2.87%',
-    delta: { value: '> 0.5% required', isUpwardsTrend: true },
-    path: 'delegate',
-  },
-];
 
 const FADE_IN_VARIANTS = {
   hidden: { opacity: 0, x: 0, y: 0 },
@@ -50,8 +27,6 @@ const FADE_IN_VARIANTS = {
 };
 
 export const AppLayout = ({ header, children }: any) => {
-  const router = useRouter();
-  console.log(router.pathname);
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}

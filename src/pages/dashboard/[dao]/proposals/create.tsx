@@ -9,21 +9,26 @@ import {
   Heading,
   HStack,
   Stack,
+  VStack,
+  SimpleGrid,
   Text,
   useToast,
   useColorModeValue as mode,
 } from '@chakra-ui/react';
 
 // Store
-import { useStore } from 'store/DeployStepStore';
 import { useStore as useDaoStore } from 'store/CreateDaoStore';
 
+// Hooks
+import { useStep } from '@common/hooks/use-step';
+
 // Data
-import { proposals } from '@utils/data';
+import { steps } from '@utils/data';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
 import { RadioCard, RadioCardGroup } from '@components/RadioCardGroup';
+import { VerticalStep } from '@components/VerticalStep';
 import { VaultActionPopover } from '@components/VaultActionPopover';
 
 //  Animation
@@ -70,14 +75,12 @@ const CreateProposal = () => {
   const { network } = useNetwork();
   const router = useRouter();
   const { dao } = router.query;
-  console.log('dao', router);
 
   // Store
-  const [_, setTabIndex] = useState(0);
-  const [deployed, setDeployed] = useState(false);
-  const { currentStep, maxSteps } = useStore();
-  const { name } = useDaoStore();
-  const isDisabled = currentStep !== maxSteps;
+  const [currentStep, { setStep }] = useStep({
+    maxStep: steps.length,
+    initialStep: 0,
+  });
 
   const toast = useToast();
 
@@ -143,108 +146,149 @@ const CreateProposal = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Box as='section'>
+      <Box as='section' my='5' display='flex' alignItems='center'>
         <Container maxW='5xl'>
-          <Stack spacing={{ base: '8', lg: '6' }}>
-            <Stack w='auto'>
-              <Box as='section'>
-                <Container maxW='xl' m='0'>
-                  <Stack spacing='5'>
-                    <Stack
-                      spacing='4'
-                      mb='3'
-                      direction={{ base: 'column', md: 'row' }}
-                      justify='space-between'
-                      color='white'
-                    >
-                      <HStack
-                        cursor='pointer'
-                        onClick={() => router.back()}
-                        color='gray.900'
-                        _hover={{
-                          textDecoration: 'underline',
-                          color: 'light.900',
-                        }}
-                      >
-                        <FaArrowLeft />
-                        <Text>Back</Text>
-                      </HStack>
-                    </Stack>
-                  </Stack>
-                  <Stack
-                    spacing='4'
-                    mb='3'
-                    direction={{ base: 'column', md: 'row' }}
-                    justify='space-between'
-                    color='white'
-                  >
-                    <Box>
-                      <Text fontSize='2xl' fontWeight='medium'>
-                        Transfer assets
-                      </Text>
-                      <Text color='gray.900' fontSize='sm'>
-                        Select which type of asset you want to transfer.
-                      </Text>
-                    </Box>
-                  </Stack>
-
-                  <RadioCardGroup defaultValue='one' spacing='3'>
-                    {[
-                      {
-                        type: 'Token',
-                        description: 'i.e., STX, $ALEX, or any SIP-10 token',
-                      },
-                      {
-                        type: 'NFT',
-                        description:
-                          'i.e., Megapont, Crash Punks, or any SIP-09 NFT',
-                      },
-                    ].map((option) => (
-                      <RadioCard
-                        key={option.type}
-                        value={option.type}
-                        color='white'
-                      >
-                        <Text
-                          color='emphasized'
-                          fontWeight='medium'
-                          fontSize='sm'
-                        >
-                          {option.type}
-                        </Text>
-                        <Text color='gray.900' fontSize='sm'>
-                          {option.description}
-                        </Text>
-                      </RadioCard>
-                    ))}
-                  </RadioCardGroup>
-                  <motion.div
-                    variants={SLIDE_UP_BUTTON_VARIANTS}
-                    initial={SLIDE_UP_BUTTON_VARIANTS.hidden}
-                    animate={SLIDE_UP_BUTTON_VARIANTS.enter}
-                    exit={SLIDE_UP_BUTTON_VARIANTS.exit}
-                    transition={{ duration: 0.75, type: 'linear' }}
-                  >
-                    <HStack width='full' mt='5' justifyContent='flex-start'>
-                      <Button
-                        type='submit'
-                        color='white'
-                        bgGradient={mode(
-                          'linear(to-br, secondaryGradient.900, secondary.900)',
-                          'linear(to-br, primaryGradient.900, primary.900)',
-                        )}
-                        _hover={{ opacity: 0.9 }}
-                        _active={{ opacity: 1 }}
-                        onClick={() => console.log('next')}
-                      >
-                        Next
-                      </Button>
-                    </HStack>
-                  </motion.div>
-                </Container>
-              </Box>
+          <Stack spacing='5'>
+            <Stack
+              spacing='4'
+              direction={{ base: 'column', md: 'row' }}
+              justify='space-between'
+              color='white'
+            >
+              <HStack
+                cursor='pointer'
+                onClick={() => router.back()}
+                color='gray.900'
+                _hover={{
+                  textDecoration: 'underline',
+                  color: 'light.900',
+                }}
+              >
+                <FaArrowLeft fontSize='0.9rem' />
+                <Text>Back</Text>
+              </HStack>
             </Stack>
           </Stack>
+          <Stack
+            spacing='4'
+            my='3'
+            direction={{ base: 'column', md: 'row' }}
+            justify='space-between'
+            color='white'
+          >
+            <Box>
+              <Text fontSize='4xl' fontWeight='medium'>
+                Transfer Assets
+              </Text>
+              <Text
+                fontSize='sm'
+                maxW='sm'
+                bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
+                bgClip='text'
+              >
+                Create a proposal to transfer assets from the DAO treasury
+                vault.
+              </Text>
+            </Box>
+          </Stack>
+          <Box py='5'>
+            <SimpleGrid columns={2}>
+              <Box as='section'>
+                <VStack
+                  align='left'
+                  spacing='4'
+                  mb='3'
+                  direction={{ base: 'column', md: 'row' }}
+                  justify='space-between'
+                  color='white'
+                >
+                  {steps.map((step, id) => (
+                    <VerticalStep
+                      key={id}
+                      cursor='pointer'
+                      onClick={() => setStep(id)}
+                      title={step.title}
+                      description={step.description}
+                      isActive={currentStep === id}
+                      isCompleted={currentStep > id}
+                      isLastStep={steps.length === id + 1}
+                    />
+                  ))}
+                </VStack>
+              </Box>
+              <Box as='section'>
+                <Stack
+                  spacing='4'
+                  mb='3'
+                  direction={{ base: 'column', md: 'row' }}
+                  justify='space-between'
+                  color='white'
+                >
+                  <Box>
+                    <Text fontSize='2xl' fontWeight='medium'>
+                      Choose an asset type
+                    </Text>
+                    <Text color='gray.900' fontSize='sm'>
+                      Select which type of asset you want to transfer.
+                    </Text>
+                  </Box>
+                </Stack>
+                <RadioCardGroup
+                  defaultValue='Token'
+                  spacing='3'
+                  direction='row'
+                >
+                  {[
+                    {
+                      type: 'Token',
+                      description: 'i.e., STX, $ALEX, or any SIP-10 token',
+                    },
+                    {
+                      type: 'NFT',
+                      description:
+                        'i.e., Megapont, Crash Punks, or any SIP-09 NFT',
+                    },
+                  ].map((option) => (
+                    <RadioCard
+                      key={option.type}
+                      value={option.type}
+                      color='white'
+                    >
+                      <Text
+                        color='emphasized'
+                        fontWeight='medium'
+                        fontSize='sm'
+                      >
+                        {option.type}
+                      </Text>
+                      <Text color='gray.900' fontSize='sm'>
+                        {option.description}
+                      </Text>
+                    </RadioCard>
+                  ))}
+                </RadioCardGroup>
+                <motion.div
+                  variants={SLIDE_UP_BUTTON_VARIANTS}
+                  initial={SLIDE_UP_BUTTON_VARIANTS.hidden}
+                  animate={SLIDE_UP_BUTTON_VARIANTS.enter}
+                  exit={SLIDE_UP_BUTTON_VARIANTS.exit}
+                  transition={{ duration: 0.75, type: 'linear' }}
+                >
+                  <HStack width='full' mt='5' justifyContent='flex-start'>
+                    <Button
+                      type='submit'
+                      color='white'
+                      _hover={{ opacity: 0.9 }}
+                      _active={{ opacity: 1 }}
+                      onClick={() => console.log('next')}
+                    >
+                      Next
+                    </Button>
+                  </HStack>
+                </motion.div>
+              </Box>
+            </SimpleGrid>
+          </Box>
         </Container>
       </Box>
     </motion.div>
