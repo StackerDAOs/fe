@@ -25,7 +25,7 @@ import { useStore as useDaoStore } from 'store/CreateDaoStore';
 import { useStep } from '@common/hooks/use-step';
 
 // Data
-import { steps } from '@utils/data';
+import { steps, transactions } from '@utils/data';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
@@ -37,7 +37,7 @@ import { DataTable } from '@components/DataTable';
 import { motion } from 'framer-motion';
 
 // Icons
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaTag, FaVoteYea, FaRocket } from 'react-icons/fa';
 
 // Stacks
 import {
@@ -172,7 +172,10 @@ const ProposalView = () => {
             </Stack>
           </Stack>
           <Box py='5'>
-            <SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} alignItems='center'>
+            <SimpleGrid
+              columns={{ base: 1, md: 1, lg: 2 }}
+              alignItems='baseline'
+            >
               <Box as='section'>
                 <VStack
                   align='left'
@@ -286,7 +289,7 @@ const ProposalView = () => {
                         </Text>
                       </HStack>
                       <Progress
-                        colorScheme='green'
+                        colorScheme='secondary'
                         size='md'
                         value={60}
                         bg='base.500'
@@ -422,7 +425,8 @@ const ProposalView = () => {
                       <Button
                         type='submit'
                         isFullWidth
-                        colorScheme='green'
+                        color='white'
+                        bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
                         _hover={{ opacity: 0.9 }}
                         _active={{ opacity: 1 }}
                         onClick={() => console.log('next')}
@@ -431,8 +435,8 @@ const ProposalView = () => {
                       </Button>
                       <Button
                         type='submit'
+                        color='white'
                         isFullWidth
-                        colorScheme='red'
                         _hover={{ opacity: 0.9 }}
                         _active={{ opacity: 1 }}
                         onClick={() => console.log('next')}
@@ -465,17 +469,68 @@ const ProposalView = () => {
                         color='white'
                       >
                         <Box>
-                          <Text fontSize='2xl' fontWeight='medium'>
+                          <Text fontSize='lg' fontWeight='medium'>
                             Activity
                           </Text>
                           <Text color='gray.900' fontSize='sm'>
                             View the latest transactions for the DAO.
                           </Text>
                         </Box>
-                        <FilterPopover />
                       </Stack>
                     </Stack>
-                    <DataTable />
+                    {transactions.map(
+                      ({ title, createdBy, createdAt, type }, index) => (
+                        <Stack
+                          key={index}
+                          color='white'
+                          py='2'
+                          px='3'
+                          my='2'
+                          borderRadius='lg'
+                          _hover={{ bg: 'base.800' }}
+                        >
+                          <Stack
+                            direction='row'
+                            spacing='5'
+                            display='flex'
+                            justifyContent='space-between'
+                          >
+                            <HStack spacing='3'>
+                              {type === 'submission' ? (
+                                <FaTag fontSize='0.85rem' />
+                              ) : type === 'deploy' ? (
+                                <FaRocket fontSize='0.85rem' />
+                              ) : (
+                                <FaVoteYea fontSize='0.85rem' />
+                              )}
+                              <Text
+                                fontSize='sm'
+                                fontWeight='medium'
+                                color='light.900'
+                              >
+                                {title}
+                              </Text>
+                            </HStack>
+                            <HStack spacing='3'>
+                              <Text
+                                fontSize='xs'
+                                fontWeight='regular'
+                                color='gray.900'
+                              >
+                                {createdBy}
+                              </Text>
+                              <Text
+                                fontSize='xs'
+                                fontWeight='regular'
+                                color='gray.900'
+                              >
+                                {createdAt}
+                              </Text>
+                            </HStack>
+                          </Stack>
+                        </Stack>
+                      ),
+                    )}
                   </Box>
                 </Stack>
               </Stack>

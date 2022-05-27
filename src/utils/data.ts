@@ -287,3 +287,24 @@ export const extensions = [
     result: false,
   },
 ];
+
+export const transactions = [
+  {
+    title: 'Delegate vote',
+    createdBy: 'SP9Y...1TGM',
+    createdAt: '~ 9 hours ago',
+    type: 'vote',
+  },
+  {
+    title: 'Submitted proposal',
+    createdBy: 'STTF...K04A',
+    createdAt: '~ 3 days ago',
+    type: 'submission',
+  },
+  {
+    title: 'Deployed proposal',
+    createdBy: 'STTF...K04A',
+    createdAt: '~ 4 days ago',
+    type: 'deploy',
+  },
+];

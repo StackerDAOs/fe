@@ -17,6 +17,10 @@ export default {
     900: '#F9FAFB'
   },
   primary: {
+    100: '#FFA4FF',
+    200: '#FFA4FF',
+    300: '#FFA4FF',
+    400: '#FFA4FF',
     500: '#FFA4FF',
     600: '#E981FF',
     700: '#C25EFF',
@@ -42,6 +46,7 @@ export default {
     90: 'rgba(235, 0, 255, 0.9)',
   },
   secondary: {
+    200: '#624AF2',
     900: '#624AF2'
   },
   secondaryGradient: {
