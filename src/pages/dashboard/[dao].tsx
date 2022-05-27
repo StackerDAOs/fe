@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import {
+  Badge,
   Box,
   Container,
   Stack,
@@ -18,6 +19,12 @@ import {
 // Store
 import { useStore } from 'store/DeployStepStore';
 import { useStore as useDaoStore } from 'store/CreateDaoStore';
+
+// Data
+import { inbox } from '@utils/data';
+
+// Utils
+import { truncate } from '@utils/truncate-str';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
