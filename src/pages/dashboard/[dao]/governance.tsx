@@ -31,7 +31,7 @@ import { motion } from 'framer-motion';
 // Icons
 import { FaCheck, FaTimes } from 'react-icons/fa';
 
-const Proposals = () => {
+const Governance = () => {
   const router = useRouter();
   const { dao } = router.query;
 
@@ -87,80 +87,85 @@ const Proposals = () => {
                     {proposals.map(
                       ({ type, description, status, logo, result }) => {
                         return (
-                          <Link href={`/dashboard/${dao}/proposals/1`}>
-                            <Card
-                              position='relative'
-                              px={{ base: '6', md: '6' }}
-                              py={{ base: '6', md: '6' }}
-                              border='1px solid rgb(134, 143, 152)'
-                              onClick={() =>
-                                router.push(`/dashboard/${dao}/proposals/1`)
-                              }
-                              _hover={{ cursor: 'pointer', bg: 'base.800' }}
-                            >
-                              <Stack
-                                spacing={{ base: '0', md: '1' }}
-                                justify='center'
+                          <Link
+                            key={type}
+                            href={`/dashboard/${dao}/proposals/1`}
+                          >
+                            <a>
+                              <Card
+                                position='relative'
+                                px={{ base: '6', md: '6' }}
+                                py={{ base: '6', md: '6' }}
+                                border='1px solid rgb(134, 143, 152)'
+                                onClick={() =>
+                                  router.push(`/dashboard/${dao}/proposals/1`)
+                                }
+                                _hover={{ cursor: 'pointer', bg: 'base.800' }}
                               >
-                                <HStack justify='space-between' mb='3'>
-                                  <Box>
-                                    <Image boxSize='8' src={logo} />
-                                  </Box>
-                                  <HStack>
-                                    <Badge
-                                      size='sm'
-                                      maxW='fit-content'
-                                      variant='subtle'
-                                      colorScheme={
-                                        status === 'COMPLETE'
-                                          ? 'white'
-                                          : status === 'ACTIVE'
-                                          ? 'green'
-                                          : 'yellow'
-                                      }
-                                      px='3'
-                                      py='2'
-                                    >
-                                      <HStack spacing='2'>
-                                        <Text>{status}</Text>
-                                      </HStack>
-                                    </Badge>
-                                    {status === 'COMPLETE' && (
+                                <Stack
+                                  spacing={{ base: '0', md: '1' }}
+                                  justify='center'
+                                >
+                                  <HStack justify='space-between' mb='3'>
+                                    <Box>
+                                      <Image boxSize='8' src={logo} />
+                                    </Box>
+                                    <HStack>
                                       <Badge
                                         size='sm'
                                         maxW='fit-content'
                                         variant='subtle'
-                                        colorScheme={result ? 'green' : 'red'}
+                                        colorScheme={
+                                          status === 'COMPLETE'
+                                            ? 'white'
+                                            : status === 'ACTIVE'
+                                            ? 'green'
+                                            : 'yellow'
+                                        }
                                         px='3'
                                         py='2'
                                       >
-                                        <HStack spacing='1'>
-                                          {result ? (
-                                            <>
-                                              <FaCheck />
-                                              <Text>Approved</Text>
-                                            </>
-                                          ) : (
-                                            <>
-                                              <FaTimes />
-                                              <Text>Failed</Text>
-                                            </>
-                                          )}
+                                        <HStack spacing='2'>
+                                          <Text>{status}</Text>
                                         </HStack>
                                       </Badge>
-                                    )}
+                                      {status === 'COMPLETE' && (
+                                        <Badge
+                                          size='sm'
+                                          maxW='fit-content'
+                                          variant='subtle'
+                                          colorScheme={result ? 'green' : 'red'}
+                                          px='3'
+                                          py='2'
+                                        >
+                                          <HStack spacing='1'>
+                                            {result ? (
+                                              <>
+                                                <FaCheck />
+                                                <Text>Approved</Text>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <FaTimes />
+                                                <Text>Failed</Text>
+                                              </>
+                                            )}
+                                          </HStack>
+                                        </Badge>
+                                      )}
+                                    </HStack>
                                   </HStack>
-                                </HStack>
-                                <Stack spacing='1'>
-                                  <Text fontSize='lg' fontWeight='medium'>
-                                    {type}
-                                  </Text>
-                                  <Text fontSize='sm' color='gray.900'>
-                                    {description}
-                                  </Text>
+                                  <Stack spacing='1'>
+                                    <Text fontSize='lg' fontWeight='medium'>
+                                      {type}
+                                    </Text>
+                                    <Text fontSize='sm' color='gray.900'>
+                                      {description}
+                                    </Text>
+                                  </Stack>
                                 </Stack>
-                              </Stack>
-                            </Card>
+                              </Card>
+                            </a>
                           </Link>
                         );
                       },
@@ -176,8 +181,8 @@ const Proposals = () => {
   );
 };
 
-Proposals.getLayout = (page: any) => {
+Governance.getLayout = (page: any) => {
   return <AppLayout header={<Header />}>{page}</AppLayout>;
 };
 
-export default Proposals;
+export default Governance;

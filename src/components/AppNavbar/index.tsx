@@ -114,6 +114,7 @@ export const AppNavbar = () => {
                       {['Vault', 'Governance', 'Extensions', 'Delegates'].map(
                         (item) => (
                           <Link
+                            key={item}
                             href={`/dashboard/${dao}/${item?.toLocaleLowerCase()}`}
                           >
                             <Tab

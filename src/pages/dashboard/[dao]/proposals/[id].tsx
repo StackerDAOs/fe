@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+
 import {
   Box,
   Button,
-  ButtonGroup,
   Container,
   Divider,
   HStack,
@@ -15,23 +14,17 @@ import {
   Tag,
   Text,
   useToast,
-  useColorModeValue as mode,
 } from '@chakra-ui/react';
-
-// Store
-import { useStore as useDaoStore } from 'store/CreateDaoStore';
 
 // Hooks
 import { useStep } from '@common/hooks/use-step';
 
 // Data
-import { steps, transactions } from '@utils/data';
+import { transactions } from '@utils/data';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
 import { Card } from '@components/Card';
-import { FilterPopover } from '@components/FilterPopover';
-import { DataTable } from '@components/DataTable';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -60,29 +53,12 @@ import {
 
 import { usePolling } from '@common/hooks/use-polling';
 
-// import { Notification } from '@components/Notification';
-// import { CloseButton } from '@components/CloseButton';
-// import { useCallFunction } from '@common/hooks/use-call-function';
-// import { useTransaction } from '@common/hooks/use-transaction';
-// import ContractCallButton from 'widgets/ContractCallButton';
-
-// interface State {
-//   txId: string | null;
-//   delay: number | null;
-// }
-
 const ProposalView = () => {
   const { isSignedIn } = useAuth();
   const currentStxAddress = useCurrentStxAddress();
   const { network } = useNetwork();
   const router = useRouter();
   const { dao } = router.query;
-
-  // Store
-  const [currentStep, { setStep }] = useStep({
-    maxStep: steps.length,
-    initialStep: 0,
-  });
 
   const toast = useToast();
 
@@ -98,9 +74,9 @@ const ProposalView = () => {
     exit: { opacity: 0, x: 0, y: -15 },
   };
 
-  // usePolling(() => {
-  //   console.log('make api call');
-  // }, 7500);
+  usePolling(() => {
+    console.log('make api call');
+  }, true);
 
   const contractAddress = 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A';
   const contractName = 'citycoin-token';
@@ -248,7 +224,14 @@ const ProposalView = () => {
                           </Text>
                         </Box>
                       </Stack>
-                      <Text fontSize='md' maxW='sm'>
+                      <Text
+                        fontSize='md'
+                        maxW='sm'
+                        _selection={{
+                          bg: 'base.800',
+                          color: 'secondary.900',
+                        }}
+                      >
                         Disables both emergency extensions and removes the
                         ability to propose and execute any emergency proposals
                         on behalf of the DAO.
@@ -478,59 +461,61 @@ const ProposalView = () => {
                         </Box>
                       </Stack>
                     </Stack>
-                    {transactions.map(
-                      ({ title, createdBy, createdAt, type }, index) => (
-                        <Stack
-                          key={index}
-                          color='white'
-                          py='2'
-                          px='3'
-                          my='2'
-                          borderRadius='lg'
-                          _hover={{ bg: 'base.800' }}
-                        >
+                    <Box cursor='pointer'>
+                      {transactions.map(
+                        ({ title, createdBy, createdAt, type }, index) => (
                           <Stack
-                            direction='row'
-                            spacing='5'
-                            display='flex'
-                            justifyContent='space-between'
+                            key={index}
+                            color='white'
+                            py='2'
+                            px='3'
+                            my='2'
+                            borderRadius='lg'
+                            _hover={{ bg: 'base.800' }}
                           >
-                            <HStack spacing='3'>
-                              {type === 'submission' ? (
-                                <FaTag fontSize='0.85rem' />
-                              ) : type === 'deploy' ? (
-                                <FaRocket fontSize='0.85rem' />
-                              ) : (
-                                <FaVoteYea fontSize='0.85rem' />
-                              )}
-                              <Text
-                                fontSize='sm'
-                                fontWeight='medium'
-                                color='light.900'
-                              >
-                                {title}
-                              </Text>
-                            </HStack>
-                            <HStack spacing='3'>
-                              <Text
-                                fontSize='xs'
-                                fontWeight='regular'
-                                color='gray.900'
-                              >
-                                {createdBy}
-                              </Text>
-                              <Text
-                                fontSize='xs'
-                                fontWeight='regular'
-                                color='gray.900'
-                              >
-                                {createdAt}
-                              </Text>
-                            </HStack>
+                            <Stack
+                              direction='row'
+                              spacing='5'
+                              display='flex'
+                              justifyContent='space-between'
+                            >
+                              <HStack spacing='3'>
+                                {type === 'submission' ? (
+                                  <FaTag fontSize='0.85rem' />
+                                ) : type === 'deploy' ? (
+                                  <FaRocket fontSize='0.85rem' />
+                                ) : (
+                                  <FaVoteYea fontSize='0.85rem' />
+                                )}
+                                <Text
+                                  fontSize='sm'
+                                  fontWeight='medium'
+                                  color='light.900'
+                                >
+                                  {title}
+                                </Text>
+                              </HStack>
+                              <HStack spacing='3'>
+                                <Text
+                                  fontSize='xs'
+                                  fontWeight='regular'
+                                  color='gray.900'
+                                >
+                                  {createdBy}
+                                </Text>
+                                <Text
+                                  fontSize='xs'
+                                  fontWeight='regular'
+                                  color='gray.900'
+                                >
+                                  {createdAt}
+                                </Text>
+                              </HStack>
+                            </Stack>
                           </Stack>
-                        </Stack>
-                      ),
-                    )}
+                        ),
+                      )}
+                    </Box>
                   </Box>
                 </Stack>
               </Stack>

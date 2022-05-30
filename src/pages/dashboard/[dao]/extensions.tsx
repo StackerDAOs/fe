@@ -174,6 +174,7 @@ const Extensions = () => {
                     {extensions.map(({ type, description, status, result }) => {
                       return (
                         <Card
+                          key={type}
                           bg='base.900'
                           position='relative'
                           px={{ base: '6', md: '6' }}

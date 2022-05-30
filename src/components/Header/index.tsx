@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 import {
   Box,
   Container,
@@ -12,10 +12,61 @@ import {
 // Components
 import { Stat } from '@components/Stat';
 
+// Stacks
+import {
+  useAuth,
+  useNetwork,
+  useUser,
+  useCurrentStxAddress,
+  useContractCall,
+} from '@micro-stacks/react';
+import {
+  useAccountBalancesClient,
+  useCurrentAccountBalances,
+  useAccountTransactionsClient,
+  useAccountMempoolTransactionsClient,
+} from '@micro-stacks/query';
+import type { FinishedTxData } from 'micro-stacks/connect';
+import {
+  fetchAccountBalances,
+  fetchTransaction,
+  fetchReadOnlyFunction,
+} from 'micro-stacks/api';
+import { uintCV, principalCV } from 'micro-stacks/clarity';
+
 // Data
 import { stats } from '@utils/data';
 
 export const Header = () => {
+  const currentStxAddress = useCurrentStxAddress();
+  const { network } = useNetwork();
+  useEffect(() => {
+    async function fetchProposals() {
+      try {
+        console.log('fetch proposals');
+      } catch (error) {
+        console.log({ error });
+      }
+    }
+    fetchProposals();
+  }, []);
+
+  useEffect(() => {
+    async function fetchBalances() {
+      try {
+        const url = network.getCoreApiUrl();
+        const principal = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.sde-vault';
+        const balances = await fetchAccountBalances({
+          url,
+          principal,
+        });
+        console.log({ balances });
+      } catch (error) {
+        console.log({ error });
+      }
+    }
+    fetchBalances();
+  }, []);
   return (
     <Stack spacing={{ base: '8', lg: '6' }} my='3'>
       <Container>
@@ -55,7 +106,13 @@ export const Header = () => {
             divider={<StackDivider borderColor='base.500' />}
           >
             {stats.map((stat, id) => (
-              <Stat key={id} id={id} flex='1' _first={{ pl: '0' }} {...stat} />
+              <Stat
+                key={id}
+                id={id.toString()}
+                flex='1'
+                _first={{ pl: '0' }}
+                {...stat}
+              />
             ))}
           </Stack>
         </Stack>

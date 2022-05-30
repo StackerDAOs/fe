@@ -45,70 +45,76 @@ export const VaultActionPopover = () => {
               <Stack spacing='4' direction='row' p='3'>
                 <Stack spacing='1'>
                   <Link href={`/dashboard/${dao}/proposals/create`}>
-                    <Card
-                      bg='base.900'
-                      border='none'
-                      minW='150px'
-                      px={{ base: '2', md: '2' }}
-                      py={{ base: '2', md: '2' }}
-                      _hover={{
-                        cursor: 'pointer',
-                        bg: 'base.800',
-                      }}
-                    >
-                      <Text
-                        px='2'
-                        fontSize='sm'
-                        fontWeight='regular'
-                        color='white'
+                    <a>
+                      <Card
+                        bg='base.900'
+                        border='none'
+                        minW='150px'
+                        px={{ base: '2', md: '2' }}
+                        py={{ base: '2', md: '2' }}
+                        _hover={{
+                          cursor: 'pointer',
+                          bg: 'base.800',
+                        }}
                       >
-                        Transfer assets
-                      </Text>
-                    </Card>
+                        <Text
+                          px='2'
+                          fontSize='sm'
+                          fontWeight='regular'
+                          color='white'
+                        >
+                          Transfer assets
+                        </Text>
+                      </Card>
+                    </a>
                   </Link>
                   <Link href={`/dashboard/${dao}/proposals/create`}>
-                    <Card
-                      bg='base.900'
-                      border='none'
-                      minW='150px'
-                      px={{ base: '2', md: '2' }}
-                      py={{ base: '2', md: '2' }}
-                      _hover={{
-                        cursor: 'pointer',
-                        bg: 'base.800',
-                      }}
-                    >
-                      <Text
-                        px='2'
-                        fontSize='sm'
-                        fontWeight='regular'
-                        color='white'
+                    <a>
+                      <Card
+                        bg='base.900'
+                        border='none'
+                        minW='150px'
+                        px={{ base: '2', md: '2' }}
+                        py={{ base: '2', md: '2' }}
+                        _hover={{
+                          cursor: 'pointer',
+                          bg: 'base.800',
+                        }}
                       >
-                        Buy an NFT
-                      </Text>
-                    </Card>
+                        <Text
+                          px='2'
+                          fontSize='sm'
+                          fontWeight='regular'
+                          color='white'
+                        >
+                          Buy an NFT
+                        </Text>
+                      </Card>
+                    </a>
                   </Link>
                   <Link href={`/dashboard/${dao}/proposals/create`}>
-                    <Card
-                      bg='base.900'
-                      border='none'
-                      minW='150px'
-                      px={{ base: '2', md: '2' }}
-                      py={{ base: '2', md: '2' }}
-                      _hover={{
-                        cursor: 'pointer',
-                        bg: 'base.800',
-                      }}
-                    >
-                      <Text
-                        px='2'
-                        fontSize='sm'
-                        fontWeight='regular'
-                        color='white'
+                    <a>
+                      <Card
+                        bg='base.900'
+                        border='none'
+                        minW='150px'
+                        px={{ base: '2', md: '2' }}
+                        py={{ base: '2', md: '2' }}
+                        _hover={{
+                          cursor: 'pointer',
+                          bg: 'base.800',
+                        }}
                       >
-                        Add new asset
-                      </Text>
-                    </Card>
+                        <Text
+                          px='2'
+                          fontSize='sm'
+                          fontWeight='regular'
+                          color='white'
+                        >
+                          Add new asset
+                        </Text>
+                      </Card>
+                    </a>
                   </Link>
                 </Stack>
               </Stack>

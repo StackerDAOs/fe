@@ -215,13 +215,13 @@ export const stats = [
   {
     label: 'Vault',
     value: '885.79 STX',
-    delta: { value: '0 pending transactions', isUpwardsTrend: true },
+    delta: { value: '3 tokens & 2 NFTs', isUpwardsTrend: true },
     path: 'vault',
   },
   {
     label: 'Proposals',
     value: '3',
-    delta: { value: '2 active, 1 pending', isUpwardsTrend: true },
+    delta: { value: '2 currently active', isUpwardsTrend: true },
     path: 'governance',
   },
   {

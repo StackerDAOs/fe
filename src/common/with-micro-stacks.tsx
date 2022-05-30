@@ -1,14 +1,33 @@
 import { wrapWithMicroStacks } from '@micro-stacks/nextjs';
-import { StacksMocknet } from 'micro-stacks/network';
+import {
+  StacksMainnet,
+  StacksTestnet,
+  StacksMocknet,
+} from 'micro-stacks/network';
+
+let network: any;
+switch (process.env.NODE_ENV) {
+  case 'development':
+    network = new StacksMocknet();
+    break;
+  case 'production':
+    network = new StacksMainnet();
+    break;
+  default:
+    network = new StacksTestnet();
+    break;
+}
+
+const authOptions = {
+  appDetails: {
+    name: 'StackerDAOs',
+    icon: 'https://pbs.twimg.com/profile_images/1485629030804213763/PQyQmwTT_400x400.jpg',
+  },
+};
 
 const withMicroStacks = wrapWithMicroStacks({
-  authOptions: {
-    appDetails: {
-      name: 'StackerDAOs',
-      icon: 'https://pbs.twimg.com/profile_images/1485629030804213763/PQyQmwTT_400x400.jpg',
-    },
-  },
-  network: new StacksMocknet(),
+  authOptions,
+  network,
 });
 
 export default withMicroStacks;

@@ -175,6 +175,7 @@ const Proposals = () => {
                     pb='4'
                     color='white'
                   >
+                    <Link href={`/dashboard/${dao}/proposals/create`}></Link>
                     {proposals.map(({ type, description, status, result }) => {
                       return (
                         <Link href={`/dashboard/${dao}/proposals/create`}>

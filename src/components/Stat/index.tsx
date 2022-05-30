@@ -9,7 +9,6 @@ import {
   Icon,
   Stack,
   Text,
-  useBreakpointValue,
 } from '@chakra-ui/react';
 import { FiArrowUpRight } from 'react-icons/fi';
 
