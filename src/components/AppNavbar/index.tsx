@@ -26,8 +26,16 @@ import {
   useColorModeValue as mode,
 } from '@chakra-ui/react';
 
+// Stacks
+import {
+  uintCV,
+  contractPrincipalCV,
+  standardPrincipalCV,
+} from 'micro-stacks/clarity';
+
 // Components
 import { Card } from '@components/Card';
+import { ContractCallButton } from '@widgets/ContractCallButton';
 
 // Icons
 import { FiMenu } from 'react-icons/fi';
@@ -36,7 +44,6 @@ import { FaInbox, FaSignOutAlt, FaExchangeAlt, FaBell } from 'react-icons/fa';
 
 // Components
 import { WalletConnectButton } from '@components/WalletConnectButton';
-import { ProjectsPopover } from '@components/ProjectsPopover';
 
 // Web3
 import { useUser, useAuth, useNetwork } from '@micro-stacks/react';
@@ -82,9 +89,42 @@ export const AppNavbar = () => {
     fetch();
   }, [currentStxAddress, network]);
 
+  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
+  // const contractName = 'sde-governance-token-with-delegation';
+  // const functionName = 'delegate';
+
+  // const functionArgs = [
+  //   standardPrincipalCV('ST2RMJ7Y80B7MD438K60M2FSTEZNQGKYTYF21P9KC'),
+  //   standardPrincipalCV('ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM'),
+  // ];
+
+  const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
+  const contractName = 'sde-proposal-submission-with-delegation';
+  const functionName = 'propose';
+
+  const functionArgs = [
+    contractPrincipalCV(
+      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+      'sdp-transfer-stx',
+    ),
+    uintCV(56550),
+    contractPrincipalCV(
+      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+      'sde-governance-token-with-delegation',
+    ),
+  ];
+
+  const contractData = {
+    contractAddress,
+    contractName,
+    functionName,
+    functionArgs,
+  };
+
   if (loading) {
     return null;
   }
+
   return (
     <Box as='section' height='5vh'>
       <Box
@@ -132,6 +172,12 @@ export const AppNavbar = () => {
                           </Link>
                         ),
                       )}
+                      {process.env.NODE_ENV !== 'production' ? (
+                        <ContractCallButton
+                          title='Propose'
+                          contract={contractData}
+                        />
+                      ) : null}
                     </TabList>
                   </Tabs>
                   <HStack spacing='3'>

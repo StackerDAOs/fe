@@ -53,44 +53,6 @@ const Delegates = () => {
   //   console.log('make api call');
   // }, 7500);
 
-  const contractAddress = 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A';
-  const contractName = 'citycoin-token';
-  const functionName = 'burn';
-
-  const functionArgs = [
-    uintCV(10),
-    principalCV('ST143YHR805B8S834BWJTMZVFR1WP5FFC00V8QTV4'),
-  ];
-  const postConditionAddress =
-    currentStxAddress || 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A';
-  const postConditionCode = FungibleConditionCode.LessEqual;
-  const postConditionAmount = 10;
-  const fungibleAssetInfo = createAssetInfo(
-    contractAddress,
-    contractName,
-    'citycoins',
-  );
-  const postConditions = [
-    makeStandardFungiblePostCondition(
-      postConditionAddress,
-      postConditionCode,
-      postConditionAmount,
-      fungibleAssetInfo,
-    ),
-  ];
-
-  const { handleContractCall, isLoading } = useContractCall({
-    contractAddress,
-    contractName,
-    functionName,
-    functionArgs,
-    postConditions,
-  });
-
-  const handleClick = () => {
-    handleContractCall();
-  };
-
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}

@@ -17,7 +17,6 @@ import { useUser, useNetwork } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
 import { standardPrincipalCV } from 'micro-stacks/clarity';
 
-// import { StacksMocknet } from 'micro-stacks/network';
 // import { fetchTransactionsList } from 'micro-stacks/api';
 
 import { DefaultLayout } from '@components/Layout/DefaultLayout';
@@ -95,7 +94,7 @@ const Project = () => {
                 letterSpacing='tight'
                 color={mode('base.900', 'light.900')}
               >
-                Move the {''}
+                Enter the {''}
                 <Text
                   as='span'
                   mt='4'
@@ -109,7 +108,7 @@ const Project = () => {
                 >
                   MEGA {''}
                 </Text>
-                DAO forward.
+                verse.
               </Heading>
               <Text
                 mt='4'
@@ -148,7 +147,7 @@ const Project = () => {
                       _hover={{ opacity: 0.9 }}
                       _active={{ opacity: 1 }}
                     >
-                      Join $MEGA DAO
+                      Join DAO
                     </Button>
                   </motion.div>
                 </Link>

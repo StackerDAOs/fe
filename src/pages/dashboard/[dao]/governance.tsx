@@ -74,7 +74,7 @@ const Governance = () => {
                       </Box>
                       <HStack spacing='8'>
                         <VaultActionPopover />
-                        <FilterPopover />
+                        {/* <FilterPopover /> */}
                       </HStack>
                     </Stack>
                   </Stack>

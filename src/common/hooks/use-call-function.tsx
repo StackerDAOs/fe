@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { fetchReadOnlyFunction } from "micro-stacks/api";
-import { StacksMocknet } from "micro-stacks/network";
+import { useEffect, useState } from 'react';
+import { fetchReadOnlyFunction } from 'micro-stacks/api';
+import { StacksTestnet } from 'micro-stacks/network';
 
 interface TransactionProps {
   contractAddress: string;
@@ -12,18 +12,17 @@ interface TransactionProps {
   shouldPoll?: boolean;
 }
 
-export const useCallFunction = (
-  {
-    contractAddress,
-    contractName,
-    functionArgs = [],
-    senderAddress,
-    functionName,
-  }: TransactionProps) => {
-  const [status, setStatus] = useState("pending");
+export const useCallFunction = ({
+  contractAddress,
+  contractName,
+  functionArgs = [],
+  senderAddress,
+  functionName,
+}: TransactionProps) => {
+  const [status, setStatus] = useState('pending');
   const [value, setValue] = useState(null);
   const [error, setError] = useState(null);
-  const network = new StacksMocknet();
+  const network = new StacksTestnet();
 
   useEffect(() => {
     async function fetch() {
@@ -37,14 +36,13 @@ export const useCallFunction = (
           functionName,
         });
         setValue(data);
-        setStatus("success");
+        setStatus('success');
       } catch (e: any) {
-        setError(e)
+        setError(e);
       }
     }
 
     fetch();
-    
   }, [contractName]);
 
   return { value, status, setValue, error };

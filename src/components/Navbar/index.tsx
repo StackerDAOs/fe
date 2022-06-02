@@ -78,8 +78,16 @@ export const Navbar = () => {
                   <ButtonGroup color='white' spacing='8'>
                     <ProjectsPopover />
                   </ButtonGroup>
-                  <Link href='/dashboard/dao'>
-                    <Button color='white'>Use app</Button>
+                  <Link href='/dashboard/stackerdao'>
+                    <Button
+                      color='white'
+                      bgGradient='linear(to-br, primaryGradient.900, primary.900)'
+                      fontWeight='bold'
+                      _hover={{ opacity: 0.9 }}
+                      _active={{ opacity: 1 }}
+                    >
+                      Use app
+                    </Button>
                   </Link>
                 </HStack>
               </>

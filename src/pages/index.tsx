@@ -152,7 +152,7 @@ const Index = () => {
                     </Button>
                   </motion.div>
                 </Link>
-                <Link href={{ pathname: '/dashboard/dao' }}>
+                <Link href={{ pathname: '/dashboard/stackerdao' }}>
                   <motion.div
                     variants={SLIDE_UP_BUTTON_VARIANTS}
                     initial={SLIDE_UP_BUTTON_VARIANTS.hidden}

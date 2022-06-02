@@ -15,14 +15,10 @@ import { FiArrowUpRight } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 
 interface Props extends BoxProps {
-  id: string;
   path: string;
   label: string;
   value: string;
-  delta: {
-    value: string;
-    isUpwardsTrend: boolean;
-  };
+  info: string;
 }
 
 const FADE_IN_VARIANTS = {
@@ -32,7 +28,7 @@ const FADE_IN_VARIANTS = {
 };
 
 export const Stat = (props: Props) => {
-  const { id, path, label, value, delta, ...boxProps } = props;
+  const { path, label, value, info, ...boxProps } = props;
   const [isHovered, setHovered] = useState(false);
   const router = useRouter();
   const { dao } = router.query;
@@ -76,7 +72,7 @@ export const Stat = (props: Props) => {
                   bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
                   bgClip='text'
                 >
-                  {delta.value}
+                  {info}
                 </Text>
               </HStack>
             </Stack>

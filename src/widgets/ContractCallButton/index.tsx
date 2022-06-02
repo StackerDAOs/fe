@@ -11,13 +11,17 @@ import {
 
 // Stacks
 import type { FinishedTxData } from 'micro-stacks/connect';
-import { StacksMocknet } from 'micro-stacks/network';
+import { StacksTestnet } from 'micro-stacks/network';
 import { useContractCall } from '@micro-stacks/react';
 import {
   FungibleConditionCode,
   makeStandardSTXPostCondition,
 } from 'micro-stacks/transactions';
-import { uintCV } from 'micro-stacks/clarity';
+import {
+  uintCV,
+  contractPrincipalCV,
+  standardPrincipalCV,
+} from 'micro-stacks/clarity';
 import { fetchTransaction } from 'micro-stacks/api';
 
 // Hooks
@@ -28,32 +32,40 @@ import { Notification } from '@components/Notification';
 import { CloseButton } from '@components/CloseButton';
 
 type ContractCallType = {
+  title: string;
+  contract: Contract;
+};
+
+type Contract = {
   contractAddress: string;
   contractName: string;
   functionName: string;
   functionArgs: any[];
-  postConditions: any[];
+  postConditions?: any[];
 };
 
-const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-const contractName = 'sde009-safe';
-const functionName = 'deposit-stx';
+// const postConditionAddress = 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5';
+// const postConditionCode = FungibleConditionCode.LessEqual;
+// const postConditionAmount = 5000000;
+// const postConditions = [
+//   makeStandardSTXPostCondition(
+//     postConditionAddress,
+//     postConditionCode,
+//     postConditionAmount,
+//   ),
+// ];
 
-const functionArgs = [uintCV(5000000)];
-
-const postConditionAddress = 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5';
-const postConditionCode = FungibleConditionCode.LessEqual;
-const postConditionAmount = 5000000;
-const postConditions = [
-  makeStandardSTXPostCondition(
-    postConditionAddress,
-    postConditionCode,
-    postConditionAmount,
-  ),
-];
-
-export const ContractCallButton = () => {
-  const network = new StacksMocknet();
+export const ContractCallButton = ({
+  title,
+  contract: {
+    contractAddress,
+    contractName,
+    functionName,
+    functionArgs,
+    postConditions,
+  },
+}: ContractCallType) => {
+  const network = new StacksTestnet();
   const toast = useToast();
   const [transaction, setTransaction] = useState({
     txId: '',
@@ -70,7 +82,7 @@ export const ContractCallButton = () => {
         url: network.getCoreApiUrl(),
         txid: transactionId,
         event_offset: 0,
-        event_limit: 1,
+        event_limit: 0,
       });
       console.log({ transaction });
       if (transaction?.tx_status === 'success') {
@@ -86,6 +98,7 @@ export const ContractCallButton = () => {
   }
 
   const onFinish = useCallback((data: FinishedTxData) => {
+    console.log({ data });
     setTransaction({ txId: data.txId, isPending: true });
     toast({
       duration: 5000,
@@ -220,7 +233,6 @@ export const ContractCallButton = () => {
     contractName,
     functionName,
     functionArgs,
-    postConditions,
     onFinish,
     onCancel,
   });
@@ -229,15 +241,16 @@ export const ContractCallButton = () => {
     <Button
       type='submit'
       color='white'
+      size='sm'
       bgGradient={mode(
         'linear(to-br, secondaryGradient.900, secondary.900)',
         'linear(to-br, primaryGradient.900, primary.900)',
       )}
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
-      onClick={handleContractCall}
+      onClick={() => handleContractCall()}
     >
-      {isLoading ? <Spinner /> : 'Deploy'}
+      {isLoading ? <Spinner /> : title}
     </Button>
   );
 };

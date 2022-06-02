@@ -15,7 +15,7 @@ import { useStore as useCommunityStepStore } from 'store/CommunityStepStore';
 
 // Stacks
 import type { FinishedTxData } from 'micro-stacks/connect';
-import { StacksMocknet } from 'micro-stacks/network';
+import { StacksTestnet } from 'micro-stacks/network';
 import { useUser, useContractDeploy } from '@micro-stacks/react';
 import {
   FungibleConditionCode,
@@ -42,7 +42,7 @@ export const ContractDeployButton = ({
 }: ContractDeployType) => {
   const { currentStxAddress } = useUser();
   const router = useRouter();
-  const network = new StacksMocknet();
+  const network = new StacksTestnet();
   const toast = useToast();
   const { maxSteps, currentStep, setStep } = useCommunityStepStore();
   const [transaction, setTransaction] = useState({

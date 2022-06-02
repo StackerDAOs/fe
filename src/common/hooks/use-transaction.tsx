@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { fetchTransaction } from 'micro-stacks/api';
-import { StacksMocknet } from "micro-stacks/network";
+import { StacksTestnet } from 'micro-stacks/network';
 
 interface TransactionProps {
   txId: string;
   isPolling: boolean;
 }
 
-export const useTransaction = ({txId}: TransactionProps) => {
+export const useTransaction = ({ txId }: TransactionProps) => {
   const [transaction, setTransaction] = useState<any>({});
   const [isPending, setIsPending] = useState(true);
   const [isPolling, setIsPolling] = useState(false);
   const [error, setError] = useState(null);
 
   async function fetch() {
-    const network = new StacksMocknet();
+    const network = new StacksTestnet();
     try {
       const transaction = await fetchTransaction({
         url: network.getCoreApiUrl(),
@@ -25,7 +25,7 @@ export const useTransaction = ({txId}: TransactionProps) => {
       setIsPending(transaction?.tx_status === 'success' ? false : true);
       setTransaction(transaction);
     } catch (e: any) {
-      setError(e)
+      setError(e);
     }
   }
 
@@ -40,9 +40,17 @@ export const useTransaction = ({txId}: TransactionProps) => {
       }, 2500);
       return () => {
         clearInterval(interval);
-      }
+      };
     }
-  }, [isPolling])
+  }, [isPolling]);
 
-  return { transaction, setTransaction, isPending, setIsPending, isPolling, setIsPolling, error };
+  return {
+    transaction,
+    setTransaction,
+    isPending,
+    setIsPending,
+    isPolling,
+    setIsPolling,
+    error,
+  };
 };

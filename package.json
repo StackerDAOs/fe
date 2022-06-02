@@ -20,6 +20,7 @@
     "@emotion/styled": "11.1.5",
     "@micro-stacks/nextjs": "^0.0.15",
     "@micro-stacks/react": "^0.1.2",
+    "@supabase/supabase-js": "^1.35.3",
     "framer-motion": "4.1.11",
     "immer": "^9.0.12",
     "lodash": "^4.17.21",

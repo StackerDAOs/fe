@@ -268,7 +268,7 @@ const Proposals = () => {
                           All registered users in the overview
                         </Text>
                       </Box>
-                      <FilterPopover />
+                      {/* <FilterPopover /> */}
                     </Stack>
                   </Stack>
                   <SimpleGrid
