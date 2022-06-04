@@ -21,7 +21,7 @@ import { findIndex } from 'lodash';
 
 // Utils
 import { paths, whitelistAssets } from '@utils/data';
-import { truncate } from '@utils/truncate-str';
+import { truncate } from '@common/helpers';
 
 // Store
 import { useStore } from 'store/CreateDaoStore';

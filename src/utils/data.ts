@@ -59,10 +59,6 @@ export const steps = [
 
 export const transferAssetsSteps = [
   {
-    title: 'Asset Type',
-    description: 'Choose the type of asset you want to transfer',
-  },
-  {
     title: 'Select Asset',
     description: 'Select the asset you want to transfer',
   },

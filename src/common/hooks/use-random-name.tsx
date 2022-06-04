@@ -1,5 +1,12 @@
+// Hook (use-random-name.tsx)
 import React from 'react';
-import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'unique-names-generator';
+import {
+  uniqueNamesGenerator,
+  Config,
+  adjectives,
+  colors,
+  animals,
+} from 'unique-names-generator';
 
 const customConfig: Config = {
   dictionaries: [adjectives, colors, animals],

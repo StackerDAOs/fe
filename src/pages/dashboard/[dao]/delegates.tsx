@@ -3,7 +3,6 @@ import { Box, Container, Stack, Text, useToast } from '@chakra-ui/react';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
-import { DataTable } from '@components/DataTable';
 import { FilterPopover } from '@components/FilterPopover';
 import { Header } from '@components/Header';
 
@@ -77,16 +76,15 @@ const Delegates = () => {
                     >
                       <Box>
                         <Text fontSize='2xl' fontWeight='medium'>
-                          Activity
+                          Delegates
                         </Text>
                         <Text color='gray.900' fontSize='sm'>
-                          View the latest transactions for the DAO.
+                          Choose a delegate to govern on your behalf.
                         </Text>
                       </Box>
-                      <FilterPopover />
+                      {/* <FilterPopover /> */}
                     </Stack>
                   </Stack>
-                  <DataTable />
                 </Container>
               </Box>
             </Stack>

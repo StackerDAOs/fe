@@ -12,11 +12,7 @@ import {
 } from '@chakra-ui/react';
 
 // Store
-import { useStore } from 'store/DeployStepStore';
-import { useStore as useDaoStore } from 'store/CreateDaoStore';
-
-// Data
-import { proposals } from '@utils/data';
+import { useStore as ProposalStore } from 'store/ProposalStore';
 
 // Components
 import { Card } from '@components/Card';
@@ -34,6 +30,7 @@ import { FaCheck, FaTimes } from 'react-icons/fa';
 const Governance = () => {
   const router = useRouter();
   const { dao } = router.query;
+  const { proposals } = ProposalStore();
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -85,79 +82,82 @@ const Governance = () => {
                     color='white'
                   >
                     {proposals.map(
-                      ({ type, description, status, logo, result }) => {
+                      ({
+                        contractAddress,
+                        title,
+                        description,
+                        type,
+                        proposer,
+                        concluded,
+                        votesFor,
+                        votesAgainst,
+                      }: any) => {
                         return (
                           <Link
-                            key={type}
-                            href={`/dashboard/${dao}/proposals/1`}
+                            key={Math.random()}
+                            href={`/dashboard/${dao}/proposals/${contractAddress}`}
                           >
                             <a>
                               <Card
+                                bg='base.900'
                                 position='relative'
                                 px={{ base: '6', md: '6' }}
                                 py={{ base: '6', md: '6' }}
                                 border='1px solid rgb(134, 143, 152)'
-                                onClick={() =>
-                                  router.push(`/dashboard/${dao}/proposals/1`)
-                                }
                                 _hover={{ cursor: 'pointer', bg: 'base.800' }}
                               >
                                 <Stack
-                                  spacing={{ base: '0', md: '1' }}
-                                  justify='center'
+                                  spacing={{ base: '0', md: '2' }}
+                                  justify='space-between'
                                 >
-                                  <HStack justify='space-between' mb='3'>
-                                    <Box>
-                                      <Image boxSize='8' src={logo} />
-                                    </Box>
-                                    <HStack>
+                                  <HStack>
+                                    <Badge
+                                      size='sm'
+                                      maxW='fit-content'
+                                      variant='subtle'
+                                      colorScheme={concluded ? 'white' : 'red'}
+                                      px='3'
+                                      py='2'
+                                    >
+                                      <HStack spacing='2'>
+                                        <Text>{type}</Text>
+                                      </HStack>
+                                    </Badge>
+                                    {concluded && (
                                       <Badge
                                         size='sm'
                                         maxW='fit-content'
                                         variant='subtle'
                                         colorScheme={
-                                          status === 'COMPLETE'
-                                            ? 'white'
-                                            : status === 'ACTIVE'
+                                          votesFor.toString() >
+                                          votesAgainst.toString()
                                             ? 'green'
-                                            : 'yellow'
+                                            : 'red'
                                         }
                                         px='3'
                                         py='2'
                                       >
-                                        <HStack spacing='2'>
-                                          <Text>{status}</Text>
+                                        <HStack spacing='1'>
+                                          {concluded &&
+                                          votesFor.toString() >
+                                            votesAgainst.toString() ? (
+                                            <>
+                                              <FaCheck />
+                                              <Text>Approved</Text>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <FaTimes />
+                                              <Text>Failed</Text>
+                                            </>
+                                          )}
                                         </HStack>
                                       </Badge>
-                                      {status === 'COMPLETE' && (
-                                        <Badge
-                                          size='sm'
-                                          maxW='fit-content'
-                                          variant='subtle'
-                                          colorScheme={result ? 'green' : 'red'}
-                                          px='3'
-                                          py='2'
-                                        >
-                                          <HStack spacing='1'>
-                                            {result ? (
-                                              <>
-                                                <FaCheck />
-                                                <Text>Approved</Text>
-                                              </>
-                                            ) : (
-                                              <>
-                                                <FaTimes />
-                                                <Text>Failed</Text>
-                                              </>
-                                            )}
-                                          </HStack>
-                                        </Badge>
-                                      )}
-                                    </HStack>
+                                    )}
                                   </HStack>
                                   <Stack spacing='1'>
                                     <Text fontSize='lg' fontWeight='medium'>
-                                      {type}
+                                      {title}
                                     </Text>
                                     <Text fontSize='sm' color='gray.900'>
                                       {description}

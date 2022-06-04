@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import {
@@ -24,12 +24,12 @@ import { useStore as useDaoStore } from 'store/CreateDaoStore';
 import { inbox } from '@utils/data';
 
 // Utils
-import { truncate } from '@utils/truncate-str';
+import { truncate } from '@common/helpers';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
 import { Banner } from '@components/Banner';
-import { DataTable } from '@components/DataTable';
+import { AssetTable } from '@components/AssetTable';
 import { Header } from '@components/Header';
 
 //  Animation
@@ -76,44 +76,6 @@ const DAODashboard = () => {
     hidden: { opacity: 0, x: 0, y: 15 },
     enter: { opacity: 1, x: 0, y: 0 },
     exit: { opacity: 0, x: 0, y: -15 },
-  };
-
-  const contractAddress = 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A';
-  const contractName = 'citycoin-token';
-  const functionName = 'burn';
-
-  const functionArgs = [
-    uintCV(10),
-    principalCV('ST143YHR805B8S834BWJTMZVFR1WP5FFC00V8QTV4'),
-  ];
-  const postConditionAddress =
-    currentStxAddress || 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A';
-  const postConditionCode = FungibleConditionCode.LessEqual;
-  const postConditionAmount = 10;
-  const fungibleAssetInfo = createAssetInfo(
-    contractAddress,
-    contractName,
-    'citycoins',
-  );
-  const postConditions = [
-    makeStandardFungiblePostCondition(
-      postConditionAddress,
-      postConditionCode,
-      postConditionAmount,
-      fungibleAssetInfo,
-    ),
-  ];
-
-  const { handleContractCall, isLoading } = useContractCall({
-    contractAddress,
-    contractName,
-    functionName,
-    functionArgs,
-    postConditions,
-  });
-
-  const handleClick = () => {
-    handleContractCall();
   };
 
   return (
@@ -175,10 +137,10 @@ const DAODashboard = () => {
                 </TabList>
                 <TabPanels>
                   <TabPanel px='0'>
-                    <DataTable />
+                    <AssetTable type='fungible' />
                   </TabPanel>
                   <TabPanel px='0'>
-                    <DataTable />
+                    <AssetTable type='non_fungible' />
                   </TabPanel>
                 </TabPanels>
               </Tabs>

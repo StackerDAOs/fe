@@ -28,10 +28,15 @@ import {
 
 // Stacks
 import {
+  boolCV,
   uintCV,
   contractPrincipalCV,
   standardPrincipalCV,
 } from 'micro-stacks/clarity';
+import {
+  FungibleConditionCode,
+  makeStandardSTXPostCondition,
+} from 'micro-stacks/transactions';
 
 // Components
 import { Card } from '@components/Card';
@@ -50,7 +55,7 @@ import { useUser, useAuth, useNetwork } from '@micro-stacks/react';
 import { fetchNamesByAddress } from 'micro-stacks/api';
 
 // Utils
-import { truncate } from '@utils/truncate-str';
+import { stxToUstx, truncate } from '@common/helpers';
 
 export const AppNavbar = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -89,6 +94,8 @@ export const AppNavbar = () => {
     fetch();
   }, [currentStxAddress, network]);
 
+  // DELEGATE
+
   // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
   // const contractName = 'sde-governance-token-with-delegation';
   // const functionName = 'delegate';
@@ -98,27 +105,67 @@ export const AppNavbar = () => {
   //   standardPrincipalCV('ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM'),
   // ];
 
+  // PROPOSE
+
+  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
+  // const contractName = 'sde-proposal-submission-with-delegation';
+  // const functionName = 'propose';
+
+  // const functionArgs = [
+  //   contractPrincipalCV(
+  //     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+  //     'sdp-transfer-stx',
+  //   ),
+  //   uintCV(56550),
+  //   contractPrincipalCV(
+  //     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+  //     'sde-governance-token-with-delegation',
+  //   ),
+  // ];
+
+  // VOTE
+
   const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  const contractName = 'sde-proposal-submission-with-delegation';
-  const functionName = 'propose';
+  const contractName = 'sde-proposal-voting-with-delegation';
+  const functionName = 'vote';
+  const postConditions: any = [];
 
   const functionArgs = [
+    boolCV(true),
     contractPrincipalCV(
       'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
       'sdp-transfer-stx',
     ),
-    uintCV(56550),
     contractPrincipalCV(
       'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
       'sde-governance-token-with-delegation',
     ),
   ];
 
+  // DEPOSIT
+  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
+  // const contractName = 'sde-vault';
+  // const functionName = 'deposit';
+  // const functionArgs = [uintCV(stxToUstx('37.2006'))];
+  // const postConditionAddress = currentStxAddress || '';
+  // const postConditionCode = FungibleConditionCode.LessEqual;
+  // const postConditionAmount = stxToUstx('37.2006');
+  // const postConditions = currentStxAddress
+  //   ? [
+  //       makeStandardSTXPostCondition(
+  //         postConditionAddress,
+  //         postConditionCode,
+  //         postConditionAmount,
+  //       ),
+  //     ]
+  //   : [];
+
   const contractData = {
     contractAddress,
     contractName,
     functionName,
     functionArgs,
+    postConditions,
   };
 
   if (loading) {
@@ -174,15 +221,17 @@ export const AppNavbar = () => {
                       )}
                       {process.env.NODE_ENV !== 'production' ? (
                         <ContractCallButton
-                          title='Propose'
-                          contract={contractData}
+                          title='Vote'
+                          color='white'
+                          size='sm'
+                          {...contractData}
                         />
                       ) : null}
                     </TabList>
                   </Tabs>
                   <HStack spacing='3'>
                     <ButtonGroup spacing='6' alignItems='center'>
-                      <Link href={`/dashboard/${dao}/activity`}>
+                      {/* <Link href={`/dashboard/${dao}/activity`}>
                         <HStack position='relative' cursor='pointer'>
                           <FaBell fontSize='1.25rem' color='white' />
                           <Circle
@@ -202,7 +251,7 @@ export const AppNavbar = () => {
                             </Text>
                           </Circle>
                         </HStack>
-                      </Link>
+                      </Link> */}
                       {currentStxAddress && (
                         <Popover
                           trigger='hover'

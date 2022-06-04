@@ -12,9 +12,12 @@ import {
   useToast,
 } from '@chakra-ui/react';
 
+// Store
+import { useStore as VaultStore } from 'store/VaultStore';
+
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
-import { DataTable } from '@components/DataTable';
+import { AssetTable } from '@components/AssetTable';
 import { Header } from '@components/Header';
 import { VaultActionPopover } from '@components/VaultActionPopover';
 
@@ -54,6 +57,8 @@ import { usePolling } from '@common/hooks/use-polling';
 // }
 
 const Vault = () => {
+  const { balance } = VaultStore();
+  const { non_fungible_tokens, fungible_tokens } = balance;
   const { isSignedIn } = useAuth();
   const currentStxAddress = useCurrentStxAddress();
   const { network } = useNetwork();
@@ -77,44 +82,6 @@ const Vault = () => {
   // usePolling(() => {
   //   console.log('make api call');
   // }, 7500);
-
-  const contractAddress = 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A';
-  const contractName = 'citycoin-token';
-  const functionName = 'burn';
-
-  const functionArgs = [
-    uintCV(10),
-    principalCV('ST143YHR805B8S834BWJTMZVFR1WP5FFC00V8QTV4'),
-  ];
-  const postConditionAddress =
-    currentStxAddress || 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A';
-  const postConditionCode = FungibleConditionCode.LessEqual;
-  const postConditionAmount = 10;
-  const fungibleAssetInfo = createAssetInfo(
-    contractAddress,
-    contractName,
-    'citycoins',
-  );
-  const postConditions = [
-    makeStandardFungiblePostCondition(
-      postConditionAddress,
-      postConditionCode,
-      postConditionAmount,
-      fungibleAssetInfo,
-    ),
-  ];
-
-  const { handleContractCall, isLoading } = useContractCall({
-    contractAddress,
-    contractName,
-    functionName,
-    functionArgs,
-    postConditions,
-  });
-
-  const handleClick = () => {
-    handleContractCall();
-  };
 
   return (
     <motion.div
@@ -165,10 +132,10 @@ const Vault = () => {
                     </TabList>
                     <TabPanels>
                       <TabPanel px='0'>
-                        <DataTable />
+                        <AssetTable type='fungible' />
                       </TabPanel>
                       <TabPanel px='0'>
-                        <DataTable />
+                        <AssetTable type='non_fungible' />
                       </TabPanel>
                     </TabPanels>
                   </Tabs>

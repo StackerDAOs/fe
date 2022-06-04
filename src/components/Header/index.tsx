@@ -1,167 +1,48 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import {
   Box,
   Container,
   Heading,
   HStack,
   Stack,
+  Spinner,
   StackDivider,
   VStack,
 } from '@chakra-ui/react';
 
+// Stacks
+import { useCurrentStxAddress } from '@micro-stacks/react';
+
+// Utils
+import { ustxToStx } from '@common/helpers';
+
 // Components
 import { Stat } from '@components/Stat';
-
-// Stacks
-import {
-  useAuth,
-  useNetwork,
-  useUser,
-  useCurrentStxAddress,
-  useContractCall,
-} from '@micro-stacks/react';
-import {
-  useAccountBalancesClient,
-  useCurrentAccountBalances,
-  useAccountTransactionsClient,
-  useAccountMempoolTransactionsClient,
-} from '@micro-stacks/query';
-import type { FinishedTxData } from 'micro-stacks/connect';
-import {
-  fetchAccountBalances,
-  fetchTransaction,
-  fetchReadOnlyFunction,
-  fetchContractEventsById,
-} from 'micro-stacks/api';
-import {
-  uintCV,
-  principalCV,
-  tupleCV,
-  bufferCV,
-  deserializeCV,
-  cvToValue,
-} from 'micro-stacks/clarity';
-
-// Data
-import { supabase } from '@utils/supabase';
-import { stats } from '@utils/data';
-
-// Store
-import { useStore as DashboardStore } from 'store/DashboardStore';
-import { useStore as VaultStore } from 'store/VaultStore';
-import { FaSignLanguage } from 'react-icons/fa';
 import { SafeSuspense } from '@components/SafeSuspense';
 
-interface HeaderState {
-  organizations: any[];
-  proposals: any[];
-}
+// Hooks
+import {
+  useBalance,
+  useBlocks,
+  useOrganization,
+  useProposals,
+  useVotingExtension,
+} from '@common/hooks';
 
 export const Header = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const { organization, setOrganization } = DashboardStore();
-  const { balance, setBalance } = VaultStore();
-  const router = useRouter();
-  const { dao: slug } = router.query;
   const currentStxAddress = useCurrentStxAddress();
-  const { network } = useNetwork();
-  useEffect(() => {
-    async function fetch() {
-      try {
-        const { data: Organizations, error } = await supabase
-          .from('Organizations')
-          .select(
-            'name, slug, contract_address, Extensions (contract_address, ExtensionTypes (name))',
-          )
-          .eq('slug', slug);
-        if (error) throw error;
-        if (Organizations.length > 0) {
-          const organization = Organizations[0];
-          const vault = organization?.Extensions?.find(
-            (extension: any) => extension?.ExtensionTypes?.name === 'Vault',
-          );
-          try {
-            const url = network.getCoreApiUrl();
-            const principal = vault?.contract_address;
-            const balance = await fetchAccountBalances({
-              url,
-              principal,
-            });
-            setBalance(balance);
-            setOrganization(organization);
-            console.log({ balance, organization });
-          } catch (error) {
-            console.log({ error });
-          }
-        }
-      } catch (error) {
-        console.log({ error });
-      } finally {
-        console.log('done');
-      }
-    }
-    fetch();
-  }, [slug]);
+  const { organization } = useOrganization();
+  const { balance } = useBalance();
+  const { proposals } = useProposals();
+  const { currentBlockHeight } = useBlocks();
+  const { isLoading, votingWeight } = useVotingExtension();
 
   useEffect(() => {
-    async function fetch() {
-      const vault = organization?.Extensions?.find(
-        (extension: any) => extension?.ExtensionTypes?.name === 'Vault',
-      );
-
-      try {
-        const url = network.getCoreApiUrl();
-        const principal = vault?.contract_address;
-        const balance = await fetchAccountBalances({
-          url,
-          principal,
-        });
-        setBalance(balance);
-        console.log({ balance, organization });
-      } catch (error) {
-        console.log({ error });
-      } finally {
-        console.log('done');
-      }
-    }
-    fetch();
-  }, [organization]);
-
-  useEffect(() => {
-    async function fetch() {
-      const proposalVoting = organization?.Extensions?.find(
-        (extension: any) => extension?.ExtensionTypes?.name === 'Voting',
-      );
-      console.log({ proposalVoting });
-      try {
-        const url = network.getCoreApiUrl();
-        const contractId = proposalVoting?.contract_address;
-        const events = await fetchContractEventsById({
-          url,
-          contract_id: contractId,
-          limit: 10,
-          offset: 0,
-          unanchored: false,
-        });
-        const deserialized = deserializeCV(
-          events?.results[0].contract_log.value.hex,
-        );
-        const value = cvToValue(deserialized);
-        console.log({ value });
-        setLoading(false);
-      } catch (error) {
-        console.log({ error });
-      } finally {
-        console.log('done');
-      }
-    }
-    fetch();
-  }, [organization]);
+    console.log('Header');
+  }, [currentStxAddress]);
 
   const Vault = () => {
     const { stx, non_fungible_tokens, fungible_tokens } = balance;
-    console.log({ stx, non_fungible_tokens, fungible_tokens });
     const fungibleTokens = Object.assign({}, fungible_tokens);
     const nonFungibleTokens = Object.assign({}, non_fungible_tokens);
     return (
@@ -172,7 +53,7 @@ export const Header = () => {
         borderColor='base.500'
         borderRightWidth='1px'
         label='Vault'
-        value={`${stx?.balance} STX`}
+        value={`${ustxToStx(stx?.balance)} STX`}
         info={`${Object.values(fungibleTokens)?.length} tokens & ${
           Object.values(nonFungibleTokens)?.length
         } NFTs`}
@@ -182,7 +63,11 @@ export const Header = () => {
   };
 
   const Proposals = () => {
-    // const { results: proposalEvents } = events;
+    const proposalSize = proposals?.length;
+    const activeProposals = proposals?.filter(
+      (proposal: any) =>
+        currentBlockHeight >= proposal?.startBlockHeight.toString(),
+    );
     return (
       <Stat
         flex='1'
@@ -191,8 +76,8 @@ export const Header = () => {
         borderColor='base.500'
         borderRightWidth='1px'
         label='Proposals'
-        value={`2`}
-        info={`1 active`}
+        value={proposalSize.toString()}
+        info={`${activeProposals.length} active`}
         path='governance'
       />
     );
@@ -207,17 +92,17 @@ export const Header = () => {
         _last={{ borderRightWidth: '0' }}
         borderColor='base.500'
         borderRightWidth='1px'
-        label='Governance'
-        value={`2%`}
+        label='Voting power'
+        value={votingWeight.toString()}
         info={`> 1.5% required`}
         path='delegates'
       />
     );
   };
 
-  if (loading) {
-    return null;
-  }
+  // if (isLoading) {
+  //   return <Spinner />;
+  // }
 
   return (
     <Stack spacing={{ base: '8', lg: '6' }} my='3'>
@@ -257,7 +142,7 @@ export const Header = () => {
             direction={{ base: 'column', md: 'row' }}
             divider={<StackDivider borderColor='base.500' />}
           >
-            <SafeSuspense fallback={<>Loading...</>}>
+            <SafeSuspense fallback={<Spinner />}>
               <Vault />
               <Proposals />
               <Profile />

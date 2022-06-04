@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import {
   Button,
+  ButtonProps,
   ButtonGroup,
   Stack,
   Spinner,
@@ -33,10 +34,6 @@ import { CloseButton } from '@components/CloseButton';
 
 type ContractCallType = {
   title: string;
-  contract: Contract;
-};
-
-type Contract = {
   contractAddress: string;
   contractName: string;
   functionName: string;
@@ -44,27 +41,7 @@ type Contract = {
   postConditions?: any[];
 };
 
-// const postConditionAddress = 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5';
-// const postConditionCode = FungibleConditionCode.LessEqual;
-// const postConditionAmount = 5000000;
-// const postConditions = [
-//   makeStandardSTXPostCondition(
-//     postConditionAddress,
-//     postConditionCode,
-//     postConditionAmount,
-//   ),
-// ];
-
-export const ContractCallButton = ({
-  title,
-  contract: {
-    contractAddress,
-    contractName,
-    functionName,
-    functionArgs,
-    postConditions,
-  },
-}: ContractCallType) => {
+export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
   const network = new StacksTestnet();
   const toast = useToast();
   const [transaction, setTransaction] = useState({
@@ -144,48 +121,6 @@ export const ContractCallButton = ({
     });
   }, []);
 
-  const onCancel = useCallback(() => {
-    toast({
-      duration: 5000,
-      isClosable: true,
-      position: 'bottom-right',
-      render: () => (
-        <Notification>
-          <Stack direction='row' p='4' spacing='3'>
-            <Stack spacing='2.5'>
-              <Stack spacing='1'>
-                <Text
-                  fontSize='md'
-                  color={mode('light.900', 'base.900')}
-                  fontWeight='medium'
-                >
-                  Transaction cancelled
-                </Text>
-                <Text fontSize='sm' color={mode('light.700', 'light.200')}>
-                  Your transaction has been cancelled.
-                </Text>
-              </Stack>
-              <ButtonGroup variant='link' size='md' spacing='3'>
-                <Button
-                  bgGradient='linear(to-br, primaryGradient.900, primary.900)'
-                  bgClip='text'
-                >
-                  View transaction
-                </Button>
-              </ButtonGroup>
-            </Stack>
-            <CloseButton
-              aria-label='close'
-              transform='translateY(-6px)'
-              color='white'
-              onClick={() => toast.closeAll()}
-            />
-          </Stack>
-        </Notification>
-      ),
-    });
-  }, []);
-
   const onComplete = useCallback(() => {
     toast({
       duration: 5000,
@@ -228,29 +163,34 @@ export const ContractCallButton = ({
     });
   }, []);
 
+  const {
+    contractAddress,
+    contractName,
+    functionName,
+    functionArgs,
+    postConditions,
+  } = props;
+
+  console.log({ contractAddress, contractName, functionName, functionArgs });
+
   const { handleContractCall, isLoading } = useContractCall({
     contractAddress,
     contractName,
     functionName,
     functionArgs,
+    postConditions,
     onFinish,
-    onCancel,
   });
 
   return (
     <Button
+      {...props}
       type='submit'
-      color='white'
-      size='sm'
-      bgGradient={mode(
-        'linear(to-br, secondaryGradient.900, secondary.900)',
-        'linear(to-br, primaryGradient.900, primary.900)',
-      )}
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
       onClick={() => handleContractCall()}
     >
-      {isLoading ? <Spinner /> : title}
+      {isLoading ? <Spinner /> : props.title}
     </Button>
   );
 };

@@ -27,7 +27,7 @@ import { useUser, useNetwork, useIsSignedIn } from '@micro-stacks/react';
 import { fetchNamesByAddress } from 'micro-stacks/api';
 
 // Utils
-import { truncate } from '@utils/truncate-str';
+import { truncate } from '@common/helpers';
 
 export const Navbar = () => {
   const [loading, setLoading] = useState<boolean>(true);

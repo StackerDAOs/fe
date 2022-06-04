@@ -1,3 +1,4 @@
+// Hook (use-polling.tsx)
 import { useEffect, useRef } from 'react';
 
 export const usePolling = (callback: any, isPolling: boolean | null) => {

@@ -31,7 +31,7 @@ interface StepProps extends BoxProps {
   isCompleted: boolean;
   isActive: boolean;
   isLastStep: boolean;
-  payload: any;
+  payload?: any;
 }
 
 export const VerticalStep = (props: StepProps) => {
@@ -55,51 +55,19 @@ export const VerticalStep = (props: StepProps) => {
     <Stack spacing='4' direction='row' {...stackProps}>
       <Stack spacing='0' align='center'>
         <StepCircle isActive={isActive} isCompleted={isCompleted} />
-        {!isLastStep && (
-          <Divider
-            orientation='vertical'
-            borderWidth='1px'
-            borderColor={isCompleted ? 'light.900' : 'gray.900'}
-          />
-        )}
+        <Divider
+          orientation='vertical'
+          borderWidth='1px'
+          borderColor={
+            isCompleted ? 'accent' : isLastStep ? 'transparent' : 'inherit'
+          }
+        />
       </Stack>
-      <Stack spacing='0.5' pb='2'>
-        {isActive && payload ? (
-          <ActionModal payload={payload}>
-            <ModalBody pb={6}>
-              <FormControl>
-                <FormLabel>Amount</FormLabel>
-                <Input
-                  placeholder='Amount'
-                  name='amount'
-                  onChange={(e) => console.log(e)}
-                />
-              </FormControl>
-
-              <FormControl mt={4}>
-                <FormLabel>Recipient</FormLabel>
-                <Input
-                  placeholder='Recipient'
-                  name='recipientAddress'
-                  onChange={(e) => console.log(e)}
-                />
-              </FormControl>
-            </ModalBody>
-          </ActionModal>
-        ) : (
-          <>
-            <Text
-              color={mode('base.900', 'light.900')}
-              fontWeight='regular'
-              fontSize='md'
-            >
-              {title}
-            </Text>
-            <Text color='gray.900' fontSize='sm'>
-              {description}
-            </Text>
-          </>
-        )}
+      <Stack spacing='0.5' pb={isLastStep ? '0' : '8'}>
+        <Text color='emphasized' fontWeight='medium'>
+          {title}
+        </Text>
+        <Text color='gray.900'>{description}</Text>
       </Stack>
     </Stack>
   );

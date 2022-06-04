@@ -1,3 +1,4 @@
+// Hook (use-transaction.tsx)
 import { useEffect, useState } from 'react';
 import { fetchTransaction } from 'micro-stacks/api';
 import { StacksTestnet } from 'micro-stacks/network';

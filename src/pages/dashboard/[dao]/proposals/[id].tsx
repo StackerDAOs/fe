@@ -16,15 +16,15 @@ import {
   useToast,
 } from '@chakra-ui/react';
 
-// Hooks
-import { useStep } from '@common/hooks/use-step';
-
 // Data
 import { transactions } from '@utils/data';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
 import { Card } from '@components/Card';
+
+// Widgets
+import { ContractCallButton } from '@widgets/ContractCallButton';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -41,8 +41,8 @@ import {
   useContractCall,
 } from '@micro-stacks/react';
 import type { FinishedTxData } from 'micro-stacks/connect';
-import { fetchTransaction, fetchReadOnlyFunction } from 'micro-stacks/api';
-import { uintCV, principalCV } from 'micro-stacks/clarity';
+import { fetchContractSource, fetchReadOnlyFunction } from 'micro-stacks/api';
+import { boolCV, contractPrincipalCV, principalCV } from 'micro-stacks/clarity';
 import {
   FungibleConditionCode,
   PostConditionMode,
@@ -51,6 +51,17 @@ import {
   createAssetInfo,
 } from 'micro-stacks/transactions';
 
+// Utils
+import { estimateDays, getPercentage, truncate } from '@common/helpers';
+
+// Hooks
+import {
+  useBlocks,
+  useGovernanceToken,
+  useOrganization,
+  useProposal,
+  useVotingExtension,
+} from '@common/hooks';
 import { usePolling } from '@common/hooks/use-polling';
 
 const ProposalView = () => {
@@ -59,6 +70,33 @@ const ProposalView = () => {
   const { network } = useNetwork();
   const router = useRouter();
   const { dao } = router.query;
+  const { currentBlockHeight } = useBlocks();
+  const {
+    contractAddress: governanceTokenAddress,
+    contractName: governanceTokenName,
+  } = useGovernanceToken();
+  const { organization } = useOrganization();
+  const {
+    contractAddress: proposalContractAddress,
+    contractName: proposalContractName,
+  } = useProposal();
+  const {
+    contractAddress: votingExtensionAddress,
+    contractName: votingExtensionName,
+  } = useVotingExtension();
+  const {
+    title,
+    description,
+    type,
+    contractAddress,
+    proposer,
+    contractName,
+    concluded,
+    startBlockHeight,
+    endBlockHeight,
+    votesFor,
+    votesAgainst,
+  } = useProposal();
 
   const toast = useToast();
 
@@ -74,46 +112,56 @@ const ProposalView = () => {
     exit: { opacity: 0, x: 0, y: -15 },
   };
 
-  usePolling(() => {
-    console.log('make api call');
-  }, true);
+  // usePolling(() => {
+  //   console.log({ proposals });
+  // }, true);
 
-  const contractAddress = 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A';
-  const contractName = 'citycoin-token';
-  const functionName = 'burn';
-
-  const functionArgs = [
-    uintCV(10),
-    principalCV('ST143YHR805B8S834BWJTMZVFR1WP5FFC00V8QTV4'),
-  ];
-  const postConditionAddress =
-    currentStxAddress || 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A';
-  const postConditionCode = FungibleConditionCode.LessEqual;
-  const postConditionAmount = 10;
-  const fungibleAssetInfo = createAssetInfo(
-    contractAddress,
-    contractName,
-    'citycoins',
-  );
-  const postConditions = [
-    makeStandardFungiblePostCondition(
-      postConditionAddress,
-      postConditionCode,
-      postConditionAmount,
-      fungibleAssetInfo,
-    ),
-  ];
-
-  const { handleContractCall, isLoading } = useContractCall({
-    contractAddress,
-    contractName,
-    functionName,
-    functionArgs,
-    postConditions,
+  console.log({
+    governanceTokenAddress,
+    governanceTokenName,
+    proposalContractAddress,
+    proposalContractName,
   });
 
-  const handleClick = () => {
-    handleContractCall();
+  const functionName = 'vote';
+  const postConditions: any = [];
+
+  const functionArgsFor =
+    proposalContractAddress &&
+    proposalContractName &&
+    governanceTokenAddress &&
+    governanceTokenName
+      ? [
+          boolCV(true),
+          contractPrincipalCV(proposalContractAddress, proposalContractName),
+          contractPrincipalCV(governanceTokenAddress, governanceTokenName),
+        ]
+      : [];
+  const functionArgsAgainst =
+    proposalContractAddress &&
+    proposalContractName &&
+    governanceTokenAddress &&
+    governanceTokenName
+      ? [
+          boolCV(false),
+          contractPrincipalCV(proposalContractAddress, proposalContractName),
+          contractPrincipalCV(governanceTokenAddress, governanceTokenName),
+        ]
+      : [];
+
+  const voteFor = {
+    contractAddress: votingExtensionAddress,
+    contractName: votingExtensionName,
+    functionName,
+    functionArgs: functionArgsFor,
+    postConditions,
+  };
+  const voteAgainst = {
+    contractAddress: votingExtensionAddress,
+    contractName: votingExtensionName,
+    functionName,
+    functionArgs: functionArgsAgainst,
+    postConditions,
   };
 
   return (
@@ -169,7 +217,7 @@ const ProposalView = () => {
                       bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
                       bgClip='text'
                     >
-                      SDP Disable Emergency Powers
+                      {title}
                     </Text>
                     <HStack mt='1' mb='5'>
                       <SimpleGrid
@@ -185,7 +233,7 @@ const ProposalView = () => {
                           borderColor='base.500'
                           p='2'
                         >
-                          Transfer Assets
+                          {type}
                         </Tag>
                         <Tag
                           size='sm'
@@ -194,7 +242,11 @@ const ProposalView = () => {
                           borderColor='base.500'
                           p='2'
                         >
-                          Expires ~ 3 days
+                          Expires ~{' '}
+                          {estimateDays(
+                            Number(endBlockHeight) - Number(currentBlockHeight),
+                          )}{' '}
+                          days
                         </Tag>
                         <Tag
                           size='sm'
@@ -232,9 +284,8 @@ const ProposalView = () => {
                           color: 'secondary.900',
                         }}
                       >
-                        Disables both emergency extensions and removes the
-                        ability to propose and execute any emergency proposals
-                        on behalf of the DAO.
+                        Transfers 850 STX to a multisig wallet for the purpose
+                        of paying for development costs and hosting the website.
                       </Text>
                     </Stack>
                     <Stack my='5'>
@@ -261,20 +312,20 @@ const ProposalView = () => {
                           fontSize='sm'
                           fontWeight='semibold'
                         >
-                          Yes (60%)
+                          Yes ({getPercentage(1, 1)}%)
                         </Text>
                         <Text
                           color='gray.900'
                           fontSize='sm'
                           fontWeight='semibold'
                         >
-                          No (40%)
+                          No ({getPercentage(1, 0)}%)
                         </Text>
                       </HStack>
                       <Progress
                         colorScheme='secondary'
                         size='md'
-                        value={60}
+                        value={getPercentage(1, 1)}
                         bg='base.500'
                       />
                     </Stack>
@@ -313,7 +364,7 @@ const ProposalView = () => {
                           fontWeight='medium'
                           color='light.900'
                         >
-                          SPG1..98TY
+                          {proposer && truncate(proposer, 4, 4)}
                         </Text>
                       </HStack>
                     </Box>
@@ -338,7 +389,7 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            547231
+                            {Number(startBlockHeight)}
                           </Text>
                         </HStack>
                         <HStack justify='space-between'>
@@ -354,7 +405,7 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            557672
+                            {Number(endBlockHeight)}
                           </Text>
                         </HStack>
                         <HStack justify='space-between'>
@@ -386,7 +437,12 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            ~ 3 days
+                            ~{' '}
+                            {estimateDays(
+                              Number(endBlockHeight) -
+                                Number(currentBlockHeight),
+                            )}{' '}
+                            days
                           </Text>
                         </HStack>
                       </Stack>
@@ -405,27 +461,19 @@ const ProposalView = () => {
                       justifyContent='flex-start'
                       spacing='6'
                     >
-                      <Button
-                        type='submit'
-                        isFullWidth
+                      <ContractCallButton
+                        title='Approve'
                         color='white'
                         bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                        _hover={{ opacity: 0.9 }}
-                        _active={{ opacity: 1 }}
-                        onClick={() => console.log('next')}
-                      >
-                        Approve
-                      </Button>
-                      <Button
-                        type='submit'
+                        isFullWidth
+                        {...voteFor}
+                      />
+                      <ContractCallButton
+                        title='Reject'
                         color='white'
                         isFullWidth
-                        _hover={{ opacity: 0.9 }}
-                        _active={{ opacity: 1 }}
-                        onClick={() => console.log('next')}
-                      >
-                        Reject
-                      </Button>
+                        {...voteAgainst}
+                      />
                     </HStack>
                   </motion.div>
                 </Container>
