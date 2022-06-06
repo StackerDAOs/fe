@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import {
@@ -9,12 +8,7 @@ import {
   HStack,
   SimpleGrid,
   Text,
-  useToast,
 } from '@chakra-ui/react';
-
-// Store
-import { useStore } from 'store/DeployStepStore';
-import { useStore as useDaoStore } from 'store/CreateDaoStore';
 
 // Data
 import { extensions } from '@utils/data';
@@ -30,95 +24,14 @@ import { motion } from 'framer-motion';
 // Icons
 import { FaCheck, FaTimes } from 'react-icons/fa';
 
-// Stacks
-import {
-  useAuth,
-  useNetwork,
-  useUser,
-  useCurrentStxAddress,
-  useContractCall,
-} from '@micro-stacks/react';
-import type { FinishedTxData } from 'micro-stacks/connect';
-import { fetchTransaction, fetchReadOnlyFunction } from 'micro-stacks/api';
-import { uintCV, principalCV } from 'micro-stacks/clarity';
-import {
-  FungibleConditionCode,
-  PostConditionMode,
-  makeStandardSTXPostCondition,
-  makeStandardFungiblePostCondition,
-  createAssetInfo,
-} from 'micro-stacks/transactions';
-
-import { usePolling } from '@common/hooks/use-polling';
-
-// import { Notification } from '@components/Notification';
-// import { CloseButton } from '@components/CloseButton';
-// import { useCallFunction } from '@common/hooks/use-call-function';
-// import { useTransaction } from '@common/hooks/use-transaction';
-// import ContractCallButton from 'widgets/ContractCallButton';
-
-// interface State {
-//   txId: string | null;
-//   delay: number | null;
-// }
-
 const Extensions = () => {
-  const { isSignedIn } = useAuth();
-  const currentStxAddress = useCurrentStxAddress();
-  const { network } = useNetwork();
   const router = useRouter();
   const { dao } = router.query;
-
-  const toast = useToast();
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
     enter: { opacity: 1, x: 0, y: 0 },
     exit: { opacity: 0, x: 0, y: 0 },
-  };
-
-  const SLIDE_UP_BUTTON_VARIANTS = {
-    hidden: { opacity: 0, x: 0, y: 15 },
-    enter: { opacity: 1, x: 0, y: 0 },
-    exit: { opacity: 0, x: 0, y: -15 },
-  };
-
-  const contractAddress = 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A';
-  const contractName = 'citycoin-token';
-  const functionName = 'burn';
-
-  const functionArgs = [
-    uintCV(10),
-    principalCV('ST143YHR805B8S834BWJTMZVFR1WP5FFC00V8QTV4'),
-  ];
-  const postConditionAddress =
-    currentStxAddress || 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A';
-  const postConditionCode = FungibleConditionCode.LessEqual;
-  const postConditionAmount = 10;
-  const fungibleAssetInfo = createAssetInfo(
-    contractAddress,
-    contractName,
-    'citycoins',
-  );
-  const postConditions = [
-    makeStandardFungiblePostCondition(
-      postConditionAddress,
-      postConditionCode,
-      postConditionAmount,
-      fungibleAssetInfo,
-    ),
-  ];
-
-  const { handleContractCall, isLoading } = useContractCall({
-    contractAddress,
-    contractName,
-    functionName,
-    functionArgs,
-    postConditions,
-  });
-
-  const handleClick = () => {
-    handleContractCall();
   };
 
   return (

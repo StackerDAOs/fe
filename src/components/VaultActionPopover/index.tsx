@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
@@ -10,9 +9,6 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-
-// Data
-import { items } from '@utils/data';
 
 // Components
 import { Card } from '@components/Card';
@@ -44,7 +40,7 @@ export const VaultActionPopover = () => {
             <SimpleGrid columns={{ base: 1 }}>
               <Stack spacing='4' direction='row' p='3'>
                 <Stack spacing='1'>
-                  <Link href={`/dashboard/${dao}/proposals/create`}>
+                  <Link href={`/dashboard/${dao}/proposals/create/transfer`}>
                     <a>
                       <Card
                         bg='base.900'

@@ -1,19 +1,9 @@
-import * as React from 'react';
-import {
-  Badge,
-  Box,
-  Heading,
-  IconButton,
-  HStack,
-  VStack,
-  SimpleGrid,
-  Text,
-  useColorModeValue as mode,
-} from '@chakra-ui/react';
+import { Badge, IconButton, HStack, VStack, Text } from '@chakra-ui/react';
 
 // Components
 import { Stat } from '@components/Stat';
 
+// Icons
 import { FaMoneyBill } from 'react-icons/fa';
 
 export const DashboardProfile = () => {

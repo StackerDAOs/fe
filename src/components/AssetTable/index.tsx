@@ -11,6 +11,7 @@ import {
   Td,
   Text,
   Tr,
+  Skeleton,
   useColorModeValue as mode,
 } from '@chakra-ui/react';
 import { FiExternalLink } from 'react-icons/fi';
@@ -19,12 +20,12 @@ type AssetTableProps = {
   type: string;
 };
 
-// Store
-import { useStore as VaultStore } from 'store/VaultStore';
+// Hooks
+import { useBalance } from '@common/hooks';
 
 export const AssetTable = (props: TableProps & AssetTableProps) => {
   const { type } = props;
-  const { balance } = VaultStore();
+  const { isLoading, balance } = useBalance();
   const { non_fungible_tokens, fungible_tokens } = balance;
   const fungibleTokens: any = Object.assign({}, fungible_tokens);
   const fungibleTokensList = Object.keys(fungibleTokens).map((key) => {
@@ -48,53 +49,55 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
     type === 'fungible' ? fungibleTokensList : nonFungibleTokensList;
 
   return (
-    <Table {...props}>
-      <Thead bg='base.900'>
-        <Tr>
-          <Th bg='base.900' border='none'>
-            Name
-          </Th>
-          <Th bg='base.900' border='none'>
-            Balance
-          </Th>
-          <Th bg='base.900' border='none'></Th>
-        </Tr>
-      </Thead>
-      <Tbody color={mode('base.900', 'light.900')}>
-        {listItems.map((item) => (
-          <Tr
-            key={item.name}
-            borderTop={`1px solid #1F2129`}
-            borderBottom={`1px solid #1F2129`}
-            cursor='pointer'
-            _hover={{
-              bg: 'base.800',
-            }}
-          >
-            <Td border='none'>
-              <HStack spacing='3'>
-                <Avatar src={'https://bit.ly/sage-adebayo'} boxSize='8' />
-                <Text color='muted'>{item.name}</Text>
-                <Text color='gray.900'>GVT</Text>
-              </HStack>
-            </Td>
-            <Td border='none'>
-              <Badge size='md' colorScheme='base'>
-                {item.balance}
-              </Badge>
-            </Td>
-            <Td border='none'>
-              <HStack spacing='1'>
-                <IconButton
-                  icon={<FiExternalLink />}
-                  variant='ghost'
-                  aria-label='View on Stacks Explorer'
-                />
-              </HStack>
-            </Td>
+    <Skeleton isLoaded={!isLoading}>
+      <Table {...props}>
+        <Thead bg='base.900'>
+          <Tr>
+            <Th bg='base.900' border='none'>
+              Name
+            </Th>
+            <Th bg='base.900' border='none'>
+              Balance
+            </Th>
+            <Th bg='base.900' border='none'></Th>
           </Tr>
-        ))}
-      </Tbody>
-    </Table>
+        </Thead>
+        <Tbody color={mode('base.900', 'light.900')}>
+          {listItems.map((item) => (
+            <Tr
+              key={item.name}
+              borderTop={`1px solid #1F2129`}
+              borderBottom={`1px solid #1F2129`}
+              cursor='pointer'
+              _hover={{
+                bg: 'base.800',
+              }}
+            >
+              <Td border='none'>
+                <HStack spacing='3'>
+                  <Avatar src={'https://bit.ly/sage-adebayo'} boxSize='8' />
+                  <Text color='muted'>{item.name}</Text>
+                  <Text color='gray.900'>GVT</Text>
+                </HStack>
+              </Td>
+              <Td border='none'>
+                <Badge size='md' colorScheme='base'>
+                  {item.balance}
+                </Badge>
+              </Td>
+              <Td border='none'>
+                <HStack spacing='1'>
+                  <IconButton
+                    icon={<FiExternalLink />}
+                    variant='ghost'
+                    aria-label='View on Stacks Explorer'
+                  />
+                </HStack>
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </Skeleton>
   );
 };

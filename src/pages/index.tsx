@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import Link from 'next/link';
 import {
   Box,
@@ -11,40 +10,10 @@ import {
 
 import { motion } from 'framer-motion';
 
-import { useUser, useNetwork } from '@micro-stacks/react';
-import { fetchReadOnlyFunction } from 'micro-stacks/api';
-import { standardPrincipalCV } from 'micro-stacks/clarity';
-
 // Components
 import { DefaultLayout } from '@components/Layout/DefaultLayout';
 
 const Index = () => {
-  const { currentStxAddress } = useUser();
-  const { network } = useNetwork();
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const balance = await fetchReadOnlyFunction({
-          network,
-          contractAddress: 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27',
-          contractName: 'miamicoin-token',
-          senderAddress: currentStxAddress,
-          functionArgs: [
-            standardPrincipalCV(
-              currentStxAddress || 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27',
-            ),
-          ],
-          functionName: 'get-balance',
-        });
-        console.log({ balance });
-      } catch (error) {
-        console.log({ error });
-      }
-    }
-    fetchData();
-  }, [currentStxAddress, network]);
-
   const SLIDE_UP_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 15 },
     enter: { opacity: 1, x: 0, y: 0 },

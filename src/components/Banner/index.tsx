@@ -1,9 +1,7 @@
-import * as React from 'react';
 import {
   Box,
   Button,
   CloseButton,
-  Container,
   Icon,
   Square,
   Stack,

@@ -6,26 +6,33 @@ import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
 import { fetchReadOnlyFunction, fetchContractSource } from 'micro-stacks/api';
 import { contractPrincipalCV } from 'micro-stacks/clarity';
 
-import { useOrganization } from './use-organization';
+import { useOrganization, useContractEvents } from '../hooks';
 
 import { pluckSourceCode } from '@common/helpers';
 
 interface IProposal {
-  proposal?: Proposal;
-}
-
-type Proposal = {
   contractAddress?: string;
   contractName?: string;
-};
+  filterByProposal?: string;
+}
 
-export function useProposal({ proposal }: IProposal = {}) {
+export function useProposal({
+  contractAddress,
+  contractName,
+  filterByProposal,
+}: IProposal = {}) {
   // TODO: check if slug is present and return error if not
   // TODO: check if oranization exists before checking balance
   const [state, setState] = useState<any>({});
   const router = useRouter();
-  const { id: proposalPrincipal } = router.query;
+  const { id: proposalPrincipal } = router.query as any;
+  console.log(router.query);
   const { organization } = useOrganization();
+  const { events: voteEvents } = useContractEvents({
+    extensionName: 'Voting',
+    filter: 'vote',
+    filterByProposal,
+  });
   const { network } = useNetwork();
   const currentStxAddress = useCurrentStxAddress();
   const proposalInfo = proposalPrincipal
@@ -33,10 +40,10 @@ export function useProposal({ proposal }: IProposal = {}) {
         contractAddress: proposalPrincipal.split('.')[0],
         contractName: proposalPrincipal.split('.')[1],
       }
-    : proposal?.contractAddress && proposal?.contractName
+    : contractAddress && contractName
     ? {
-        contractAddress: proposal?.contractAddress,
-        contractName: proposal?.contractName,
+        contractAddress,
+        contractName,
       }
     : null;
 
@@ -48,11 +55,12 @@ export function useProposal({ proposal }: IProposal = {}) {
       const contractAddress = proposalVoting?.contract_address.split('.')[0];
       const contractName = proposalVoting?.contract_address.split('.')[1];
       const senderAddress = currentStxAddress;
+      console.log({ proposalPrincipal });
       const functionArgs = proposalInfo
         ? [
             contractPrincipalCV(
-              proposalInfo.contractAddress,
-              proposalInfo.contractName,
+              'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              'sdp-nft-dao',
             ),
           ]
         : [];
@@ -78,7 +86,6 @@ export function useProposal({ proposal }: IProposal = {}) {
           tip: '',
         });
 
-        console.log({ contractSource });
         const { source } = contractSource;
         const title = pluckSourceCode(source, 'title');
         const description = pluckSourceCode(source, 'description');
@@ -86,13 +93,14 @@ export function useProposal({ proposal }: IProposal = {}) {
         setState({
           contractAddress: proposalPrincipal
             ? proposalInfo?.contractAddress
-            : proposal?.contractAddress,
+            : contractAddress,
           contractName: proposalPrincipal
             ? proposalInfo?.contractName
-            : proposal?.contractName,
+            : contractName,
           title,
           description,
           type,
+          events: voteEvents,
           ...proposalData,
         });
       } catch (e: any) {

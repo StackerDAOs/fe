@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
-import { useRouter } from 'next/router';
 import {
   Button,
   ButtonGroup,
+  ButtonProps,
   Stack,
   Spinner,
   Text,
@@ -16,12 +16,7 @@ import { useStore as useCommunityStepStore } from 'store/CommunityStepStore';
 // Stacks
 import type { FinishedTxData } from 'micro-stacks/connect';
 import { StacksTestnet } from 'micro-stacks/network';
-import { useUser, useContractDeploy } from '@micro-stacks/react';
-import {
-  FungibleConditionCode,
-  makeStandardSTXPostCondition,
-} from 'micro-stacks/transactions';
-import { uintCV } from 'micro-stacks/clarity';
+import { useContractDeploy } from '@micro-stacks/react';
 import { fetchTransaction } from 'micro-stacks/api';
 
 // Hooks
@@ -32,19 +27,17 @@ import { Notification } from '@components/Notification';
 import { CloseButton } from '@components/CloseButton';
 
 type ContractDeployType = {
+  title?: string;
   codeBody: string;
   contractName: string;
 };
 
-export const ContractDeployButton = ({
-  codeBody,
-  contractName,
-}: ContractDeployType) => {
-  const { currentStxAddress } = useUser();
-  const router = useRouter();
+export const ContractDeployButton = (
+  props: ButtonProps & ContractDeployType,
+) => {
   const network = new StacksTestnet();
   const toast = useToast();
-  const { maxSteps, currentStep, setStep } = useCommunityStepStore();
+  const { currentStep, setStep } = useCommunityStepStore();
   const [transaction, setTransaction] = useState({
     txId: '',
     isPending: false,
@@ -254,6 +247,7 @@ export const ContractDeployButton = ({
     });
   }, []);
 
+  const { title, contractName, codeBody } = props;
   const { handleContractDeploy, isLoading } = useContractDeploy({
     codeBody,
     contractName,
@@ -261,39 +255,15 @@ export const ContractDeployButton = ({
     onCancel,
   });
 
-  if (maxSteps === currentStep) {
-    return (
-      <Button
-        type='submit'
-        color='white'
-        bgGradient={mode(
-          'linear(to-br, secondaryGradient.900, secondary.900)',
-          'linear(to-br, primaryGradient.900, primary.900)',
-        )}
-        _hover={{ opacity: 0.9 }}
-        _active={{ opacity: 1 }}
-        onClick={() =>
-          router.push(`/dashboard/${currentStxAddress}.${contractName}`)
-        }
-      >
-        View dashboard
-      </Button>
-    );
-  }
-
   return (
     <Button
+      {...props}
       type='submit'
-      color='white'
-      bgGradient={mode(
-        'linear(to-br, secondaryGradient.900, secondary.900)',
-        'linear(to-br, primaryGradient.900, primary.900)',
-      )}
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
       onClick={() => handleContractDeploy()}
     >
-      {isLoading ? <Spinner /> : 'Deploy'}
+      {isLoading ? <Spinner /> : title || 'Deploy'}
     </Button>
   );
 };

@@ -1,5 +1,5 @@
 // Hook (use-balance.tsx)
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { useNetwork } from '@micro-stacks/react';
@@ -12,6 +12,7 @@ import { useOrganization } from './use-organization';
 export function useBalance() {
   // TODO: check if slug is present and return error if not
   // TODO: check if oranization exists before checking balance
+  const [isLoading, setIsLoading] = useState(true);
   const { organization } = useOrganization();
   const { network } = useNetwork();
 
@@ -30,6 +31,7 @@ export function useBalance() {
           principal,
         });
         setBalance(balance);
+        setIsLoading(false);
       } catch (error) {
         console.log({ error });
       }
@@ -37,5 +39,5 @@ export function useBalance() {
     fetchBalance();
   }, [organization]);
 
-  return { balance };
+  return { isLoading, balance };
 }

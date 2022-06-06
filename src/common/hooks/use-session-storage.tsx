@@ -1,7 +1,7 @@
 // Hook (use-session-storage.tsx)
 import { useState, useEffect } from 'react';
 
-const useSessionStorage = (name: string) => {
+export const useSessionStorage = (name: string) => {
   const [value, setValue] = useState<string | null>('');
 
   useEffect(() => {
@@ -10,5 +10,3 @@ const useSessionStorage = (name: string) => {
 
   return value;
 };
-
-export default useSessionStorage;

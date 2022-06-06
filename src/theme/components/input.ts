@@ -4,14 +4,11 @@ const variants = {
   outline: (props: StyleFunctionProps) => ({
     field: {
       borderRadius: 'lg',
-      bg: mode('white', 'gray.800')(props),
+      bg: 'base.900',
       _hover: { borderColor: mode('gray.300', 'gray.600')(props) },
       _focus: {
-        borderColor: mode('brand.500', 'brand.200')(props),
-        boxShadow: mode(
-          `0px 0px 0px 1px ${transparentize(`brand.500`, 1.0)(props.theme)}`,
-          `0px 0px 0px 1px ${transparentize(`brand.200`, 1.0)(props.theme)}`,
-        )(props),
+        borderColor: 'base.800',
+        boxShadow: `0px 0px 0px 1px ${transparentize(`secondary.900`, 1.0)(props.theme)}`,
       },
     },
     addon: {
@@ -57,7 +54,7 @@ const variants = {
     return {
       field: {
         bg: 'bg-accent-subtle',
-        color: 'on-accent',
+        color: 'light.900',
         _placeholder: {
           color: 'on-accent',
         },

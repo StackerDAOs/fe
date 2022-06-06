@@ -1,23 +1,18 @@
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-
 import {
   Box,
-  Button,
+  Badge,
   Container,
   Divider,
   HStack,
+  Icon,
   Progress,
   Stack,
   VStack,
   SimpleGrid,
   Tag,
   Text,
-  useToast,
 } from '@chakra-ui/react';
-
-// Data
-import { transactions } from '@utils/data';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
@@ -30,26 +25,11 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 import { motion } from 'framer-motion';
 
 // Icons
-import { FaArrowLeft, FaTag, FaVoteYea, FaRocket } from 'react-icons/fa';
+import { FaArrowLeft, FaCheckCircle, FaVoteYea } from 'react-icons/fa';
+import { HiX } from 'react-icons/hi';
 
 // Stacks
-import {
-  useAuth,
-  useNetwork,
-  useUser,
-  useCurrentStxAddress,
-  useContractCall,
-} from '@micro-stacks/react';
-import type { FinishedTxData } from 'micro-stacks/connect';
-import { fetchContractSource, fetchReadOnlyFunction } from 'micro-stacks/api';
-import { boolCV, contractPrincipalCV, principalCV } from 'micro-stacks/clarity';
-import {
-  FungibleConditionCode,
-  PostConditionMode,
-  makeStandardSTXPostCondition,
-  makeStandardFungiblePostCondition,
-  createAssetInfo,
-} from 'micro-stacks/transactions';
+import { boolCV, contractPrincipalCV } from 'micro-stacks/clarity';
 
 // Utils
 import { estimateDays, getPercentage, truncate } from '@common/helpers';
@@ -58,28 +38,19 @@ import { estimateDays, getPercentage, truncate } from '@common/helpers';
 import {
   useBlocks,
   useGovernanceToken,
-  useOrganization,
   useProposal,
   useVotingExtension,
 } from '@common/hooks';
-import { usePolling } from '@common/hooks/use-polling';
 
 const ProposalView = () => {
-  const { isSignedIn } = useAuth();
-  const currentStxAddress = useCurrentStxAddress();
-  const { network } = useNetwork();
   const router = useRouter();
-  const { dao } = router.query;
+  const { id: proposalPrincipal } = router.query as any;
   const { currentBlockHeight } = useBlocks();
   const {
     contractAddress: governanceTokenAddress,
     contractName: governanceTokenName,
+    votingWeight,
   } = useGovernanceToken();
-  const { organization } = useOrganization();
-  const {
-    contractAddress: proposalContractAddress,
-    contractName: proposalContractName,
-  } = useProposal();
   const {
     contractAddress: votingExtensionAddress,
     contractName: votingExtensionName,
@@ -88,17 +59,16 @@ const ProposalView = () => {
     title,
     description,
     type,
-    contractAddress,
+    contractAddress: proposalContractAddress,
+    contractName: proposalContractName,
     proposer,
-    contractName,
     concluded,
     startBlockHeight,
     endBlockHeight,
     votesFor,
     votesAgainst,
-  } = useProposal();
-
-  const toast = useToast();
+    events,
+  } = useProposal({ filterByProposal: proposalPrincipal });
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -111,17 +81,6 @@ const ProposalView = () => {
     enter: { opacity: 1, x: 0, y: 0 },
     exit: { opacity: 0, x: 0, y: -15 },
   };
-
-  // usePolling(() => {
-  //   console.log({ proposals });
-  // }, true);
-
-  console.log({
-    governanceTokenAddress,
-    governanceTokenName,
-    proposalContractAddress,
-    proposalContractName,
-  });
 
   const functionName = 'vote';
   const postConditions: any = [];
@@ -164,6 +123,9 @@ const ProposalView = () => {
     postConditions,
   };
 
+  const totalVotes = Number(votesFor) + Number(votesAgainst);
+  console.log('totalVotes: ', totalVotes);
+
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -198,7 +160,7 @@ const ProposalView = () => {
           <Box py='5'>
             <SimpleGrid
               columns={{ base: 1, md: 1, lg: 2 }}
-              alignItems='baseline'
+              alignItems='flex-start'
             >
               <Box as='section'>
                 <VStack
@@ -211,14 +173,17 @@ const ProposalView = () => {
                   color='white'
                 >
                   <Box>
-                    <Text
-                      fontSize='4xl'
-                      fontWeight='medium'
-                      bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                      bgClip='text'
-                    >
-                      {title}
-                    </Text>
+                    <HStack>
+                      <Text
+                        fontSize='4xl'
+                        fontWeight='medium'
+                        bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
+                        bgClip='text'
+                      >
+                        {title}
+                      </Text>
+                    </HStack>
+
                     <HStack mt='1' mb='5'>
                       <SimpleGrid
                         display='flex'
@@ -284,8 +249,7 @@ const ProposalView = () => {
                           color: 'secondary.900',
                         }}
                       >
-                        Transfers 850 STX to a multisig wallet for the purpose
-                        of paying for development costs and hosting the website.
+                        {description}
                       </Text>
                     </Stack>
                     <Stack my='5'>
@@ -312,20 +276,21 @@ const ProposalView = () => {
                           fontSize='sm'
                           fontWeight='semibold'
                         >
-                          Yes ({getPercentage(1, 1)}%)
+                          Yes ({getPercentage(totalVotes, Number(votesFor))}%)
                         </Text>
                         <Text
                           color='gray.900'
                           fontSize='sm'
                           fontWeight='semibold'
                         >
-                          No ({getPercentage(1, 0)}%)
+                          No ({getPercentage(totalVotes, Number(votesAgainst))}
+                          %)
                         </Text>
                       </HStack>
                       <Progress
                         colorScheme='secondary'
                         size='md'
-                        value={getPercentage(1, 1)}
+                        value={getPercentage(totalVotes, Number(votesFor))}
                         bg='base.500'
                       />
                     </Stack>
@@ -334,11 +299,29 @@ const ProposalView = () => {
               </Box>
               <Box as='section' display='flex' justifyContent='center'>
                 <Container>
-                  <Card
-                    border='1px solid rgb(134, 143, 152)'
-                    onClick={() => router.push(`/dashboard/${dao}/proposals/1`)}
-                    _hover={{ cursor: 'pointer', bg: 'base.800' }}
-                  >
+                  <HStack justify='center' mb='5'>
+                    <Badge
+                      variant='subtle'
+                      bg='base.800'
+                      color='gray.900'
+                      px='3'
+                      py='2'
+                    >
+                      <HStack spacing='2'>
+                        <Icon color='secondary.900' as={FaCheckCircle} />
+                        <Text color='light.900' fontWeight='regular'>
+                          Voting power:
+                        </Text>
+                        <Text color='light.900' fontWeight='regular'>
+                          {votingWeight}{' '}
+                          <Text as='span' color='gray.900' fontWeight='medium'>
+                            MEGA
+                          </Text>
+                        </Text>
+                      </HStack>
+                    </Badge>
+                  </HStack>
+                  <Card border='1px solid rgb(134, 143, 152)'>
                     <Box
                       py={{ base: '3', md: '3' }}
                       px={{ base: '6', md: '6' }}
@@ -475,6 +458,17 @@ const ProposalView = () => {
                         {...voteAgainst}
                       />
                     </HStack>
+                    <HStack justify='center' my='5'>
+                      <Text
+                        cursor='pointer'
+                        fontSize='sm'
+                        fontWeight='regular'
+                        color='gray.900'
+                        _hover={{ textDecoration: 'underline' }}
+                      >
+                        View contract source code
+                      </Text>
+                    </HStack>
                   </motion.div>
                 </Container>
               </Box>
@@ -504,14 +498,17 @@ const ProposalView = () => {
                             Activity
                           </Text>
                           <Text color='gray.900' fontSize='sm'>
-                            View the latest transactions for the DAO.
+                            View the latest activity for the current proposal.
                           </Text>
                         </Box>
                       </Stack>
                     </Stack>
                     <Box cursor='pointer'>
-                      {transactions.map(
-                        ({ title, createdBy, createdAt, type }, index) => (
+                      {events?.map(
+                        (
+                          { amount, event, for: vote, proposal, voter }: any,
+                          index: number,
+                        ) => (
                           <Stack
                             key={index}
                             color='white'
@@ -528,19 +525,37 @@ const ProposalView = () => {
                               justifyContent='space-between'
                             >
                               <HStack spacing='3'>
-                                {type === 'submission' ? (
-                                  <FaTag fontSize='0.85rem' />
-                                ) : type === 'deploy' ? (
-                                  <FaRocket fontSize='0.85rem' />
-                                ) : (
+                                {vote?.value ? (
                                   <FaVoteYea fontSize='0.85rem' />
+                                ) : (
+                                  <HiX fontSize='0.85rem' />
                                 )}
                                 <Text
                                   fontSize='sm'
                                   fontWeight='medium'
                                   color='light.900'
                                 >
-                                  {title}
+                                  {`${
+                                    vote?.value
+                                      ? 'Delegate approval'
+                                      : 'Delegate rejection'
+                                  }`}
+                                </Text>
+                              </HStack>
+                              <HStack spacing='3'>
+                                <Text
+                                  fontSize='sm'
+                                  fontWeight='regular'
+                                  color='light.900'
+                                >
+                                  {amount?.value}
+                                </Text>
+                                <Text
+                                  fontSize='sm'
+                                  fontWeight='medium'
+                                  color='gray.900'
+                                >
+                                  MEGA
                                 </Text>
                               </HStack>
                               <HStack spacing='3'>
@@ -549,14 +564,14 @@ const ProposalView = () => {
                                   fontWeight='regular'
                                   color='gray.900'
                                 >
-                                  {createdBy}
+                                  submitted by
                                 </Text>
                                 <Text
                                   fontSize='xs'
                                   fontWeight='regular'
                                   color='gray.900'
                                 >
-                                  {createdAt}
+                                  {voter && truncate(voter?.value, 4, 4)}
                                 </Text>
                               </HStack>
                             </Stack>

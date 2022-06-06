@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   Box,
   Button,
@@ -25,14 +24,7 @@ import { FiExternalLink } from 'react-icons/fi';
 // Components
 import { ActionModal } from '@components/Modal';
 
-import { sendFunds } from '@utils/proposals';
-
 export const VaultTransactionList = () => {
-  const isActivated = true; // TODO: check if all contracts are deployed and mined
-  const handleDeployContract = async () => {
-    const contract = await sendFunds(10, '12345');
-    alert(contract);
-  };
   return (
     <Box color={mode('base.900', 'light.900')}>
       <Stack spacing='5'>
@@ -93,7 +85,7 @@ export const VaultTransactionList = () => {
             <ActionModal
               payload={{
                 header: 'Send funds',
-                action: { title: 'Deploy', event: handleDeployContract },
+                action: { title: 'Deploy', event: () => console.log('deploy') },
                 button: { title: 'Send funds', type: 'secondary' },
               }}
             >

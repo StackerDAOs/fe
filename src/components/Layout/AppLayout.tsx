@@ -1,18 +1,4 @@
-import { useEffect } from 'react';
-import {
-  Box,
-  Container,
-  Stack,
-  Heading,
-  HStack,
-  StackDivider,
-  VStack,
-  useBreakpointValue,
-  useColorModeValue as mode,
-} from '@chakra-ui/react';
-
-// Store
-import { useStore } from 'store/CommunityStepStore';
+import { Box, Container } from '@chakra-ui/react';
 
 // Animations
 import { motion } from 'framer-motion';

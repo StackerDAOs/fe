@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { Box, BoxProps, useColorModeValue as mode } from '@chakra-ui/react';
+import { Box, BoxProps } from '@chakra-ui/react';
 
 export const Card = (props: BoxProps) => (
   <Box

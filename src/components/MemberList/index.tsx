@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   Box,
   Button,
@@ -17,7 +16,6 @@ import { FiExternalLink } from 'react-icons/fi';
 import { ActionModal } from '@components/Modal';
 
 export const MemberList = () => {
-  const isActivated = true; // TODO: check if all contracts are deployed and mined
   return (
     <Box color={mode('base.900', 'light.900')}>
       <Stack spacing='5'>

@@ -1,29 +1,5 @@
-import * as React from 'react';
-import {
-  Box,
-  BoxProps,
-  Button,
-  Modal,
-  ModalBody,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  FormControl,
-  FormLabel,
-  Input,
-  Divider,
-  Stack,
-  Text,
-  useColorModeValue as mode,
-} from '@chakra-ui/react';
+import { BoxProps, Divider, Stack, Text } from '@chakra-ui/react';
 import { StepCircle } from '@components/StepCircle';
-
-// Store
-import { useStore } from 'store/DeployStepStore';
-
-// Components
-import { ActionModal } from '@components/Modal';
 
 interface StepProps extends BoxProps {
   title: string;
@@ -44,12 +20,6 @@ export const VerticalStep = (props: StepProps) => {
     payload,
     ...stackProps
   } = props;
-  const { currentStep, setStep } = useStore();
-
-  const handleClick = () => {
-    // TODO: open modal for review and deploy
-    setStep(currentStep + 1);
-  };
 
   return (
     <Stack spacing='4' direction='row' {...stackProps}>

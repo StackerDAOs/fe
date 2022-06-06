@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
@@ -15,19 +14,13 @@ import {
 
 // Icons
 import { FiMenu } from 'react-icons/fi';
-import { FaCircle } from 'react-icons/fa';
 
 // Components
-// import { ColorModeSwitcher } from '@components/ColorModeSwitcher';
-import { WalletConnectButton } from '@components/WalletConnectButton';
 import { ProjectsPopover } from '@components/ProjectsPopover';
 
 // Web3
 import { useUser, useNetwork, useIsSignedIn } from '@micro-stacks/react';
 import { fetchNamesByAddress } from 'micro-stacks/api';
-
-// Utils
-import { truncate } from '@common/helpers';
 
 export const Navbar = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,7 +28,6 @@ export const Navbar = () => {
   const { currentStxAddress } = useUser();
   const isSignedIn = useIsSignedIn();
   const { network } = useNetwork();
-  const { colorMode } = useColorMode();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   useEffect(() => {
     async function fetch() {

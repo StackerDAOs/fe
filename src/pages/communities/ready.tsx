@@ -1,4 +1,3 @@
-import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -27,11 +26,10 @@ import { Card } from '@components/Card';
 import { LaunchCommunityLayout } from '@components/LaunchCommunityLayout';
 
 // Widgets
-import { ContractCallButton } from '@widgets/ContractCallButton';
 import { ContractDeployButton } from '@widgets/ContractDeployButton';
 
 const Ready = () => {
-  const { maxSteps, currentStep, setStep } = useCommunityStepStore();
+  const { currentStep, setStep } = useCommunityStepStore();
   const router = useRouter();
 
   const SLIDE_UP_VARIANTS = {

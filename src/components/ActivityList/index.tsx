@@ -1,7 +1,5 @@
-import * as React from 'react';
 import {
   Box,
-  Button,
   HStack,
   Stack,
   Square,
@@ -18,7 +16,7 @@ import { FiExternalLink } from 'react-icons/fi';
 import { ActionModal } from '@components/Modal';
 
 export const ActivityList = () => {
-  const isActivated = true; // TODO: check if all contracts are deployed and mined
+  const isActivated = true;
 
   return (
     <Box

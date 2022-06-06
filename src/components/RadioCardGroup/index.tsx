@@ -50,7 +50,7 @@ export const RadioCardGroup = <T extends string>(
 };
 
 interface RadioCardProps extends BoxProps {
-  value: string;
+  value?: string;
   radioProps?: UseRadioProps;
 }
 

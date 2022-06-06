@@ -5,27 +5,28 @@ import {
   Box,
   Button,
   Container,
+  Divider,
+  FormControl,
+  FormLabel,
+  Input,
   HStack,
   Stack,
   VStack,
   SimpleGrid,
-  Tabs,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
   Text,
-  useToast,
+  Textarea,
 } from '@chakra-ui/react';
 
-// Data
-import { transactions } from '@utils/data';
+// Utils
+import { truncate } from '@common/helpers';
+import { sendFunds } from '@utils/proposals';
 
-// Store
-import { useStore as useDaoStore } from 'store/CreateDaoStore';
+// Widgets
+import { ContractDeployButton } from '@widgets/ContractDeployButton';
 
 // Hooks
 import { useStep } from '@common/hooks/use-step';
+import { useRandomName } from '@common/hooks';
 
 // Data
 import { transferAssetsSteps } from '@utils/data';
@@ -34,61 +35,45 @@ import { transferAssetsSteps } from '@utils/data';
 import { AppLayout } from '@components/Layout/AppLayout';
 import { RadioCard, RadioCardGroup } from '@components/RadioCardGroup';
 import { VerticalStep } from '@components/VerticalStep';
-import { VaultActionPopover } from '@components/VaultActionPopover';
+import { Card } from '@components/Card';
 
 //  Animation
 import { motion } from 'framer-motion';
 
 // Icons
-import { FaArrowLeft, FaTag, FaVoteYea, FaRocket } from 'react-icons/fa';
+import { FaArrowLeft } from 'react-icons/fa';
 
 // Stacks
-import {
-  useAuth,
-  useNetwork,
-  useUser,
-  useCurrentStxAddress,
-  useContractCall,
-} from '@micro-stacks/react';
-import type { FinishedTxData } from 'micro-stacks/connect';
-import { fetchTransaction, fetchReadOnlyFunction } from 'micro-stacks/api';
-import { uintCV, principalCV } from 'micro-stacks/clarity';
-import {
-  FungibleConditionCode,
-  PostConditionMode,
-  makeStandardSTXPostCondition,
-  makeStandardFungiblePostCondition,
-  createAssetInfo,
-} from 'micro-stacks/transactions';
+import { useAuth, useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
 
-import { usePolling } from '@common/hooks/use-polling';
-import { AssetTable } from '@components/AssetTable';
+interface State {
+  selectedAssetType: string;
+  selectedAsset: string;
+  transferAmount: string;
+  transferTo: string;
+  description: string;
+}
 
-// import { Notification } from '@components/Notification';
-// import { CloseButton } from '@components/CloseButton';
-// import { useCallFunction } from '@common/hooks/use-call-function';
-// import { useTransaction } from '@common/hooks/use-transaction';
-// import ContractCallButton from 'widgets/ContractCallButton';
+const initialState: State = {
+  selectedAssetType: 'Token',
+  selectedAsset: '',
+  transferAmount: '',
+  transferTo: '',
+  description: '',
+};
 
-// interface State {
-//   txId: string | null;
-//   delay: number | null;
-// }
-
-const TransferProposal = () => {
-  const { isSignedIn } = useAuth();
+const CreateProposal = () => {
+  const [state, setState] = useState<State>(initialState);
   const currentStxAddress = useCurrentStxAddress();
-  const { network } = useNetwork();
   const router = useRouter();
-  const { dao } = router.query;
 
   // Store
-  const [currentStep, { setStep }] = useStep({
-    maxStep: transferAssetsSteps.length,
+  const [currentStep, { setStep, canGoToNextStep }] = useStep({
+    maxStep: transferAssetsSteps.length - 1,
     initialStep: 0,
   });
 
-  const toast = useToast();
+  const generateContractName = useRandomName();
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -102,32 +87,277 @@ const TransferProposal = () => {
     exit: { opacity: 0, x: 0, y: -15 },
   };
 
-  // usePolling(() => {
-  //   console.log('make api call');
-  // }, 7500);
+  const ViewStep = () => {
+    switch (currentStep) {
+      case 0:
+        return <SelectAssetTypeList />;
+      case 1:
+        return <SelectAssetList />;
+      case 2:
+        return <ProposalDetails />;
+      case 3:
+        return <ProposalReview />;
+      default:
+        return <></>;
+    }
+  };
 
-  const RadioCardSelectGroup = () => (
-    <RadioCardGroup defaultValue='Token' spacing='3' direction='row'>
-      {[
-        {
-          type: 'Token',
-          description: 'i.e., STX, $ALEX, or any SIP-10 token',
-        },
-        {
-          type: 'NFT',
-          description: 'i.e., Megapont, Crash Punks, or any SIP-09 NFT',
-        },
-      ].map((option) => (
-        <RadioCard key={option.type} value={option.type} color='white'>
-          <Text color='emphasized' fontWeight='medium' fontSize='sm'>
-            {option.type}
-          </Text>
-          <Text color='gray.900' fontSize='sm'>
-            {option.description}
-          </Text>
-        </RadioCard>
-      ))}
-    </RadioCardGroup>
+  const SelectAssetTypeList = () => {
+    return (
+      <>
+        <Stack
+          spacing='4'
+          mb='3'
+          direction={{ base: 'column', md: 'row' }}
+          justify='space-between'
+          color='white'
+        >
+          <Box>
+            <Text fontSize='2xl' fontWeight='medium'>
+              Choose an asset type
+            </Text>
+            <Text color='gray.900' fontSize='sm'>
+              Select which type of asset you want to transfer.
+            </Text>
+          </Box>
+        </Stack>
+        <RadioCardGroup
+          defaultValue='Token'
+          spacing='3'
+          direction='row'
+          value={state.selectedAssetType}
+          onChange={(value: string) =>
+            setState({ ...state, selectedAssetType: value })
+          }
+        >
+          {[
+            {
+              type: 'Token',
+              description: 'i.e., STX, $ALEX, or any SIP-10 token',
+            },
+            {
+              type: 'NFT',
+              description: 'i.e., Megapont, Crash Punks, or any SIP-09 NFT',
+            },
+          ].map((option) => (
+            <RadioCard key={option.type} value={option.type} color='white'>
+              <Text color='emphasized' fontWeight='medium' fontSize='sm'>
+                {option.type}
+              </Text>
+              <Text color='gray.900' fontSize='sm'>
+                {option.description}
+              </Text>
+            </RadioCard>
+          ))}
+        </RadioCardGroup>
+      </>
+    );
+  };
+
+  const SelectAssetList = () => {
+    return (
+      <>
+        <Stack
+          spacing='4'
+          mb='3'
+          direction={{ base: 'column', md: 'row' }}
+          justify='space-between'
+          color='white'
+        >
+          <Box>
+            <Text fontSize='2xl' fontWeight='medium'>
+              Select an asset
+            </Text>
+            <Text color='gray.900' fontSize='sm'>
+              Select which asset you want to transfer.
+            </Text>
+          </Box>
+        </Stack>
+        <RadioCardGroup
+          defaultValue='Token'
+          spacing='3'
+          direction='column'
+          value={state.selectedAsset}
+          onChange={(value: string) =>
+            setState({ ...state, selectedAsset: value })
+          }
+        >
+          {[
+            {
+              type: 'STX',
+              description: 'Stacks',
+            },
+            {
+              type: 'GVT',
+              description: 'Governance Token',
+            },
+            {
+              type: 'MIA',
+              description: 'MiamiCoin',
+            },
+          ].map((option) => (
+            <RadioCard key={option.type} value={option.type} color='white'>
+              <Text color='emphasized' fontWeight='medium' fontSize='sm'>
+                {option.type}
+              </Text>
+              <Text color='gray.900' fontSize='sm'>
+                {option.description}
+              </Text>
+            </RadioCard>
+          ))}
+        </RadioCardGroup>
+      </>
+    );
+  };
+
+  const ProposalDetails = () => {
+    return (
+      <>
+        <Stack
+          spacing='4'
+          mb='3'
+          direction={{ base: 'column', md: 'row' }}
+          justify='space-between'
+          color='white'
+        >
+          <Box>
+            <Text fontSize='2xl' fontWeight='medium'>
+              Proposal Details
+            </Text>
+            <Text color='gray.900' fontSize='sm'>
+              Provide some details about your proposal.
+            </Text>
+          </Box>
+        </Stack>
+        <Stack spacing='6' direction='column'>
+          <SimpleGrid columns={2} spacing='5'>
+            <FormControl color='light.900'>
+              <FormLabel>Transfer amount</FormLabel>
+              <Input
+                placeholder='100'
+                value={state.transferAmount}
+                onChange={(
+                  e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+                ) => setState({ ...state, transferAmount: e.target.value })}
+              />
+            </FormControl>
+            <FormControl color='light.900'>
+              <FormLabel>Transfer to</FormLabel>
+              <Input
+                placeholder='SP14...'
+                value={state.transferTo}
+                onChange={(
+                  e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+                ) => setState({ ...state, transferTo: e.target.value })}
+              />
+            </FormControl>
+          </SimpleGrid>
+          <FormControl color='light.900'>
+            <FormLabel>Description</FormLabel>
+            <Textarea
+              rows={4}
+              resize='none'
+              placeholder='Transfers 100 STX to SP14...'
+              value={state.description}
+              onChange={(
+                e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+              ) => setState({ ...state, description: e.target.value })}
+            />
+          </FormControl>
+        </Stack>
+      </>
+    );
+  };
+
+  const ProposalReview = () => {
+    return (
+      <>
+        <Box as='section'>
+          <VStack
+            align='left'
+            spacing='4'
+            mb='3'
+            direction={{ base: 'column', md: 'row' }}
+            justify='space-between'
+            color='white'
+          >
+            <Card border='1px solid rgb(134, 143, 152)'>
+              <Box py={{ base: '3', md: '3' }} px={{ base: '6', md: '6' }}>
+                <Text
+                  fontSize='3xl'
+                  fontWeight='medium'
+                  bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
+                  bgClip='text'
+                  mb='1'
+                >
+                  SDP Transfer STX
+                </Text>
+                <Text color='light.900' fontSize='sm'>
+                  Review & deploy smart contract.
+                </Text>
+                <Divider my='3' borderColor='base.500' />
+                <Stack spacing='3' my='3'>
+                  <HStack justify='space-between'>
+                    <Text fontSize='sm' fontWeight='medium' color='gray.900'>
+                      Amount
+                    </Text>
+                    <Text fontSize='sm' fontWeight='medium' color='light.900'>
+                      {state.transferAmount} STX
+                    </Text>
+                  </HStack>
+                  <HStack justify='space-between'>
+                    <Text fontSize='sm' fontWeight='medium' color='gray.900'>
+                      Recipient
+                    </Text>
+                    <Text fontSize='sm' fontWeight='medium' color='light.900'>
+                      {state?.transferTo && truncate(state.transferTo, 4, 4)}
+                    </Text>
+                  </HStack>
+                  <HStack justify='space-between'>
+                    <Text fontSize='sm' fontWeight='medium' color='gray.900'>
+                      Proposer
+                    </Text>
+                    <Text fontSize='sm' fontWeight='medium' color='light.900'>
+                      {currentStxAddress && truncate(currentStxAddress, 4, 4)}
+                    </Text>
+                  </HStack>
+                </Stack>
+                <Stack my='3'>
+                  <Stack
+                    spacing='4'
+                    direction={{ base: 'column', md: 'row' }}
+                    justify='space-between'
+                    color='white'
+                  >
+                    <Box>
+                      <Text fontSize='sm' fontWeight='medium' color='gray.900'>
+                        Description
+                      </Text>
+                    </Box>
+                  </Stack>
+                  <Text
+                    fontSize='sm'
+                    _selection={{
+                      bg: 'base.800',
+                      color: 'secondary.900',
+                    }}
+                  >
+                    {state.description}
+                  </Text>
+                </Stack>
+              </Box>
+            </Card>
+          </VStack>
+        </Box>
+      </>
+    );
+  };
+
+  const contract = sendFunds(
+    state.description,
+    state.transferAmount,
+    state.transferTo,
+    currentStxAddress,
   );
 
   return (
@@ -186,7 +416,7 @@ const TransferProposal = () => {
           <Box py='5'>
             <SimpleGrid
               columns={{ base: 1, md: 1, lg: 2 }}
-              alignItems='baseline'
+              alignItems='flex-start'
             >
               <Box as='section'>
                 <VStack
@@ -201,7 +431,6 @@ const TransferProposal = () => {
                     <VerticalStep
                       key={id}
                       cursor='pointer'
-                      onClick={() => setStep(id)}
                       title={step.title}
                       description={step.description}
                       isActive={currentStep === id}
@@ -212,99 +441,7 @@ const TransferProposal = () => {
                 </VStack>
               </Box>
               <Box as='section'>
-                <Stack
-                  spacing='4'
-                  mb='3'
-                  direction={{ base: 'column', md: 'row' }}
-                  justify='space-between'
-                  color='white'
-                >
-                  <Box>
-                    <Text fontSize='2xl' fontWeight='medium'>
-                      Choose an asset type
-                    </Text>
-                    <Text color='gray.900' fontSize='sm'>
-                      Select which type of asset you want to transfer.
-                    </Text>
-                  </Box>
-                </Stack>
-                <Tabs color='white' variant='unstyled'>
-                  <TabList>
-                    {['Tokens', 'NFTs'].map((item) => (
-                      <Tab
-                        key={item}
-                        fontSize='sm'
-                        color='gray.900'
-                        _first={{ paddingLeft: '0' }}
-                        _selected={{ color: 'light.900' }}
-                      >
-                        {item}
-                      </Tab>
-                    ))}
-                  </TabList>
-                  <TabPanels>
-                    <TabPanel p='0'>
-                      <Box cursor='pointer'>
-                        {transactions.map(
-                          ({ title, createdBy, createdAt, type }, index) => (
-                            <Stack
-                              key={index}
-                              color='white'
-                              py='2'
-                              px='3'
-                              my='2'
-                              borderRadius='lg'
-                              _hover={{ bg: 'base.800' }}
-                            >
-                              <Stack
-                                direction='row'
-                                spacing='5'
-                                display='flex'
-                                justifyContent='space-between'
-                              >
-                                <HStack spacing='3'>
-                                  {type === 'submission' ? (
-                                    <FaTag fontSize='0.85rem' />
-                                  ) : type === 'deploy' ? (
-                                    <FaRocket fontSize='0.85rem' />
-                                  ) : (
-                                    <FaVoteYea fontSize='0.85rem' />
-                                  )}
-                                  <Text
-                                    fontSize='sm'
-                                    fontWeight='medium'
-                                    color='light.900'
-                                  >
-                                    {title}
-                                  </Text>
-                                </HStack>
-                                <HStack spacing='3'>
-                                  <Text
-                                    fontSize='xs'
-                                    fontWeight='regular'
-                                    color='gray.900'
-                                  >
-                                    {createdBy}
-                                  </Text>
-                                  <Text
-                                    fontSize='xs'
-                                    fontWeight='regular'
-                                    color='gray.900'
-                                  >
-                                    {createdAt}
-                                  </Text>
-                                </HStack>
-                              </Stack>
-                            </Stack>
-                          ),
-                        )}
-                      </Box>
-                    </TabPanel>
-                    <TabPanel px='0'>
-                      <AssetTable type='non_fungible' />
-                    </TabPanel>
-                  </TabPanels>
-                </Tabs>
+                <ViewStep />
                 <motion.div
                   variants={SLIDE_UP_BUTTON_VARIANTS}
                   initial={SLIDE_UP_BUTTON_VARIANTS.hidden}
@@ -312,17 +449,61 @@ const TransferProposal = () => {
                   exit={SLIDE_UP_BUTTON_VARIANTS.exit}
                   transition={{ duration: 0.75, type: 'linear' }}
                 >
-                  <HStack width='full' mt='5' justifyContent='flex-start'>
-                    <Button
-                      type='submit'
-                      color='white'
-                      _hover={{ opacity: 0.9 }}
-                      _active={{ opacity: 1 }}
-                      onClick={() => console.log('next')}
+                  {canGoToNextStep ? (
+                    <HStack
+                      mt='5'
+                      justifyContent={
+                        currentStep !== 0 ? 'space-between' : 'flex-start'
+                      }
                     >
-                      Next
-                    </Button>
-                  </HStack>
+                      {currentStep !== 0 ? (
+                        <Button
+                          type='submit'
+                          color='white'
+                          _hover={{ opacity: 0.9 }}
+                          _active={{ opacity: 1 }}
+                          onClick={() => setStep(currentStep - 1)}
+                        >
+                          Back
+                        </Button>
+                      ) : null}
+                      <Button
+                        type='submit'
+                        color='white'
+                        _hover={{ opacity: 0.9 }}
+                        _active={{ opacity: 1 }}
+                        onClick={() => setStep(currentStep + 1)}
+                      >
+                        Next
+                      </Button>
+                    </HStack>
+                  ) : (
+                    <HStack
+                      width='full'
+                      mt='5'
+                      justifyContent={
+                        currentStep !== 0 ? 'space-between' : 'flex-start'
+                      }
+                    >
+                      <Button
+                        type='submit'
+                        color='white'
+                        _hover={{ opacity: 0.9 }}
+                        _active={{ opacity: 1 }}
+                        onClick={() => setStep(currentStep - 1)}
+                      >
+                        Back
+                      </Button>
+
+                      <ContractDeployButton
+                        color='light.900'
+                        bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
+                        title='Deploy contract'
+                        contractName={generateContractName()}
+                        codeBody={contract}
+                      />
+                    </HStack>
+                  )}
                 </motion.div>
               </Box>
             </SimpleGrid>
@@ -333,6 +514,6 @@ const TransferProposal = () => {
   );
 };
 
-TransferProposal.getLayout = (page: any) => <AppLayout>{page}</AppLayout>;
+CreateProposal.getLayout = (page: any) => <AppLayout>{page}</AppLayout>;
 
-export default TransferProposal;
+export default CreateProposal;

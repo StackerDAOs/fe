@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Button,
   Modal,
@@ -10,11 +9,8 @@ import {
   useColorModeValue as mode,
 } from '@chakra-ui/react';
 
-import { sendFunds } from '@utils/proposals';
-
 export const ActionModal = ({ payload, children }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [state, setState] = useState({ amount: 0, recipientAddress: '' });
 
   return (
     <>

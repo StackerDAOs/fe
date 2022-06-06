@@ -14,15 +14,6 @@ import {
 import type { FinishedTxData } from 'micro-stacks/connect';
 import { StacksTestnet } from 'micro-stacks/network';
 import { useContractCall } from '@micro-stacks/react';
-import {
-  FungibleConditionCode,
-  makeStandardSTXPostCondition,
-} from 'micro-stacks/transactions';
-import {
-  uintCV,
-  contractPrincipalCV,
-  standardPrincipalCV,
-} from 'micro-stacks/clarity';
 import { fetchTransaction } from 'micro-stacks/api';
 
 // Hooks
@@ -170,8 +161,6 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
     functionArgs,
     postConditions,
   } = props;
-
-  console.log({ contractAddress, contractName, functionName, functionArgs });
 
   const { handleContractCall, isLoading } = useContractCall({
     contractAddress,

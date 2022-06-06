@@ -1,10 +1,3 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { Box, HStack } from '@chakra-ui/react';
-
-// Store
-import { useStore } from 'store/CommunityStepStore';
-
 // Animations
 import { motion } from 'framer-motion';
 

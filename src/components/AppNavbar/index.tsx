@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -58,13 +57,15 @@ import { fetchNamesByAddress } from 'micro-stacks/api';
 import { stxToUstx, truncate } from '@common/helpers';
 
 export const AppNavbar = () => {
-  const [loading, setLoading] = useState<boolean>(true);
   const [bns, setBns] = useState<string | undefined>('');
   const { currentStxAddress } = useUser();
-  const { isSignedIn, handleSignOut } = useAuth();
+  const { isSignedIn, handleSignIn, handleSignOut } = useAuth();
   const { network } = useNetwork();
   const router = useRouter();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
+  const switchAccount = () => {
+    handleSignIn();
+  };
   const signOut = () => {
     handleSignOut();
     localStorage.setItem('chakra-ui-color-mode', 'dark');
@@ -89,24 +90,35 @@ export const AppNavbar = () => {
           setBns(names[0]);
         }
       }
-      setLoading(false);
     }
     fetch();
   }, [currentStxAddress, network]);
 
-  // DELEGATE
+  // INIT
+  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
+  // const contractName = 'executor-dao';
+  // const functionName = 'init';
 
+  // const functionArgs = [
+  //   contractPrincipalCV(
+  //     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+  //     'sdp-delegate-voting-dao',
+  //   ),
+  // ];
+  // const postConditions: any = [];
+
+  // DELEGATE
   // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
   // const contractName = 'sde-governance-token-with-delegation';
   // const functionName = 'delegate';
 
   // const functionArgs = [
-  //   standardPrincipalCV('ST2RMJ7Y80B7MD438K60M2FSTEZNQGKYTYF21P9KC'),
-  //   standardPrincipalCV('ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM'),
+  //   standardPrincipalCV('ST2Y2SFNVZBT8SSZ00XXKH930MCN0RFREB2GQG7CJ'),
+  //   standardPrincipalCV('ST2Y2SFNVZBT8SSZ00XXKH930MCN0RFREB2GQG7CJ'),
   // ];
+  // const postConditions: any = [];
 
   // PROPOSE
-
   // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
   // const contractName = 'sde-proposal-submission-with-delegation';
   // const functionName = 'propose';
@@ -116,49 +128,50 @@ export const AppNavbar = () => {
   //     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
   //     'sdp-transfer-stx',
   //   ),
-  //   uintCV(56550),
+  //   uintCV(280),
   //   contractPrincipalCV(
   //     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
   //     'sde-governance-token-with-delegation',
   //   ),
   // ];
+  // const postConditions: any = [];
 
   // VOTE
+  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
+  // const contractName = 'sde-proposal-voting-with-delegation';
+  // const functionName = 'vote';
+  // const postConditions: any = [];
 
-  const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  const contractName = 'sde-proposal-voting-with-delegation';
-  const functionName = 'vote';
-  const postConditions: any = [];
-
-  const functionArgs = [
-    boolCV(true),
-    contractPrincipalCV(
-      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-      'sdp-transfer-stx',
-    ),
-    contractPrincipalCV(
-      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-      'sde-governance-token-with-delegation',
-    ),
-  ];
+  // const functionArgs = [
+  //   boolCV(true),
+  //   contractPrincipalCV(
+  //     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+  //     'sdp-transfer-stx',
+  //   ),
+  //   contractPrincipalCV(
+  //     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+  //     'sde-governance-token-with-delegation',
+  //   ),
+  // ];
+  // const postConditions: any = [];
 
   // DEPOSIT
-  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  // const contractName = 'sde-vault';
-  // const functionName = 'deposit';
-  // const functionArgs = [uintCV(stxToUstx('37.2006'))];
-  // const postConditionAddress = currentStxAddress || '';
-  // const postConditionCode = FungibleConditionCode.LessEqual;
-  // const postConditionAmount = stxToUstx('37.2006');
-  // const postConditions = currentStxAddress
-  //   ? [
-  //       makeStandardSTXPostCondition(
-  //         postConditionAddress,
-  //         postConditionCode,
-  //         postConditionAmount,
-  //       ),
-  //     ]
-  //   : [];
+  const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
+  const contractName = 'sde-vault';
+  const functionName = 'deposit';
+  const functionArgs = [uintCV(stxToUstx('2585'))];
+  const postConditionAddress = currentStxAddress || '';
+  const postConditionCode = FungibleConditionCode.LessEqual;
+  const postConditionAmount = stxToUstx('2585');
+  const postConditions = currentStxAddress
+    ? [
+        makeStandardSTXPostCondition(
+          postConditionAddress,
+          postConditionCode,
+          postConditionAmount,
+        ),
+      ]
+    : [];
 
   const contractData = {
     contractAddress,
@@ -167,10 +180,6 @@ export const AppNavbar = () => {
     functionArgs,
     postConditions,
   };
-
-  if (loading) {
-    return null;
-  }
 
   return (
     <Box as='section' height='5vh'>
@@ -221,7 +230,7 @@ export const AppNavbar = () => {
                       )}
                       {process.env.NODE_ENV !== 'production' ? (
                         <ContractCallButton
-                          title='Vote'
+                          title='Delegate'
                           color='white'
                           size='sm'
                           {...contractData}
@@ -231,64 +240,48 @@ export const AppNavbar = () => {
                   </Tabs>
                   <HStack spacing='3'>
                     <ButtonGroup spacing='6' alignItems='center'>
-                      {/* <Link href={`/dashboard/${dao}/activity`}>
-                        <HStack position='relative' cursor='pointer'>
-                          <FaBell fontSize='1.25rem' color='white' />
-                          <Circle
-                            position='absolute'
-                            bottom='2'
-                            boxSize='5'
-                            bg='tomato'
-                            color='white'
-                            bgGradient='linear(to-l, primaryGradient.900, primary.900)'
-                          >
-                            <Text
-                              fontSize='xs'
-                              fontWeight='semibold'
-                              color='white'
-                            >
-                              3
-                            </Text>
-                          </Circle>
-                        </HStack>
-                      </Link> */}
+                      <HStack
+                        cursor='pointer'
+                        spacing='2'
+                        color={mode('base.900', 'light.900')}
+                      >
+                        <Box
+                          w='10px'
+                          h='10px'
+                          boxSize='4'
+                          borderRadius='50%'
+                          bgGradient='linear(to-l, secondaryGradient.900, secondary.900)'
+                        />
+                        <Text color='light.900' fontSize='sm'>
+                          {bns
+                            ? bns
+                            : currentStxAddress &&
+                              truncate(currentStxAddress, 4, 4)}
+                        </Text>
+                      </HStack>
                       {currentStxAddress && (
                         <Popover
-                          trigger='hover'
+                          trigger='click'
                           openDelay={0}
-                          placement='bottom'
+                          placement='bottom-start'
                           defaultIsOpen={false}
-                          gutter={12}
                         >
                           {({ isOpen }) => (
                             <>
                               <PopoverTrigger>
-                                <HStack
-                                  cursor='pointer'
-                                  spacing='2'
-                                  color={mode('base.900', 'light.900')}
-                                >
-                                  <Box
-                                    w='15px'
-                                    h='15px'
-                                    boxSize='5'
-                                    borderRadius='50%'
-                                    bgGradient='linear(to-l, secondaryGradient.900, secondary.900)'
-                                  />
-                                  <Text
-                                    color={mode('base.900', 'light.900')}
+                                <HStack>
+                                  <FiMenu
+                                    color='white'
                                     fontSize='sm'
-                                  >
-                                    {bns
-                                      ? bns
-                                      : truncate(currentStxAddress, 4, 4)}
-                                  </Text>
+                                    cursor='pointer'
+                                  />
                                 </HStack>
                               </PopoverTrigger>
                               <PopoverContent
                                 _focus={{ outline: 'none' }}
-                                width='auto'
                                 bg='base.900'
+                                w='auto'
+                                my='2'
                               >
                                 <SimpleGrid columns={{ base: 1 }}>
                                   <Stack spacing='4' direction='row' p='3'>
@@ -305,14 +298,14 @@ export const AppNavbar = () => {
                                         }}
                                       >
                                         <HStack>
-                                          <FaInbox color='white' />
+                                          <FaBell color='white' />
                                           <Text
                                             px='2'
                                             fontSize='sm'
                                             fontWeight='regular'
                                             color='white'
                                           >
-                                            Inbox
+                                            Activity
                                           </Text>
                                         </HStack>
                                       </Card>
@@ -357,6 +350,7 @@ export const AppNavbar = () => {
                                             fontSize='sm'
                                             fontWeight='regular'
                                             color='white'
+                                            onClick={switchAccount}
                                           >
                                             Switch account
                                           </Text>

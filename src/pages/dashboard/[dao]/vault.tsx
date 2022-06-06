@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import {
   Box,
   Container,
@@ -9,11 +8,7 @@ import {
   TabList,
   TabPanel,
   TabPanels,
-  useToast,
 } from '@chakra-ui/react';
-
-// Store
-import { useStore as VaultStore } from 'store/VaultStore';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
@@ -24,64 +19,12 @@ import { VaultActionPopover } from '@components/VaultActionPopover';
 //  Animation
 import { motion } from 'framer-motion';
 
-// Stacks
-import {
-  useAuth,
-  useNetwork,
-  useUser,
-  useCurrentStxAddress,
-  useContractCall,
-} from '@micro-stacks/react';
-import type { FinishedTxData } from 'micro-stacks/connect';
-import { fetchTransaction, fetchReadOnlyFunction } from 'micro-stacks/api';
-import { uintCV, principalCV } from 'micro-stacks/clarity';
-import {
-  FungibleConditionCode,
-  PostConditionMode,
-  makeStandardSTXPostCondition,
-  makeStandardFungiblePostCondition,
-  createAssetInfo,
-} from 'micro-stacks/transactions';
-
-import { usePolling } from '@common/hooks/use-polling';
-
-// import { Notification } from '@components/Notification';
-// import { CloseButton } from '@components/CloseButton';
-// import { useCallFunction } from '@common/hooks/use-call-function';
-// import { useTransaction } from '@common/hooks/use-transaction';
-// import ContractCallButton from 'widgets/ContractCallButton';
-
-// interface State {
-//   txId: string | null;
-//   delay: number | null;
-// }
-
 const Vault = () => {
-  const { balance } = VaultStore();
-  const { non_fungible_tokens, fungible_tokens } = balance;
-  const { isSignedIn } = useAuth();
-  const currentStxAddress = useCurrentStxAddress();
-  const { network } = useNetwork();
-  const router = useRouter();
-  const { dao } = router.query;
-
-  const toast = useToast();
-
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
     enter: { opacity: 1, x: 0, y: 0 },
     exit: { opacity: 0, x: 0, y: 0 },
   };
-
-  const SLIDE_UP_BUTTON_VARIANTS = {
-    hidden: { opacity: 0, x: 0, y: 15 },
-    enter: { opacity: 1, x: 0, y: 0 },
-    exit: { opacity: 0, x: 0, y: -15 },
-  };
-
-  // usePolling(() => {
-  //   console.log('make api call');
-  // }, 7500);
 
   return (
     <motion.div

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import {
   Box,
   Container,
@@ -10,15 +9,11 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-// Stacks
-import { useCurrentStxAddress } from '@micro-stacks/react';
-
 // Utils
 import { ustxToStx } from '@common/helpers';
 
 // Components
 import { Stat } from '@components/Stat';
-import { SafeSuspense } from '@components/SafeSuspense';
 
 // Hooks
 import {
@@ -26,23 +21,18 @@ import {
   useBlocks,
   useOrganization,
   useProposals,
-  useVotingExtension,
+  useGovernanceToken,
 } from '@common/hooks';
 
 export const Header = () => {
-  const currentStxAddress = useCurrentStxAddress();
   const { organization } = useOrganization();
-  const { balance } = useBalance();
+  const { isLoading: isLoadingBalance, balance } = useBalance();
+  const { votingWeight } = useGovernanceToken();
   const { proposals } = useProposals();
   const { currentBlockHeight } = useBlocks();
-  const { isLoading, votingWeight } = useVotingExtension();
-
-  useEffect(() => {
-    console.log('Header');
-  }, [currentStxAddress]);
 
   const Vault = () => {
-    const { stx, non_fungible_tokens, fungible_tokens } = balance;
+    const { stx, non_fungible_tokens, fungible_tokens } = balance as any;
     const fungibleTokens = Object.assign({}, fungible_tokens);
     const nonFungibleTokens = Object.assign({}, non_fungible_tokens);
     return (
@@ -50,10 +40,8 @@ export const Header = () => {
         flex='1'
         _first={{ pl: '0' }}
         _last={{ borderRightWidth: '0' }}
-        borderColor='base.500'
-        borderRightWidth='1px'
         label='Vault'
-        value={`${ustxToStx(stx?.balance)} STX`}
+        value={`${ustxToStx(stx?.balance) || 0} STX`}
         info={`${Object.values(fungibleTokens)?.length} tokens & ${
           Object.values(nonFungibleTokens)?.length
         } NFTs`}
@@ -73,8 +61,6 @@ export const Header = () => {
         flex='1'
         _first={{ pl: '0' }}
         _last={{ borderRightWidth: '0' }}
-        borderColor='base.500'
-        borderRightWidth='1px'
         label='Proposals'
         value={proposalSize.toString()}
         info={`${activeProposals.length} active`}
@@ -84,14 +70,11 @@ export const Header = () => {
   };
 
   const Profile = () => {
-    // const { results: proposalEvents } = events;
     return (
       <Stat
         flex='1'
         _first={{ pl: '0' }}
         _last={{ borderRightWidth: '0' }}
-        borderColor='base.500'
-        borderRightWidth='1px'
         label='Voting power'
         value={votingWeight.toString()}
         info={`> 1.5% required`}
@@ -100,9 +83,9 @@ export const Header = () => {
     );
   };
 
-  // if (isLoading) {
-  //   return <Spinner />;
-  // }
+  if (isLoadingBalance) {
+    return <Spinner />;
+  }
 
   return (
     <Stack spacing={{ base: '8', lg: '6' }} my='3'>
@@ -142,11 +125,9 @@ export const Header = () => {
             direction={{ base: 'column', md: 'row' }}
             divider={<StackDivider borderColor='base.500' />}
           >
-            <SafeSuspense fallback={<Spinner />}>
-              <Vault />
-              <Proposals />
-              <Profile />
-            </SafeSuspense>
+            <Vault />
+            <Proposals />
+            <Profile />
           </Stack>
         </Stack>
       </Container>

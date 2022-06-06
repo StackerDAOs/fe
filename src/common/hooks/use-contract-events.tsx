@@ -10,12 +10,18 @@ import { useOrganization } from './use-organization';
 interface IEvent {
   extensionName?: string;
   filter?: string;
+  filterByProposal?: string;
 }
 
-export function useContractEvents({ extensionName, filter }: IEvent = {}) {
+export function useContractEvents({
+  extensionName,
+  filter,
+  filterByProposal,
+}: IEvent = {}) {
   // TODO: check if slug is present and return error if not
   // TODO: check if oranization exists before checking balance
-  const [state, setState] = useState<any>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [events, setEvents] = useState([]);
   const { organization } = useOrganization();
   const { network } = useNetwork();
 
@@ -29,8 +35,8 @@ export function useContractEvents({ extensionName, filter }: IEvent = {}) {
         const contractId = extension?.contract_address;
         const data = await fetchContractEventsById({
           url,
-          contract_id: contractId,
           limit: 10,
+          contract_id: contractId,
           offset: 0,
           unanchored: false,
         });
@@ -41,10 +47,18 @@ export function useContractEvents({ extensionName, filter }: IEvent = {}) {
           const decoded = cvToValue(deserialized);
           return decoded;
         });
-        const events = serializedEvents.filter(
-          (item: any) => item?.event?.value === filter,
-        );
-        setState({ events });
+
+        const filteredEvents = filterByProposal
+          ? serializedEvents.filter(
+              (item: any) =>
+                item?.event?.value === filter &&
+                item?.proposal?.value === filterByProposal,
+            )
+          : serializedEvents.filter(
+              (item: any) => item?.event?.value === filter,
+            );
+        setEvents(filteredEvents);
+        setIsLoading(false);
       } catch (error) {
         console.log({ error });
       }
@@ -52,5 +66,5 @@ export function useContractEvents({ extensionName, filter }: IEvent = {}) {
     fetchEvents();
   }, [organization]);
 
-  return { events: state.events };
+  return { isLoading, events };
 }

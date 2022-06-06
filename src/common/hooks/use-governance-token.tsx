@@ -43,7 +43,7 @@ export function useGovernanceToken() {
         : [];
       const functionName = 'get-voting-weight';
       try {
-        if (currentStxAddress) {
+        if (currentStxAddress && contractAddress && contractName) {
           const data: any = await fetchReadOnlyFunction({
             network,
             contractAddress,

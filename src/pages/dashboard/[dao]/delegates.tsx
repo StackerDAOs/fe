@@ -1,5 +1,4 @@
-import { useRouter } from 'next/router';
-import { Box, Container, Stack, Text, useToast } from '@chakra-ui/react';
+import { Box, Container, Stack, Text } from '@chakra-ui/react';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
@@ -9,48 +8,12 @@ import { Header } from '@components/Header';
 //  Animation
 import { motion } from 'framer-motion';
 
-// Stacks
-import {
-  useAuth,
-  useNetwork,
-  useUser,
-  useCurrentStxAddress,
-  useContractCall,
-} from '@micro-stacks/react';
-import type { FinishedTxData } from 'micro-stacks/connect';
-import { fetchTransaction, fetchReadOnlyFunction } from 'micro-stacks/api';
-import { uintCV, principalCV } from 'micro-stacks/clarity';
-import {
-  FungibleConditionCode,
-  PostConditionMode,
-  makeStandardSTXPostCondition,
-  makeStandardFungiblePostCondition,
-  createAssetInfo,
-} from 'micro-stacks/transactions';
-
 const Delegates = () => {
-  const { isSignedIn } = useAuth();
-  const currentStxAddress = useCurrentStxAddress();
-  const { network } = useNetwork();
-  const router = useRouter();
-
-  const toast = useToast();
-
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
     enter: { opacity: 1, x: 0, y: 0 },
     exit: { opacity: 0, x: 0, y: 0 },
   };
-
-  const SLIDE_UP_BUTTON_VARIANTS = {
-    hidden: { opacity: 0, x: 0, y: 15 },
-    enter: { opacity: 1, x: 0, y: 0 },
-    exit: { opacity: 0, x: 0, y: -15 },
-  };
-
-  // usePolling(() => {
-  //   console.log('make api call');
-  // }, 7500);
 
   return (
     <motion.div
@@ -82,7 +45,7 @@ const Delegates = () => {
                           Choose a delegate to govern on your behalf.
                         </Text>
                       </Box>
-                      {/* <FilterPopover /> */}
+                      <FilterPopover />
                     </Stack>
                   </Stack>
                 </Container>

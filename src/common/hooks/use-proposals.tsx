@@ -1,20 +1,9 @@
 // Hook (use-proposals.tsx)
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-
-import { supabase } from '@utils/supabase';
 
 import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
-import {
-  fetchContractSource,
-  fetchReadOnlyFunction,
-  fetchContractEventsById,
-} from 'micro-stacks/api';
-import {
-  contractPrincipalCV,
-  deserializeCV,
-  cvToValue,
-} from 'micro-stacks/clarity';
+import { fetchContractSource, fetchReadOnlyFunction } from 'micro-stacks/api';
+import { contractPrincipalCV } from 'micro-stacks/clarity';
 
 import { useStore as ProposalStore } from 'store/ProposalStore';
 
@@ -25,6 +14,7 @@ import { pluckSourceCode } from '@common/helpers';
 export function useProposals() {
   // TODO: check if slug is present and return error if not
   // TODO: check if oranization exists before checking balance
+  const [isLoading, setIsLoading] = useState(true);
   const currentStxAddress = useCurrentStxAddress();
   const { organization } = useOrganization();
   const { network } = useNetwork();
@@ -93,6 +83,7 @@ export function useProposals() {
         });
         const final = await Promise.all(proposals);
         setProposals(final);
+        setIsLoading(false);
       } catch (error) {
         console.log({ error });
       } finally {
@@ -102,5 +93,5 @@ export function useProposals() {
     fetchProposals();
   }, [organization]);
 
-  return { proposals };
+  return { isLoading, proposals };
 }

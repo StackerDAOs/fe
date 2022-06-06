@@ -1,8 +1,6 @@
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import {
-  Badge,
   Box,
   Container,
   Stack,
@@ -12,23 +10,10 @@ import {
   TabList,
   TabPanel,
   TabPanels,
-  useToast,
-  useColorModeValue as mode,
 } from '@chakra-ui/react';
-
-// Store
-import { useStore } from 'store/DeployStepStore';
-import { useStore as useDaoStore } from 'store/CreateDaoStore';
-
-// Data
-import { inbox } from '@utils/data';
-
-// Utils
-import { truncate } from '@common/helpers';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
-import { Banner } from '@components/Banner';
 import { AssetTable } from '@components/AssetTable';
 import { Header } from '@components/Header';
 
@@ -38,44 +23,14 @@ import { motion } from 'framer-motion';
 // Icons
 import { FaArrowRight } from 'react-icons/fa';
 
-// Stacks
-import {
-  useAuth,
-  useNetwork,
-  useUser,
-  useCurrentStxAddress,
-  useContractCall,
-} from '@micro-stacks/react';
-import type { FinishedTxData } from 'micro-stacks/connect';
-import { fetchTransaction, fetchReadOnlyFunction } from 'micro-stacks/api';
-import { uintCV, principalCV } from 'micro-stacks/clarity';
-import {
-  FungibleConditionCode,
-  PostConditionMode,
-  makeStandardSTXPostCondition,
-  makeStandardFungiblePostCondition,
-  createAssetInfo,
-} from 'micro-stacks/transactions';
-
 const DAODashboard = () => {
-  const { isSignedIn } = useAuth();
-  const currentStxAddress = useCurrentStxAddress();
-  const { network } = useNetwork();
   const router = useRouter();
   const { dao } = router.query;
-
-  const toast = useToast();
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
     enter: { opacity: 1, x: 0, y: 0 },
     exit: { opacity: 0, x: 0, y: 0 },
-  };
-
-  const SLIDE_UP_BUTTON_VARIANTS = {
-    hidden: { opacity: 0, x: 0, y: 15 },
-    enter: { opacity: 1, x: 0, y: 0 },
-    exit: { opacity: 0, x: 0, y: -15 },
   };
 
   return (
@@ -148,7 +103,6 @@ const DAODashboard = () => {
           </Stack>
         </Container>
       </Box>
-      {/* {true && <Banner />} */}
     </motion.div>
   );
 };

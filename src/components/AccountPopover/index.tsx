@@ -1,7 +1,5 @@
-import * as React from 'react';
 import {
   Button,
-  Icon,
   Link,
   Image,
   Popover,
@@ -17,7 +15,7 @@ export const AccountPopover = () => (
   <Popover
     trigger='click'
     openDelay={0}
-    placement='bottom'
+    placement='right'
     defaultIsOpen={false}
     gutter={12}
   >

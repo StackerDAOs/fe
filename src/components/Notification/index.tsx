@@ -1,13 +1,9 @@
-import * as React from 'react';
 import {
   Box,
-  Center,
   Flex,
   FlexProps,
-  Icon,
   useColorModeValue as mode,
 } from '@chakra-ui/react';
-import { FiInfo } from 'react-icons/fi';
 
 export const Notification = (props: FlexProps) => {
   const { children, ...flexProps } = props;
