@@ -1,24 +1,17 @@
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import {
   Box,
   Button,
   Container,
-  Divider,
-  FormControl,
-  FormLabel,
-  Input,
   HStack,
   Stack,
   VStack,
   SimpleGrid,
   Text,
-  Textarea,
 } from '@chakra-ui/react';
 
 // Utils
-import { truncate } from '@common/helpers';
 import { sendFunds } from '@utils/proposals';
 
 // Widgets
@@ -31,11 +24,12 @@ import { useRandomName } from '@common/hooks';
 // Data
 import { transferAssetsSteps } from '@utils/data';
 
+// Store
+import { proposalStore } from 'store/proposals/CreateTransfer';
+
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
-import { RadioCard, RadioCardGroup } from '@components/RadioCardGroup';
 import { VerticalStep } from '@components/VerticalStep';
-import { Card } from '@components/Card';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -44,34 +38,22 @@ import { motion } from 'framer-motion';
 import { FaArrowLeft } from 'react-icons/fa';
 
 // Stacks
-import { useAuth, useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
+import { useCurrentStxAddress } from '@micro-stacks/react';
 
-interface State {
-  selectedAssetType: string;
-  selectedAsset: string;
-  transferAmount: string;
-  transferTo: string;
-  description: string;
-}
-
-const initialState: State = {
-  selectedAssetType: 'Token',
-  selectedAsset: '',
-  transferAmount: '',
-  transferTo: '',
-  description: '',
-};
+// Wizard
+import { SelectAssetType } from 'wizard/create-proposals/SelectAssetType';
+import { SelectAsset } from 'wizard/create-proposals/SelectAsset';
+import { ProposalDetails } from 'wizard/create-proposals/ProposalDetails';
+import { ProposalReview } from 'wizard/create-proposals/ProposalReview';
 
 const CreateProposal = () => {
-  const [state, setState] = useState<State>(initialState);
   const currentStxAddress = useCurrentStxAddress();
   const router = useRouter();
-
-  // Store
   const [currentStep, { setStep, canGoToNextStep }] = useStep({
     maxStep: transferAssetsSteps.length - 1,
     initialStep: 0,
   });
+  const { transferAmount, transferTo, description } = proposalStore();
 
   const generateContractName = useRandomName();
 
@@ -90,9 +72,9 @@ const CreateProposal = () => {
   const ViewStep = () => {
     switch (currentStep) {
       case 0:
-        return <SelectAssetTypeList />;
+        return <SelectAssetType />;
       case 1:
-        return <SelectAssetList />;
+        return <SelectAsset />;
       case 2:
         return <ProposalDetails />;
       case 3:
@@ -102,261 +84,10 @@ const CreateProposal = () => {
     }
   };
 
-  const SelectAssetTypeList = () => {
-    return (
-      <>
-        <Stack
-          spacing='4'
-          mb='3'
-          direction={{ base: 'column', md: 'row' }}
-          justify='space-between'
-          color='white'
-        >
-          <Box>
-            <Text fontSize='2xl' fontWeight='medium'>
-              Choose an asset type
-            </Text>
-            <Text color='gray.900' fontSize='sm'>
-              Select which type of asset you want to transfer.
-            </Text>
-          </Box>
-        </Stack>
-        <RadioCardGroup
-          defaultValue='Token'
-          spacing='3'
-          direction='row'
-          value={state.selectedAssetType}
-          onChange={(value: string) =>
-            setState({ ...state, selectedAssetType: value })
-          }
-        >
-          {[
-            {
-              type: 'Token',
-              description: 'i.e., STX, $ALEX, or any SIP-10 token',
-            },
-            {
-              type: 'NFT',
-              description: 'i.e., Megapont, Crash Punks, or any SIP-09 NFT',
-            },
-          ].map((option) => (
-            <RadioCard key={option.type} value={option.type} color='white'>
-              <Text color='emphasized' fontWeight='medium' fontSize='sm'>
-                {option.type}
-              </Text>
-              <Text color='gray.900' fontSize='sm'>
-                {option.description}
-              </Text>
-            </RadioCard>
-          ))}
-        </RadioCardGroup>
-      </>
-    );
-  };
-
-  const SelectAssetList = () => {
-    return (
-      <>
-        <Stack
-          spacing='4'
-          mb='3'
-          direction={{ base: 'column', md: 'row' }}
-          justify='space-between'
-          color='white'
-        >
-          <Box>
-            <Text fontSize='2xl' fontWeight='medium'>
-              Select an asset
-            </Text>
-            <Text color='gray.900' fontSize='sm'>
-              Select which asset you want to transfer.
-            </Text>
-          </Box>
-        </Stack>
-        <RadioCardGroup
-          defaultValue='Token'
-          spacing='3'
-          direction='column'
-          value={state.selectedAsset}
-          onChange={(value: string) =>
-            setState({ ...state, selectedAsset: value })
-          }
-        >
-          {[
-            {
-              type: 'STX',
-              description: 'Stacks',
-            },
-            {
-              type: 'GVT',
-              description: 'Governance Token',
-            },
-            {
-              type: 'MIA',
-              description: 'MiamiCoin',
-            },
-          ].map((option) => (
-            <RadioCard key={option.type} value={option.type} color='white'>
-              <Text color='emphasized' fontWeight='medium' fontSize='sm'>
-                {option.type}
-              </Text>
-              <Text color='gray.900' fontSize='sm'>
-                {option.description}
-              </Text>
-            </RadioCard>
-          ))}
-        </RadioCardGroup>
-      </>
-    );
-  };
-
-  const ProposalDetails = () => {
-    return (
-      <>
-        <Stack
-          spacing='4'
-          mb='3'
-          direction={{ base: 'column', md: 'row' }}
-          justify='space-between'
-          color='white'
-        >
-          <Box>
-            <Text fontSize='2xl' fontWeight='medium'>
-              Proposal Details
-            </Text>
-            <Text color='gray.900' fontSize='sm'>
-              Provide some details about your proposal.
-            </Text>
-          </Box>
-        </Stack>
-        <Stack spacing='6' direction='column'>
-          <SimpleGrid columns={2} spacing='5'>
-            <FormControl color='light.900'>
-              <FormLabel>Transfer amount</FormLabel>
-              <Input
-                placeholder='100'
-                value={state.transferAmount}
-                onChange={(
-                  e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-                ) => setState({ ...state, transferAmount: e.target.value })}
-              />
-            </FormControl>
-            <FormControl color='light.900'>
-              <FormLabel>Transfer to</FormLabel>
-              <Input
-                placeholder='SP14...'
-                value={state.transferTo}
-                onChange={(
-                  e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-                ) => setState({ ...state, transferTo: e.target.value })}
-              />
-            </FormControl>
-          </SimpleGrid>
-          <FormControl color='light.900'>
-            <FormLabel>Description</FormLabel>
-            <Textarea
-              rows={4}
-              resize='none'
-              placeholder='Transfers 100 STX to SP14...'
-              value={state.description}
-              onChange={(
-                e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-              ) => setState({ ...state, description: e.target.value })}
-            />
-          </FormControl>
-        </Stack>
-      </>
-    );
-  };
-
-  const ProposalReview = () => {
-    return (
-      <>
-        <Box as='section'>
-          <VStack
-            align='left'
-            spacing='4'
-            mb='3'
-            direction={{ base: 'column', md: 'row' }}
-            justify='space-between'
-            color='white'
-          >
-            <Card border='1px solid rgb(134, 143, 152)'>
-              <Box py={{ base: '3', md: '3' }} px={{ base: '6', md: '6' }}>
-                <Text
-                  fontSize='3xl'
-                  fontWeight='medium'
-                  bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                  bgClip='text'
-                  mb='1'
-                >
-                  SDP Transfer STX
-                </Text>
-                <Text color='light.900' fontSize='sm'>
-                  Review & deploy smart contract.
-                </Text>
-                <Divider my='3' borderColor='base.500' />
-                <Stack spacing='3' my='3'>
-                  <HStack justify='space-between'>
-                    <Text fontSize='sm' fontWeight='medium' color='gray.900'>
-                      Amount
-                    </Text>
-                    <Text fontSize='sm' fontWeight='medium' color='light.900'>
-                      {state.transferAmount} STX
-                    </Text>
-                  </HStack>
-                  <HStack justify='space-between'>
-                    <Text fontSize='sm' fontWeight='medium' color='gray.900'>
-                      Recipient
-                    </Text>
-                    <Text fontSize='sm' fontWeight='medium' color='light.900'>
-                      {state?.transferTo && truncate(state.transferTo, 4, 4)}
-                    </Text>
-                  </HStack>
-                  <HStack justify='space-between'>
-                    <Text fontSize='sm' fontWeight='medium' color='gray.900'>
-                      Proposer
-                    </Text>
-                    <Text fontSize='sm' fontWeight='medium' color='light.900'>
-                      {currentStxAddress && truncate(currentStxAddress, 4, 4)}
-                    </Text>
-                  </HStack>
-                </Stack>
-                <Stack my='3'>
-                  <Stack
-                    spacing='4'
-                    direction={{ base: 'column', md: 'row' }}
-                    justify='space-between'
-                    color='white'
-                  >
-                    <Box>
-                      <Text fontSize='sm' fontWeight='medium' color='gray.900'>
-                        Description
-                      </Text>
-                    </Box>
-                  </Stack>
-                  <Text
-                    fontSize='sm'
-                    _selection={{
-                      bg: 'base.800',
-                      color: 'secondary.900',
-                    }}
-                  >
-                    {state.description}
-                  </Text>
-                </Stack>
-              </Box>
-            </Card>
-          </VStack>
-        </Box>
-      </>
-    );
-  };
-
   const contract = sendFunds(
-    state.description,
-    state.transferAmount,
-    state.transferTo,
+    description,
+    transferAmount,
+    transferTo,
     currentStxAddress,
   );
 

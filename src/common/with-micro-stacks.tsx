@@ -9,7 +9,6 @@ let network: any;
 switch (process.env.NODE_ENV) {
   case 'development':
     network = new StacksMocknet();
-    // network = new StacksTestnet();
     break;
   case 'production':
     network = new StacksMainnet();

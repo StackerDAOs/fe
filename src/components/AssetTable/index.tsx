@@ -14,6 +14,11 @@ import {
   Skeleton,
   useColorModeValue as mode,
 } from '@chakra-ui/react';
+
+// Utils
+import { convertToken } from '@common/helpers';
+
+// Icons
 import { FiExternalLink } from 'react-icons/fi';
 
 type AssetTableProps = {
@@ -82,7 +87,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
               </Td>
               <Td border='none'>
                 <Badge size='md' colorScheme='base'>
-                  {item.balance}
+                  {convertToken(item.balance)}
                 </Badge>
               </Td>
               <Td border='none'>

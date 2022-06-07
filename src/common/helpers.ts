@@ -6,6 +6,10 @@ export const truncate = (str: string, firstCharCount = str.length, endCharCount 
   return convertedStr;
 };
 
+export const convertToken = (token: string) => {
+  return parseInt(token) / 1000000;
+};
+
 export const ustxToStx = (uStx: string) => {
   return parseInt(uStx) / 1000000;
 };
@@ -25,5 +29,9 @@ export const estimateDays = (blocksUntil: number) => {
 };
 
 export const getPercentage = (totalVotes: number, votes: number) => {
-  return Math.round((votes / totalVotes) * 100);
+  if (isNaN(Math.round((votes / totalVotes) * 100))) {
+    return 0;
+  } else {
+    return Math.round((votes / totalVotes) * 100);
+  }
 };

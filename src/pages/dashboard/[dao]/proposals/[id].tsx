@@ -29,10 +29,16 @@ import { FaArrowLeft, FaCheckCircle, FaVoteYea } from 'react-icons/fa';
 import { HiX } from 'react-icons/hi';
 
 // Stacks
+import { useCurrentStxAddress } from '@micro-stacks/react';
 import { boolCV, contractPrincipalCV } from 'micro-stacks/clarity';
 
 // Utils
-import { estimateDays, getPercentage, truncate } from '@common/helpers';
+import {
+  estimateDays,
+  convertToken,
+  getPercentage,
+  truncate,
+} from '@common/helpers';
 
 // Hooks
 import {
@@ -43,6 +49,7 @@ import {
 } from '@common/hooks';
 
 const ProposalView = () => {
+  const currentStxAddress = useCurrentStxAddress();
   const router = useRouter();
   const { id: proposalPrincipal } = router.query as any;
   const { currentBlockHeight } = useBlocks();
@@ -69,6 +76,7 @@ const ProposalView = () => {
     votesAgainst,
     events,
   } = useProposal({ filterByProposal: proposalPrincipal });
+  console.log({ events });
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -124,7 +132,9 @@ const ProposalView = () => {
   };
 
   const totalVotes = Number(votesFor) + Number(votesAgainst);
-  console.log('totalVotes: ', totalVotes);
+  const currentVoterEvent = (event: any) =>
+    event?.voter?.value === currentStxAddress;
+  const hasVoted = events?.some(currentVoterEvent);
 
   return (
     <motion.div
@@ -307,18 +317,41 @@ const ProposalView = () => {
                       px='3'
                       py='2'
                     >
-                      <HStack spacing='2'>
-                        <Icon color='secondary.900' as={FaCheckCircle} />
-                        <Text color='light.900' fontWeight='regular'>
-                          Voting power:
-                        </Text>
-                        <Text color='light.900' fontWeight='regular'>
-                          {votingWeight}{' '}
-                          <Text as='span' color='gray.900' fontWeight='medium'>
-                            MEGA
+                      {hasVoted ? (
+                        <HStack spacing='2'>
+                          <Icon color='secondary.900' as={FaCheckCircle} />
+                          <Text color='light.900' fontWeight='regular'>
+                            You already voted!
                           </Text>
-                        </Text>
-                      </HStack>
+                          <Text color='light.900' fontWeight='regular'>
+                            {convertToken(votingWeight.toString())}{' '}
+                            <Text
+                              as='span'
+                              color='gray.900'
+                              fontWeight='medium'
+                            >
+                              MEGA
+                            </Text>
+                          </Text>
+                        </HStack>
+                      ) : (
+                        <HStack spacing='2'>
+                          <Icon color='secondary.900' as={FaCheckCircle} />
+                          <Text color='light.900' fontWeight='regular'>
+                            Voting power:
+                          </Text>
+                          <Text color='light.900' fontWeight='regular'>
+                            {convertToken(votingWeight.toString())}{' '}
+                            <Text
+                              as='span'
+                              color='gray.900'
+                              fontWeight='medium'
+                            >
+                              MEGA
+                            </Text>
+                          </Text>
+                        </HStack>
+                      )}
                     </Badge>
                   </HStack>
                   <Card border='1px solid rgb(134, 143, 152)'>
@@ -449,12 +482,36 @@ const ProposalView = () => {
                         color='white'
                         bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
                         isFullWidth
+                        disabled={hasVoted}
+                        _disabled={{
+                          bgGradient:
+                            'linear(to-br, secondaryGradient.900, secondary.900)',
+                          opacity: 0.5,
+                          cursor: 'not-allowed',
+                          _hover: {
+                            bgGradient:
+                              'linear(to-br, secondaryGradient.900, secondary.900)',
+                            opacity: 0.5,
+                            cursor: 'not-allowed',
+                          },
+                        }}
                         {...voteFor}
                       />
                       <ContractCallButton
                         title='Reject'
                         color='white'
                         isFullWidth
+                        disabled={hasVoted}
+                        _disabled={{
+                          bg: 'base.600',
+                          opacity: 0.5,
+                          cursor: 'not-allowed',
+                          _hover: {
+                            bg: 'base.600',
+                            opacity: 0.5,
+                            cursor: 'not-allowed',
+                          },
+                        }}
                         {...voteAgainst}
                       />
                     </HStack>
@@ -548,7 +605,7 @@ const ProposalView = () => {
                                   fontWeight='regular'
                                   color='light.900'
                                 >
-                                  {amount?.value}
+                                  {convertToken(amount?.value)}
                                 </Text>
                                 <Text
                                   fontSize='sm'

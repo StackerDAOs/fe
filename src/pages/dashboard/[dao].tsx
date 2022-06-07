@@ -17,6 +17,9 @@ import { AppLayout } from '@components/Layout/AppLayout';
 import { AssetTable } from '@components/AssetTable';
 import { Header } from '@components/Header';
 
+// Hooks
+import { useExecutorEvents } from '@common/hooks';
+
 //  Animation
 import { motion } from 'framer-motion';
 

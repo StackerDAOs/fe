@@ -26,7 +26,6 @@ export function useProposal({
   const [state, setState] = useState<any>({});
   const router = useRouter();
   const { id: proposalPrincipal } = router.query as any;
-  console.log(router.query);
   const { organization } = useOrganization();
   const { events: voteEvents } = useContractEvents({
     extensionName: 'Voting',
@@ -55,12 +54,11 @@ export function useProposal({
       const contractAddress = proposalVoting?.contract_address.split('.')[0];
       const contractName = proposalVoting?.contract_address.split('.')[1];
       const senderAddress = currentStxAddress;
-      console.log({ proposalPrincipal });
       const functionArgs = proposalInfo
         ? [
             contractPrincipalCV(
-              'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              'sdp-nft-dao',
+              proposalInfo.contractAddress,
+              proposalInfo.contractName,
             ),
           ]
         : [];

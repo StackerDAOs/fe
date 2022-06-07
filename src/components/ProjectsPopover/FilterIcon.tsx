@@ -1,5 +1,4 @@
 import { Icon, IconProps } from '@chakra-ui/react';
-import * as React from 'react';
 import { MdFilterList } from 'react-icons/md';
 
 interface FilterIconProps extends IconProps {

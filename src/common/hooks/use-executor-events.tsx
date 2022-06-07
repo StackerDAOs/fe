@@ -8,31 +8,23 @@ import { deserializeCV, cvToValue } from 'micro-stacks/clarity';
 import { useOrganization } from './use-organization';
 
 interface IEvent {
-  extensionName?: string;
   filter?: string;
   filterByProposal?: string;
 }
 
-export function useContractEvents({
-  extensionName,
-  filter,
-  filterByProposal,
-}: IEvent = {}) {
+export function useExecutorEvents({ filter, filterByProposal }: IEvent = {}) {
   // TODO: check if slug is present and return error if not
   // TODO: check if oranization exists before checking balance
   const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState([]);
-  const { organization } = useOrganization();
+  const { organization }: any = useOrganization(); // TODO: add typing on organiztion object
   const { network } = useNetwork();
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const extension = organization?.Extensions?.find(
-          (extension: any) => extension?.ExtensionTypes?.name === extensionName,
-        );
         const url = network.getCoreApiUrl();
-        const contractId = extension?.contract_address;
+        const contractId = organization?.contract_address;
         const data = await fetchContractEventsById({
           url,
           limit: 10,

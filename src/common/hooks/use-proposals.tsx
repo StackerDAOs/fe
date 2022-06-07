@@ -83,11 +83,11 @@ export function useProposals() {
         });
         const final = await Promise.all(proposals);
         setProposals(final);
-        setIsLoading(false);
       } catch (error) {
         console.log({ error });
       } finally {
         console.log('done');
+        setIsLoading(false);
       }
     };
     fetchProposals();

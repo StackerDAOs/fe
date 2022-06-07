@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 
 // Utils
-import { ustxToStx } from '@common/helpers';
+import { ustxToStx, convertToken } from '@common/helpers';
 
 // Components
 import { Stat } from '@components/Stat';
@@ -20,7 +20,7 @@ import {
   useBalance,
   useBlocks,
   useOrganization,
-  useProposals,
+  useContractEvents,
   useGovernanceToken,
 } from '@common/hooks';
 
@@ -28,7 +28,10 @@ export const Header = () => {
   const { organization } = useOrganization();
   const { isLoading: isLoadingBalance, balance } = useBalance();
   const { votingWeight } = useGovernanceToken();
-  const { proposals } = useProposals();
+  const { events: proposalEvents } = useContractEvents({
+    extensionName: 'Voting',
+    filter: 'propose',
+  });
   const { currentBlockHeight } = useBlocks();
 
   const Vault = () => {
@@ -51,11 +54,8 @@ export const Header = () => {
   };
 
   const Proposals = () => {
-    const proposalSize = proposals?.length;
-    const activeProposals = proposals?.filter(
-      (proposal: any) =>
-        currentBlockHeight >= proposal?.startBlockHeight.toString(),
-    );
+    const proposalSize = proposalEvents?.length;
+    console.log({ proposalEvents });
     return (
       <Stat
         flex='1'
@@ -63,7 +63,7 @@ export const Header = () => {
         _last={{ borderRightWidth: '0' }}
         label='Proposals'
         value={proposalSize.toString()}
-        info={`${activeProposals.length} active`}
+        info={`0 active`}
         path='governance'
       />
     );
@@ -76,7 +76,7 @@ export const Header = () => {
         _first={{ pl: '0' }}
         _last={{ borderRightWidth: '0' }}
         label='Voting power'
-        value={votingWeight.toString()}
+        value={convertToken(votingWeight.toString()).toString()}
         info={`> 1.5% required`}
         path='delegates'
       />

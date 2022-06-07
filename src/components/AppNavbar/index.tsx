@@ -113,28 +113,39 @@ export const AppNavbar = () => {
   // const functionName = 'delegate';
 
   // const functionArgs = [
-  //   standardPrincipalCV('ST2Y2SFNVZBT8SSZ00XXKH930MCN0RFREB2GQG7CJ'),
-  //   standardPrincipalCV('ST2Y2SFNVZBT8SSZ00XXKH930MCN0RFREB2GQG7CJ'),
+  //   standardPrincipalCV('STPJ2HPED2TMR1HAFBFA5VQF986CRD4ZWHH36F6X'),
+  //   standardPrincipalCV('ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM'),
+  // ];
+  // const postConditions: any = [];
+
+  // REVOKE
+  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
+  // const contractName = 'sde-governance-token-with-delegation';
+  // const functionName = 'revoke-delegation';
+
+  // const functionArgs = [
+  //   standardPrincipalCV('ST2ST2H80NP5C9SPR4ENJ1Z9CDM9PKAJVPYWPQZ50'),
+  //   standardPrincipalCV('ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM'),
   // ];
   // const postConditions: any = [];
 
   // PROPOSE
-  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  // const contractName = 'sde-proposal-submission-with-delegation';
-  // const functionName = 'propose';
+  const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
+  const contractName = 'sde-proposal-submission-with-delegation';
+  const functionName = 'propose';
 
-  // const functionArgs = [
-  //   contractPrincipalCV(
-  //     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-  //     'sdp-transfer-stx',
-  //   ),
-  //   uintCV(280),
-  //   contractPrincipalCV(
-  //     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-  //     'sde-governance-token-with-delegation',
-  //   ),
-  // ];
-  // const postConditions: any = [];
+  const functionArgs = [
+    contractPrincipalCV(
+      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+      'alert-coral-rattlesnake',
+    ),
+    uintCV(1205),
+    contractPrincipalCV(
+      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+      'sde-governance-token-with-delegation',
+    ),
+  ];
+  const postConditions: any = [];
 
   // VOTE
   // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
@@ -156,22 +167,22 @@ export const AppNavbar = () => {
   // const postConditions: any = [];
 
   // DEPOSIT
-  const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  const contractName = 'sde-vault';
-  const functionName = 'deposit';
-  const functionArgs = [uintCV(stxToUstx('2585'))];
-  const postConditionAddress = currentStxAddress || '';
-  const postConditionCode = FungibleConditionCode.LessEqual;
-  const postConditionAmount = stxToUstx('2585');
-  const postConditions = currentStxAddress
-    ? [
-        makeStandardSTXPostCondition(
-          postConditionAddress,
-          postConditionCode,
-          postConditionAmount,
-        ),
-      ]
-    : [];
+  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
+  // const contractName = 'sde-vault';
+  // const functionName = 'deposit';
+  // const functionArgs = [uintCV(stxToUstx('2585'))];
+  // const postConditionAddress = currentStxAddress || '';
+  // const postConditionCode = FungibleConditionCode.LessEqual;
+  // const postConditionAmount = stxToUstx('2585');
+  // const postConditions = currentStxAddress
+  //   ? [
+  //       makeStandardSTXPostCondition(
+  //         postConditionAddress,
+  //         postConditionCode,
+  //         postConditionAmount,
+  //       ),
+  //     ]
+  //   : [];
 
   const contractData = {
     contractAddress,
@@ -230,7 +241,7 @@ export const AppNavbar = () => {
                       )}
                       {process.env.NODE_ENV !== 'production' ? (
                         <ContractCallButton
-                          title='Delegate'
+                          title='Propose'
                           color='white'
                           size='sm'
                           {...contractData}
