@@ -38,6 +38,8 @@ export const Header = () => {
     const { stx, non_fungible_tokens, fungible_tokens } = balance as any;
     const fungibleTokens = Object.assign({}, fungible_tokens);
     const nonFungibleTokens = Object.assign({}, non_fungible_tokens);
+    const tokenSize = Object.values(fungibleTokens)?.length;
+    const nftSize = Object.values(nonFungibleTokens)?.length;
     return (
       <Stat
         flex='1'
@@ -45,9 +47,9 @@ export const Header = () => {
         _last={{ borderRightWidth: '0' }}
         label='Vault'
         value={`${ustxToStx(stx?.balance) || 0} STX`}
-        info={`${Object.values(fungibleTokens)?.length} tokens & ${
-          Object.values(nonFungibleTokens)?.length
-        } NFTs`}
+        info={`${tokenSize} ${
+          tokenSize === 1 ? 'token' : 'tokens'
+        } & ${nftSize} ${nftSize === 1 ? 'NFT' : 'NFTs'}`}
         path='vault'
       />
     );
@@ -55,7 +57,6 @@ export const Header = () => {
 
   const Proposals = () => {
     const proposalSize = proposalEvents?.length;
-    console.log({ proposalEvents });
     return (
       <Stat
         flex='1'
@@ -63,7 +64,7 @@ export const Header = () => {
         _last={{ borderRightWidth: '0' }}
         label='Proposals'
         value={proposalSize.toString()}
-        info={`0 active`}
+        info={`3 active, 2 pending submission`}
         path='governance'
       />
     );

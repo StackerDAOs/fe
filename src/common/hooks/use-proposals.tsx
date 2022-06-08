@@ -91,7 +91,7 @@ export function useProposals() {
       }
     };
     fetchProposals();
-  }, [organization]);
+  }, [organization, proposalEvents]);
 
   return { isLoading, proposals };
 }

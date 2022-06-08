@@ -28,7 +28,11 @@ export const VaultActionPopover = () => {
       {({ isOpen }) => (
         <>
           <PopoverTrigger>
-            <Button variant='link' rightIcon={<PopoverIcon isOpen={isOpen} />}>
+            <Button
+              size='sm'
+              variant='link'
+              rightIcon={<PopoverIcon isOpen={isOpen} />}
+            >
               Create a proposal
             </Button>
           </PopoverTrigger>

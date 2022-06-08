@@ -1,5 +1,5 @@
 // Hook (use-balance.tsx)
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { useNetwork } from '@micro-stacks/react';
@@ -18,24 +18,26 @@ export function useBalance() {
 
   const { balance, setBalance } = VaultStore();
 
+  const fetchBalance = useCallback(async () => {
+    try {
+      const vault = organization?.Extensions?.find(
+        (extension: any) => extension?.ExtensionTypes?.name === 'Vault',
+      );
+      const url = network.getCoreApiUrl();
+      const principal = vault?.contract_address;
+      const balance = await fetchAccountBalances({
+        url,
+        principal,
+      });
+      setBalance(balance);
+    } catch (error) {
+      console.error({ error });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [organization]);
+
   useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        const vault = organization?.Extensions?.find(
-          (extension: any) => extension?.ExtensionTypes?.name === 'Vault',
-        );
-        const url = network.getCoreApiUrl();
-        const principal = vault?.contract_address;
-        const balance = await fetchAccountBalances({
-          url,
-          principal,
-        });
-        setBalance(balance);
-        setIsLoading(false);
-      } catch (error) {
-        console.log({ error });
-      }
-    };
     fetchBalance();
   }, [organization]);
 

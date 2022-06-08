@@ -16,11 +16,12 @@ import { useStore as useCommunityStepStore } from 'store/CommunityStepStore';
 // Stacks
 import type { FinishedTxData } from 'micro-stacks/connect';
 import { StacksTestnet } from 'micro-stacks/network';
-import { useContractDeploy } from '@micro-stacks/react';
+import { useContractDeploy, useCurrentStxAddress } from '@micro-stacks/react';
 import { fetchTransaction } from 'micro-stacks/api';
 
 // Hooks
 import { usePolling } from '@common/hooks/use-polling';
+import { useOrganization, useCreateRecord } from '@common/hooks';
 
 // Components
 import { Notification } from '@components/Notification';
@@ -42,6 +43,8 @@ export const ContractDeployButton = (
     txId: '',
     isPending: false,
   });
+  const { organization } = useOrganization();
+  const currentStxAddress = useCurrentStxAddress();
 
   usePolling(() => {
     fetchTransactionData(transaction.txId);
@@ -76,6 +79,16 @@ export const ContractDeployButton = (
   }
 
   const onFinish = useCallback((data: FinishedTxData) => {
+    const { attributes } = useCreateRecord({
+      tableName: 'proposals',
+      attributes: {
+        organization_id: organization.id,
+        transactionId: data.txId,
+        contractAddress: contractName,
+        submittedBy: currentStxAddress,
+      },
+    });
+    console.log({ attributes });
     setTransaction({ txId: data.txId, isPending: true });
     toast({
       duration: 5000,

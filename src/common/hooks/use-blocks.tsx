@@ -1,5 +1,5 @@
 // Hook (use-blocks.tsx)
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useNetwork } from '@micro-stacks/react';
 import { fetchBlocks } from 'micro-stacks/api';
@@ -12,30 +12,30 @@ export function useBlocks() {
     currentBlockHeight: 0,
   });
   const { network } = useNetwork();
+  const getBlocks = useCallback(async () => {
+    try {
+      const url = network.getCoreApiUrl();
+      const limit = 1;
+      const offset = 0;
+      const blocks = await fetchBlocks({
+        url,
+        limit,
+        offset,
+      });
+      setState({
+        ...state,
+        blocks: blocks,
+        currentBlockHeight: blocks.total,
+      });
+    } catch (e: any) {
+      console.log(e);
+    } finally {
+      console.log('finally');
+    }
+  }, []);
 
   useEffect(() => {
-    async function fetch() {
-      try {
-        const url = network.getCoreApiUrl();
-        const limit = 1;
-        const offset = 0;
-        const blocks = await fetchBlocks({
-          url,
-          limit,
-          offset,
-        });
-        setState({
-          ...state,
-          blocks: blocks,
-          currentBlockHeight: blocks.total,
-        });
-      } catch (e: any) {
-        console.log(e);
-      } finally {
-        console.log('finally');
-      }
-    }
-    fetch();
+    getBlocks();
   }, []);
 
   return { blocks: state.blocks, currentBlockHeight: state.currentBlockHeight };

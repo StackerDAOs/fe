@@ -136,10 +136,10 @@ export const AppNavbar = () => {
 
   const functionArgs = [
     contractPrincipalCV(
-      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-      'alert-coral-rattlesnake',
+      'STPJ2HPED2TMR1HAFBFA5VQF986CRD4ZWHH36F6X',
+      'managing-coral-wallaby',
     ),
-    uintCV(1205),
+    uintCV(2230),
     contractPrincipalCV(
       'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
       'sde-governance-token-with-delegation',
@@ -309,7 +309,6 @@ export const AppNavbar = () => {
                                         }}
                                       >
                                         <HStack>
-                                          <FaBell color='white' />
                                           <Text
                                             px='2'
                                             fontSize='sm'
@@ -332,7 +331,6 @@ export const AppNavbar = () => {
                                         }}
                                       >
                                         <HStack>
-                                          <MdSettings color='white' />
                                           <Text
                                             px='2'
                                             fontSize='sm'
@@ -355,7 +353,6 @@ export const AppNavbar = () => {
                                         }}
                                       >
                                         <HStack>
-                                          <FaExchangeAlt color='white' />
                                           <Text
                                             px='2'
                                             fontSize='sm'
@@ -379,7 +376,6 @@ export const AppNavbar = () => {
                                         }}
                                       >
                                         <HStack>
-                                          <FaSignOutAlt color='white' />
                                           <Text
                                             px='2'
                                             fontSize='sm'

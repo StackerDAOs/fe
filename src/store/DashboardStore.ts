@@ -7,6 +7,7 @@ interface DashboardStore {
 };
 
 type Organization = {
+  id: string;
   name: string;
   slug: string;
   contractAddress: string;

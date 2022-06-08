@@ -19,7 +19,7 @@ export function useOrganization() {
         const { data: Organizations, error } = await supabase
           .from('Organizations')
           .select(
-            'name, slug, contract_address, Extensions (contract_address, ExtensionTypes (name))',
+            'id, name, slug, contract_address, Extensions (contract_address, ExtensionTypes (name))',
           )
           .eq('slug', slug);
         if (error) throw error;
@@ -34,7 +34,7 @@ export function useOrganization() {
       }
     };
     fetchOrganization();
-  }, [router.isReady, slug]);
+  }, [slug]);
 
   return { organization };
 }

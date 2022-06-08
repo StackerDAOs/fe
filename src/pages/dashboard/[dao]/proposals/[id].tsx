@@ -31,6 +31,11 @@ import { HiX } from 'react-icons/hi';
 // Stacks
 import { useCurrentStxAddress } from '@micro-stacks/react';
 import { boolCV, contractPrincipalCV } from 'micro-stacks/clarity';
+import {
+  FungibleConditionCode,
+  makeStandardSTXPostCondition,
+  makeContractSTXPostCondition,
+} from 'micro-stacks/transactions';
 
 // Utils
 import {
@@ -38,6 +43,7 @@ import {
   convertToken,
   getPercentage,
   truncate,
+  stxToUstx,
 } from '@common/helpers';
 
 // Hooks
@@ -116,6 +122,27 @@ const ProposalView = () => {
         ]
       : [];
 
+  const concludeFunctionName = 'conclude';
+  const concludeFunctionArgs =
+    proposalContractAddress && proposalContractName
+      ? [contractPrincipalCV(proposalContractAddress, proposalContractName)]
+      : [];
+  // TODO: make dynamic call to get vault address & to proposal for post condition amounts
+  const postConditionAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
+  const postConditionName = 'sde-vault';
+  const postConditionCode = FungibleConditionCode.LessEqual;
+  const postConditionAmount = stxToUstx('525');
+  const concludePostConditions = currentStxAddress
+    ? [
+        makeContractSTXPostCondition(
+          postConditionAddress,
+          postConditionName,
+          postConditionCode,
+          postConditionAmount,
+        ),
+      ]
+    : [];
+
   const voteFor = {
     contractAddress: votingExtensionAddress,
     contractName: votingExtensionName,
@@ -131,10 +158,22 @@ const ProposalView = () => {
     postConditions,
   };
 
+  const concludeProposal = {
+    contractAddress: votingExtensionAddress,
+    contractName: votingExtensionName,
+    functionName: concludeFunctionName,
+    functionArgs: concludeFunctionArgs,
+    postConditions: concludePostConditions,
+  };
+
   const totalVotes = Number(votesFor) + Number(votesAgainst);
   const currentVoterEvent = (event: any) =>
     event?.voter?.value === currentStxAddress;
   const hasVoted = events?.some(currentVoterEvent);
+  const isClosed = currentBlockHeight > endBlockHeight;
+  const isOpen =
+    currentBlockHeight <= endBlockHeight &&
+    currentBlockHeight >= startBlockHeight;
 
   return (
     <motion.div
@@ -217,11 +256,12 @@ const ProposalView = () => {
                           borderColor='base.500'
                           p='2'
                         >
-                          Expires ~{' '}
-                          {estimateDays(
-                            Number(endBlockHeight) - Number(currentBlockHeight),
-                          )}{' '}
-                          days
+                          {Number(currentBlockHeight) > Number(endBlockHeight)
+                            ? `Closed`
+                            : `Closes in ~ ${estimateDays(
+                                Number(endBlockHeight) -
+                                  Number(currentBlockHeight),
+                              )} days`}
                         </Tag>
                         <Tag
                           size='sm'
@@ -359,14 +399,38 @@ const ProposalView = () => {
                       py={{ base: '3', md: '3' }}
                       px={{ base: '6', md: '6' }}
                     >
-                      <Text
-                        fontSize='xl'
-                        fontWeight='medium'
-                        color='light.900'
-                        mb='1'
-                      >
-                        Proposal Status
-                      </Text>
+                      <HStack pb='3' justify='space-between'>
+                        <Text
+                          fontSize='xl'
+                          fontWeight='medium'
+                          color='light.900'
+                          mb='1'
+                        >
+                          Status
+                        </Text>
+                        {concluded ? (
+                          <Badge
+                            colorScheme='secondary'
+                            size='sm'
+                            px='3'
+                            py='2'
+                          >
+                            Executed
+                          </Badge>
+                        ) : isClosed ? (
+                          <Badge colorScheme='red' size='sm' px='3' py='2'>
+                            Ready for execution
+                          </Badge>
+                        ) : isOpen ? (
+                          <Badge colorScheme='green' size='sm' px='3' py='2'>
+                            Active
+                          </Badge>
+                        ) : (
+                          <Badge colorScheme='yellow' size='sm' px='3' py='2'>
+                            Pending
+                          </Badge>
+                        )}
+                      </HStack>
                       <HStack justify='space-between'>
                         <Text
                           fontSize='sm'
@@ -437,7 +501,7 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            85%
+                            > 20%
                           </Text>
                         </HStack>
                         <HStack justify='space-between'>
@@ -446,19 +510,19 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='gray.900'
                           >
-                            Expires in
+                            Vote Deadline
                           </Text>
                           <Text
                             fontSize='sm'
                             fontWeight='medium'
                             color='light.900'
                           >
-                            ~{' '}
-                            {estimateDays(
-                              Number(endBlockHeight) -
-                                Number(currentBlockHeight),
-                            )}{' '}
-                            days
+                            {Number(currentBlockHeight) > Number(endBlockHeight)
+                              ? `Closed`
+                              : `Closes in ~ ${estimateDays(
+                                  Number(endBlockHeight) -
+                                    Number(currentBlockHeight),
+                                )} days`}
                           </Text>
                         </HStack>
                       </Stack>
@@ -477,43 +541,68 @@ const ProposalView = () => {
                       justifyContent='flex-start'
                       spacing='6'
                     >
-                      <ContractCallButton
-                        title='Approve'
-                        color='white'
-                        bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                        isFullWidth
-                        disabled={hasVoted}
-                        _disabled={{
-                          bgGradient:
-                            'linear(to-br, secondaryGradient.900, secondary.900)',
-                          opacity: 0.5,
-                          cursor: 'not-allowed',
-                          _hover: {
+                      {isClosed ? (
+                        <ContractCallButton
+                          title='Execute'
+                          color='white'
+                          bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
+                          isFullWidth
+                          disabled={concluded}
+                          _disabled={{
                             bgGradient:
                               'linear(to-br, secondaryGradient.900, secondary.900)',
                             opacity: 0.5,
                             cursor: 'not-allowed',
-                          },
-                        }}
-                        {...voteFor}
-                      />
-                      <ContractCallButton
-                        title='Reject'
-                        color='white'
-                        isFullWidth
-                        disabled={hasVoted}
-                        _disabled={{
-                          bg: 'base.600',
-                          opacity: 0.5,
-                          cursor: 'not-allowed',
-                          _hover: {
-                            bg: 'base.600',
-                            opacity: 0.5,
-                            cursor: 'not-allowed',
-                          },
-                        }}
-                        {...voteAgainst}
-                      />
+                            _hover: {
+                              bgGradient:
+                                'linear(to-br, secondaryGradient.900, secondary.900)',
+                              opacity: 0.5,
+                              cursor: 'not-allowed',
+                            },
+                          }}
+                          {...concludeProposal}
+                        />
+                      ) : (
+                        <>
+                          <ContractCallButton
+                            title='Approve'
+                            color='white'
+                            bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
+                            isFullWidth
+                            disabled={hasVoted}
+                            _disabled={{
+                              bgGradient:
+                                'linear(to-br, secondaryGradient.900, secondary.900)',
+                              opacity: 0.5,
+                              cursor: 'not-allowed',
+                              _hover: {
+                                bgGradient:
+                                  'linear(to-br, secondaryGradient.900, secondary.900)',
+                                opacity: 0.5,
+                                cursor: 'not-allowed',
+                              },
+                            }}
+                            {...voteFor}
+                          />
+                          <ContractCallButton
+                            title='Reject'
+                            color='white'
+                            isFullWidth
+                            disabled={hasVoted}
+                            _disabled={{
+                              bg: 'base.600',
+                              opacity: 0.5,
+                              cursor: 'not-allowed',
+                              _hover: {
+                                bg: 'base.600',
+                                opacity: 0.5,
+                                cursor: 'not-allowed',
+                              },
+                            }}
+                            {...voteAgainst}
+                          />
+                        </>
+                      )}
                     </HStack>
                     <HStack justify='center' my='5'>
                       <Text

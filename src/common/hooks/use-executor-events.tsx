@@ -55,6 +55,8 @@ export function useExecutorEvents({ filter, filterByProposal }: IEvent = {}) {
         setIsLoading(false);
       } catch (error) {
         console.log({ error });
+      } finally {
+        console.log('finally');
       }
     };
     fetchEvents();

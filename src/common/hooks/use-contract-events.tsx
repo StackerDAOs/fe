@@ -1,5 +1,5 @@
 // Hook (use-contract-events.tsx)
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useNetwork } from '@micro-stacks/react';
 import { fetchContractEventsById } from 'micro-stacks/api';
@@ -25,46 +25,45 @@ export function useContractEvents({
   const { organization } = useOrganization();
   const { network } = useNetwork();
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const extension = organization?.Extensions?.find(
-          (extension: any) => extension?.ExtensionTypes?.name === extensionName,
-        );
-        const url = network.getCoreApiUrl();
-        const contractId = extension?.contract_address;
-        const data = await fetchContractEventsById({
-          url,
-          limit: 10,
-          contract_id: contractId,
-          offset: 0,
-          unanchored: false,
-        });
-        const { results } = data;
-        const serializedEvents = results.map((event: any) => {
-          const hex = event?.contract_log?.value.hex;
-          const deserialized = deserializeCV(hex);
-          const decoded = cvToValue(deserialized);
-          return decoded;
-        });
+  const fetchEvents = useCallback(async () => {
+    try {
+      const extension = organization?.Extensions?.find(
+        (extension: any) => extension?.ExtensionTypes?.name === extensionName,
+      );
+      const url = network.getCoreApiUrl();
+      const contractId = extension?.contract_address;
+      const data = await fetchContractEventsById({
+        url,
+        limit: 10,
+        contract_id: contractId,
+        offset: 0,
+        unanchored: false,
+      });
+      const { results } = data;
+      const serializedEvents = results.map((event: any) => {
+        const hex = event?.contract_log?.value.hex;
+        const deserialized = deserializeCV(hex);
+        const decoded = cvToValue(deserialized);
+        return decoded;
+      });
 
-        const filteredEvents = filterByProposal
-          ? serializedEvents.filter(
-              (item: any) =>
-                item?.event?.value === filter &&
-                item?.proposal?.value === filterByProposal,
-            )
-          : filter
-          ? serializedEvents.filter(
-              (item: any) => item?.event?.value === filter,
-            )
-          : serializedEvents;
-        setEvents(filteredEvents);
-        setIsLoading(false);
-      } catch (error) {
-        console.log({ error });
-      }
-    };
+      const filteredEvents = filterByProposal
+        ? serializedEvents.filter(
+            (item: any) =>
+              item?.event?.value === filter &&
+              item?.proposal?.value === filterByProposal,
+          )
+        : filter
+        ? serializedEvents.filter((item: any) => item?.event?.value === filter)
+        : serializedEvents;
+      setEvents(filteredEvents);
+      setIsLoading(false);
+    } catch (error) {
+      console.log({ error });
+    }
+  }, [organization]);
+
+  useEffect(() => {
     fetchEvents();
   }, [organization]);
 
