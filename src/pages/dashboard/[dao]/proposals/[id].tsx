@@ -394,17 +394,16 @@ const ProposalView = () => {
                       )}
                     </Badge>
                   </HStack>
-                  <Card border='1px solid rgb(134, 143, 152)'>
+                  <Card bg='base.900'border='1px solid rgb(134, 143, 152)'>
                     <Box
                       py={{ base: '3', md: '3' }}
                       px={{ base: '6', md: '6' }}
                     >
                       <HStack pb='3' justify='space-between'>
                         <Text
-                          fontSize='xl'
+                          fontSize='sm'
                           fontWeight='medium'
-                          color='light.900'
-                          mb='1'
+                          color='gray.900'
                         >
                           Status
                         </Text>

@@ -7,16 +7,19 @@ import {
   Container,
   Stack,
   HStack,
+  Progress,
   SimpleGrid,
   Skeleton,
+  Tag,
   Text,
+  VStack,
 } from '@chakra-ui/react';
 
 // Stacks
 import { contractPrincipalCV, uintCV } from 'micro-stacks/clarity';
 
 // Hooks
-import { useProposals, useSubmissions } from '@common/hooks';
+import { useBlocks, useProposals, useSubmissions } from '@common/hooks';
 
 // Components
 import { Card } from '@components/Card';
@@ -34,11 +37,12 @@ import { motion } from 'framer-motion';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 
 // Utils
-import { truncate } from '@common/helpers';
+import { getPercentage, estimateDays, truncate } from '@common/helpers';
 
 const Governance = () => {
   const router = useRouter();
   const { dao } = router.query;
+  const { currentBlockHeight } = useBlocks();
   const { isLoading, proposals } = useProposals();
   const { proposals: submissions } = useSubmissions();
 
@@ -53,7 +57,7 @@ const Governance = () => {
 
     return submissions?.map(
       (
-        { contractAddress: proposalContractAddress, submittedBy }: any,
+        { type, contractAddress: proposalContractAddress, submittedBy }: any,
         index: number,
       ) => {
         const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
@@ -87,7 +91,11 @@ const Governance = () => {
             px='3'
             my='2'
             borderRadius='lg'
-            _hover={{ bg: 'base.700' }}
+            _even={{
+              bg: 'base.900',
+              border: '1px solid',
+              borderColor: 'base.500',
+            }}
           >
             <Stack
               direction='row'
@@ -101,20 +109,7 @@ const Governance = () => {
                 </Text>
               </HStack>
               <HStack spacing='3'>
-                <Text
-                  fontSize='sm'
-                  fontWeight='medium'
-                  bgGradient='linear(to-l, secondaryGradient.900, secondary.900)'
-                  bgClip='text'
-                >
-                  .{proposalContractAddress.split('.')[1]}
-                </Text>
-              </HStack>
-              <HStack spacing='3'>
-                <Text fontSize='xs' fontWeight='regular' color='gray.900'>
-                  submitted by
-                </Text>
-                <Text fontSize='xs' fontWeight='regular' color='light.900'>
+                <Text fontSize='sm' fontWeight='regular' color='light.900'>
                   {truncate(submittedBy, 4, 4)}
                 </Text>
               </HStack>
@@ -186,9 +181,48 @@ const Governance = () => {
                                 </Box>
                               </Stack>
                             </Stack>
-                            <Box cursor='pointer'>
-                              {submissionsByProposal()}
-                            </Box>
+                            <SimpleGrid columns={2} spacing='5'>
+                              <Box cursor='pointer'>
+                                {submissionsByProposal()}
+                              </Box>
+                              <Card
+                                bg='base.900'
+                                border='1px solid rgb(134, 143, 152)'
+                              >
+                                <Stack
+                                  direction='row'
+                                  spacing='5'
+                                  display='flex'
+                                  justifyContent='space-between'
+                                >
+                                  <HStack pb='3' justify='space-between'>
+                                    <Text
+                                      fontSize='sm'
+                                      fontWeight='medium'
+                                      color='gray.900'
+                                    >
+                                      Status
+                                    </Text>
+                                  </HStack>
+                                  <HStack justify='space-between'>
+                                    <Text
+                                      fontSize='sm'
+                                      fontWeight='medium'
+                                      color='gray.900'
+                                    >
+                                      Submitted by
+                                    </Text>
+                                    <Text
+                                      fontSize='sm'
+                                      fontWeight='medium'
+                                      color='light.900'
+                                    >
+                                      asdasd
+                                    </Text>
+                                  </HStack>
+                                </Stack>
+                              </Card>
+                            </SimpleGrid>
                           </Box>
                         </Stack>
                       </Stack>
@@ -272,9 +306,18 @@ const Governance = () => {
                             type,
                             proposer,
                             concluded,
+                            startBlockHeight,
+                            endBlockHeight,
                             votesFor,
                             votesAgainst,
                           }: any) => {
+                            const totalVotes =
+                              Number(votesFor) + Number(votesAgainst);
+                            const isClosed =
+                              currentBlockHeight > endBlockHeight;
+                            const isOpen =
+                              currentBlockHeight <= endBlockHeight &&
+                              currentBlockHeight >= startBlockHeight;
                             return (
                               <motion.div
                                 variants={FADE_IN_VARIANTS}
@@ -289,65 +332,164 @@ const Governance = () => {
                                 >
                                   <a>
                                     <Card
-                                      bg='base.900'
+                                      bg='base.800'
                                       position='relative'
                                       px={{ base: '6', md: '6' }}
                                       py={{ base: '6', md: '6' }}
                                       border='1px solid rgb(134, 143, 152)'
                                       _hover={{
                                         cursor: 'pointer',
-                                        bg: 'base.800',
                                       }}
                                     >
-                                      <Stack
-                                        spacing={{ base: '0', md: '2' }}
-                                        justify='space-between'
-                                      >
-                                        <HStack>
-                                          {concluded && (
-                                            <Badge
-                                              size='sm'
-                                              maxW='fit-content'
-                                              variant='subtle'
-                                              colorScheme={
-                                                votesFor.toString() >
-                                                votesAgainst.toString()
-                                                  ? 'green'
-                                                  : 'red'
-                                              }
-                                              px='3'
-                                              py='2'
-                                            >
-                                              <HStack spacing='1'>
-                                                {concluded &&
-                                                votesFor.toString() >
-                                                  votesAgainst.toString() ? (
-                                                  <>
-                                                    <FaCheck />
-                                                    <Text>Approved</Text>
-                                                  </>
-                                                ) : (
-                                                  <>
-                                                    <FaTimes />
-                                                    <Text>Failed</Text>
-                                                  </>
-                                                )}
+                                      <Box as='section'>
+                                        <VStack
+                                          align='left'
+                                          maxW='md'
+                                          spacing='4'
+                                          direction={{
+                                            base: 'column',
+                                            md: 'row',
+                                          }}
+                                          justify='space-between'
+                                          color='white'
+                                        >
+                                          <Box>
+                                            <HStack justify='space-between'>
+                                              <Text
+                                                fontSize='xl'
+                                                fontWeight='medium'
+                                              >
+                                                {title}
+                                              </Text>
+                                              {concluded ? (
+                                                <Badge
+                                                  colorScheme='secondary'
+                                                  size='sm'
+                                                  px='3'
+                                                  py='2'
+                                                >
+                                                  Executed
+                                                </Badge>
+                                              ) : isClosed ? (
+                                                <Badge
+                                                  colorScheme='red'
+                                                  size='sm'
+                                                  px='3'
+                                                  py='2'
+                                                >
+                                                  Ready for execution
+                                                </Badge>
+                                              ) : isOpen ? (
+                                                <Badge
+                                                  colorScheme='green'
+                                                  size='sm'
+                                                  px='3'
+                                                  py='2'
+                                                >
+                                                  Active
+                                                </Badge>
+                                              ) : (
+                                                <Badge
+                                                  colorScheme='yellow'
+                                                  size='sm'
+                                                  px='3'
+                                                  py='2'
+                                                >
+                                                  Pending
+                                                </Badge>
+                                              )}
+                                            </HStack>
+                                            <Stack my='3'>
+                                              <Stack
+                                                spacing='4'
+                                                direction={{
+                                                  base: 'column',
+                                                  md: 'row',
+                                                }}
+                                                justify='space-between'
+                                                color='white'
+                                              >
+                                                <Box>
+                                                  <Text
+                                                    fontSize='sm'
+                                                    fontWeight='regular'
+                                                    color='gray.900'
+                                                  >
+                                                    Description
+                                                  </Text>
+                                                </Box>
+                                              </Stack>
+                                              <Text
+                                                fontSize='sm'
+                                                maxW='sm'
+                                                _selection={{
+                                                  bg: 'base.800',
+                                                  color: 'secondary.900',
+                                                }}
+                                              >
+                                                {description}
+                                              </Text>
+                                            </Stack>
+                                            <Stack mt='5' mb='3'>
+                                              <Stack
+                                                spacing='4'
+                                                direction={{
+                                                  base: 'column',
+                                                  md: 'row',
+                                                }}
+                                                justify='space-between'
+                                                color='white'
+                                              >
+                                                <Box>
+                                                  <Text
+                                                    fontSize='sm'
+                                                    fontWeight='regular'
+                                                    color='gray.900'
+                                                  >
+                                                    Results
+                                                  </Text>
+                                                </Box>
+                                              </Stack>
+                                              <HStack justify='space-between'>
+                                                <Text
+                                                  bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
+                                                  bgClip='text'
+                                                  fontSize='sm'
+                                                  fontWeight='semibold'
+                                                >
+                                                  Yes (
+                                                  {getPercentage(
+                                                    totalVotes,
+                                                    Number(votesFor),
+                                                  )}
+                                                  %)
+                                                </Text>
+                                                <Text
+                                                  color='gray.900'
+                                                  fontSize='sm'
+                                                  fontWeight='semibold'
+                                                >
+                                                  No (
+                                                  {getPercentage(
+                                                    totalVotes,
+                                                    Number(votesAgainst),
+                                                  )}
+                                                  %)
+                                                </Text>
                                               </HStack>
-                                            </Badge>
-                                          )}
-                                        </HStack>
-                                        <Stack spacing='1'>
-                                          <Text
-                                            fontSize='lg'
-                                            fontWeight='medium'
-                                          >
-                                            {title}
-                                          </Text>
-                                          <Text fontSize='sm' color='gray.900'>
-                                            {description}
-                                          </Text>
-                                        </Stack>
-                                      </Stack>
+                                              <Progress
+                                                colorScheme='secondary'
+                                                size='md'
+                                                value={getPercentage(
+                                                  totalVotes,
+                                                  Number(votesFor),
+                                                )}
+                                                bg='base.500'
+                                              />
+                                            </Stack>
+                                          </Box>
+                                        </VStack>
+                                      </Box>
                                     </Card>
                                   </a>
                                 </Link>

@@ -180,15 +180,24 @@ export const whitelistAssets = [
 
 export const items = [
   {
-    title: 'Megapont DAO',
+    title: 'Megapont',
     description: 'Powered by $MEGACOIN',
-    href: '/megapont',
+    href: '/p/megapont',
     icon: 'https://www.megapont.com/images/logo.svg',
   },
   {
+    title: 'Tiger Force',
+    href: '/p/tigerforce',
+    icon: 'https://tigerforce.io/_next/static/media/king-logo.0e9f2765.png',
+  },
+  {
+    title: 'Satoshibles',
+    href: '/p/satoshible',
+    icon: 'https://satoshibles.com/images/logo.svg?id=c6d3826d1621e73b5a2c',
+  },
+  {
     title: 'Stacks Mfers',
-    description: 'just a bunch of mfers on stacks',
-    href: '/mfers',
+    href: '/p/mfers',
     icon: 'https://stxnft.mypinata.cloud/ipfs/QmUL7yELAmF1wnbqt6yaNLmCVbBa7BSbSNXYKijpku2r45/1.png?img-width=240&img-fit=contain&img-quality=60&img-onerror=redirect&img-fit=pad&img-format=webp',
   },
 ]

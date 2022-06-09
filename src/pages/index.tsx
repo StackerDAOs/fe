@@ -58,7 +58,7 @@ const Index = () => {
                 mx='auto'
                 lineHeight='1.2'
                 letterSpacing='tight'
-                color={mode('base.900', 'light.900')}
+                color='light.900'
               >
                 Build your community on {''}
                 <Text
@@ -67,11 +67,8 @@ const Index = () => {
                   pr='2'
                   maxW='xl'
                   mx='auto'
-                  color={mode('base.900', 'light.900')}
-                  bgGradient={mode(
-                    'linear(to-br, secondary.900, secondaryGradient.900)',
-                    'linear(to-br, primaryGradient.900, primary.900)',
-                  )}
+                  color='light.900'
+                  bgGradient='linear(to-br, secondary.900, secondaryGradient.900)'
                   bgClip='text'
                   fontStyle='italic'
                 >
@@ -105,15 +102,11 @@ const Index = () => {
                   >
                     <Button
                       color='white'
-                      bgGradient={mode(
-                        'linear(to-br, secondaryGradient.900, secondary.900)',
-                        'linear(to-br, primaryGradient.900, primary.900)',
-                      )}
+                      bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
                       p='6'
                       my='8'
-                      size='lg'
-                      fontSize='lg'
-                      fontWeight='bold'
+                      size='md'
+                      fontWeight='semibold'
                       _hover={{ opacity: 0.9 }}
                       _active={{ opacity: 1 }}
                     >
@@ -133,9 +126,8 @@ const Index = () => {
                       color='white'
                       p='6'
                       my='8'
-                      size='lg'
-                      fontSize='lg'
-                      fontWeight='regular'
+                      size='md'
+                      fontWeight='medium'
                       _hover={{ opacity: 0.9 }}
                     >
                       Join the Discord

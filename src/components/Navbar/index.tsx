@@ -73,8 +73,9 @@ export const Navbar = () => {
                   <Link href='/dashboard/stackerdao'>
                     <Button
                       color='white'
-                      bgGradient='linear(to-br, primaryGradient.900, primary.900)'
-                      fontWeight='bold'
+                      size='sm'
+                      fontWeight='medium'
+                      bg='secondary.900'
                       _hover={{ opacity: 0.9 }}
                       _active={{ opacity: 1 }}
                     >
