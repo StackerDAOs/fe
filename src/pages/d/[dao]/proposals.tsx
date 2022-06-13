@@ -5,8 +5,13 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   Stack,
   HStack,
+  Input,
+  InputGroup,
+  InputRightElement,
+  InputRightAddon,
   Progress,
   SimpleGrid,
   Skeleton,
@@ -16,10 +21,20 @@ import {
 } from '@chakra-ui/react';
 
 // Stacks
-import { contractPrincipalCV, uintCV } from 'micro-stacks/clarity';
+import {
+  standardPrincipalCV,
+  contractPrincipalCV,
+  uintCV,
+} from 'micro-stacks/clarity';
 
 // Hooks
-import { useBlocks, useProposals, useSubmissions } from '@common/hooks';
+import {
+  useBlocks,
+  useGovernanceTokenExtension,
+  useSubmissionExtension,
+  useProposals,
+  useSubmissions,
+} from '@common/hooks';
 
 // Components
 import { Card } from '@components/Card';
@@ -39,12 +54,17 @@ import { FaCheck, FaTimes } from 'react-icons/fa';
 // Utils
 import { getPercentage, estimateDays, truncate } from '@common/helpers';
 
-const Governance = () => {
+const Proposals = () => {
   const router = useRouter();
   const { dao } = router.query;
   const { currentBlockHeight } = useBlocks();
   const { isLoading, proposals } = useProposals();
   const { proposals: submissions } = useSubmissions();
+  const {
+    contractName: governanceContractName,
+    contractAddress: governanceContractAddress,
+  } = useGovernanceTokenExtension();
+  const { contractName, contractAddress } = useSubmissionExtension();
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -53,49 +73,46 @@ const Governance = () => {
   };
 
   const submissionsByProposal = () => {
-    // TODO: get contract address from use extension hook
-
+    const startHeight = currentBlockHeight + 150;
     return submissions?.map(
       (
         { type, contractAddress: proposalContractAddress, submittedBy }: any,
         index: number,
       ) => {
-        const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-        const contractName = 'sde-proposal-submission-with-delegation';
-        const functionName = 'propose';
-        const functionArgs = [
-          contractPrincipalCV(
-            proposalContractAddress.split('.')[0],
-            proposalContractAddress.split('.')[1],
-          ),
-          uintCV(2230),
-          contractPrincipalCV(
-            'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-            'sde-governance-token-with-delegation',
-          ),
-        ];
-        const postConditions: any = [];
         const contractData = {
           contractAddress,
           contractName,
-          functionName,
-          functionArgs,
-          postConditions,
+          functionName: 'propose',
+          functionArgs: [
+            contractPrincipalCV(
+              proposalContractAddress.split('.')[0],
+              proposalContractAddress.split('.')[1],
+            ),
+            uintCV(startHeight),
+            contractPrincipalCV(
+              governanceContractAddress,
+              governanceContractName,
+            ),
+          ],
+          postConditions: [],
         };
         return (
           <Stack
             key={index}
             color='white'
-            bg='base.800'
+            bg='base.900'
+            border='1px solid'
+            borderColor='base.500'
             py='2'
             px='3'
-            my='2'
+            mb='2'
             borderRadius='lg'
             _even={{
-              bg: 'base.900',
+              bg: 'base.800',
               border: '1px solid',
               borderColor: 'base.500',
             }}
+            _last={{ mb: '0' }}
           >
             <Stack
               direction='row'
@@ -105,12 +122,12 @@ const Governance = () => {
             >
               <HStack spacing='3'>
                 <Text fontSize='sm' fontWeight='medium' color='light.900'>
-                  SDP Transfer STX
+                  {type}
                 </Text>
               </HStack>
               <HStack spacing='3'>
-                <Text fontSize='sm' fontWeight='regular' color='light.900'>
-                  {truncate(submittedBy, 4, 4)}
+                <Text color='gray.900' fontSize='sm'>
+                  {truncate(`${proposalContractAddress}`, 4, 24)}
                 </Text>
               </HStack>
               <HStack spacing='3'>
@@ -127,7 +144,7 @@ const Governance = () => {
                   _hover={{ opacity: 0.9 }}
                   _active={{ opacity: 1 }}
                 >
-                  View
+                  View details
                 </Button>
               </HStack>
             </Stack>
@@ -145,95 +162,56 @@ const Governance = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Box as='section'>
-        <Container maxW='5xl'>
-          <Stack spacing={{ base: '8', lg: '6' }}>
-            <Stack w='auto'>
-              <Box as='section'>
-                <Container>
-                  <motion.div
-                    variants={FADE_IN_VARIANTS}
-                    initial={FADE_IN_VARIANTS.hidden}
-                    animate={FADE_IN_VARIANTS.enter}
-                    exit={FADE_IN_VARIANTS.exit}
-                    transition={{ duration: 0.75, type: 'linear' }}
-                  >
-                    <Box as='section'>
-                      <Stack spacing={{ base: '8', lg: '6' }}>
-                        <Stack w='auto'>
-                          <Box as='section'>
-                            <Stack spacing='5'>
-                              <Stack
-                                spacing='4'
-                                mb='3'
-                                direction={{ base: 'column', md: 'row' }}
-                                justify='space-between'
-                                color='white'
-                              >
-                                <Box>
-                                  <Text fontSize='lg' fontWeight='medium'>
-                                    Action Items
-                                  </Text>
-                                  <Text color='gray.900' fontSize='sm'>
-                                    View the latest proposal contracts ready for
-                                    submission.
-                                  </Text>
-                                </Box>
-                              </Stack>
-                            </Stack>
-                            <SimpleGrid columns={2} spacing='5'>
-                              <Box cursor='pointer'>
-                                {submissionsByProposal()}
-                              </Box>
-                              <Card
-                                bg='base.900'
-                                border='1px solid rgb(134, 143, 152)'
-                              >
+      {submissions?.length > 0 && (
+        <Box as='section'>
+          <Container maxW='5xl'>
+            <Stack spacing={{ base: '8', lg: '6' }}>
+              <Stack w='auto'>
+                <Box as='section'>
+                  <Container>
+                    <motion.div
+                      variants={FADE_IN_VARIANTS}
+                      initial={FADE_IN_VARIANTS.hidden}
+                      animate={FADE_IN_VARIANTS.enter}
+                      exit={FADE_IN_VARIANTS.exit}
+                      transition={{ duration: 0.75, type: 'linear' }}
+                    >
+                      <Box as='section'>
+                        <Stack spacing={{ base: '8', lg: '6' }}>
+                          <Stack w='auto'>
+                            <Box as='section'>
+                              <Stack spacing='5'>
                                 <Stack
-                                  direction='row'
-                                  spacing='5'
-                                  display='flex'
-                                  justifyContent='space-between'
+                                  spacing='4'
+                                  mb='3'
+                                  direction={{ base: 'column', md: 'row' }}
+                                  justify='space-between'
+                                  color='white'
                                 >
-                                  <HStack pb='3' justify='space-between'>
-                                    <Text
-                                      fontSize='sm'
-                                      fontWeight='medium'
-                                      color='gray.900'
-                                    >
-                                      Status
+                                  <Box>
+                                    <Text fontSize='lg' fontWeight='medium'>
+                                      Submissions
                                     </Text>
-                                  </HStack>
-                                  <HStack justify='space-between'>
-                                    <Text
-                                      fontSize='sm'
-                                      fontWeight='medium'
-                                      color='gray.900'
-                                    >
-                                      Submitted by
+                                    <Text color='gray.900' fontSize='sm'>
+                                      Community deployed contracts ready to
+                                      submitted as proposals.
                                     </Text>
-                                    <Text
-                                      fontSize='sm'
-                                      fontWeight='medium'
-                                      color='light.900'
-                                    >
-                                      asdasd
-                                    </Text>
-                                  </HStack>
+                                  </Box>
                                 </Stack>
-                              </Card>
-                            </SimpleGrid>
-                          </Box>
+                              </Stack>
+                              {submissionsByProposal()}
+                            </Box>
+                          </Stack>
                         </Stack>
-                      </Stack>
-                    </Box>
-                  </motion.div>
-                </Container>
-              </Box>
+                      </Box>
+                    </motion.div>
+                  </Container>
+                </Box>
+              </Stack>
             </Stack>
-          </Stack>
-        </Container>
-      </Box>
+          </Container>
+        </Box>
+      )}
       <Box as='section'>
         <Container maxW='5xl'>
           <Stack spacing={{ base: '8', lg: '6' }}>
@@ -247,26 +225,50 @@ const Governance = () => {
                       <Skeleton height='20px' />
                     </Stack>
                   ) : proposals?.length === 0 ? (
-                    <Stack spacing='3' m='6' alignItems='center' color='white'>
-                      <Text fontSize='lg' fontWeight='medium'>
-                        No proposals found.
-                      </Text>
-                      <Link
-                        href={`/dashboard/${dao}/proposals/create/transfer`}
-                      >
-                        <Button
-                          my='10'
-                          py='4'
+                    <>
+                      <Stack spacing='5'>
+                        <Stack
+                          spacing='4'
+                          my='6'
+                          direction={{ base: 'column', md: 'row' }}
+                          justify='space-between'
+                          alignItems='center'
                           color='white'
-                          bg='secondary.900'
-                          size='sm'
-                          _hover={{ opacity: 0.9 }}
-                          _active={{ opacity: 1 }}
                         >
-                          Create proposal
-                        </Button>
-                      </Link>
-                    </Stack>
+                          <Box>
+                            <Text fontSize='lg' fontWeight='medium'>
+                              Proposals
+                            </Text>
+                            <Text color='gray.900' fontSize='sm'>
+                              View all pending, active, and completed proposals.
+                            </Text>
+                          </Box>
+                        </Stack>
+                      </Stack>
+                      <Stack
+                        spacing='3'
+                        m='6'
+                        alignItems='center'
+                        color='white'
+                      >
+                        <Text fontSize='lg' fontWeight='medium'>
+                          No proposals found.
+                        </Text>
+                        <Link href={`/d/${dao}/proposals/create/transfer`}>
+                          <Button
+                            my='10'
+                            py='4'
+                            color='white'
+                            bg='secondary.900'
+                            size='sm'
+                            _hover={{ opacity: 0.9 }}
+                            _active={{ opacity: 1 }}
+                          >
+                            Create proposal
+                          </Button>
+                        </Link>
+                      </Stack>
+                    </>
                   ) : (
                     <>
                       <Stack spacing='5'>
@@ -295,7 +297,7 @@ const Governance = () => {
                       <SimpleGrid
                         columns={{ base: 1, md: 2, lg: 2 }}
                         spacing='6'
-                        py='4'
+                        mb='10'
                         color='white'
                       >
                         {proposals?.map(
@@ -328,7 +330,7 @@ const Governance = () => {
                               >
                                 <Link
                                   key={Math.random()}
-                                  href={`/dashboard/${dao}/proposals/${contractAddress}`}
+                                  href={`/d/${dao}/proposals/${contractAddress}`}
                                 >
                                   <a>
                                     <Card
@@ -357,6 +359,7 @@ const Governance = () => {
                                             <HStack justify='space-between'>
                                               <Text
                                                 fontSize='xl'
+                                                w='75%'
                                                 fontWeight='medium'
                                               >
                                                 {title}
@@ -395,7 +398,7 @@ const Governance = () => {
                                                   px='3'
                                                   py='2'
                                                 >
-                                                  Pending
+                                                  Inactive
                                                 </Badge>
                                               )}
                                             </HStack>
@@ -452,8 +455,7 @@ const Governance = () => {
                                               </Stack>
                                               <HStack justify='space-between'>
                                                 <Text
-                                                  bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                                                  bgClip='text'
+                                                  color='gray.900'
                                                   fontSize='sm'
                                                   fontWeight='semibold'
                                                 >
@@ -510,8 +512,8 @@ const Governance = () => {
   );
 };
 
-Governance.getLayout = (page: any) => {
+Proposals.getLayout = (page: any) => {
   return <AppLayout header={<Header />}>{page}</AppLayout>;
 };
 
-export default Governance;
+export default Proposals;

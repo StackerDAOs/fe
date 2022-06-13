@@ -37,7 +37,9 @@ export const VerticalStep = (props: StepProps) => {
         <Text color='emphasized' fontWeight='medium'>
           {title}
         </Text>
-        <Text color='gray.900'>{description}</Text>
+        <Text fontSize='sm' color='gray.900' maxW='xs'>
+          {description}
+        </Text>
       </Stack>
     </Stack>
   );

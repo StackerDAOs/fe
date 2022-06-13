@@ -4,7 +4,7 @@ import { Box, Container } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 
 // Components
-import { AppNavbar } from '@components/AppNavbar';
+import { MainNavbar } from '@components/MainNavbar';
 import { AppFooter } from '@components/AppFooter';
 
 const FADE_IN_VARIANTS = {
@@ -13,7 +13,7 @@ const FADE_IN_VARIANTS = {
   exit: { opacity: 0, x: 0, y: 0 },
 };
 
-export const AppLayout = ({ header, children }: any) => {
+export const MainLayout = ({ header, children }: any) => {
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -22,7 +22,7 @@ export const AppLayout = ({ header, children }: any) => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <AppNavbar />
+      <MainNavbar />
       <Box as='section'>
         <Container maxW='5xl' mt='6' pt='6'>
           {header}

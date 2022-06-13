@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
-import { standardPrincipalCV } from 'micro-stacks/clarity';
+import { standardPrincipalCV, uintCV } from 'micro-stacks/clarity';
 
 import { useOrganization } from './use-organization';
 
@@ -11,14 +11,16 @@ type VotingExtension = {
   isLoading: boolean;
   contractAddress: string;
   contractName: string;
-  votingWeight: number;
+  balance: string;
+  hasPercentageWeight: string;
 };
 
 const initialState = {
   isLoading: true,
   contractAddress: '',
   contractName: '',
-  votingWeight: 0,
+  balance: '',
+  hasPercentageWeight: '',
 };
 
 export function useGovernanceToken() {
@@ -38,26 +40,37 @@ export function useGovernanceToken() {
       const contractAddress = governanceToken?.contract_address.split('.')[0];
       const contractName = governanceToken?.contract_address.split('.')[1];
       const senderAddress = currentStxAddress;
-      const functionArgs = currentStxAddress
+      const functionArgsForWeight = currentStxAddress
+        ? [standardPrincipalCV(currentStxAddress || ''), uintCV(100000)]
+        : [];
+      const functionArgsForBalance = currentStxAddress
         ? [standardPrincipalCV(currentStxAddress || '')]
         : [];
-      const functionName = 'get-voting-weight';
       try {
         if (currentStxAddress && contractAddress && contractName) {
-          const data: any = await fetchReadOnlyFunction({
+          const fetchVotingWeight: any = await fetchReadOnlyFunction({
             network,
             contractAddress,
             contractName,
             senderAddress,
-            functionArgs,
-            functionName,
+            functionArgs: functionArgsForWeight,
+            functionName: 'has-percentage-weight',
+          });
+          const fetchBalance: any = await fetchReadOnlyFunction({
+            network,
+            contractAddress,
+            contractName,
+            senderAddress,
+            functionArgs: functionArgsForBalance,
+            functionName: 'get-balance',
           });
           setState({
             ...state,
             isLoading: false,
             contractAddress,
             contractName,
-            votingWeight: data.toString(),
+            balance: fetchBalance.toString(),
+            hasPercentageWeight: fetchVotingWeight.toString(),
           });
         }
       } catch (e: any) {
@@ -73,6 +86,7 @@ export function useGovernanceToken() {
     isLoading: state.isLoading,
     contractAddress: state.contractAddress,
     contractName: state.contractName,
-    votingWeight: state.votingWeight,
+    balance: state.balance,
+    hasPercentageWeight: state.hasPercentageWeight,
   };
 }

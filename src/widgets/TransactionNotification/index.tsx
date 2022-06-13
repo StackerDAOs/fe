@@ -17,7 +17,7 @@ export const onFinish = async (data: FinishedTxData) => {
   toast({
     duration: 5000,
     isClosable: true,
-    position: 'bottom-right',
+    position: 'top-right',
     render: () => (
       <Notification>
         <Stack direction='row' p='4' spacing='3'>
@@ -62,7 +62,7 @@ export const onCancel = () => {
   toast({
     duration: 5000,
     isClosable: true,
-    position: 'bottom-right',
+    position: 'top-right',
     render: () => (
       <Notification>
         <Stack direction='row' p='4' spacing='3'>

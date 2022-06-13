@@ -44,7 +44,7 @@ export const VaultActionPopover = () => {
             <SimpleGrid columns={{ base: 1 }}>
               <Stack spacing='4' direction='row' p='3'>
                 <Stack spacing='1'>
-                  <Link href={`/dashboard/${dao}/proposals/create/transfer`}>
+                  <Link href={`/d/${dao}/proposals/create/transfer`}>
                     <a>
                       <Card
                         bg='base.900'
@@ -68,7 +68,7 @@ export const VaultActionPopover = () => {
                       </Card>
                     </a>
                   </Link>
-                  <Link href={`/dashboard/${dao}/proposals/create`}>
+                  <Link href={`/d/${dao}/proposals/create`}>
                     <a>
                       <Card
                         bg='base.900'
@@ -92,7 +92,7 @@ export const VaultActionPopover = () => {
                       </Card>
                     </a>
                   </Link>
-                  <Link href={`/dashboard/${dao}/proposals/create`}>
+                  <Link href={`/d/${dao}/proposals/create`}>
                     <a>
                       <Card
                         bg='base.900'

@@ -71,9 +71,11 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
           {listItems.map((item) => (
             <Tr
               key={item.name}
-              borderTop={`1px solid #1F2129`}
-              borderBottom={`1px solid #1F2129`}
+              border='none'
               cursor='pointer'
+              _odd={{
+                bg: 'base.800',
+              }}
               _hover={{
                 bg: 'base.800',
               }}

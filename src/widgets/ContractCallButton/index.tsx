@@ -69,9 +69,9 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
     console.log({ data });
     setTransaction({ txId: data.txId, isPending: true });
     toast({
-      duration: 5000,
+      duration: null,
       isClosable: true,
-      position: 'bottom-right',
+      position: 'top-right',
       render: () => (
         <Notification>
           <Stack direction='row' p='4' spacing='3'>
@@ -116,7 +116,7 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
     toast({
       duration: 5000,
       isClosable: true,
-      position: 'bottom-right',
+      position: 'top-right',
       render: () => (
         <Notification>
           <Stack direction='row' p='4' spacing='3'>

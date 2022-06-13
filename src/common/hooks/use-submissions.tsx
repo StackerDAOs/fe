@@ -18,7 +18,9 @@ export function useSubmissions() {
       try {
         const { data: Proposals, error } = await supabase
           .from('Proposals')
-          .select('contractAddress, submittedBy, Organizations (id, name)')
+          .select(
+            'contractAddress, type, submittedBy, Organizations (id, name)',
+          )
           .eq('submitted', false);
 
         if (error) throw error;

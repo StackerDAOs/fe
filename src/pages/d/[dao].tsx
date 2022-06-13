@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import {
@@ -11,6 +12,9 @@ import {
   TabPanel,
   TabPanels,
 } from '@chakra-ui/react';
+
+// Web3
+import { useAuth } from '@micro-stacks/react';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
@@ -29,6 +33,13 @@ import { FaArrowRight } from 'react-icons/fa';
 const DAODashboard = () => {
   const router = useRouter();
   const { dao } = router.query;
+  const { isSignedIn } = useAuth();
+
+  // useEffect(() => {
+  //   if (!isSignedIn) {
+  //     router.push('/');
+  //   }
+  // }, [router.isReady, dao]);
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -64,19 +75,6 @@ const DAODashboard = () => {
                       List of shared assets owned by the DAO.
                     </Text>
                   </Box>
-                  <Link href={`/dashboard/${dao}/vault`}>
-                    <Box
-                      display='flex'
-                      alignItems='center'
-                      cursor='pointer'
-                      _hover={{ textDecoration: 'underline' }}
-                    >
-                      <Text fontSize='md' px='1'>
-                        Go to vault
-                      </Text>
-                      <FaArrowRight fontSize='13' />
-                    </Box>
-                  </Link>
                 </Stack>
               </Stack>
               <Tabs color='white' variant='unstyled'>

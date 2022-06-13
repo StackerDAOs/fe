@@ -225,6 +225,9 @@ const CreateProposal = () => {
               <Input
                 id='transferAmount'
                 type='number'
+                bg='base.800'
+                borderColor='base.500'
+                autocomplete='off'
                 placeholder='100 STX'
                 {...register('transferAmount', {
                   required: 'This is required',
@@ -239,6 +242,9 @@ const CreateProposal = () => {
               <Input
                 id='transferTo'
                 type='text'
+                bg='base.800'
+                borderColor='base.500'
+                autocomplete='off'
                 placeholder='SP1T...'
                 {...register('transferTo', {
                   required: 'This is required',
@@ -254,8 +260,11 @@ const CreateProposal = () => {
             <Textarea
               id='description'
               type='text'
+              bg='base.800'
+              borderColor='base.500'
               rows={4}
               resize='none'
+              autocomplete='off'
               placeholder='Transfers 100 STX to SP14...'
               {...register('description', {
                 required: 'This is required',
@@ -287,13 +296,12 @@ const CreateProposal = () => {
                 <Text
                   fontSize='3xl'
                   fontWeight='medium'
-                  bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                  bgClip='text'
+                  color='light.900'
                   mb='1'
                 >
                   SDP Transfer {assetType}
                 </Text>
-                <Text color='light.900' fontSize='sm'>
+                <Text color='gray.900' fontSize='sm'>
                   Review & deploy smart contract.
                 </Text>
                 <Divider my='3' borderColor='base.500' />
@@ -419,12 +427,7 @@ const CreateProposal = () => {
               <Text fontSize='4xl' fontWeight='medium'>
                 Transfer Assets
               </Text>
-              <Text
-                fontSize='md'
-                maxW='md'
-                bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                bgClip='text'
-              >
+              <Text fontSize='md' maxW='md' color='gray.900'>
                 Create a proposal to transfer assets from the DAO treasury
                 vault.
               </Text>
@@ -499,20 +502,24 @@ const CreateProposal = () => {
                       }
                     >
                       <Button
-                        mt='4'
                         color='white'
+                        fontSize='md'
+                        size='md'
                         _hover={{ opacity: 0.9 }}
                         _active={{ opacity: 1 }}
                         onClick={() => setStep(currentStep - 1)}
                       >
                         Back
                       </Button>
-
                       <ContractDeployButton
                         type='submit'
                         isLoading={isSubmitting}
-                        color='light.900'
-                        bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
+                        color='white'
+                        bg='secondary.900'
+                        fontSize='md'
+                        size='md'
+                        _hover={{ opacity: 0.9 }}
+                        _active={{ opacity: 1 }}
                         title='Deploy contract'
                         contractName={generateContractName()}
                         codeBody={contract}

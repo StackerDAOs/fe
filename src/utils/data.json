@@ -1,6 +1,0 @@
-[
-  { "label": "Choose DAO", "url": "/dashboard" },
-  { "label": "Basic Info", "url": "/delivery" },
-  { "label": "Members", "url": "/confirm" },
-  { "label": "Completed", "url": "/complete" }
-]

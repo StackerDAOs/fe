@@ -10,6 +10,11 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+
+// Components
+import { Card } from '@components/Card';
+
+// Icons
 import { FiArrowUpRight } from 'react-icons/fi';
 
 import { motion } from 'framer-motion';
@@ -18,6 +23,7 @@ interface Props extends BoxProps {
   path: string;
   label: string;
   value: string;
+  assetSymbol?: string;
   info: string;
 }
 
@@ -28,23 +34,31 @@ const FADE_IN_VARIANTS = {
 };
 
 export const Stat = (props: Props) => {
-  const { path, label, value, info, ...boxProps } = props;
+  const { path, label, value, assetSymbol, info, ...boxProps } = props;
   const [isHovered, setHovered] = useState(false);
   const router = useRouter();
   const { dao } = router.query;
   return (
-    <Link href={`/dashboard/${dao}/${path}`}>
-      <Box
+    <Link href={`/d/${dao}/${path}`}>
+      <Card
+        bg='base.800'
+        minW='auto'
+        borderColor='base.500'
         px={{ base: '4', md: '6' }}
-        py={{ base: '5', md: '3' }}
+        py={{ base: '4', md: '6' }}
         {...boxProps}
-        _hover={{ cursor: 'pointer' }}
+        _hover={{
+          cursor: 'pointer',
+          borderBottomColor: 'secondary.900',
+          borderBottomWidth: '1px',
+          borderBottomRadius: 'sm',
+        }}
       >
-        <Stack>
-          <motion.div
-            onHoverStart={() => setHovered(true)}
-            onHoverEnd={() => setHovered(false)}
-          >
+        <motion.div
+          onHoverStart={() => setHovered(true)}
+          onHoverEnd={() => setHovered(false)}
+        >
+          <Stack>
             <HStack justify='space-between' h='2.5vh'>
               <Text fontSize='sm' color='gray.900'>
                 {label}
@@ -61,24 +75,25 @@ export const Stat = (props: Props) => {
                 </motion.div>
               )}
             </HStack>
-            <Stack>
-              <Heading size='xs'>{value}</Heading>
-              <HStack spacing='1' fontWeight='medium'>
+            <Stack align='space-between'>
+              <Heading size='xs' fontWeight='medium'>
+                {value}{' '}
                 <Text
                   as='span'
                   fontSize='sm'
-                  pr='2'
-                  maxW='xl'
-                  bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                  bgClip='text'
+                  fontWeight='regular'
+                  color='gray.900'
                 >
-                  {info}
+                  {assetSymbol}
                 </Text>
-              </HStack>
+              </Heading>
+              <Text fontSize='sm' fontWeight='regular' color='light.900'>
+                {info}
+              </Text>
             </Stack>
-          </motion.div>
-        </Stack>
-      </Box>
+          </Stack>
+        </motion.div>
+      </Card>
     </Link>
   );
 };

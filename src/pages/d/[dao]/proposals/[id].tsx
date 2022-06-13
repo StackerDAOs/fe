@@ -25,12 +25,12 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 import { motion } from 'framer-motion';
 
 // Icons
-import { FaArrowLeft, FaCheckCircle, FaVoteYea } from 'react-icons/fa';
+import { FaArrowLeft, FaCheckCircle, FaInfoCircle, FaVoteYea } from 'react-icons/fa';
 import { HiX } from 'react-icons/hi';
 
 // Stacks
 import { useCurrentStxAddress } from '@micro-stacks/react';
-import { boolCV, contractPrincipalCV } from 'micro-stacks/clarity';
+import { boolCV, contractPrincipalCV, listCV, standardPrincipalCV, tupleCV, someCV, noneCV } from 'micro-stacks/clarity';
 import {
   FungibleConditionCode,
   makeStandardSTXPostCondition,
@@ -49,6 +49,7 @@ import {
 // Hooks
 import {
   useBlocks,
+  useContractEvents,
   useGovernanceToken,
   useProposal,
   useVotingExtension,
@@ -62,7 +63,8 @@ const ProposalView = () => {
   const {
     contractAddress: governanceTokenAddress,
     contractName: governanceTokenName,
-    votingWeight,
+    balance,
+    hasPercentageWeight,
   } = useGovernanceToken();
   const {
     contractAddress: votingExtensionAddress,
@@ -82,7 +84,32 @@ const ProposalView = () => {
     votesAgainst,
     events,
   } = useProposal({ filterByProposal: proposalPrincipal });
-  console.log({ events });
+
+  const { events: delegatorEvents } = useContractEvents({
+    extensionName: 'Voting',
+    filter: 'delegate',
+  });
+
+  // Map over contract events to pull in delegator principals
+  const delegators = delegatorEvents?.map((item: any, index: number) => {
+    const delegateVote = proposalContractAddress && proposalContractName && tupleCV({
+      for: boolCV(true),
+      proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
+      delegator: noneCV(),
+    });
+    const delegatorVotes = proposalContractAddress && proposalContractName && listCV([
+      delegateVote,
+      tupleCV({
+        for: boolCV(true),
+        proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
+        delegator: someCV(standardPrincipalCV(item?.delegator?.value)),
+      })
+    ]);
+    return delegatorVotes;
+  });
+
+  console.log({delegators});
+  
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -96,19 +123,13 @@ const ProposalView = () => {
     exit: { opacity: 0, x: 0, y: -15 },
   };
 
-  const functionName = 'vote';
+  const functionName = 'vote-many';
   const postConditions: any = [];
 
   const functionArgsFor =
     proposalContractAddress &&
-    proposalContractName &&
-    governanceTokenAddress &&
-    governanceTokenName
-      ? [
-          boolCV(true),
-          contractPrincipalCV(proposalContractAddress, proposalContractName),
-          contractPrincipalCV(governanceTokenAddress, governanceTokenName),
-        ]
+    proposalContractName
+      ? delegators
       : [];
   const functionArgsAgainst =
     proposalContractAddress &&
@@ -118,7 +139,7 @@ const ProposalView = () => {
       ? [
           boolCV(false),
           contractPrincipalCV(proposalContractAddress, proposalContractName),
-          contractPrincipalCV(governanceTokenAddress, governanceTokenName),
+          noneCV(),
         ]
       : [];
 
@@ -170,10 +191,13 @@ const ProposalView = () => {
   const currentVoterEvent = (event: any) =>
     event?.voter?.value === currentStxAddress;
   const hasVoted = events?.some(currentVoterEvent);
+  const isEligible = hasPercentageWeight === 'true';
+  const isInactive = currentBlockHeight < startBlockHeight;
   const isClosed = currentBlockHeight > endBlockHeight;
   const isOpen =
     currentBlockHeight <= endBlockHeight &&
     currentBlockHeight >= startBlockHeight;
+  const isPassing = Number(votesFor) > Number(votesAgainst);
 
   return (
     <motion.div
@@ -226,8 +250,7 @@ const ProposalView = () => {
                       <Text
                         fontSize='4xl'
                         fontWeight='medium'
-                        bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                        bgClip='text'
+                        color='light.600'
                       >
                         {title}
                       </Text>
@@ -319,10 +342,9 @@ const ProposalView = () => {
                           </Text>
                         </Box>
                       </Stack>
-                      <HStack justify='space-between'>
+                      {isPassing ? (<HStack justify='space-between'>
                         <Text
-                          bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                          bgClip='text'
+                          color='secondary.900'
                           fontSize='sm'
                           fontWeight='semibold'
                         >
@@ -336,7 +358,23 @@ const ProposalView = () => {
                           No ({getPercentage(totalVotes, Number(votesAgainst))}
                           %)
                         </Text>
-                      </HStack>
+                      </HStack>) : (<HStack justify='space-between'>
+                        <Text
+                          color='gray.900'
+                          fontSize='sm'
+                          fontWeight='semibold'
+                        >
+                          Yes ({getPercentage(totalVotes, Number(votesFor))}%)
+                        </Text>
+                        <Text
+                          color='secondary.900'
+                          fontSize='sm'
+                          fontWeight='semibold'
+                        >
+                          No ({getPercentage(totalVotes, Number(votesAgainst))}
+                          %)
+                        </Text>
+                      </HStack>)}
                       <Progress
                         colorScheme='secondary'
                         size='md'
@@ -364,7 +402,24 @@ const ProposalView = () => {
                             You already voted!
                           </Text>
                           <Text color='light.900' fontWeight='regular'>
-                            {convertToken(votingWeight.toString())}{' '}
+                            {convertToken(balance.toString())}{' '}
+                            <Text
+                              as='span'
+                              color='gray.900'
+                              fontWeight='medium'
+                            >
+                              MEGA
+                            </Text>
+                          </Text>
+                        </HStack>
+                      ) : isEligible ? (
+                        <HStack spacing='2'>
+                          <Icon color='secondary.900' as={FaCheckCircle} />
+                          <Text color='light.900' fontWeight='regular'>
+                            Voting power:
+                          </Text>
+                          <Text color='light.900' fontWeight='regular'>
+                            {convertToken(balance.toString())}{' '}
                             <Text
                               as='span'
                               color='gray.900'
@@ -376,12 +431,12 @@ const ProposalView = () => {
                         </HStack>
                       ) : (
                         <HStack spacing='2'>
-                          <Icon color='secondary.900' as={FaCheckCircle} />
+                          <Icon color='secondary.900' as={FaInfoCircle} />
                           <Text color='light.900' fontWeight='regular'>
-                            Voting power:
+                            Not enough voting power:
                           </Text>
                           <Text color='light.900' fontWeight='regular'>
-                            {convertToken(votingWeight.toString())}{' '}
+                            {convertToken(balance.toString())}{' '}
                             <Text
                               as='span'
                               color='gray.900'
@@ -394,7 +449,7 @@ const ProposalView = () => {
                       )}
                     </Badge>
                   </HStack>
-                  <Card bg='base.900'border='1px solid rgb(134, 143, 152)'>
+                  <Card bg='base.900' border='1px solid' borderColor='base.500'>
                     <Box
                       py={{ base: '3', md: '3' }}
                       px={{ base: '6', md: '6' }}
@@ -426,7 +481,7 @@ const ProposalView = () => {
                           </Badge>
                         ) : (
                           <Badge colorScheme='yellow' size='sm' px='3' py='2'>
-                            Pending
+                            Inactive
                           </Badge>
                         )}
                       </HStack>
@@ -509,6 +564,27 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='gray.900'
                           >
+                            Voting Begins
+                          </Text>
+                          <Text
+                            fontSize='sm'
+                            fontWeight='medium'
+                            color='light.900'
+                          >
+                            {Number(currentBlockHeight) < Number(startBlockHeight)
+                              ? `~ ${estimateDays(
+                                Number(startBlockHeight) -
+                                  Number(currentBlockHeight),
+                              )} days`
+                              : `Started`}
+                          </Text>
+                        </HStack>
+                        <HStack justify='space-between'>
+                          <Text
+                            fontSize='sm'
+                            fontWeight='medium'
+                            color='gray.900'
+                          >
                             Vote Deadline
                           </Text>
                           <Text
@@ -518,7 +594,7 @@ const ProposalView = () => {
                           >
                             {Number(currentBlockHeight) > Number(endBlockHeight)
                               ? `Closed`
-                              : `Closes in ~ ${estimateDays(
+                              : `~ ${estimateDays(
                                   Number(endBlockHeight) -
                                     Number(currentBlockHeight),
                                 )} days`}
@@ -561,6 +637,10 @@ const ProposalView = () => {
                           }}
                           {...concludeProposal}
                         />
+                      ) : isInactive ? (
+                        <>
+                          
+                        </>
                       ) : (
                         <>
                           <ContractCallButton
@@ -603,17 +683,7 @@ const ProposalView = () => {
                         </>
                       )}
                     </HStack>
-                    <HStack justify='center' my='5'>
-                      <Text
-                        cursor='pointer'
-                        fontSize='sm'
-                        fontWeight='regular'
-                        color='gray.900'
-                        _hover={{ textDecoration: 'underline' }}
-                      >
-                        View contract source code
-                      </Text>
-                    </HStack>
+                    
                   </motion.div>
                 </Container>
               </Box>
@@ -728,7 +798,7 @@ const ProposalView = () => {
                 </Stack>
               </Stack>
             </Box>
-          </motion.div>
+          </motion.div>}
         </Container>
       </Box>
     </motion.div>

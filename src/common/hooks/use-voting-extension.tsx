@@ -31,6 +31,14 @@ export function useVotingExtension() {
 
   useEffect(() => {
     async function fetchVotingExtension() {
+      const governanceTokenExtension = organization?.Extensions?.find(
+        (extension: any) =>
+          extension?.ExtensionTypes?.name === 'Governance Token',
+      );
+      const tokenContractAddress =
+        governanceTokenExtension?.contract_address.split('.')[0];
+      const tokenContractName =
+        governanceTokenExtension?.contract_address.split('.')[1];
       const voteExtension = organization?.Extensions?.find(
         (extension: any) => extension?.ExtensionTypes?.name === 'Voting',
       );
@@ -38,19 +46,17 @@ export function useVotingExtension() {
       const contractName = voteExtension?.contract_address.split('.')[1];
 
       const senderAddress = currentStxAddress;
-      const functionArgs = currentStxAddress
-        ? [
-            contractPrincipalCV(
-              'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              'sdp-transfer-stx',
-            ),
-            standardPrincipalCV(currentStxAddress || ''),
-            contractPrincipalCV(
-              'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              'sde-governance-token-with-delegation',
-            ),
-          ]
-        : [];
+      const functionArgs =
+        currentStxAddress && tokenContractAddress && tokenContractName
+          ? [
+              contractPrincipalCV(
+                'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+                'sdp-transfer-stx',
+              ),
+              standardPrincipalCV(currentStxAddress || ''),
+              contractPrincipalCV(tokenContractAddress, tokenContractName),
+            ]
+          : [];
       const functionName = 'get-current-total-votes';
       try {
         if (currentStxAddress) {

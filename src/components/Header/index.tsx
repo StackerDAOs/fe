@@ -1,16 +1,17 @@
 import {
-  Box,
   Container,
   Heading,
   HStack,
+  Image,
   Stack,
   Spinner,
-  StackDivider,
+  Text,
   VStack,
 } from '@chakra-ui/react';
 
 // Utils
 import { ustxToStx, convertToken } from '@common/helpers';
+import Avatar from 'boring-avatars';
 
 // Components
 import { Stat } from '@components/Stat';
@@ -27,7 +28,7 @@ import {
 export const Header = () => {
   const { organization } = useOrganization();
   const { isLoading: isLoadingBalance, balance } = useBalance();
-  const { votingWeight } = useGovernanceToken();
+  const { balance: userBalance, hasPercentageWeight } = useGovernanceToken();
   const { events: proposalEvents } = useContractEvents({
     extensionName: 'Voting',
     filter: 'propose',
@@ -43,10 +44,10 @@ export const Header = () => {
     return (
       <Stat
         flex='1'
-        _first={{ pl: '0' }}
-        _last={{ borderRightWidth: '0' }}
+        borderRadius='lg'
         label='Vault'
-        value={`${ustxToStx(stx?.balance) || 0} STX`}
+        value={`${ustxToStx(stx?.balance) || 0}`}
+        assetSymbol='STX'
         info={`${tokenSize} ${
           tokenSize === 1 ? 'token' : 'tokens'
         } & ${nftSize} ${nftSize === 1 ? 'NFT' : 'NFTs'}`}
@@ -60,26 +61,25 @@ export const Header = () => {
     return (
       <Stat
         flex='1'
-        _first={{ pl: '0' }}
-        _last={{ borderRightWidth: '0' }}
+        borderRadius='lg'
         label='Proposals'
         value={proposalSize.toString()}
-        info={`3 active, 2 pending submission`}
-        path='governance'
+        info={`1 pending`}
+        path='proposals'
       />
     );
   };
 
-  const Profile = () => {
+  const Governance = () => {
+    const isEligible = hasPercentageWeight === 'true';
     return (
       <Stat
         flex='1'
-        _first={{ pl: '0' }}
-        _last={{ borderRightWidth: '0' }}
-        label='Voting power'
-        value={convertToken(votingWeight.toString()).toString()}
-        info={`> 1.5% required`}
-        path='delegates'
+        borderRadius='lg'
+        label='Governance'
+        value={convertToken(userBalance?.toString()).toString()}
+        info={isEligible ? `Eligible` : `Not enough tokens`}
+        path='governance'
       />
     );
   };
@@ -96,40 +96,42 @@ export const Header = () => {
           mb='2'
           direction={{ base: 'column', md: 'row' }}
           justify='flex-start'
-          align='center'
           color='white'
         >
-          <VStack maxW='xl' spacing='3' alignItems='baseline'>
-            <HStack>
-              <Box
-                w='50px'
-                h='50px'
-                borderRadius='50%'
-                bgGradient='linear(to-l, secondaryGradient.900, secondary.900)'
+          <VStack maxW='xl' spacing='3'>
+            <HStack align='baseline'>
+              <Avatar
+                size={40}
+                name={organization?.name}
+                variant='marble'
+                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
               />
-              <Heading size='xl' pb='2' fontWeight='regular' color='light.900'>
+              <Heading size='lg' pb='2' fontWeight='semibold' color='light.900'>
                 {organization?.name}
               </Heading>
+              <Text
+                as='span'
+                pl='1'
+                fontSize='3xl'
+                color='gray.900'
+                fontWeight='regular'
+              >
+                DAO
+              </Text>
             </HStack>
           </VStack>
         </Stack>
         <Stack
-          spacing='4'
-          mb='6'
+          spacing='8'
+          mb='8'
           direction={{ base: 'column', md: 'row' }}
           justify='center'
           align='center'
           color='white'
         >
-          <Stack
-            w='100%'
-            direction={{ base: 'column', md: 'row' }}
-            divider={<StackDivider borderColor='base.500' />}
-          >
-            <Vault />
-            <Proposals />
-            <Profile />
-          </Stack>
+          <Vault />
+          <Proposals />
+          <Governance />
         </Stack>
       </Container>
     </Stack>
