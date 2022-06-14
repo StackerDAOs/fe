@@ -12,7 +12,6 @@ type VotingExtension = {
   contractAddress: string;
   contractName: string;
   balance: string;
-  hasPercentageWeight: string;
 };
 
 const initialState = {
@@ -20,7 +19,6 @@ const initialState = {
   contractAddress: '',
   contractName: '',
   balance: '',
-  hasPercentageWeight: '',
 };
 
 export function useGovernanceToken() {
@@ -40,22 +38,12 @@ export function useGovernanceToken() {
       const contractAddress = governanceToken?.contract_address.split('.')[0];
       const contractName = governanceToken?.contract_address.split('.')[1];
       const senderAddress = currentStxAddress;
-      const functionArgsForWeight = currentStxAddress
-        ? [standardPrincipalCV(currentStxAddress || ''), uintCV(100000)]
-        : [];
+
       const functionArgsForBalance = currentStxAddress
         ? [standardPrincipalCV(currentStxAddress || '')]
         : [];
       try {
         if (currentStxAddress && contractAddress && contractName) {
-          const fetchVotingWeight: any = await fetchReadOnlyFunction({
-            network,
-            contractAddress,
-            contractName,
-            senderAddress,
-            functionArgs: functionArgsForWeight,
-            functionName: 'has-percentage-weight',
-          });
           const fetchBalance: any = await fetchReadOnlyFunction({
             network,
             contractAddress,
@@ -70,7 +58,6 @@ export function useGovernanceToken() {
             contractAddress,
             contractName,
             balance: fetchBalance.toString(),
-            hasPercentageWeight: fetchVotingWeight.toString(),
           });
         }
       } catch (e: any) {
@@ -87,6 +74,5 @@ export function useGovernanceToken() {
     contractAddress: state.contractAddress,
     contractName: state.contractName,
     balance: state.balance,
-    hasPercentageWeight: state.hasPercentageWeight,
   };
 }

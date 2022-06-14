@@ -73,10 +73,15 @@ const Proposals = () => {
   };
 
   const submissionsByProposal = () => {
-    const startHeight = currentBlockHeight + 150;
+    const startHeight = currentBlockHeight + 15; // TODO: remove this
     return submissions?.map(
       (
-        { type, contractAddress: proposalContractAddress, submittedBy }: any,
+        {
+          type,
+          contractAddress: proposalContractAddress,
+          submittedBy,
+          transactionId,
+        }: any,
         index: number,
       ) => {
         const contractData = {
@@ -139,6 +144,13 @@ const Proposals = () => {
                   {...contractData}
                 />
                 <Button
+                  as='a'
+                  target='_blank'
+                  href={
+                    process.env.NODE_ENV !== 'production'
+                      ? `http://localhost:8000/txid/${transactionId}?chain=testnet`
+                      : `https://explorer.stacks.co/txid/${transactionId}?chain=mainnet`
+                  }
                   color='white'
                   size='sm'
                   _hover={{ opacity: 0.9 }}

@@ -11,17 +11,17 @@ switch (process.env.NODE_ENV) {
     network = new StacksMocknet();
     break;
   case 'production':
-    network = new StacksMainnet();
+    network = new StacksMainnet({ url: 'https://mainnet.syvita.org' });
     break;
   default:
-    network = new StacksTestnet();
+    network = new StacksTestnet({ url: 'https://testnet.syvita.org' });
     break;
 }
 
 const authOptions = {
   appDetails: {
-    name: 'StackerDAOs',
-    icon: 'https://pbs.twimg.com/profile_images/1485629030804213763/PQyQmwTT_400x400.jpg',
+    name: 'StackerDAO Labs',
+    icon: 'https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/stackerdaos-hiro-logo.png',
   },
 };
 

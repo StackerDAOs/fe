@@ -7,7 +7,6 @@ import {
   Spinner,
   Text,
   useToast,
-  useColorModeValue as mode,
 } from '@chakra-ui/react';
 
 // Stacks
@@ -69,7 +68,7 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
     console.log({ data });
     setTransaction({ txId: data.txId, isPending: true });
     toast({
-      duration: null,
+      duration: 7500,
       isClosable: true,
       position: 'top-right',
       render: () => (
@@ -77,24 +76,23 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
           <Stack direction='row' p='4' spacing='3'>
             <Stack spacing='2.5'>
               <Stack spacing='1'>
-                <Text
-                  fontSize='md'
-                  color={mode('light.900', 'base.900')}
-                  fontWeight='medium'
-                >
+                <Text fontSize='md' color='light.900' fontWeight='medium'>
                   Transaction Submitted
                 </Text>
-                <Text fontSize='sm' color={mode('light.700', 'light.200')}>
-                  Your transaction has been submitted.
+                <Text fontSize='sm' color='gray.900'>
+                  Your transaction was successfully submitted.
                 </Text>
               </Stack>
-              <ButtonGroup variant='link' size='md' spacing='3'>
+              <ButtonGroup variant='link' size='sm' spacing='2'>
                 <Button
-                  bgGradient='linear(to-br, primaryGradient.900, primary.900)'
-                  bgClip='text'
+                  color='secondary.900'
                   as='a'
                   target='_blank'
-                  href={`https://explorer.stacks.co/txid/0x5171834b43bfcdf841d0cc91e13fb78243f677574f7f4060fe5092579e4904f7?chain=testnet/${data.txId}`}
+                  href={
+                    process.env.NODE_ENV !== 'production'
+                      ? `http://localhost:8000/txid/${data.txId}?chain=testnet`
+                      : `https://explorer.stacks.co/txid/${data.txId}?chain=mainnet`
+                  }
                 >
                   View transaction
                 </Button>
@@ -122,14 +120,10 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
           <Stack direction='row' p='4' spacing='3'>
             <Stack spacing='2.5'>
               <Stack spacing='1'>
-                <Text
-                  fontSize='md'
-                  color={mode('light.900', 'base.900')}
-                  fontWeight='medium'
-                >
+                <Text fontSize='md' color='light.900' fontWeight='medium'>
                   Transaction confirmed
                 </Text>
-                <Text fontSize='sm' color={mode('light.700', 'light.200')}>
+                <Text fontSize='sm' color='gray.900'>
                   Your transaction has been confirmed.
                 </Text>
               </Stack>

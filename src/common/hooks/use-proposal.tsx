@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
 import { fetchReadOnlyFunction, fetchContractSource } from 'micro-stacks/api';
-import { contractPrincipalCV } from 'micro-stacks/clarity';
+import { contractPrincipalCV, stringAsciiCV } from 'micro-stacks/clarity';
 
 import { useOrganization, useContractEvents } from '../hooks';
 
@@ -88,6 +88,16 @@ export function useProposal({
         const title = pluckSourceCode(source, 'title');
         const description = pluckSourceCode(source, 'description');
         const type = pluckSourceCode(source, 'type');
+
+        const quorumThreshold: any = await fetchReadOnlyFunction({
+          network,
+          contractAddress,
+          contractName,
+          senderAddress,
+          functionArgs: [stringAsciiCV('quorumThreshold')],
+          functionName: 'get-parameter',
+        });
+
         setState({
           contractAddress: proposalPrincipal
             ? proposalInfo?.contractAddress
@@ -99,6 +109,7 @@ export function useProposal({
           description,
           type,
           events: voteEvents,
+          quorumThreshold: quorumThreshold.toString(),
           ...proposalData,
         });
       } catch (e: any) {

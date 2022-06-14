@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { supabase } from '@utils/supabase';
 import {
   Button,
   ButtonGroup,
@@ -21,7 +22,7 @@ import { fetchTransaction } from 'micro-stacks/api';
 
 // Hooks
 import { usePolling } from '@common/hooks/use-polling';
-import { useOrganization, useCreateRecord } from '@common/hooks';
+import { useOrganization } from '@common/hooks';
 
 // Components
 import { Notification } from '@components/Notification';
@@ -31,6 +32,31 @@ type ContractDeployType = {
   title?: string;
   codeBody: string;
   contractName: string;
+};
+
+const createRecord = async (
+  organizationId: string,
+  transactionId: string,
+  contractAddress: string,
+  submittedBy: string,
+) => {
+  try {
+    const attributes = {
+      organization_id: organizationId,
+      transactionId,
+      contractAddress,
+      submittedBy,
+    };
+    const { data, error } = await supabase
+      .from('Proposals')
+      .insert([{ ...attributes }]);
+    if (error) throw error;
+    console.log({ data });
+  } catch (error) {
+    console.log({ error });
+  } finally {
+    console.log('done');
+  }
 };
 
 export const ContractDeployButton = (
@@ -79,19 +105,15 @@ export const ContractDeployButton = (
   }
 
   const onFinish = useCallback((data: FinishedTxData) => {
-    const { attributes } = useCreateRecord({
-      tableName: 'proposals',
-      attributes: {
-        organization_id: organization.id,
-        transactionId: data.txId,
-        contractAddress: contractName,
-        submittedBy: currentStxAddress,
-      },
-    });
-    console.log({ attributes });
+    createRecord(
+      organization?.id,
+      data.txId,
+      contractName,
+      currentStxAddress || '',
+    );
     setTransaction({ txId: data.txId, isPending: true });
     toast({
-      duration: 5000,
+      duration: 7500,
       isClosable: true,
       position: 'top-right',
       render: () => (
@@ -107,16 +129,19 @@ export const ContractDeployButton = (
                   Transaction Submitted
                 </Text>
                 <Text fontSize='sm' color={mode('light.700', 'light.200')}>
-                  Your transaction has been submitted.
+                  Your transaction was successfully submitted.
                 </Text>
               </Stack>
-              <ButtonGroup variant='link' size='md' spacing='3'>
+              <ButtonGroup variant='link' size='sm' spacing='2'>
                 <Button
-                  bgGradient='linear(to-br, primaryGradient.900, primary.900)'
-                  bgClip='text'
+                  color='secondary.900'
                   as='a'
                   target='_blank'
-                  href={`https://explorer.stacks.co/txid/0x5171834b43bfcdf841d0cc91e13fb78243f677574f7f4060fe5092579e4904f7?chain=testnet/${data.txId}`}
+                  href={
+                    process.env.NODE_ENV !== 'production'
+                      ? `http://localhost:8000/txid/${data.txId}?chain=testnet`
+                      : `https://explorer.stacks.co/txid/${data.txId}?chain=mainnet`
+                  }
                 >
                   View transaction
                 </Button>

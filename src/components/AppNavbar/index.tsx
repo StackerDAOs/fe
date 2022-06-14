@@ -183,7 +183,13 @@ export const AppNavbar = () => {
                           size={10}
                           name={organization?.name}
                           variant='marble'
-                          colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA']}
+                          colors={[
+                            '#50DDC3',
+                            '#624AF2',
+                            '#EB00FF',
+                            '#7301FA',
+                            '#25C2A0',
+                          ]}
                         />
                         <AdminModal
                           title={

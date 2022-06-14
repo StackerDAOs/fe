@@ -89,7 +89,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
               </Td>
               <Td border='none'>
                 <Badge size='md' colorScheme='base'>
-                  {convertToken(item.balance)}
+                  {convertToken(item.balance, 100)}
                 </Badge>
               </Td>
               <Td border='none'>

@@ -30,7 +30,7 @@ import { HiX } from 'react-icons/hi';
 
 // Stacks
 import { useCurrentStxAddress } from '@micro-stacks/react';
-import { boolCV, contractPrincipalCV, listCV, standardPrincipalCV, tupleCV, someCV, noneCV } from 'micro-stacks/clarity';
+import { boolCV, trueCV, falseCV, contractPrincipalCV, listCV, standardPrincipalCV, tupleCV, someCV, noneCV } from 'micro-stacks/clarity';
 import {
   FungibleConditionCode,
   makeStandardSTXPostCondition,
@@ -64,7 +64,6 @@ const ProposalView = () => {
     contractAddress: governanceTokenAddress,
     contractName: governanceTokenName,
     balance,
-    hasPercentageWeight,
   } = useGovernanceToken();
   const {
     contractAddress: votingExtensionAddress,
@@ -82,6 +81,7 @@ const ProposalView = () => {
     endBlockHeight,
     votesFor,
     votesAgainst,
+    quorumThreshold,
     events,
   } = useProposal({ filterByProposal: proposalPrincipal });
 
@@ -89,27 +89,6 @@ const ProposalView = () => {
     extensionName: 'Voting',
     filter: 'delegate',
   });
-
-  // Map over contract events to pull in delegator principals
-  const delegators = delegatorEvents?.map((item: any, index: number) => {
-    const delegateVote = proposalContractAddress && proposalContractName && tupleCV({
-      for: boolCV(true),
-      proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
-      delegator: noneCV(),
-    });
-    const delegatorVotes = proposalContractAddress && proposalContractName && listCV([
-      delegateVote,
-      tupleCV({
-        for: boolCV(true),
-        proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
-        delegator: someCV(standardPrincipalCV(item?.delegator?.value)),
-      })
-    ]);
-    return delegatorVotes;
-  });
-
-  console.log({delegators});
-  
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -123,25 +102,52 @@ const ProposalView = () => {
     exit: { opacity: 0, x: 0, y: -15 },
   };
 
+  const currentVoterDelegators = delegatorEvents?.filter((item: any) => item?.who?.value === currentStxAddress);
+  const delegateVoteFor = proposalContractAddress && proposalContractName && listCV([tupleCV({
+    for: trueCV(),
+    proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
+    delegator: noneCV(),
+  })]);
+  const delegateVoteAgainst = proposalContractAddress && proposalContractName && listCV([tupleCV({
+    for: falseCV(),
+    proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
+    delegator: noneCV(),
+  })]);
+  const delegatorsFor = currentVoterDelegators?.map((item: any, index: number) => {
+    const delegatorVotes = proposalContractAddress && proposalContractName && listCV([
+      delegateVoteFor,
+      tupleCV({
+        for: trueCV(),
+        proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
+        delegator: someCV(standardPrincipalCV(item?.delegator?.value)),
+      })
+    ]);
+    return delegatorVotes;
+  });
+  const delegatorsAgainst = currentVoterDelegators?.map((item: any, index: number) => {
+    const delegatorVotes = proposalContractAddress && proposalContractName && listCV([
+      delegateVoteAgainst,
+      tupleCV({
+        for: falseCV(),
+        proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
+        delegator: someCV(standardPrincipalCV(item?.delegator?.value)),
+      })
+    ]);
+    return delegatorVotes;
+  });
+
   const functionName = 'vote-many';
   const postConditions: any = [];
 
   const functionArgsFor =
     proposalContractAddress &&
-    proposalContractName
-      ? delegators
-      : [];
+    proposalContractName && delegatorsFor && delegatorsFor.length > 0
+      ? delegatorsFor
+      : [delegateVoteFor];
   const functionArgsAgainst =
     proposalContractAddress &&
-    proposalContractName &&
-    governanceTokenAddress &&
-    governanceTokenName
-      ? [
-          boolCV(false),
-          contractPrincipalCV(proposalContractAddress, proposalContractName),
-          noneCV(),
-        ]
-      : [];
+    proposalContractName && delegatorsAgainst && delegatorsAgainst.length > 0
+      ? delegatorsAgainst : [delegateVoteAgainst];
 
   const concludeFunctionName = 'conclude';
   const concludeFunctionArgs =
@@ -191,7 +197,7 @@ const ProposalView = () => {
   const currentVoterEvent = (event: any) =>
     event?.voter?.value === currentStxAddress;
   const hasVoted = events?.some(currentVoterEvent);
-  const isEligible = hasPercentageWeight === 'true';
+  const isEligible = true;
   const isInactive = currentBlockHeight < startBlockHeight;
   const isClosed = currentBlockHeight > endBlockHeight;
   const isOpen =
@@ -402,7 +408,7 @@ const ProposalView = () => {
                             You already voted!
                           </Text>
                           <Text color='light.900' fontWeight='regular'>
-                            {convertToken(balance.toString())}{' '}
+                            {convertToken(balance.toString(), 100)}{' '}
                             <Text
                               as='span'
                               color='gray.900'
@@ -419,7 +425,7 @@ const ProposalView = () => {
                             Voting power:
                           </Text>
                           <Text color='light.900' fontWeight='regular'>
-                            {convertToken(balance.toString())}{' '}
+                            {convertToken(balance.toString(), 100)}{' '}
                             <Text
                               as='span'
                               color='gray.900'
@@ -436,7 +442,7 @@ const ProposalView = () => {
                             Not enough voting power:
                           </Text>
                           <Text color='light.900' fontWeight='regular'>
-                            {convertToken(balance.toString())}{' '}
+                            {convertToken(balance.toString(), 100)}{' '}
                             <Text
                               as='span'
                               color='gray.900'
@@ -555,7 +561,7 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            > 20%
+                            {quorumThreshold} MEGA
                           </Text>
                         </HStack>
                         <HStack justify='space-between'>
@@ -752,8 +758,8 @@ const ProposalView = () => {
                                 >
                                   {`${
                                     vote?.value
-                                      ? 'Delegate approval'
-                                      : 'Delegate rejection'
+                                      ? 'Approved'
+                                      : 'Rejected'
                                   }`}
                                 </Text>
                               </HStack>
@@ -763,7 +769,7 @@ const ProposalView = () => {
                                   fontWeight='regular'
                                   color='light.900'
                                 >
-                                  {convertToken(amount?.value)}
+                                  {convertToken(amount?.value, 100)}
                                 </Text>
                                 <Text
                                   fontSize='sm'

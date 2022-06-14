@@ -28,7 +28,7 @@ import {
 export const Header = () => {
   const { organization } = useOrganization();
   const { isLoading: isLoadingBalance, balance } = useBalance();
-  const { balance: userBalance, hasPercentageWeight } = useGovernanceToken();
+  const { balance: userBalance } = useGovernanceToken();
   const { events: proposalEvents } = useContractEvents({
     extensionName: 'Voting',
     filter: 'propose',
@@ -64,21 +64,20 @@ export const Header = () => {
         borderRadius='lg'
         label='Proposals'
         value={proposalSize.toString()}
-        info={`1 pending`}
+        info={`Active`}
         path='proposals'
       />
     );
   };
 
   const Governance = () => {
-    const isEligible = hasPercentageWeight === 'true';
     return (
       <Stat
         flex='1'
         borderRadius='lg'
         label='Governance'
-        value={convertToken(userBalance?.toString()).toString()}
-        info={isEligible ? `Eligible` : `Not enough tokens`}
+        value={convertToken(userBalance?.toString(), 100).toString()}
+        info={`MEGA tokens`}
         path='governance'
       />
     );

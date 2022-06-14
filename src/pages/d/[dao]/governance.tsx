@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
   Badge,
@@ -6,6 +5,7 @@ import {
   Button,
   Container,
   Divider,
+  FormControl,
   Stack,
   HStack,
   Input,
@@ -21,6 +21,7 @@ import {
 } from '@chakra-ui/react';
 
 // Stacks
+import { useCurrentStxAddress } from '@micro-stacks/react';
 import {
   standardPrincipalCV,
   contractPrincipalCV,
@@ -28,12 +29,8 @@ import {
 } from 'micro-stacks/clarity';
 
 // Hooks
-import {
-  useBlocks,
-  useProposals,
-  useSubmissions,
-  useGovernanceToken,
-} from '@common/hooks';
+import { useVotingExtension, useGovernanceToken } from '@common/hooks';
+import { useForm, Controller } from 'react-hook-form';
 
 // Components
 import { Card } from '@components/Card';
@@ -59,12 +56,13 @@ import {
 } from '@common/helpers';
 
 const Governance = () => {
+  const currentStxAddress = useCurrentStxAddress();
+  const { register, control, handleSubmit, getValues } = useForm();
+  const { delegateAddress } = getValues();
   const router = useRouter();
   const { dao } = router.query;
-  const { currentBlockHeight } = useBlocks();
-  const { isLoading, proposals } = useProposals();
-  const { proposals: submissions } = useSubmissions();
   const { balance: userBalance } = useGovernanceToken();
+  const { contractAddress, contractName } = useVotingExtension();
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -72,13 +70,10 @@ const Governance = () => {
     exit: { opacity: 0, x: 0, y: 0 },
   };
 
-  const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  const contractName = 'sde-proposal-voting-with-delegation';
   const functionName = 'delegate';
-
-  const functionArgs = [
-    standardPrincipalCV('ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM'),
-  ];
+  const functionArgs = delegateAddress
+    ? [standardPrincipalCV(delegateAddress || currentStxAddress)]
+    : [];
   const postConditions: any = [];
 
   const contractData = {
@@ -88,6 +83,8 @@ const Governance = () => {
     functionArgs,
     postConditions,
   };
+
+  console.log({ delegateAddress });
 
   return (
     <motion.div
@@ -131,7 +128,7 @@ const Governance = () => {
                         </Stack>
                       </Stack>
                       <Stack spacing={{ base: '8', lg: '6' }}>
-                        <Stack w='auto'>
+                        <Stack w='auto' mb='10'>
                           <Card
                             bg='base.800'
                             border='1px solid'
@@ -148,7 +145,7 @@ const Governance = () => {
                                     Tokens:
                                   </Text>
                                   <Text color='light.900' fontWeight='regular'>
-                                    {convertToken(userBalance).toString()}{' '}
+                                    {convertToken(userBalance, 100).toString()}{' '}
                                     <Text
                                       as='span'
                                       color='gray.900'
@@ -202,39 +199,70 @@ const Governance = () => {
                                     entering a BNS name or Stacks address below.
                                   </Text>
                                 </HStack>
-                                <InputGroup size='md'>
-                                  <Input
-                                    color='light.900'
-                                    size='md'
-                                    p='3'
-                                    type='text'
-                                    placeholder='SPKY981...'
-                                    borderColor='base.500'
-                                    _hover={{ borderColor: 'base.500' }}
-                                    _focus={{
-                                      borderColor: 'secondary.900',
-                                    }}
-                                  />
-                                  <InputRightAddon
-                                    width='6rem'
-                                    color='light.900'
-                                    bg='secondary.900'
-                                    borderColor='secondary.900'
-                                    border='1px solid'
-                                    onClick={() => {
-                                      console.log('clicked');
-                                    }}
-                                  >
-                                    <ContractCallButton
-                                      title='Delegate'
-                                      size='sm'
-                                      color='light.900'
-                                      bg='secondary.900'
-                                      _hover={{ bg: 'transparent' }}
-                                      {...contractData}
+                                <form
+                                  onSubmit={handleSubmit((data: any) =>
+                                    console.log({ data }),
+                                  )}
+                                >
+                                  <FormControl>
+                                    <Controller
+                                      control={control}
+                                      name='delegateAddress'
+                                      defaultValue={currentStxAddress}
+                                      render={({
+                                        field: { onChange, value },
+                                      }) => (
+                                        <InputGroup size='md'>
+                                          <Input
+                                            name='delegateAddress'
+                                            color='light.900'
+                                            size='md'
+                                            p='3'
+                                            type='text'
+                                            placeholder='SPKY981...'
+                                            borderColor='base.500'
+                                            onChange={onChange}
+                                            _hover={{ borderColor: 'base.500' }}
+                                            _focus={{
+                                              borderColor: 'secondary.900',
+                                            }}
+                                          />
+                                          <InputRightAddon
+                                            width='6rem'
+                                            color='light.900'
+                                            bg='secondary.900'
+                                            borderColor='secondary.900'
+                                            border='1px solid'
+                                          >
+                                            <ContractCallButton
+                                              title='Delegate'
+                                              size='sm'
+                                              color='light.900'
+                                              bg='secondary.900'
+                                              disabled={
+                                                value !== null ||
+                                                value?.length < 40
+                                              }
+                                              _disabled={{
+                                                bg: 'secondary.900',
+                                                opacity: 0.5,
+                                                cursor: 'not-allowed',
+                                                _hover: {
+                                                  bg: 'secondary.900',
+                                                  opacity: 0.5,
+                                                  cursor: 'not-allowed',
+                                                },
+                                              }}
+                                              _hover={{ bg: 'transparent' }}
+                                              {...contractData}
+                                            />
+                                          </InputRightAddon>
+                                        </InputGroup>
+                                      )}
                                     />
-                                  </InputRightAddon>
-                                </InputGroup>
+                                  </FormControl>
+                                </form>
+
                                 <HStack justify='flex-start'>
                                   <Text
                                     fontSize='xs'

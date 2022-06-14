@@ -6,8 +6,8 @@ export const truncate = (str: string, firstCharCount = str.length, endCharCount 
   return convertedStr;
 };
 
-export const convertToken = (token: string) => {
-  return parseInt(token) / 1000000;
+export const convertToken = (token: string, decimals: number) => {
+  return parseInt(token) / decimals;
 };
 
 export const ustxToStx = (uStx: string) => {

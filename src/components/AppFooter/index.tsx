@@ -187,7 +187,7 @@ export const AppFooter = () => {
                     </HStack>
                     <HStack>
                       <ContractCallButton
-                        title='Depost'
+                        title='Deposit'
                         color='white'
                         size='sm'
                         {...depositContractData}

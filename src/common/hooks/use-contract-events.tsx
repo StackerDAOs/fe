@@ -34,7 +34,7 @@ export function useContractEvents({
       const contractId = extension?.contract_address;
       const data = await fetchContractEventsById({
         url,
-        limit: 10,
+        limit: 0,
         contract_id: contractId,
         offset: 0,
         unanchored: false,
