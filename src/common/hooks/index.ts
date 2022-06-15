@@ -1,8 +1,6 @@
 export { useBalance } from './use-balance';
 export { useBlocks } from './use-blocks';
-export { useCallFunction } from './use-call-function';
 export { useContractEvents } from './use-contract-events';
-export { useCreateRecord } from './use-create-record';
 export { useExecutorEvents } from './use-executor-events';
 export { useOrganization } from './use-organization';
 export { useProposal } from './use-proposal';

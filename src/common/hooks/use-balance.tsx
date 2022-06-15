@@ -1,22 +1,25 @@
 // Hook (use-balance.tsx)
 import { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-
 import { useNetwork } from '@micro-stacks/react';
 import { fetchAccountBalances } from 'micro-stacks/api';
 
-import { useStore as VaultStore } from 'store/VaultStore';
+type TBalance = {
+  isLoading: boolean;
+  balance: any;
+};
 
-import { useOrganization } from './use-organization';
+interface IBalance {
+  organization?: any;
+}
 
-export function useBalance() {
-  // TODO: check if slug is present and return error if not
-  // TODO: check if oranization exists before checking balance
-  const [isLoading, setIsLoading] = useState(true);
-  const { organization } = useOrganization();
+const initialState = {
+  isLoading: true,
+  balance: [],
+};
+
+export function useBalance({ organization }: IBalance = {}) {
+  const [state, setState] = useState<TBalance>(initialState);
   const { network } = useNetwork();
-
-  const { balance, setBalance } = VaultStore();
 
   const fetchBalance = useCallback(async () => {
     try {
@@ -29,11 +32,11 @@ export function useBalance() {
         url,
         principal,
       });
-      setBalance(balance);
+      setState({ ...state, isLoading: false, balance: balance });
     } catch (error) {
       console.error({ error });
     } finally {
-      setIsLoading(false);
+      console.log('finally');
     }
   }, [organization]);
 
@@ -41,5 +44,5 @@ export function useBalance() {
     fetchBalance();
   }, [organization]);
 
-  return { isLoading, balance };
+  return { isLoading: state.isLoading, balance: state.balance };
 }

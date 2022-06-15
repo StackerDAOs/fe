@@ -17,12 +17,11 @@ import { useStore as useCommunityStepStore } from 'store/CommunityStepStore';
 // Stacks
 import type { FinishedTxData } from 'micro-stacks/connect';
 import { StacksTestnet } from 'micro-stacks/network';
-import { useContractDeploy, useCurrentStxAddress } from '@micro-stacks/react';
+import { useContractDeploy } from '@micro-stacks/react';
 import { fetchTransaction } from 'micro-stacks/api';
 
 // Hooks
 import { usePolling } from '@common/hooks/use-polling';
-import { useOrganization } from '@common/hooks';
 
 // Components
 import { Notification } from '@components/Notification';
@@ -32,31 +31,7 @@ type ContractDeployType = {
   title?: string;
   codeBody: string;
   contractName: string;
-};
-
-const createRecord = async (
-  organizationId: string,
-  transactionId: string,
-  contractAddress: string,
-  submittedBy: string,
-) => {
-  try {
-    const attributes = {
-      organization_id: organizationId,
-      transactionId,
-      contractAddress,
-      submittedBy,
-    };
-    const { data, error } = await supabase
-      .from('Proposals')
-      .insert([{ ...attributes }]);
-    if (error) throw error;
-    console.log({ data });
-  } catch (error) {
-    console.log({ error });
-  } finally {
-    console.log('done');
-  }
+  onContractCall?: () => void;
 };
 
 export const ContractDeployButton = (
@@ -69,8 +44,6 @@ export const ContractDeployButton = (
     txId: '',
     isPending: false,
   });
-  const { organization } = useOrganization();
-  const currentStxAddress = useCurrentStxAddress();
 
   usePolling(() => {
     fetchTransactionData(transaction.txId);
@@ -104,13 +77,12 @@ export const ContractDeployButton = (
     }
   }
 
+  const { title, contractName, codeBody, onContractCall } = props;
+
   const onFinish = useCallback((data: FinishedTxData) => {
-    createRecord(
-      organization?.id,
-      data.txId,
-      contractName,
-      currentStxAddress || '',
-    );
+    if (onContractCall) {
+      onContractCall();
+    }
     setTransaction({ txId: data.txId, isPending: true });
     toast({
       duration: 7500,
@@ -142,48 +114,6 @@ export const ContractDeployButton = (
                       ? `http://localhost:8000/txid/${data.txId}?chain=testnet`
                       : `https://explorer.stacks.co/txid/${data.txId}?chain=mainnet`
                   }
-                >
-                  View transaction
-                </Button>
-              </ButtonGroup>
-            </Stack>
-            <CloseButton
-              aria-label='close'
-              transform='translateY(-6px)'
-              color='white'
-              onClick={() => toast.closeAll()}
-            />
-          </Stack>
-        </Notification>
-      ),
-    });
-  }, []);
-
-  const onCancel = useCallback(() => {
-    toast({
-      duration: 5000,
-      isClosable: true,
-      position: 'top-right',
-      render: () => (
-        <Notification>
-          <Stack direction='row' p='4' spacing='3'>
-            <Stack spacing='2.5'>
-              <Stack spacing='1'>
-                <Text
-                  fontSize='md'
-                  color={mode('light.900', 'base.900')}
-                  fontWeight='medium'
-                >
-                  Transaction cancelled
-                </Text>
-                <Text fontSize='sm' color={mode('light.700', 'light.200')}>
-                  Your transaction has been cancelled.
-                </Text>
-              </Stack>
-              <ButtonGroup variant='link' size='md' spacing='3'>
-                <Button
-                  bgGradient='linear(to-br, primaryGradient.900, primary.900)'
-                  bgClip='text'
                 >
                   View transaction
                 </Button>
@@ -285,12 +215,10 @@ export const ContractDeployButton = (
     });
   }, []);
 
-  const { title, contractName, codeBody } = props;
   const { handleContractDeploy, isLoading } = useContractDeploy({
     codeBody,
     contractName,
     onFinish,
-    onCancel,
   });
 
   return (

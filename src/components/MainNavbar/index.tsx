@@ -2,16 +2,13 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
-  Badge,
   Box,
   ButtonGroup,
-  Button,
-  Container,
-  Circle,
   Flex,
   HStack,
   IconButton,
   Image,
+  ModalBody,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -25,35 +22,37 @@ import {
   useColorModeValue as mode,
 } from '@chakra-ui/react';
 
+// Hooks
+import { useOrganization } from '@common/hooks';
+
 // Components
 import { Card } from '@components/Card';
 import { ContractCallButton } from '@widgets/ContractCallButton';
 
 // Icons
-import { FiMenu } from 'react-icons/fi';
+import { FaEllipsisH } from 'react-icons/fa';
 
 // Components
 import { WalletConnectButton } from '@components/WalletConnectButton';
+import { AdminModal } from '@components/Modal';
 
 // Web3
 import { useUser, useAuth, useNetwork } from '@micro-stacks/react';
-import { fetchNamesByAddress } from 'micro-stacks/api';
-import {
-  boolCV,
-  uintCV,
-  contractPrincipalCV,
-  standardPrincipalCV,
-} from 'micro-stacks/clarity';
+import { fetchAccountStxBalance, fetchNamesByAddress } from 'micro-stacks/api';
+import { uintCV } from 'micro-stacks/clarity';
 import {
   FungibleConditionCode,
   makeStandardSTXPostCondition,
 } from 'micro-stacks/transactions';
 
 // Utils
-import { stxToUstx, truncate } from '@common/helpers';
+import { stxToUstx, truncate, ustxToStx } from '@common/helpers';
+import Avatar from 'boring-avatars';
 
 export const MainNavbar = () => {
   const [bns, setBns] = useState<string | undefined>('');
+  const [balance, setBalance] = useState<string | undefined>('');
+  const { organization } = useOrganization();
   const { currentStxAddress } = useUser();
   const { isSignedIn, handleSignIn, handleSignOut } = useAuth();
   const { network } = useNetwork();
@@ -75,6 +74,13 @@ export const MainNavbar = () => {
   useEffect(() => {
     async function fetch() {
       if (isSignedIn && currentStxAddress) {
+        const stxBalance = await fetchAccountStxBalance({
+          url: network.getCoreApiUrl(),
+          principal: currentStxAddress || '',
+        });
+        console.log({ stxBalance });
+        const balance = stxBalance?.balance?.toString() || '0';
+        setBalance(ustxToStx(balance));
         const data = await fetchNamesByAddress({
           url: network.getCoreApiUrl(),
           blockchain: 'stacks',
@@ -89,104 +95,6 @@ export const MainNavbar = () => {
     }
     fetch();
   }, [currentStxAddress, network]);
-
-  // INIT
-  const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  const contractName = 'executor-dao';
-  const functionName = 'init';
-
-  const functionArgs = [
-    contractPrincipalCV(
-      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-      'sdp-delegate-voting-dao',
-    ),
-  ];
-  const postConditions: any = [];
-
-  // DELEGATE
-  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  // const contractName = 'sde-governance-token-with-delegation';
-  // const functionName = 'delegate';
-
-  // const functionArgs = [
-  //   standardPrincipalCV('STPJ2HPED2TMR1HAFBFA5VQF986CRD4ZWHH36F6X'),
-  //   standardPrincipalCV('ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM'),
-  // ];
-  // const postConditions: any = [];
-
-  // REVOKE
-  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  // const contractName = 'sde-governance-token-with-delegation';
-  // const functionName = 'revoke-delegation';
-
-  // const functionArgs = [
-  //   standardPrincipalCV('ST2ST2H80NP5C9SPR4ENJ1Z9CDM9PKAJVPYWPQZ50'),
-  //   standardPrincipalCV('ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM'),
-  // ];
-  // const postConditions: any = [];
-
-  // PROPOSE
-  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  // const contractName = 'sde-proposal-submission-with-delegation';
-  // const functionName = 'propose';
-
-  // const functionArgs = [
-  //   contractPrincipalCV(
-  //     'STPJ2HPED2TMR1HAFBFA5VQF986CRD4ZWHH36F6X',
-  //     'managing-coral-wallaby',
-  //   ),
-  //   uintCV(2230),
-  //   contractPrincipalCV(
-  //     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-  //     'sde-governance-token-with-delegation',
-  //   ),
-  // ];
-  // const postConditions: any = [];
-
-  // VOTE
-  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  // const contractName = 'sde-proposal-voting-with-delegation';
-  // const functionName = 'vote';
-  // const postConditions: any = [];
-
-  // const functionArgs = [
-  //   boolCV(true),
-  //   contractPrincipalCV(
-  //     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-  //     'sdp-transfer-stx',
-  //   ),
-  //   contractPrincipalCV(
-  //     'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-  //     'sde-governance-token-with-delegation',
-  //   ),
-  // ];
-  // const postConditions: any = [];
-
-  // DEPOSIT
-  // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  // const contractName = 'sde-vault';
-  // const functionName = 'deposit';
-  // const functionArgs = [uintCV(stxToUstx('285'))];
-  // const postConditionAddress = currentStxAddress || '';
-  // const postConditionCode = FungibleConditionCode.LessEqual;
-  // const postConditionAmount = stxToUstx('285');
-  // const postConditions = currentStxAddress
-  //   ? [
-  //       makeStandardSTXPostCondition(
-  //         postConditionAddress,
-  //         postConditionCode,
-  //         postConditionAmount,
-  //       ),
-  //     ]
-  //   : [];
-
-  const contractData = {
-    contractAddress,
-    contractName,
-    functionName,
-    functionArgs,
-    postConditions,
-  };
 
   return (
     <Box as='section' height='5vh'>
@@ -220,19 +128,56 @@ export const MainNavbar = () => {
                         spacing='2'
                         color={mode('base.900', 'light.900')}
                       >
-                        <Box
-                          w='10px'
-                          h='10px'
-                          boxSize='4'
-                          borderRadius='50%'
-                          bgGradient='linear(to-l, secondaryGradient.900, secondary.900)'
+                        <HStack px='2'>
+                          <Text
+                            fontSize='sm'
+                            fontWeight='medium'
+                            color='light.900'
+                          >
+                            {balance}{' '}
+                          </Text>
+                          <Text
+                            as='span'
+                            fontSize='sm'
+                            fontWeight='regular'
+                            color='gray.900'
+                          >
+                            STX
+                          </Text>
+                        </HStack>
+                        <Avatar
+                          size={10}
+                          name={organization?.name}
+                          variant='marble'
+                          colors={[
+                            '#50DDC3',
+                            '#624AF2',
+                            '#EB00FF',
+                            '#7301FA',
+                            '#25C2A0',
+                          ]}
                         />
-                        <Text color='light.900' fontSize='sm'>
-                          {bns
-                            ? bns
-                            : currentStxAddress &&
-                              truncate(currentStxAddress, 4, 4)}
-                        </Text>
+                        <AdminModal
+                          title={
+                            bns
+                              ? bns
+                              : currentStxAddress &&
+                                truncate(currentStxAddress, 4, 4)
+                          }
+                        >
+                          <ModalBody pb={6}>
+                            <HStack>
+                              <Text
+                                px='2'
+                                fontSize='sm'
+                                fontWeight='regular'
+                                color='white'
+                              >
+                                Activity
+                              </Text>
+                            </HStack>
+                          </ModalBody>
+                        </AdminModal>
                       </HStack>
                     ) : null}
                     {currentStxAddress && (
@@ -246,16 +191,13 @@ export const MainNavbar = () => {
                           <>
                             <PopoverTrigger>
                               <HStack>
-                                <FiMenu
-                                  color='white'
-                                  fontSize='sm'
-                                  cursor='pointer'
-                                />
+                                <FaEllipsisH color='white' cursor='pointer' />
                               </HStack>
                             </PopoverTrigger>
                             <PopoverContent
+                              borderColor='base.500'
                               _focus={{ outline: 'none' }}
-                              bg='base.900'
+                              bg='base.800'
                               w='auto'
                               my='2'
                             >
@@ -263,36 +205,14 @@ export const MainNavbar = () => {
                                 <Stack spacing='4' direction='row' p='3'>
                                   <Stack spacing='1'>
                                     <Card
-                                      bg='base.900'
+                                      bg='transparent'
                                       border='none'
                                       minW='150px'
                                       px={{ base: '2', md: '2' }}
                                       py={{ base: '2', md: '2' }}
                                       _hover={{
                                         cursor: 'pointer',
-                                        bg: 'base.800',
-                                      }}
-                                    >
-                                      <HStack>
-                                        <Text
-                                          px='2'
-                                          fontSize='sm'
-                                          fontWeight='regular'
-                                          color='white'
-                                        >
-                                          Activity
-                                        </Text>
-                                      </HStack>
-                                    </Card>
-                                    <Card
-                                      bg='base.900'
-                                      border='none'
-                                      minW='150px'
-                                      px={{ base: '2', md: '2' }}
-                                      py={{ base: '2', md: '2' }}
-                                      _hover={{
-                                        cursor: 'pointer',
-                                        bg: 'base.800',
+                                        bg: 'base.900',
                                       }}
                                     >
                                       <HStack>
@@ -307,14 +227,14 @@ export const MainNavbar = () => {
                                       </HStack>
                                     </Card>
                                     <Card
-                                      bg='base.900'
+                                      bg='transparent'
                                       border='none'
                                       minW='150px'
                                       px={{ base: '2', md: '2' }}
                                       py={{ base: '2', md: '2' }}
                                       _hover={{
                                         cursor: 'pointer',
-                                        bg: 'base.800',
+                                        bg: 'base.900',
                                       }}
                                     >
                                       <HStack>
@@ -330,14 +250,14 @@ export const MainNavbar = () => {
                                       </HStack>
                                     </Card>
                                     <Card
-                                      bg='base.900'
+                                      bg='transparent'
                                       border='none'
                                       minW='150px'
                                       px={{ base: '2', md: '2' }}
                                       py={{ base: '2', md: '2' }}
                                       _hover={{
                                         cursor: 'pointer',
-                                        bg: 'base.800',
+                                        bg: 'base.900',
                                       }}
                                     >
                                       <HStack>
@@ -378,7 +298,7 @@ export const MainNavbar = () => {
           ) : (
             <IconButton
               color='white'
-              icon={<FiMenu fontSize='1.25rem' />}
+              icon={<FaEllipsisH fontSize='1.25rem' />}
               aria-label='Open Menu'
             />
           )}

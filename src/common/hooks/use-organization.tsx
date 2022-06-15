@@ -1,18 +1,25 @@
 // Hook (use-organization.tsx)
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-
 import { supabase } from '@utils/supabase';
 
-import { useStore as DashboardStore } from 'store/DashboardStore';
+type TOrganization = {
+  isLoading: boolean;
+  organization?: any;
+};
 
-export function useOrganization() {
-  // TODO: check if slug is present and return error if not
+interface IOrganization {
+  name?: string | undefined;
+}
+
+const initialState = {
+  isLoading: true,
+  organization: null,
+};
+
+export function useOrganization({ name }: IOrganization = {}) {
+  const [state, setState] = useState<TOrganization>(initialState);
   const router = useRouter();
-  const { dao: slug } = router.query;
-
-  const { organization, setOrganization } = DashboardStore();
-
   useEffect(() => {
     const fetchOrganization = async () => {
       try {
@@ -21,11 +28,11 @@ export function useOrganization() {
           .select(
             'id, name, slug, contract_address, Extensions (contract_address, ExtensionTypes (name))',
           )
-          .eq('slug', slug);
+          .eq('slug', name);
         if (error) throw error;
         if (Organizations.length > 0) {
           const organization = Organizations[0];
-          setOrganization(organization);
+          setState({ ...state, isLoading: false, organization });
         }
       } catch (error) {
         console.log({ error });
@@ -34,7 +41,7 @@ export function useOrganization() {
       }
     };
     fetchOrganization();
-  }, [slug]);
+  }, [name, router.isReady]);
 
-  return { organization };
+  return { isLoading: state.isLoading, organization: state.organization };
 }

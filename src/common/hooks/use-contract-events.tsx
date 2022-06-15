@@ -1,30 +1,34 @@
 // Hook (use-contract-events.tsx)
 import { useCallback, useEffect, useState } from 'react';
-
 import { useNetwork } from '@micro-stacks/react';
 import { fetchContractEventsById } from 'micro-stacks/api';
 import { deserializeCV, cvToValue } from 'micro-stacks/clarity';
 
-import { useOrganization } from './use-organization';
+type TEvent = {
+  isLoading: boolean;
+  events: any[];
+};
 
 interface IEvent {
+  organization?: any;
   extensionName?: string;
   filter?: string;
   filterByProposal?: string;
 }
 
+const initialState = {
+  isLoading: true,
+  events: [],
+};
+
 export function useContractEvents({
+  organization,
   extensionName,
   filter,
   filterByProposal,
 }: IEvent = {}) {
-  // TODO: check if slug is present and return error if not
-  // TODO: check if oranization exists before checking balance
-  const [isLoading, setIsLoading] = useState(true);
-  const [events, setEvents] = useState([]);
-  const { organization } = useOrganization();
+  const [state, setState] = useState<TEvent>(initialState);
   const { network } = useNetwork();
-
   const fetchEvents = useCallback(async () => {
     try {
       const extension = organization?.Extensions?.find(
@@ -56,8 +60,7 @@ export function useContractEvents({
         : filter
         ? serializedEvents.filter((item: any) => item?.event?.value === filter)
         : serializedEvents;
-      setEvents(filteredEvents);
-      setIsLoading(false);
+      setState({ ...state, events: filteredEvents, isLoading: false });
     } catch (error) {
       console.log({ error });
     }
@@ -67,5 +70,5 @@ export function useContractEvents({
     fetchEvents();
   }, [organization]);
 
-  return { isLoading, events };
+  return { isLoading: state.isLoading, events: state.events };
 }

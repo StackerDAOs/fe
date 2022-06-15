@@ -1,18 +1,19 @@
 // Hook (use-organization.tsx)
 import { useEffect, useState } from 'react';
-
 import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
-import { standardPrincipalCV, uintCV } from 'micro-stacks/clarity';
+import { standardPrincipalCV } from 'micro-stacks/clarity';
 
-import { useOrganization } from './use-organization';
-
-type VotingExtension = {
+type TVotingExtension = {
   isLoading: boolean;
   contractAddress: string;
   contractName: string;
   balance: string;
 };
+
+interface IVotingExtension {
+  organization?: any;
+}
 
 const initialState = {
   isLoading: true,
@@ -21,11 +22,10 @@ const initialState = {
   balance: '',
 };
 
-export function useGovernanceToken() {
+export function useGovernanceToken({ organization }: IVotingExtension = {}) {
   // TODO: check if slug is present and return error if not
   // TODO: check if oranization exists before checking balance
-  const [state, setState] = useState<VotingExtension>(initialState);
-  const { organization } = useOrganization();
+  const [state, setState] = useState<TVotingExtension>(initialState);
   const { network } = useNetwork();
   const currentStxAddress = useCurrentStxAddress();
 

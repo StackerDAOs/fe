@@ -5,14 +5,16 @@ import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
 import { contractPrincipalCV, standardPrincipalCV } from 'micro-stacks/clarity';
 
-import { useOrganization } from './use-organization';
-
-type VotingExtension = {
+type TVotingExtension = {
   isLoading: boolean;
   contractAddress: string;
   contractName: string;
   votingWeight: number;
 };
+
+interface IVotingExtension {
+  organization?: any;
+}
 
 const initialState = {
   isLoading: true,
@@ -21,11 +23,8 @@ const initialState = {
   votingWeight: 0,
 };
 
-export function useVotingExtension() {
-  // TODO: check if slug is present and return error if not
-  // TODO: check if oranization exists before checking balance
-  const [state, setState] = useState<VotingExtension>(initialState);
-  const { organization } = useOrganization();
+export function useVotingExtension({ organization }: IVotingExtension = {}) {
+  const [state, setState] = useState<TVotingExtension>(initialState);
   const { network } = useNetwork();
   const currentStxAddress = useCurrentStxAddress();
 

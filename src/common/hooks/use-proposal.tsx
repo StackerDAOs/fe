@@ -6,28 +6,28 @@ import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
 import { fetchReadOnlyFunction, fetchContractSource } from 'micro-stacks/api';
 import { contractPrincipalCV, stringAsciiCV } from 'micro-stacks/clarity';
 
-import { useOrganization, useContractEvents } from '../hooks';
+import { useContractEvents } from '../hooks';
 
 import { pluckSourceCode } from '@common/helpers';
 
 interface IProposal {
+  organization?: any;
   contractAddress?: string;
   contractName?: string;
   filterByProposal?: string;
 }
 
 export function useProposal({
+  organization,
   contractAddress,
   contractName,
   filterByProposal,
 }: IProposal = {}) {
-  // TODO: check if slug is present and return error if not
-  // TODO: check if oranization exists before checking balance
   const [state, setState] = useState<any>({});
   const router = useRouter();
   const { id: proposalPrincipal } = router.query as any;
-  const { organization } = useOrganization();
   const { events: voteEvents } = useContractEvents({
+    organization,
     extensionName: 'Voting',
     filter: 'vote',
     filterByProposal,
@@ -119,7 +119,7 @@ export function useProposal({
       }
     };
     fetchProposal();
-  }, [organization, router.isReady, currentStxAddress]);
+  }, [organization, voteEvents, currentStxAddress]);
 
   return { ...state };
 }

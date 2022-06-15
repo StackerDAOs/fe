@@ -5,40 +5,33 @@ import {
   Box,
   Button,
   Container,
-  Divider,
   Stack,
   HStack,
-  Input,
-  InputGroup,
-  InputRightElement,
-  InputRightAddon,
   Progress,
   SimpleGrid,
   Skeleton,
-  Tag,
   Text,
   VStack,
 } from '@chakra-ui/react';
 
 // Stacks
-import {
-  standardPrincipalCV,
-  contractPrincipalCV,
-  uintCV,
-} from 'micro-stacks/clarity';
+import { contractPrincipalCV, uintCV } from 'micro-stacks/clarity';
 
 // Hooks
 import {
+  useOrganization,
   useBlocks,
   useGovernanceTokenExtension,
   useSubmissionExtension,
   useProposals,
   useSubmissions,
 } from '@common/hooks';
+import { useUpdate } from 'react-supabase';
 
 // Components
-import { Card } from '@components/Card';
 import { AppLayout } from '@components/Layout/AppLayout';
+import { Card } from '@components/Card';
+import { EmptyState } from '@components/EmptyState';
 import { Header } from '@components/Header';
 import { VaultActionPopover } from '@components/VaultActionPopover';
 
@@ -48,23 +41,23 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 //  Animation
 import { motion } from 'framer-motion';
 
-// Icons
-import { FaCheck, FaTimes } from 'react-icons/fa';
-
 // Utils
-import { getPercentage, estimateDays, truncate } from '@common/helpers';
+import { getPercentage, truncate } from '@common/helpers';
 
 const Proposals = () => {
   const router = useRouter();
-  const { dao } = router.query;
+  const { dao } = router.query as any;
+  const { organization } = useOrganization({ name: dao });
   const { currentBlockHeight } = useBlocks();
-  const { isLoading, proposals } = useProposals();
+  const { isLoading, proposals } = useProposals({ organization: organization });
   const { proposals: submissions } = useSubmissions();
   const {
     contractName: governanceContractName,
     contractAddress: governanceContractAddress,
-  } = useGovernanceTokenExtension();
-  const { contractName, contractAddress } = useSubmissionExtension();
+  } = useGovernanceTokenExtension({ organization: organization });
+  const { contractName, contractAddress } = useSubmissionExtension({
+    organization: organization,
+  });
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -72,19 +65,31 @@ const Proposals = () => {
     exit: { opacity: 0, x: 0, y: 0 },
   };
 
+  const [{ count, data, error, fetching }, execute] = useUpdate('Proposals');
+  const onFinishUpdate = async (contractAddress: string) => {
+    try {
+      console.log({ contractAddress });
+      const { error } = await execute({ submitted: true }, (q) =>
+        q.eq('contractAddress', contractAddress),
+      );
+      if (error) throw error;
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
   const submissionsByProposal = () => {
-    const startHeight = currentBlockHeight + 15; // TODO: remove this
+    const startHeight = currentBlockHeight + 15; // TODO: 15 needs to be dynamic startBlockHeight min
     return submissions?.map(
       (
-        {
-          type,
-          contractAddress: proposalContractAddress,
-          submittedBy,
-          transactionId,
-        }: any,
+        { type, contractAddress: proposalContractAddress, transactionId }: any,
         index: number,
       ) => {
-        const contractData = {
+        const isLoading =
+          proposalContractAddress &&
+          governanceContractAddress &&
+          governanceContractName;
+        const contractData = isLoading && {
           contractAddress,
           contractName,
           functionName: 'propose',
@@ -141,6 +146,7 @@ const Proposals = () => {
                   color='white'
                   bg='secondary.900'
                   size='sm'
+                  onContractCall={() => onFinishUpdate(proposalContractAddress)}
                   {...contractData}
                 />
                 <Button
@@ -257,29 +263,11 @@ const Proposals = () => {
                           </Box>
                         </Stack>
                       </Stack>
-                      <Stack
-                        spacing='3'
-                        m='6'
-                        alignItems='center'
-                        color='white'
-                      >
-                        <Text fontSize='lg' fontWeight='medium'>
-                          No proposals found.
-                        </Text>
-                        <Link href={`/d/${dao}/proposals/create/transfer`}>
-                          <Button
-                            my='10'
-                            py='4'
-                            color='white'
-                            bg='secondary.900'
-                            size='sm'
-                            _hover={{ opacity: 0.9 }}
-                            _active={{ opacity: 1 }}
-                          >
-                            Create proposal
-                          </Button>
-                        </Link>
-                      </Stack>
+                      <EmptyState
+                        heading='No proposals found.'
+                        linkTo={`/d/${dao}/proposals/create/transfer`}
+                        buttonTitle='Create proposal'
+                      />
                     </>
                   ) : (
                     <>

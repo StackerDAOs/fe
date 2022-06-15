@@ -1,9 +1,7 @@
 // Hook (use-voting-extension.tsx)
 import { useEffect, useState } from 'react';
-
-import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
-import { fetchReadOnlyFunction } from 'micro-stacks/api';
-import { contractPrincipalCV, standardPrincipalCV } from 'micro-stacks/clarity';
+import { useRouter } from 'next/router';
+import { useCurrentStxAddress } from '@micro-stacks/react';
 
 import { useOrganization } from './use-organization';
 
@@ -13,28 +11,31 @@ type GovernanceTokenExtension = {
   contractName: string;
 };
 
+interface IGovernanceTokenExtension {
+  organization?: any;
+}
+
 const initialState = {
   isLoading: true,
   contractAddress: '',
   contractName: '',
 };
 
-export function useGovernanceTokenExtension() {
+export function useGovernanceTokenExtension({
+  organization,
+}: IGovernanceTokenExtension = {}) {
   const [state, setState] = useState<GovernanceTokenExtension>(initialState);
-  const { organization } = useOrganization();
   const currentStxAddress = useCurrentStxAddress();
 
   useEffect(() => {
-    async function fetchSubmissionExtension() {
+    async function fetchTokenExtension() {
       try {
-        const submissionExtension = organization?.Extensions?.find(
+        const tokenExtension = organization?.Extensions?.find(
           (extension: any) =>
             extension?.ExtensionTypes?.name === 'Governance Token',
         );
-        const contractAddress =
-          submissionExtension?.contract_address.split('.')[0];
-        const contractName =
-          submissionExtension?.contract_address.split('.')[1];
+        const contractAddress = tokenExtension?.contract_address.split('.')[0];
+        const contractName = tokenExtension?.contract_address.split('.')[1];
         setState({ ...state, isLoading: false, contractAddress, contractName });
       } catch (error) {
         console.error({ error });
@@ -42,7 +43,7 @@ export function useGovernanceTokenExtension() {
         console.log('finally');
       }
     }
-    fetchSubmissionExtension();
+    fetchTokenExtension();
   }, [organization, currentStxAddress]);
 
   return {

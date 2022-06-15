@@ -1,26 +1,31 @@
 // Hook (use-proposals.tsx)
 import { useEffect, useState } from 'react';
-
 import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
 import { fetchContractSource, fetchReadOnlyFunction } from 'micro-stacks/api';
 import { contractPrincipalCV } from 'micro-stacks/clarity';
-
-import { useStore as ProposalStore } from 'store/ProposalStore';
-
-import { useOrganization, useContractEvents } from '../hooks';
-
+import { useContractEvents } from '../hooks';
 import { pluckSourceCode } from '@common/helpers';
 
-export function useProposals() {
-  // TODO: check if slug is present and return error if not
-  // TODO: check if oranization exists before checking balance
-  const [isLoading, setIsLoading] = useState(true);
-  const currentStxAddress = useCurrentStxAddress();
-  const { organization } = useOrganization();
-  const { network } = useNetwork();
+type TProposals = {
+  isLoading: boolean;
+  proposals: any[];
+};
 
-  const { proposals, setProposals } = ProposalStore();
+interface IProposals {
+  organization?: any;
+}
+
+const initialState = {
+  isLoading: true,
+  proposals: [],
+};
+
+export function useProposals({ organization }: IProposals = {}) {
+  const [state, setState] = useState<TProposals>(initialState);
+  const currentStxAddress = useCurrentStxAddress();
+  const { network } = useNetwork();
   const { events: proposalEvents } = useContractEvents({
+    organization: organization,
     extensionName: 'Voting',
     filter: 'propose',
   });
@@ -82,16 +87,15 @@ export function useProposals() {
           return fetchProposal(proposal);
         });
         const final = await Promise.all(proposals);
-        setProposals(final);
+        setState({ ...state, isLoading: false, proposals: final });
       } catch (error) {
         console.log({ error });
       } finally {
         console.log('done');
-        setIsLoading(false);
       }
     };
     fetchProposals();
   }, [organization, proposalEvents]);
 
-  return { isLoading, proposals };
+  return { isLoading: state.isLoading, proposals: state.proposals };
 }

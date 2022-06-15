@@ -50,12 +50,12 @@ import { stxToUstx, truncate, ustxToStx } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
 export const AppNavbar = () => {
+  const { network } = useNetwork();
   const [bns, setBns] = useState<string | undefined>('');
   const [balance, setBalance] = useState<string | undefined>('');
   const { organization } = useOrganization();
   const { currentStxAddress } = useUser();
   const { isSignedIn, handleSignIn, handleSignOut } = useAuth();
-  const { network } = useNetwork();
   const router = useRouter();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   const switchAccount = () => {
@@ -74,25 +74,6 @@ export const AppNavbar = () => {
   useEffect(() => {
     async function fetch() {
       if (isSignedIn && currentStxAddress) {
-        const data = await fetchNamesByAddress({
-          url: network.getCoreApiUrl(),
-          blockchain: 'stacks',
-          address: currentStxAddress || '',
-        });
-        const { names } = data;
-        console.log({ names });
-        if (names?.length > 0) {
-          console.log(names);
-          setBns(names[0]);
-        }
-      }
-    }
-    fetch();
-  }, [currentStxAddress, network]);
-
-  useEffect(() => {
-    async function fetchBalance() {
-      if (currentStxAddress) {
         const stxBalance = await fetchAccountStxBalance({
           url: network.getCoreApiUrl(),
           principal: currentStxAddress || '',
@@ -100,9 +81,19 @@ export const AppNavbar = () => {
         console.log({ stxBalance });
         const balance = stxBalance?.balance?.toString() || '0';
         setBalance(ustxToStx(balance));
+        const data = await fetchNamesByAddress({
+          url: network.getCoreApiUrl(),
+          blockchain: 'stacks',
+          address: currentStxAddress || '',
+        });
+        const { names } = data;
+        if (names?.length > 0) {
+          console.log(names);
+          setBns(names[0]);
+        }
       }
     }
-    fetchBalance();
+    fetch();
   }, [currentStxAddress, network]);
 
   return (

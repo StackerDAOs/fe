@@ -9,9 +9,9 @@ import { useOrganization } from '../hooks/use-organization';
 export function useSubmissions() {
   const [state, setState] = useState<any>({});
   const router = useRouter();
-  const { dao: slug } = router.query;
+  const { dao } = router.query as any;
 
-  const { organization }: any = useOrganization();
+  const { organization }: any = useOrganization({ name: dao });
 
   useEffect(() => {
     const fetchSubmissions = async () => {
@@ -28,9 +28,9 @@ export function useSubmissions() {
           const proposals = Proposals.filter(
             (proposal) => proposal.Organizations.id === organization?.id,
           );
-          setState({ ...state, proposals });
+          setState({ ...state, isLoading: false, proposals });
         } else {
-          setState({ ...state, proposals: [] });
+          setState({ ...state, isLoading: false, proposals: [] });
         }
       } catch (error) {
         console.log({ error });
@@ -39,7 +39,7 @@ export function useSubmissions() {
       }
     };
     fetchSubmissions();
-  }, [organization, slug]);
+  }, [organization]);
 
-  return { proposals: state.proposals };
+  return { isLoading: state.isLoading, proposals: state.proposals };
 }

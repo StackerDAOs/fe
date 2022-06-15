@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import {
   Box,
   Button,
@@ -27,9 +26,10 @@ import { sendFunds } from '@utils/proposals';
 import { ContractDeployButton } from '@widgets/ContractDeployButton';
 
 // Hooks
-import { useOrganization, useCreateRecord } from '@common/hooks';
+import { useOrganization } from '@common/hooks';
 import { useStep } from '@common/hooks/use-step';
 import { useRandomName } from '@common/hooks';
+import { useInsert } from 'react-supabase';
 
 // Data
 import { transferAssetsSteps } from '@utils/data';
@@ -53,14 +53,18 @@ import { useCurrentStxAddress } from '@micro-stacks/react';
 import { stxToUstx, truncate } from '@common/helpers';
 
 const CreateProposal = () => {
-  const { organization }: any = useOrganization();
-  const currentStxAddress = useCurrentStxAddress();
   const router = useRouter();
+  const { dao } = router.query as any;
+  const { organization }: any = useOrganization({ name: dao });
+  const currentStxAddress = useCurrentStxAddress();
   const [currentStep, { setStep, canGoToNextStep }] = useStep({
     maxStep: transferAssetsSteps.length - 1,
     initialStep: 0,
   });
   const generateContractName = useRandomName();
+  const contractName = generateContractName();
+
+  console.log(contractName);
   const {
     register,
     control,
@@ -70,6 +74,34 @@ const CreateProposal = () => {
   } = useForm();
   const { asset, assetType, transferAmount, transferTo, description } =
     getValues();
+  const [{ count, data, error, fetching }, execute] = useInsert('Proposals');
+  const insertProposals = async ({
+    organization_id,
+    contractAddress,
+    submittedBy,
+    type,
+  }: any) => {
+    try {
+      const { count, data, error } = await execute({
+        organization_id,
+        contractAddress,
+        submittedBy,
+        type,
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const onFinishInsert = async () => {
+    await insertProposals({
+      organization_id: organization?.id,
+      contractAddress: `${currentStxAddress}.${contractName}` || '',
+      submittedBy: currentStxAddress || '',
+      type: 'SDP Transfer STX',
+    });
+  };
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -98,6 +130,7 @@ const CreateProposal = () => {
             <Text color='gray.900' fontSize='sm'>
               Select which type of asset you want to transfer.
             </Text>
+            {/* <Button onClick={onClickInsert}>Test</Button> */}
           </Box>
         </Stack>
         <Controller
@@ -521,8 +554,9 @@ const CreateProposal = () => {
                         _hover={{ opacity: 0.9 }}
                         _active={{ opacity: 1 }}
                         title='Deploy contract'
-                        contractName={generateContractName()}
+                        contractName={contractName}
                         codeBody={contract}
+                        onContractCall={onFinishInsert}
                       />
                     </HStack>
                   )}

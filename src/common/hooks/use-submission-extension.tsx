@@ -1,9 +1,6 @@
 // Hook (use-submission-extension.tsx)
 import { useEffect, useState } from 'react';
-
 import { useCurrentStxAddress } from '@micro-stacks/react';
-
-import { useOrganization } from './use-organization';
 
 type SubmissionExtension = {
   isLoading: boolean;
@@ -11,15 +8,20 @@ type SubmissionExtension = {
   contractName: string;
 };
 
+interface ISubmissionExtension {
+  organization?: any;
+}
+
 const initialState = {
   isLoading: true,
   contractAddress: '',
   contractName: '',
 };
 
-export function useSubmissionExtension() {
+export function useSubmissionExtension({
+  organization,
+}: ISubmissionExtension = {}) {
   const [state, setState] = useState<SubmissionExtension>(initialState);
-  const { organization } = useOrganization();
   const currentStxAddress = useCurrentStxAddress();
 
   useEffect(() => {

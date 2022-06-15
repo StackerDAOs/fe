@@ -82,7 +82,10 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
             >
               <Td border='none'>
                 <HStack spacing='3'>
-                  <Avatar src={'https://bit.ly/sage-adebayo'} boxSize='8' />
+                  <Avatar
+                    src={'https://www.megapont.com/images/megacoin.png'}
+                    boxSize='8'
+                  />
                   <Text color='muted'>{item.name}</Text>
                   <Text color='gray.900'>GVT</Text>
                 </HStack>

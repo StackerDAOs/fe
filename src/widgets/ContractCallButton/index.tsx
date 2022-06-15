@@ -29,6 +29,7 @@ type ContractCallType = {
   functionName: string;
   functionArgs: any[];
   postConditions?: any[];
+  onContractCall?: () => void;
 };
 
 export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
@@ -64,8 +65,20 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
     }
   }
 
+  const {
+    contractAddress,
+    contractName,
+    functionName,
+    functionArgs,
+    postConditions,
+    onContractCall,
+  } = props;
+
   const onFinish = useCallback((data: FinishedTxData) => {
-    console.log({ data });
+    // TODO: Technically, this should be called on Complete when the tx has successfully mined.
+    if (onContractCall) {
+      onContractCall();
+    }
     setTransaction({ txId: data.txId, isPending: true });
     toast({
       duration: 7500,
@@ -147,14 +160,6 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
       ),
     });
   }, []);
-
-  const {
-    contractAddress,
-    contractName,
-    functionName,
-    functionArgs,
-    postConditions,
-  } = props;
 
   const { handleContractCall, isLoading } = useContractCall({
     contractAddress,

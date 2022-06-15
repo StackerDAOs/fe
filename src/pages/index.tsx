@@ -46,19 +46,19 @@ const Index = () => {
                         alignItems='center'
                         color='white'
                       >
-                        <Text fontSize='xl' fontWeight='medium'>
+                        <Text fontSize='2xl' fontWeight='medium'>
                           Let's get started
                         </Text>
                         <Text
-                          fontSize='xs'
+                          fontSize='sm'
                           fontWeight='regular'
                           color='gray.900'
                           maxW='md'
                           mx='auto'
                           textAlign='center'
                         >
-                          By connecting your wallet, you agree to Syndicate's
-                          Terms, Privacy Policy, and Community Standards
+                          By connecting your wallet, you agree to Stacker DAO
+                          Labs' Terms, Privacy Policy, and Community Standards
                         </Text>
 
                         <Button

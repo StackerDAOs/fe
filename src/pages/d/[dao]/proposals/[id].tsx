@@ -48,6 +48,7 @@ import {
 
 // Hooks
 import {
+  useOrganization,
   useBlocks,
   useContractEvents,
   useGovernanceToken,
@@ -58,17 +59,19 @@ import {
 const ProposalView = () => {
   const currentStxAddress = useCurrentStxAddress();
   const router = useRouter();
+  const { dao } = router.query as any;
+  const { organization } = useOrganization({ name: dao });
   const { id: proposalPrincipal } = router.query as any;
   const { currentBlockHeight } = useBlocks();
   const {
     contractAddress: governanceTokenAddress,
     contractName: governanceTokenName,
     balance,
-  } = useGovernanceToken();
+  } = useGovernanceToken({ organization });
   const {
     contractAddress: votingExtensionAddress,
     contractName: votingExtensionName,
-  } = useVotingExtension();
+  } = useVotingExtension({ organization });
   const {
     title,
     description,
@@ -83,9 +86,10 @@ const ProposalView = () => {
     votesAgainst,
     quorumThreshold,
     events,
-  } = useProposal({ filterByProposal: proposalPrincipal });
+  } = useProposal({ organization, filterByProposal: proposalPrincipal });
 
   const { events: delegatorEvents } = useContractEvents({
+    organization,
     extensionName: 'Voting',
     filter: 'delegate',
   });
