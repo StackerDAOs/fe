@@ -295,7 +295,7 @@ const Proposals = () => {
                         </Stack>
                       </Stack>
                       <SimpleGrid
-                        columns={{ base: 1, md: 2, lg: 2 }}
+                        columns={{ base: 1 }}
                         spacing='6'
                         mb='10'
                         color='white'
@@ -346,7 +346,6 @@ const Proposals = () => {
                                       <Box as='section'>
                                         <VStack
                                           align='left'
-                                          maxW='md'
                                           spacing='4'
                                           direction={{
                                             base: 'column',

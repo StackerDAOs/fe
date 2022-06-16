@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -13,6 +14,8 @@ import {
   Tag,
   Text,
 } from '@chakra-ui/react';
+
+import { supabase } from '@utils/supabase';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
@@ -56,7 +59,20 @@ import {
   useVotingExtension,
 } from '@common/hooks';
 
+const FADE_IN_VARIANTS = {
+  hidden: { opacity: 0, x: 0, y: 0 },
+  enter: { opacity: 1, x: 0, y: 0 },
+  exit: { opacity: 0, x: 0, y: 0 },
+};
+
+const SLIDE_UP_BUTTON_VARIANTS = {
+  hidden: { opacity: 0, x: 0, y: 15 },
+  enter: { opacity: 1, x: 0, y: 0 },
+  exit: { opacity: 0, x: 0, y: -15 },
+};
+
 const ProposalView = () => {
+  const [state, setState] = useState({postConditions: []});
   const currentStxAddress = useCurrentStxAddress();
   const router = useRouter();
   const { dao } = router.query as any;
@@ -94,17 +110,26 @@ const ProposalView = () => {
     filter: 'delegate',
   });
 
-  const FADE_IN_VARIANTS = {
-    hidden: { opacity: 0, x: 0, y: 0 },
-    enter: { opacity: 1, x: 0, y: 0 },
-    exit: { opacity: 0, x: 0, y: 0 },
-  };
-
-  const SLIDE_UP_BUTTON_VARIANTS = {
-    hidden: { opacity: 0, x: 0, y: 15 },
-    enter: { opacity: 1, x: 0, y: 0 },
-    exit: { opacity: 0, x: 0, y: -15 },
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data, error } = await supabase
+        .from('Proposals')
+        .select(
+          'postConditions'
+        )
+        .eq('contractAddress', `${proposalContractAddress}.${proposalContractName}`)
+        if (data) {
+          setState({...state, postConditions: data[0].postConditions});
+        }
+      } catch (error) {
+        console.log('error', error);
+      } finally {
+        console.log('finally');
+      }
+    };
+    fetchData();
+  }, [proposalContractAddress, proposalContractName])
 
   const currentVoterDelegators = delegatorEvents?.filter((item: any) => item?.who?.value === currentStxAddress);
   const delegateVoteFor = proposalContractAddress && proposalContractName && listCV([tupleCV({
@@ -166,12 +191,21 @@ const ProposalView = () => {
     proposalContractAddress && proposalContractName
       ? [contractPrincipalCV(proposalContractAddress, proposalContractName)]
       : [];
-  // TODO: make dynamic call to get vault address & to proposal for post condition amounts
-  const postConditionAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  const postConditionName = 'sde-vault';
-  const postConditionCode = FungibleConditionCode.LessEqual;
-  const postConditionAmount = stxToUstx('525');
-  const concludePostConditions = currentStxAddress
+
+  // TODO: 
+  // Will need to have a more advanced way to map over multiple post conditions
+  // orbe able to do the complex mapping of possible post conditions when creating a proposal
+  // in the beginning, ie if a user decided to make multiple transfers of 100, 200, and 300 STX
+  // we should just capture the post condition amount for 600 immediately rather than storing
+  // three separate post conditions for 100, 200, and 300.
+
+  const postConditionsFor = state.postConditions
+  const [proposalPostConditions] = postConditionsFor;
+  const postConditionAddress = proposalPostConditions?.from?.split('.')[0];
+  const postConditionName = proposalPostConditions?.from?.split('.')[1];
+  const postConditionCode = FungibleConditionCode.Equal;
+  const postConditionAmount = stxToUstx(proposalPostConditions?.amount);
+  const concludePostConditions = postConditionAddress && postConditionName && currentStxAddress
     ? [
         makeContractSTXPostCondition(
           postConditionAddress,

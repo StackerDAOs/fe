@@ -76,14 +76,14 @@ const CreateProposal = () => {
     getValues();
   const [{ count, data, error, fetching }, execute] = useInsert('Proposals');
   const insertProposals = async ({
-    organization_id,
+    organizationId,
     contractAddress,
     submittedBy,
     type,
   }: any) => {
     try {
       const { count, data, error } = await execute({
-        organization_id,
+        organizationId,
         contractAddress,
         submittedBy,
         type,
@@ -96,7 +96,7 @@ const CreateProposal = () => {
 
   const onFinishInsert = async () => {
     await insertProposals({
-      organization_id: organization?.id,
+      organizationId: organization?.id,
       contractAddress: `${currentStxAddress}.${contractName}` || '',
       submittedBy: currentStxAddress || '',
       type: 'SDP Transfer STX',
