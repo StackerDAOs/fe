@@ -12,7 +12,7 @@ import {
 // Stacks
 import type { FinishedTxData } from 'micro-stacks/connect';
 import { StacksTestnet } from 'micro-stacks/network';
-import { useContractCall } from '@micro-stacks/react';
+import { useNetwork, useContractCall } from '@micro-stacks/react';
 import { fetchTransaction } from 'micro-stacks/api';
 
 // Hooks
@@ -33,7 +33,7 @@ type ContractCallType = {
 };
 
 export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
-  const network = new StacksTestnet();
+  const { network } = useNetwork();
   const toast = useToast();
   const [transaction, setTransaction] = useState({
     txId: '',
@@ -58,7 +58,7 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
           txId: '',
           isPending: false,
         });
-        onComplete();
+        onComplete(transaction);
       }
     } catch (e: any) {
       console.log({ e });
@@ -75,10 +75,6 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
   } = props;
 
   const onFinish = useCallback((data: FinishedTxData) => {
-    // TODO: Technically, this should be called on Complete when the tx has successfully mined.
-    if (onContractCall) {
-      onContractCall();
-    }
     setTransaction({ txId: data.txId, isPending: true });
     toast({
       duration: 7500,
@@ -123,7 +119,10 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
     });
   }, []);
 
-  const onComplete = useCallback(() => {
+  const onComplete = useCallback((data: FinishedTxData) => {
+    if (onContractCall) {
+      onContractCall();
+    }
     toast({
       duration: 5000,
       isClosable: true,
@@ -134,16 +133,22 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
             <Stack spacing='2.5'>
               <Stack spacing='1'>
                 <Text fontSize='md' color='light.900' fontWeight='medium'>
-                  Transaction confirmed
+                  Transaction Minted
                 </Text>
                 <Text fontSize='sm' color='gray.900'>
-                  Your transaction has been confirmed.
+                  Your transaction was minted successfully.
                 </Text>
               </Stack>
-              <ButtonGroup variant='link' size='md' spacing='3'>
+              <ButtonGroup variant='link' size='sm' spacing='2'>
                 <Button
-                  bgGradient='linear(to-br, primaryGradient.900, primary.900)'
-                  bgClip='text'
+                  color='secondary.900'
+                  as='a'
+                  target='_blank'
+                  href={
+                    process.env.NODE_ENV !== 'production'
+                      ? `http://localhost:8000/txid/${data.tx_id}?chain=testnet`
+                      : `https://explorer.stacks.co/txid/${data.tx_id}?chain=mainnet`
+                  }
                 >
                   View transaction
                 </Button>
@@ -176,9 +181,15 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
       type='submit'
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
-      onClick={() => handleContractCall()}
+      onClick={transaction?.isPending ? null : () => handleContractCall()}
     >
-      {isLoading ? <Spinner /> : props.title}
+      {isLoading ? (
+        <Spinner />
+      ) : transaction?.isPending ? (
+        <Spinner size='xs' />
+      ) : (
+        props.title
+      )}
     </Button>
   );
 };

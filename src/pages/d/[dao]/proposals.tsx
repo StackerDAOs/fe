@@ -154,8 +154,8 @@ const Proposals = () => {
                   target='_blank'
                   href={
                     process.env.NODE_ENV !== 'production'
-                      ? `http://localhost:8000/txid/${transactionId}?chain=testnet`
-                      : `https://explorer.stacks.co/txid/${transactionId}?chain=mainnet`
+                      ? `http://localhost:8000/txid/${proposalContractAddress}?chain=testnet`
+                      : `https://explorer.stacks.co/txid/${proposalContractAddress}?chain=mainnet`
                   }
                   color='white'
                   size='sm'

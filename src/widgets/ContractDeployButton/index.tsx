@@ -64,7 +64,7 @@ export const ContractDeployButton = (
           isPending: false,
         });
         setStep(currentStep + 1);
-        onComplete();
+        onComplete(transaction);
       } else if (transaction?.tx_status === 'abort_by_response') {
         setTransaction({
           txId: '',
@@ -80,9 +80,6 @@ export const ContractDeployButton = (
   const { title, contractName, codeBody, onContractCall } = props;
 
   const onFinish = useCallback((data: FinishedTxData) => {
-    if (onContractCall) {
-      onContractCall();
-    }
     setTransaction({ txId: data.txId, isPending: true });
     toast({
       duration: 7500,
@@ -131,7 +128,10 @@ export const ContractDeployButton = (
     });
   }, []);
 
-  const onComplete = useCallback(() => {
+  const onComplete = useCallback((data: FinishedTxData) => {
+    if (onContractCall) {
+      onContractCall();
+    }
     toast({
       duration: 5000,
       isClosable: true,

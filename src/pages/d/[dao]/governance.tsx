@@ -29,7 +29,11 @@ import {
 } from 'micro-stacks/clarity';
 
 // Hooks
-import { useVotingExtension, useGovernanceToken } from '@common/hooks';
+import {
+  useOrganization,
+  useVotingExtension,
+  useGovernanceToken,
+} from '@common/hooks';
 import { useForm, Controller } from 'react-hook-form';
 
 // Components
@@ -60,9 +64,12 @@ const Governance = () => {
   const { register, control, handleSubmit, getValues } = useForm();
   const { delegateAddress } = getValues();
   const router = useRouter();
-  const { dao } = router.query;
-  const { balance: userBalance } = useGovernanceToken();
-  const { contractAddress, contractName } = useVotingExtension();
+  const { dao } = router.query as any;
+  const { organization } = useOrganization({ name: dao });
+  const { balance: userBalance } = useGovernanceToken({ organization });
+  const { contractAddress, contractName } = useVotingExtension({
+    organization,
+  });
 
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -239,10 +246,7 @@ const Governance = () => {
                                               size='sm'
                                               color='light.900'
                                               bg='secondary.900'
-                                              disabled={
-                                                value !== null ||
-                                                value?.length < 40
-                                              }
+                                              disabled={value?.length < 40}
                                               _disabled={{
                                                 bg: 'secondary.900',
                                                 opacity: 0.5,

@@ -119,7 +119,11 @@ const ProposalView = () => {
   })]);
   const delegatorsFor = currentVoterDelegators?.map((item: any, index: number) => {
     const delegatorVotes = proposalContractAddress && proposalContractName && listCV([
-      delegateVoteFor,
+      tupleCV({
+        for: trueCV(),
+        proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
+        delegator: noneCV(),
+      }),
       tupleCV({
         for: trueCV(),
         proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
@@ -130,7 +134,11 @@ const ProposalView = () => {
   });
   const delegatorsAgainst = currentVoterDelegators?.map((item: any, index: number) => {
     const delegatorVotes = proposalContractAddress && proposalContractName && listCV([
-      delegateVoteAgainst,
+      tupleCV({
+        for: falseCV(),
+        proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
+        delegator: noneCV(),
+      }),
       tupleCV({
         for: falseCV(),
         proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),

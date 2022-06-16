@@ -50,13 +50,14 @@ import { stxToUstx, truncate, ustxToStx } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
 export const MainNavbar = () => {
+  const router = useRouter();
+  const { dao } = router.query as any;
   const [bns, setBns] = useState<string | undefined>('');
   const [balance, setBalance] = useState<string | undefined>('');
-  const { organization } = useOrganization();
+  const { organization } = useOrganization({ name: dao });
   const { currentStxAddress } = useUser();
   const { isSignedIn, handleSignIn, handleSignOut } = useAuth();
   const { network } = useNetwork();
-  const router = useRouter();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   const switchAccount = () => {
     handleSignIn();
@@ -66,7 +67,6 @@ export const MainNavbar = () => {
     localStorage.setItem('chakra-ui-color-mode', 'dark');
     // router.push('/');
   };
-  const { dao } = router.query;
   const isSelected = (path: string) => {
     return router.pathname.split('/')[3] === path;
   };
