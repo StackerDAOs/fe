@@ -20,7 +20,7 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 
 // Utils
-import { sendFunds } from '@utils/proposals';
+import { sendFunds } from '@utils/proposals/transfers';
 
 // Widgets
 import { ContractDeployButton } from '@widgets/ContractDeployButton';
@@ -289,7 +289,7 @@ const CreateProposal = () => {
             </FormControl>
           </SimpleGrid>
           <FormControl isInvalid={errors.description}>
-            <FormLabel>Recipient</FormLabel>
+            <FormLabel>Details</FormLabel>
             <Textarea
               id='description'
               type='text'

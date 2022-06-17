@@ -68,7 +68,6 @@ const Proposals = () => {
   const [{ count, data, error, fetching }, execute] = useUpdate('Proposals');
   const onFinishUpdate = async (contractAddress: string) => {
     try {
-      console.log({ contractAddress });
       const { error } = await execute({ submitted: true }, (q) =>
         q.eq('contractAddress', contractAddress),
       );

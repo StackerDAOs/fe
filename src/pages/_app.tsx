@@ -16,8 +16,8 @@ function App({ Component, pageProps }: any) {
     <ChakraProvider resetCSS theme={theme}>
       <Provider value={supabase}>
         <Head>
-          <title>StackerDAOs</title>
-          <meta name='description' content='StackerDAOs' />
+          <title>StackerDAO Labs</title>
+          <meta name='description' content='StackerDAO Labs' />
         </Head>
         <AnimatePresence
           exitBeforeEnter

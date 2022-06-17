@@ -152,7 +152,7 @@ export const AppFooter = () => {
       ? [
           makeStandardSTXPostCondition(
             currentStxAddress || '', // Post condition address
-            FungibleConditionCode.LessEqual, // Post condition code
+            FungibleConditionCode.Equal, // Post condition code
             stxToUstx('285'), // Post condition amount
           ),
         ]

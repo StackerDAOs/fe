@@ -39,10 +39,9 @@ export const Header = () => {
       <Stat
         flex='1'
         borderRadius='lg'
-        label='Vault'
+        label='Balance'
         value={`${ustxToStx(stx?.balance) || 0}`}
-        assetSymbol='STX'
-        info={`Total balance`}
+        info={`Total STX`}
         path='vault'
       />
     );
@@ -71,7 +70,7 @@ export const Header = () => {
         borderRadius='lg'
         label='Governance'
         value={convertToken(userBalance?.toString(), 100).toString()}
-        info={`MEGA tokens`}
+        info={`MEGA`}
         path='governance'
       />
     );
