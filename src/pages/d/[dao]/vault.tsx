@@ -1,12 +1,8 @@
 import {
-  Avatar,
   Box,
-  Button,
+  ButtonGroup,
   Container,
   Stack,
-  HStack,
-  VStack,
-  SimpleGrid,
   Text,
   Tab,
   Tabs,
@@ -18,7 +14,6 @@ import {
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
 import { AssetTable } from '@components/AssetTable';
-import { Card } from '@components/Card';
 import { Header } from '@components/Header';
 import { VaultActionPopover } from '@components/VaultActionPopover';
 
@@ -62,22 +57,27 @@ const Vault = () => {
                           List of shared assets owned by the DAO.
                         </Text>
                       </Box>
-                      <VaultActionPopover />
+                      {/* <VaultActionPopover /> */}
                     </Stack>
                   </Stack>
                   <Tabs color='white' variant='unstyled'>
                     <TabList>
-                      {['Tokens', 'NFTs'].map((item) => (
-                        <Tab
-                          key={item}
-                          fontSize='sm'
-                          color='gray.900'
-                          _first={{ paddingLeft: '0' }}
-                          _selected={{ color: 'light.900' }}
-                        >
-                          {item}
-                        </Tab>
-                      ))}
+                      <ButtonGroup bg='base.800' borderRadius='lg' p='1'>
+                        {['Coins', 'Collectibles'].map((item) => (
+                          <Tab
+                            key={item}
+                            fontSize='sm'
+                            borderRadius='lg'
+                            color='gray.900'
+                            px='5'
+                            isFullWidth
+                            w='50%'
+                            _selected={{ bg: 'base.500', color: 'light.900' }}
+                          >
+                            {item}
+                          </Tab>
+                        ))}
+                      </ButtonGroup>
                     </TabList>
                     <TabPanels>
                       <TabPanel px='0'>
@@ -88,140 +88,27 @@ const Vault = () => {
                           exit={FADE_IN_VARIANTS.exit}
                           transition={{ duration: 0.25, type: 'linear' }}
                         >
-                          <Box as='section' pb={{ base: '3', md: '3' }}>
-                            <VStack
-                              align='left'
-                              spacing='3'
-                              maxW='xl'
-                              direction={{
-                                base: 'column',
-                                md: 'row',
-                              }}
-                              justify='space-between'
-                              color='white'
-                            >
-                              <Stack
-                                color='white'
-                                bg='base.900'
-                                border='1px solid'
-                                borderColor='base.500'
-                                py='3'
-                                px='3'
-                                borderRadius='lg'
-                                _even={{
-                                  bg: 'base.800',
-                                  border: '1px solid',
-                                  borderColor: 'base.500',
-                                }}
-                                _last={{ mb: '0' }}
-                              >
-                                <Stack
-                                  direction='row'
-                                  spacing='3'
-                                  display='flex'
-                                  justifyContent='space-between'
-                                >
-                                  <HStack spacing='3'>
-                                    <Avatar
-                                      borderRadius='lg'
-                                      src={
-                                        'https://www.megapont.com/images/megacoin.png'
-                                      }
-                                      boxSize='6'
-                                    />
-                                    <HStack spacing='1' align='baseline'>
-                                      <Text
-                                        fontSize='sm'
-                                        fontWeight='medium'
-                                        color='light.900'
-                                      >
-                                        MEGA
-                                      </Text>
-                                      <Text
-                                        fontSize='xs'
-                                        fontWeight='regular'
-                                        color='gray.900'
-                                      >
-                                        MEGA
-                                      </Text>
-                                    </HStack>
-                                  </HStack>
-
-                                  <HStack spacing='1'>
-                                    <Text
-                                      fontSize='md'
-                                      fontWeight='regular'
-                                      color='light.900'
-                                    >
-                                      2,592.10
-                                    </Text>
-                                  </HStack>
-                                </Stack>
-                              </Stack>
-                              <Stack
-                                color='white'
-                                bg='base.900'
-                                border='1px solid'
-                                borderColor='base.500'
-                                py='3'
-                                px='3'
-                                borderRadius='lg'
-                                _even={{
-                                  bg: 'base.800',
-                                  border: '1px solid',
-                                  borderColor: 'base.500',
-                                }}
-                                _last={{ mb: '0' }}
-                              >
-                                <Stack
-                                  direction='row'
-                                  spacing='3'
-                                  display='flex'
-                                  justifyContent='space-between'
-                                >
-                                  <HStack spacing='3'>
-                                    <Avatar
-                                      borderRadius='lg'
-                                      src={
-                                        'https://www.megapont.com/images/megacoin.png'
-                                      }
-                                      boxSize='6'
-                                    />
-                                    <HStack spacing='1' align='baseline'>
-                                      <Text
-                                        fontSize='sm'
-                                        fontWeight='medium'
-                                        color='light.900'
-                                      >
-                                        MEGA
-                                      </Text>
-                                      <Text
-                                        fontSize='xs'
-                                        fontWeight='regular'
-                                        color='gray.900'
-                                      >
-                                        MEGA
-                                      </Text>
-                                    </HStack>
-                                  </HStack>
-
-                                  <HStack spacing='1'>
-                                    <Text
-                                      fontSize='md'
-                                      fontWeight='regular'
-                                      color='light.900'
-                                    >
-                                      2,592.10
-                                    </Text>
-                                  </HStack>
-                                </Stack>
-                              </Stack>
-                            </VStack>
-                          </Box>
+                          <AssetTable
+                            color='light.900'
+                            size='lg'
+                            type='fungible'
+                          />
                         </motion.div>
                       </TabPanel>
                       <TabPanel px='0'>
-                        <AssetTable type='non_fungible' />
+                        <motion.div
+                          variants={FADE_IN_VARIANTS}
+                          initial={FADE_IN_VARIANTS.hidden}
+                          animate={FADE_IN_VARIANTS.enter}
+                          exit={FADE_IN_VARIANTS.exit}
+                          transition={{ duration: 0.25, type: 'linear' }}
+                        >
+                          <AssetTable
+                            color='light.900'
+                            size='lg'
+                            type='nonFungible'
+                          />
+                        </motion.div>
                       </TabPanel>
                     </TabPanels>
                   </Tabs>
