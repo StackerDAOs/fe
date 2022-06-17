@@ -7,11 +7,12 @@ export const truncate = (str: string, firstCharCount = str.length, endCharCount 
 };
 
 export const convertToken = (token: string, decimals: number) => {
-  return parseInt(token) / decimals;
+  const convertWithDecimals = Math.pow(10, parseInt(decimals));
+  return (parseInt(token) / convertWithDecimals).toLocaleString('en-US');
 };
 
 export const ustxToStx = (uStx: string) => {
-  return parseInt(uStx) / 1000000;
+  return (parseInt(uStx) / 1000000).toLocaleString('en-US');
 };
 
 export const stxToUstx = (stx: string) => {
