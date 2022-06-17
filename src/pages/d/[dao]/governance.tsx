@@ -91,8 +91,6 @@ const Governance = () => {
     postConditions,
   };
 
-  console.log({ delegateAddress });
-
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -152,7 +150,7 @@ const Governance = () => {
                                     Tokens:
                                   </Text>
                                   <Text color='light.900' fontWeight='regular'>
-                                    {convertToken(userBalance, 100).toString()}{' '}
+                                    {convertToken(userBalance, 2).toString()}{' '}
                                     <Text
                                       as='span'
                                       color='gray.900'

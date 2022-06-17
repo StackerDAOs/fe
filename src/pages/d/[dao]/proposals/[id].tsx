@@ -454,7 +454,7 @@ const ProposalView = () => {
                             You already voted!
                           </Text>
                           <Text color='light.900' fontWeight='regular'>
-                            {convertToken(balance.toString(), 100)}{' '}
+                            {convertToken(balance.toString(), 2)}{' '}
                             <Text
                               as='span'
                               color='gray.900'
@@ -471,7 +471,7 @@ const ProposalView = () => {
                             Voting power:
                           </Text>
                           <Text color='light.900' fontWeight='regular'>
-                            {convertToken(balance.toString(), 100)}{' '}
+                            {convertToken(balance.toString(), 2)}{' '}
                             <Text
                               as='span'
                               color='gray.900'
@@ -488,7 +488,7 @@ const ProposalView = () => {
                             Not enough voting power:
                           </Text>
                           <Text color='light.900' fontWeight='regular'>
-                            {convertToken(balance.toString(), 100)}{' '}
+                            {convertToken(balance.toString(), 2)}{' '}
                             <Text
                               as='span'
                               color='gray.900'
@@ -815,7 +815,7 @@ const ProposalView = () => {
                                   fontWeight='regular'
                                   color='light.900'
                                 >
-                                  {convertToken(amount?.value, 100)}
+                                  {convertToken(amount?.value, 2)}
                                 </Text>
                                 <Text
                                   fontSize='sm'

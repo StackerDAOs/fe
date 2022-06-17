@@ -198,9 +198,9 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
                 break;
 
               default:
-                balance = convertToken(item.balance, 100);
-                totalSent = convertToken(item.totalSent, 100);
-                totalReceived = convertToken(item.totalReceived, 100);
+                balance = convertToken(item.balance, decimals);
+                totalSent = convertToken(item.totalSent, decimals);
+                totalReceived = convertToken(item.totalReceived, decimals);
                 break;
             }
             return (

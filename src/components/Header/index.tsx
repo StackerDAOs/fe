@@ -69,7 +69,7 @@ export const Header = () => {
         flex='1'
         borderRadius='lg'
         label='Governance'
-        value={convertToken(userBalance?.toString(), 100).toString()}
+        value={convertToken(userBalance?.toString(), 2).toString()} // TODO: Get decimals for token
         info={`MEGA`}
         path='governance'
       />
@@ -103,7 +103,7 @@ export const Header = () => {
                   <Avatar
                     size={40}
                     name={organization?.name}
-                    variant='marble'
+                    variant='sunset'
                     colors={[
                       '#50DDC3',
                       '#624AF2',
@@ -115,7 +115,7 @@ export const Header = () => {
                   <Heading
                     size='lg'
                     pb='2'
-                    fontWeight='semibold'
+                    fontWeight='light'
                     color='light.900'
                   >
                     {organization?.name}

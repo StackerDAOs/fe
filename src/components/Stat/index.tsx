@@ -38,6 +38,8 @@ export const Stat = (props: Props) => {
   const [isHovered, setHovered] = useState(false);
   const router = useRouter();
   const { dao } = router.query;
+  const currentPath = router.pathname.split('/').filter((p) => p === path)[0];
+  const isActivePath = currentPath === path;
   return (
     <Link href={`/d/${dao}/${path}`}>
       <Card
@@ -46,6 +48,11 @@ export const Stat = (props: Props) => {
         borderColor='base.500'
         px={{ base: '4', md: '6' }}
         py={{ base: '4', md: '6' }}
+        {...(isActivePath && {
+          borderBottomColor: 'secondary.900',
+          borderBottomWidth: '1px',
+          borderBottomRadius: 'sm',
+        })}
         {...boxProps}
         _hover={{
           cursor: 'pointer',

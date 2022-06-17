@@ -171,9 +171,9 @@ export const AppNavbar = () => {
                           </Text>
                         </HStack>
                         <Avatar
-                          size={10}
-                          name={organization?.name}
-                          variant='marble'
+                          size={15}
+                          name={currentStxAddress}
+                          variant='beam'
                           colors={[
                             '#50DDC3',
                             '#624AF2',

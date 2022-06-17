@@ -18,7 +18,7 @@ export const AdminModal = ({ title, children }: any) => {
       <Text
         cursor='pointer'
         color='light.900'
-        fontWeight='medium'
+        fontWeight='regular'
         fontSize='sm'
         onClick={onOpen}
       >

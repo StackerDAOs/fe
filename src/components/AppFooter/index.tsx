@@ -147,13 +147,13 @@ export const AppFooter = () => {
     contractAddress: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
     contractName: 'sde-vault',
     functionName: 'deposit',
-    functionArgs: [uintCV(stxToUstx('285'))],
+    functionArgs: [uintCV(stxToUstx('1285'))],
     postConditions: currentStxAddress
       ? [
           makeStandardSTXPostCondition(
             currentStxAddress || '', // Post condition address
             FungibleConditionCode.Equal, // Post condition code
-            stxToUstx('285'), // Post condition amount
+            stxToUstx('1285'), // Post condition amount
           ),
         ]
       : [],
