@@ -1,17 +1,15 @@
-import { lighten, mode, StyleFunctionProps } from '@chakra-ui/theme/node_modules/@chakra-ui/theme-tools';
-
 export default {
-  global: (props: StyleFunctionProps) => ({
+  global: () => ({
     body: {
       color: 'default',
-      bg: mode('light.600', 'base.900')(props),
+      bg: 'base.900',
     },
     '*::placeholder': {
       opacity: 1,
       color: 'subtle',
     },
     '*, *::before, &::after': {
-      borderColor: mode('gray.200', lighten('gray.700', 3)(props.theme))(props),
+      borderColor: 'base.500',
     },
   }),
 };

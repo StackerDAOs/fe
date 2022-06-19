@@ -7,7 +7,6 @@ import {
   Stack,
   Text,
   useBreakpointValue,
-  useColorModeValue,
 } from '@chakra-ui/react';
 import { FiInfo } from 'react-icons/fi';
 
@@ -23,7 +22,6 @@ export const Banner = () => {
       bottom='5vh'
       left='50%'
       transform='translate(-50%, 0)'
-      boxShadow={useColorModeValue('sm', 'sm-dark')}
       borderRadius='xl'
     >
       <CloseButton

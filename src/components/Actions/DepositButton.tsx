@@ -15,7 +15,7 @@ import { stxToUstx } from '@common/helpers';
 export const DepositButton = ({ amount }: any) => {
   const { currentStxAddress } = useUser();
 
-  // DEPOSIT
+  // TODO: make calls to get vault address of organization
   const getDepositData = ({ amount }: any) => {
     if (amount) {
       return {

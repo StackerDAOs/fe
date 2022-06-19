@@ -20,7 +20,6 @@ import {
   TabList,
   Text,
   useBreakpointValue,
-  useColorModeValue as mode,
 } from '@chakra-ui/react';
 
 // Components
@@ -145,11 +144,7 @@ export const AppNavbar = () => {
                 <HStack spacing='3'>
                   <ButtonGroup spacing='6' alignItems='center'>
                     {isSignedIn ? (
-                      <HStack
-                        cursor='pointer'
-                        spacing='4'
-                        color={mode('base.900', 'light.900')}
-                      >
+                      <HStack cursor='pointer' spacing='4' color='light.900'>
                         <Badge
                           cursor='default'
                           variant='subtle'
