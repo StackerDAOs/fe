@@ -35,8 +35,8 @@ export function useGovernanceToken({ organization }: IVotingExtension = {}) {
         (extension: any) =>
           extension?.ExtensionTypes?.name === 'Governance Token',
       );
-      const contractAddress = governanceToken?.contract_address.split('.')[0];
-      const contractName = governanceToken?.contract_address.split('.')[1];
+      const contractAddress = governanceToken?.contractAddress?.split('.')[0];
+      const contractName = governanceToken?.contractAddress?.split('.')[1];
       const senderAddress = currentStxAddress;
 
       const functionArgsForBalance = currentStxAddress

@@ -31,9 +31,9 @@ export function useSubmissionExtension({
           (extension: any) => extension?.ExtensionTypes?.name === 'Submission',
         );
         const contractAddress =
-          submissionExtension?.contract_address.split('.')[0];
+          submissionExtension?.contractAddress?.split('.')[0];
         const contractName =
-          submissionExtension?.contract_address.split('.')[1];
+          submissionExtension?.contractAddress?.split('.')[1];
         setState({ ...state, isLoading: false, contractAddress, contractName });
       } catch (error) {
         console.error({ error });

@@ -9,7 +9,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 
-export const CreateProposalButton = ({ title }: any) => {
+export const CreateProposalDrawer = ({ title }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -18,7 +18,7 @@ export const CreateProposalButton = ({ title }: any) => {
         {title}
       </Button>
 
-      <Drawer onClose={onClose} isOpen={isOpen} size='2xl' placement='bottom'>
+      <Drawer onClose={onClose} isOpen={isOpen} size='2xl' placement='right'>
         <DrawerOverlay />
         <DrawerContent bg='base.800' color='light.900' p='6'>
           <DrawerCloseButton />

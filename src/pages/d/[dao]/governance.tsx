@@ -78,9 +78,9 @@ const Governance = () => {
   };
 
   const functionName = 'delegate';
-  const functionArgs = delegateAddress
-    ? [standardPrincipalCV(delegateAddress || currentStxAddress)]
-    : [];
+  const functionArgs = delegateAddress && [
+    standardPrincipalCV(delegateAddress),
+  ];
   const postConditions: any = [];
 
   const contractData = {

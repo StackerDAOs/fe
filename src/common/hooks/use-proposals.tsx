@@ -38,8 +38,8 @@ export function useProposals({ organization }: IProposals = {}) {
         );
         async function fetchProposal(proposal: any) {
           const contractAddress =
-            proposalVoting?.contract_address.split('.')[0];
-          const contractName = proposalVoting?.contract_address.split('.')[1];
+            proposalVoting?.contractAddress?.split('.')[0];
+          const contractName = proposalVoting?.contractAddress?.split('.')[1];
           const senderAddress = currentStxAddress;
           const functionArgs = [
             contractPrincipalCV(

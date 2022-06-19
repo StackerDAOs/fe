@@ -1,34 +1,83 @@
 import {
+  BoxProps,
   Divider,
-  HStack,
-  StackProps,
-  useColorModeValue as mode,
+  Stack,
+  Text,
+  useBreakpointValue,
 } from '@chakra-ui/react';
+
+// Components
 import { StepCircle } from '@components/StepCircle';
 
-interface StepProps extends StackProps {
+interface StepProps extends BoxProps {
+  title: string;
+  description?: any;
   isCompleted: boolean;
   isActive: boolean;
   isLastStep: boolean;
+  isFirstStep: boolean;
 }
 
 export const Step = (props: StepProps) => {
-  const { isActive, isCompleted, isLastStep, ...stackProps } = props;
+  const {
+    isActive,
+    isCompleted,
+    isLastStep,
+    isFirstStep,
+    title,
+    description,
+    ...stackProps
+  } = props;
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
+  const orientation = useBreakpointValue<'horizontal' | 'vertical'>({
+    base: 'vertical',
+    md: 'horizontal',
+  });
 
   return (
-    <HStack flex={isLastStep ? '0' : '1'} spacing='0' {...stackProps}>
-      <StepCircle isActive={isActive} isCompleted={isCompleted} />
-      {!isLastStep && (
+    <Stack
+      spacing='0'
+      direction={{ base: 'row', md: 'column' }}
+      flex='1'
+      {...stackProps}
+    >
+      <Stack
+        spacing='0'
+        align='center'
+        direction={{ base: 'column', md: 'row' }}
+      >
         <Divider
-          orientation='horizontal'
+          display={isMobile ? 'none' : 'initial'}
+          orientation={orientation}
           borderWidth='1px'
           borderColor={
-            isCompleted
-              ? mode('secondary.900', 'primaryGradient.900')
-              : mode('secondaryOpacity.20', 'primaryOpacity.20')
+            isFirstStep
+              ? 'transparent'
+              : isCompleted || isActive
+              ? 'accent'
+              : 'inherit'
           }
         />
-      )}
-    </HStack>
+        <StepCircle isActive={isActive} isCompleted={isCompleted} />
+        <Divider
+          orientation={orientation}
+          borderWidth='1px'
+          borderColor={
+            isCompleted ? 'accent' : isLastStep ? 'transparent' : 'inherit'
+          }
+        />
+      </Stack>
+      <Stack
+        spacing='0.5'
+        pb={isMobile && !isLastStep ? '8' : '0'}
+        align={{ base: 'start', md: 'center' }}
+      >
+        <Text color='base.800' fontWeight='regular'>
+          {title}
+        </Text>
+        {description}
+      </Stack>
+    </Stack>
   );
 };

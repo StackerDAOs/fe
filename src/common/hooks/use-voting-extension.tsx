@@ -35,14 +35,14 @@ export function useVotingExtension({ organization }: IVotingExtension = {}) {
           extension?.ExtensionTypes?.name === 'Governance Token',
       );
       const tokenContractAddress =
-        governanceTokenExtension?.contract_address.split('.')[0];
+        governanceTokenExtension?.contractAddress?.split('.')[0];
       const tokenContractName =
-        governanceTokenExtension?.contract_address.split('.')[1];
+        governanceTokenExtension?.contractAddress?.split('.')[1];
       const voteExtension = organization?.Extensions?.find(
         (extension: any) => extension?.ExtensionTypes?.name === 'Voting',
       );
-      const contractAddress = voteExtension?.contract_address.split('.')[0];
-      const contractName = voteExtension?.contract_address.split('.')[1];
+      const contractAddress = voteExtension?.contractAddress?.split('.')[0];
+      const contractName = voteExtension?.contractAddress?.split('.')[1];
 
       const senderAddress = currentStxAddress;
       const functionArgs =

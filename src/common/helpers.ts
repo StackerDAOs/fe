@@ -7,7 +7,7 @@ export const truncate = (str: string, firstCharCount = str.length, endCharCount 
 };
 
 export const convertToken = (token: string, decimals: number) => {
-  const convertWithDecimals = Math.pow(10, parseInt(decimals));
+  const convertWithDecimals = Math.pow(10, parseInt(decimals.toString()));
   return (parseInt(token) / convertWithDecimals).toLocaleString('en-US');
 };
 

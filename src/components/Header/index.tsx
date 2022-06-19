@@ -39,7 +39,7 @@ export const Header = () => {
       <Stat
         flex='1'
         borderRadius='lg'
-        label='Balance'
+        label='Vault'
         value={`${ustxToStx(stx?.balance) || 0}`}
         info={`Total STX`}
         path='vault'
@@ -87,11 +87,11 @@ export const Header = () => {
   }
 
   return (
-    <Stack spacing={{ base: '8', lg: '6' }} my='3'>
+    <Stack spacing={{ base: '6', lg: '4' }} my='3'>
       <Container>
         <Stack
-          spacing='4'
-          mb='2'
+          spacing='2'
+          my='4'
           direction={{ base: 'column', md: 'row' }}
           justify='flex-start'
           color='white'
@@ -135,8 +135,8 @@ export const Header = () => {
           </VStack>
         </Stack>
         <Stack
-          spacing='8'
-          mb='8'
+          spacing='4'
+          mb='4'
           direction={{ base: 'column', md: 'row' }}
           justify='center'
           align='center'

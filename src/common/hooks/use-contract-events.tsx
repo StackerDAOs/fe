@@ -35,7 +35,7 @@ export function useContractEvents({
         (extension: any) => extension?.ExtensionTypes?.name === extensionName,
       );
       const url = network.getCoreApiUrl();
-      const contractId = extension?.contract_address;
+      const contractId = extension?.contractAddress;
       const data = await fetchContractEventsById({
         url,
         limit: 0,

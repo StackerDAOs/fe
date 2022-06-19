@@ -3,7 +3,7 @@ import { StepCircle } from '@components/StepCircle';
 
 interface StepProps extends BoxProps {
   title: string;
-  description: string;
+  description?: any;
   isCompleted: boolean;
   isActive: boolean;
   isLastStep: boolean;
@@ -29,17 +29,15 @@ export const VerticalStep = (props: StepProps) => {
           orientation='vertical'
           borderWidth='1px'
           borderColor={
-            isCompleted ? 'accent' : isLastStep ? 'transparent' : 'inherit'
+            isCompleted ? 'base.500' : isLastStep ? 'transparent' : 'base.500'
           }
         />
       </Stack>
-      <Stack spacing='0.5' pb={isLastStep ? '0' : '8'}>
-        <Text color='emphasized' fontWeight='medium'>
+      <Stack spacing='2' pb={isLastStep ? '0' : isCompleted ? '3' : '8'}>
+        <Text color='light.900' fontWeight='regular'>
           {title}
         </Text>
-        <Text fontSize='sm' color='gray.900' maxW='xs'>
-          {description}
-        </Text>
+        {description}
       </Stack>
     </Stack>
   );

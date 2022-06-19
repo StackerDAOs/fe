@@ -11,13 +11,9 @@ import {
   useColorModeValue as mode,
 } from '@chakra-ui/react';
 
-// Store
-import { useStore as useCommunityStepStore } from 'store/CommunityStepStore';
-
 // Stacks
 import type { FinishedTxData } from 'micro-stacks/connect';
-import { StacksTestnet } from 'micro-stacks/network';
-import { useContractDeploy } from '@micro-stacks/react';
+import { useNetwork, useContractDeploy } from '@micro-stacks/react';
 import { fetchTransaction } from 'micro-stacks/api';
 
 // Hooks
@@ -37,9 +33,8 @@ type ContractDeployType = {
 export const ContractDeployButton = (
   props: ButtonProps & ContractDeployType,
 ) => {
-  const network = new StacksTestnet();
+  const { network } = useNetwork();
   const toast = useToast();
-  const { currentStep, setStep } = useCommunityStepStore();
   const [transaction, setTransaction] = useState({
     txId: '',
     isPending: false,
@@ -63,7 +58,6 @@ export const ContractDeployButton = (
           txId: '',
           isPending: false,
         });
-        setStep(currentStep + 1);
         onComplete(transaction);
       } else if (transaction?.tx_status === 'abort_by_response') {
         setTransaction({
@@ -80,6 +74,9 @@ export const ContractDeployButton = (
   const { title, contractName, codeBody, onContractCall } = props;
 
   const onFinish = useCallback((data: FinishedTxData) => {
+    if (onContractCall) {
+      onContractCall();
+    }
     setTransaction({ txId: data.txId, isPending: true });
     toast({
       duration: 7500,
@@ -129,9 +126,9 @@ export const ContractDeployButton = (
   }, []);
 
   const onComplete = useCallback((data: FinishedTxData) => {
-    if (onContractCall) {
-      onContractCall();
-    }
+    // if (onContractCall) {
+    //   onContractCall();
+    // }
     toast({
       duration: 5000,
       isClosable: true,

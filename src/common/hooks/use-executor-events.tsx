@@ -24,7 +24,7 @@ export function useExecutorEvents({ filter, filterByProposal }: IEvent = {}) {
     const fetchEvents = async () => {
       try {
         const url = network.getCoreApiUrl();
-        const contractId = organization?.contract_address;
+        const contractId = organization?.contractAddress;
         const data = await fetchContractEventsById({
           url,
           limit: 10,

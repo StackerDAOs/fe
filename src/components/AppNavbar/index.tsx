@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
+  Badge,
   Box,
   ButtonGroup,
   Flex,
@@ -59,6 +60,12 @@ export const AppNavbar = () => {
   const { currentStxAddress } = useUser();
   const { isSignedIn, handleSignIn, handleSignOut } = useAuth();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
+  const NETWORK_CHAIN_ID: any = {
+    1: 'Mainnet',
+    2147483648: network.bnsLookupUrl?.includes('testnet')
+      ? 'Testnet'
+      : 'Devnet',
+  };
   const switchAccount = () => {
     handleSignIn();
   };
@@ -106,7 +113,7 @@ export const AppNavbar = () => {
         px='9'
         bg='base.900'
         borderBottom='1px solid'
-        borderColor='base.500'
+        borderColor='base.800'
       >
         <HStack justify='space-around' spacing='2'>
           <Link href={`/d/${dao}`}>
@@ -150,10 +157,34 @@ export const AppNavbar = () => {
                     {isSignedIn ? (
                       <HStack
                         cursor='pointer'
-                        spacing='2'
+                        spacing='4'
                         color={mode('base.900', 'light.900')}
                       >
-                        <HStack px='2'>
+                        <Badge
+                          cursor='default'
+                          variant='subtle'
+                          bg='base.800'
+                          color='light.900'
+                          px='3'
+                          py='1'
+                        >
+                          <Text
+                            color='secondary.900'
+                            fontSize='sm'
+                            fontWeight='medium'
+                          >
+                            {NETWORK_CHAIN_ID[network.chainId]}
+                          </Text>
+                        </Badge>
+                        <HStack spacing='1'>
+                          <Text
+                            as='span'
+                            fontSize='sm'
+                            fontWeight='regular'
+                            color='light.900'
+                          >
+                            Ӿ
+                          </Text>
                           <Text
                             fontSize='sm'
                             fontWeight='medium'
@@ -161,48 +192,42 @@ export const AppNavbar = () => {
                           >
                             {balance}{' '}
                           </Text>
-                          <Text
-                            as='span'
-                            fontSize='sm'
-                            fontWeight='regular'
-                            color='gray.900'
-                          >
-                            STX
-                          </Text>
                         </HStack>
-                        <Avatar
-                          size={15}
-                          name={currentStxAddress}
-                          variant='beam'
-                          colors={[
-                            '#50DDC3',
-                            '#624AF2',
-                            '#EB00FF',
-                            '#7301FA',
-                            '#25C2A0',
-                          ]}
-                        />
-                        <AdminModal
-                          title={
-                            bns
-                              ? bns
-                              : currentStxAddress &&
-                                truncate(currentStxAddress, 4, 4)
-                          }
-                        >
-                          <ModalBody pb={6}>
-                            <HStack>
-                              <Text
-                                px='2'
-                                fontSize='sm'
-                                fontWeight='regular'
-                                color='white'
-                              >
-                                Activity
-                              </Text>
-                            </HStack>
-                          </ModalBody>
-                        </AdminModal>
+                        <HStack spacing='1'>
+                          <Avatar
+                            size={15}
+                            name={currentStxAddress}
+                            variant='beam'
+                            colors={[
+                              '#50DDC3',
+                              '#624AF2',
+                              '#EB00FF',
+                              '#7301FA',
+                              '#25C2A0',
+                            ]}
+                          />
+                          <AdminModal
+                            title={
+                              bns
+                                ? bns
+                                : currentStxAddress &&
+                                  truncate(currentStxAddress, 4, 4)
+                            }
+                          >
+                            <ModalBody pb={6}>
+                              <HStack>
+                                <Text
+                                  px='2'
+                                  fontSize='sm'
+                                  fontWeight='regular'
+                                  color='white'
+                                >
+                                  Activity
+                                </Text>
+                              </HStack>
+                            </ModalBody>
+                          </AdminModal>
+                        </HStack>
                       </HStack>
                     ) : null}
                     {currentStxAddress && (

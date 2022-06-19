@@ -27,7 +27,7 @@ export function useBalance({ organization }: IBalance = {}) {
         (extension: any) => extension?.ExtensionTypes?.name === 'Vault',
       );
       const url = network.getCoreApiUrl();
-      const principal = vault?.contract_address;
+      const principal = vault?.contractAddress;
       const balance = await fetchAccountBalances({
         url,
         principal,

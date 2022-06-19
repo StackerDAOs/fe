@@ -34,8 +34,8 @@ export function useGovernanceTokenExtension({
           (extension: any) =>
             extension?.ExtensionTypes?.name === 'Governance Token',
         );
-        const contractAddress = tokenExtension?.contract_address.split('.')[0];
-        const contractName = tokenExtension?.contract_address.split('.')[1];
+        const contractAddress = tokenExtension?.contractAddress.split('.')[0];
+        const contractName = tokenExtension?.contractAddress.split('.')[1];
         setState({ ...state, isLoading: false, contractAddress, contractName });
       } catch (error) {
         console.error({ error });

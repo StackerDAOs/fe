@@ -19,6 +19,9 @@ import {
 // Components
 import { EmptyState } from '@components/EmptyState';
 
+// Widgets
+import { CreateProposalDrawer } from '@widgets/CreateProposalDrawer';
+
 // Web3
 import { useNetwork } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
@@ -160,7 +163,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
         heading={
           type === 'fungible' ? 'No coins found' : 'No collectibles found'
         }
-        linkTo={`/d/${dao}/proposals/create/transfer`}
+        linkTo={`/d/${dao}/proposals/c/transfer/stx`}
         buttonTitle={type === 'fungible' ? 'Transfer funds' : 'Transfer'}
       />
     );
@@ -250,12 +253,23 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
                     >
                       Deposit
                     </Button>
-                    <Link href={`/d/${dao}/proposals/create/transfer`}>
+                    <Link href={`/d/${dao}/proposals/c/transfer/stx`}>
                       <Button
                         target='_blank'
                         color='white'
                         bg='secondary.900'
                         size='sm'
+                        disabled={false}
+                        _disabled={{
+                          bg: 'secondary.900',
+                          opacity: 0.5,
+                          cursor: 'not-allowed',
+                          _hover: {
+                            bg: 'secondary.900',
+                            opacity: 0.5,
+                            cursor: 'not-allowed',
+                          },
+                        }}
                         _hover={{ opacity: 0.9 }}
                         _active={{ opacity: 1 }}
                       >

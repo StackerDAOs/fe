@@ -24,9 +24,7 @@ export const AppLayout = ({ header, children }: any) => {
     >
       <AppNavbar />
       <Box as='section'>
-        <Container maxW='5xl' mt='6' pt='6'>
-          {header}
-        </Container>
+        <Container maxW='5xl'>{header}</Container>
       </Box>
       {children}
       <AppFooter />

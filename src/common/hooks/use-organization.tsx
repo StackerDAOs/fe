@@ -26,7 +26,7 @@ export function useOrganization({ name }: IOrganization = {}) {
         const { data: Organizations, error } = await supabase
           .from('Organizations')
           .select(
-            'id, name, slug, contract_address, Extensions (contract_address, ExtensionTypes (name))',
+            'id, name, slug, contractAddress, Extensions (contractAddress, ExtensionTypes (name))',
           )
           .eq('slug', name);
         if (error) throw error;

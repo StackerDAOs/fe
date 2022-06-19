@@ -33,6 +33,12 @@ import { useBalance } from '@common/hooks';
 //  Animation
 import { motion } from 'framer-motion';
 
+const FADE_IN_VARIANTS = {
+  hidden: { opacity: 0, x: 0, y: 0 },
+  enter: { opacity: 1, x: 0, y: 0 },
+  exit: { opacity: 0, x: 0, y: 0 },
+};
+
 const DAODashboard = () => {
   const router = useRouter();
   const { dao } = router.query;
@@ -92,42 +98,6 @@ const DAODashboard = () => {
       balance: tokenValue?.balance,
     };
   });
-
-  const FADE_IN_VARIANTS = {
-    hidden: { opacity: 0, x: 0, y: 0 },
-    enter: { opacity: 1, x: 0, y: 0 },
-    exit: { opacity: 0, x: 0, y: 0 },
-  };
-
-  const assets = [
-    {
-      name: 'Mega',
-      symbol: 'MEGA',
-      image: 'https://www.megapont.com/images/megacoin.png',
-      balance: '2522.20',
-    },
-    {
-      name: 'Alex',
-      symbol: 'ALEX',
-      image:
-        'https://pbs.twimg.com/profile_images/1480241247780540420/BYH-WYE-_400x400.png',
-      balance: '8422.99',
-    },
-    {
-      name: 'MiamiCoin',
-      symbol: 'MIA',
-      image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/10300.png',
-      balance: '2522.20',
-    },
-  ];
-
-  const nfts = [
-    {
-      name: 'Megapont Ape Club',
-      image: 'https://www.megapont.com/images/megacoin.png',
-      amount: '3',
-    },
-  ];
 
   return (
     <motion.div

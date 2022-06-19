@@ -11,7 +11,6 @@ import {
 
 // Stacks
 import type { FinishedTxData } from 'micro-stacks/connect';
-import { StacksTestnet } from 'micro-stacks/network';
 import { useNetwork, useContractCall } from '@micro-stacks/react';
 import { fetchTransaction } from 'micro-stacks/api';
 
@@ -27,8 +26,8 @@ type ContractCallType = {
   contractAddress: string;
   contractName: string;
   functionName: string;
-  functionArgs: any[];
-  postConditions?: any[];
+  functionArgs: any;
+  postConditions?: any;
   onContractCall?: () => void;
 };
 
@@ -175,13 +174,19 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
     onFinish,
   });
 
+  console.log('rendering...');
+
   return (
     <Button
       {...props}
       type='submit'
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
-      onClick={transaction?.isPending ? null : () => handleContractCall()}
+      onClick={
+        transaction?.isPending
+          ? () => console.log(null)
+          : () => handleContractCall()
+      }
     >
       {isLoading ? (
         <Spinner />

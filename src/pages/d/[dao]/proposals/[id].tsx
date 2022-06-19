@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import {
   Box,
   Badge,
+  Button,
   Container,
   Divider,
   HStack,
@@ -19,6 +20,7 @@ import { supabase } from '@utils/supabase';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
+import { Banner } from '@components/Banner';
 import { Card } from '@components/Card';
 
 // Widgets
@@ -131,6 +133,8 @@ const ProposalView = () => {
     fetchData();
   }, [proposalContractAddress, proposalContractName])
 
+  console.log({ state });
+
   const currentVoterDelegators = delegatorEvents?.filter((item: any) => item?.who?.value === currentStxAddress);
   const delegateVoteFor = proposalContractAddress && proposalContractName && listCV([tupleCV({
     for: trueCV(),
@@ -199,8 +203,7 @@ const ProposalView = () => {
   // we should just capture the post condition amount for 600 immediately rather than storing
   // three separate post conditions for 100, 200, and 300.
 
-  const postConditionsFor = state.postConditions
-  const [proposalPostConditions] = postConditionsFor;
+  const proposalPostConditions = state.postConditions?.postConditions
   const postConditionAddress = proposalPostConditions?.from?.split('.')[0];
   const postConditionName = proposalPostConditions?.from?.split('.')[1];
   const postConditionCode = FungibleConditionCode.Equal;
@@ -259,30 +262,11 @@ const ProposalView = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Box as='section' my='5' display='flex' alignItems='center'>
+     
+      <Box as='section'  display='flex' alignItems='center'>
         <Container maxW='5xl'>
-          <Stack spacing='5'>
-            <Stack
-              spacing='4'
-              direction={{ base: 'column', md: 'row' }}
-              justify='space-between'
-              color='white'
-            >
-              <HStack
-                cursor='pointer'
-                onClick={() => router.back()}
-                color='gray.900'
-                _hover={{
-                  textDecoration: 'underline',
-                  color: 'light.900',
-                }}
-              >
-                <FaArrowLeft fontSize='0.9rem' />
-                <Text>Back</Text>
-              </HStack>
-            </Stack>
-          </Stack>
-          <Box py='5'>
+          <Box py='5' my='5'>
+         
             <SimpleGrid
               columns={{ base: 1, md: 1, lg: 2 }}
               alignItems='flex-start'
@@ -298,6 +282,18 @@ const ProposalView = () => {
                   color='white'
                 >
                   <Box>
+                  <HStack
+                cursor='pointer'
+                onClick={() => router.back()}
+                color='gray.900'
+                _hover={{
+                  textDecoration: 'underline',
+                  color: 'light.900',
+                }}
+              >
+                <FaArrowLeft fontSize='0.9rem' />
+                <Text>Back</Text>
+              </HStack>
                     <HStack>
                       <Text
                         fontSize='4xl'
@@ -607,7 +603,7 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            {quorumThreshold} MEGA
+                            {parseInt(quorumThreshold)?.toLocaleString('en-US')} MEGA
                           </Text>
                         </HStack>
                         <HStack justify='space-between'>

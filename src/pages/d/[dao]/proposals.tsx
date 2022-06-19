@@ -264,8 +264,9 @@ const Proposals = () => {
                       </Stack>
                       <EmptyState
                         heading='No proposals found.'
-                        linkTo={`/d/${dao}/proposals/create/transfer`}
+                        linkTo={`/d/${dao}/proposals/c/transfer/stx`}
                         buttonTitle='Create proposal'
+                        isDisabled={false}
                       />
                     </>
                   ) : (
@@ -288,7 +289,7 @@ const Proposals = () => {
                             </Text>
                           </Box>
                           <HStack spacing='8'>
-                            <VaultActionPopover />
+                            {/* <VaultActionPopover /> */}
                             {/* <FilterPopover /> */}
                           </HStack>
                         </Stack>
@@ -321,6 +322,7 @@ const Proposals = () => {
                               currentBlockHeight >= startBlockHeight;
                             return (
                               <motion.div
+                                key={Math.random()}
                                 variants={FADE_IN_VARIANTS}
                                 initial={FADE_IN_VARIANTS.hidden}
                                 animate={FADE_IN_VARIANTS.enter}
@@ -328,7 +330,6 @@ const Proposals = () => {
                                 transition={{ duration: 0.25, type: 'linear' }}
                               >
                                 <Link
-                                  key={Math.random()}
                                   href={`/d/${dao}/proposals/${contractAddress}`}
                                 >
                                   <a>

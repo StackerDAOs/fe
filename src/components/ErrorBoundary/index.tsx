@@ -1,4 +1,7 @@
 import { Component } from 'react';
+import { Box, Button, Container, Stack, Text } from '@chakra-ui/react';
+
+import { EmptyState } from '@components/EmptyState';
 
 class ErrorBoundary extends Component {
   constructor(props: any) {
@@ -21,9 +24,18 @@ class ErrorBoundary extends Component {
     if (hasError) {
       // You can render any custom fallback UI
       return (
-        <div>
+        <div
+          style={{
+            display: 'flex',
+            height: '100vvh',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+          }}
+        >
           <h2>Oops, there is an error!</h2>
           <button
+            style={{ color: 'white' }}
             type='button'
             onClick={() => this.setState({ hasError: false })}
           >

@@ -51,8 +51,8 @@ export function useProposal({
       const proposalVoting = organization?.Extensions?.find(
         (extension: any) => extension?.ExtensionTypes?.name === 'Voting',
       );
-      const contractAddress = proposalVoting?.contract_address.split('.')[0];
-      const contractName = proposalVoting?.contract_address.split('.')[1];
+      const contractAddress = proposalVoting?.contractAddress?.split('.')[0];
+      const contractName = proposalVoting?.contractAddress?.split('.')[1];
       const senderAddress = currentStxAddress;
       const functionArgs = proposalInfo
         ? [
