@@ -59,6 +59,7 @@ export const onFinish = async (data: FinishedTxData) => {
 };
 
 export const onCancel = () => {
+  const toast = useToast();
   toast({
     duration: 5000,
     isClosable: true,

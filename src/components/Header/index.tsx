@@ -1,13 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import {
-  Container,
-  Heading,
-  HStack,
-  Stack,
-  Spinner,
-  VStack,
-} from '@chakra-ui/react';
+import { Container, Heading, HStack, Stack, VStack } from '@chakra-ui/react';
 
 // Utils
 import { ustxToStx, convertToken } from '@common/helpers';

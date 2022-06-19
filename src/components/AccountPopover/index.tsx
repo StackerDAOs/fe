@@ -19,7 +19,7 @@ export const AccountPopover = () => (
     defaultIsOpen={false}
     gutter={12}
   >
-    {({ isOpen }) => (
+    {() => (
       <>
         <PopoverTrigger>
           <Button variant='link'>Projects</Button>

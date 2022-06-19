@@ -20,7 +20,7 @@ export const NavPopover = () => (
     defaultIsOpen={false}
     gutter={12}
   >
-    {({ isOpen }) => (
+    {() => (
       <>
         <PopoverTrigger>
           <FiMenu color='white' fontSize='sm' cursor='pointer' />

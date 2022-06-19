@@ -4,11 +4,6 @@ import { ContractDeployButton } from '@widgets/ContractDeployButton';
 
 // Web3
 import { useUser } from '@micro-stacks/react';
-import { uintCV } from 'micro-stacks/clarity';
-import {
-  FungibleConditionCode,
-  makeStandardSTXPostCondition,
-} from 'micro-stacks/transactions';
 
 // Hooks
 import { useOrganization } from '@common/hooks';
@@ -16,7 +11,6 @@ import { useInsert } from 'react-supabase';
 import { useRandomName } from '@common/hooks';
 
 // Utils
-import { stxToUstx } from '@common/helpers';
 import { sendFunds } from '@utils/proposals/transfers';
 
 export const TransferStxButton = ({
@@ -38,7 +32,7 @@ export const TransferStxButton = ({
     type,
   }: any) => {
     try {
-      const { count, data, error } = await execute({
+      const { error } = await execute({
         organizationId,
         contractAddress,
         submittedBy,

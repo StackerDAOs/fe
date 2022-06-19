@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
-  Avatar as ChakraAvatar,
   Button,
   HStack,
   Table,
@@ -18,9 +17,6 @@ import {
 
 // Components
 import { EmptyState } from '@components/EmptyState';
-
-// Widgets
-import { CreateProposalDrawer } from '@widgets/CreateProposalDrawer';
 
 // Web3
 import { useNetwork } from '@micro-stacks/react';
@@ -57,14 +53,6 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
   const { isLoading, balance } = useBalance({ organization });
   const { non_fungible_tokens, fungible_tokens } = balance;
   const fungibleTokens: any = Object.assign({}, fungible_tokens);
-  // Push Stacks balance into fungibleTokensList
-  // {
-  //   name: 'Stacks',
-  //   balance: balance.stx?.balance,
-  //   totalSent: balance.stx?.total_sent,
-  //   totalReceived: balance.stx?.total_received,
-  // }
-
   const nonFungibleTokens: any = Object.assign({}, non_fungible_tokens);
   const nonFungibleTokensList = Object.keys(nonFungibleTokens).map((key) => {
     const tokenKey = key.split('::')[1];
@@ -89,6 +77,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
           }: any,
           { contractAddress, contractName }: any,
         ) => {
+          console.log({ type });
           const senderAddress = `${contractAddress}.${contractName}`;
           const name = await fetchReadOnlyFunction({
             network,
@@ -129,8 +118,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
             totalReceived,
             symbol,
             decimals,
-            tokenUri:
-              'https://bafybeiheaxqlng4kfvjimerarsngc6qdurgtwpjty3a2ctb2l2mbz63ixy.ipfs.dweb.link/',
+            tokenUri,
           };
         };
         const assets = Object.keys(fungibleTokens).map((key) => {
@@ -190,9 +178,9 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
           </Tr>
         </Thead>
         <Tbody color='light.900'>
-          {listItems.map((item, index) => {
-            let { name, balance, symbol, decimals, totalSent, totalReceived } =
-              item;
+          {listItems.map((item) => {
+            const { name, symbol, decimals } = item;
+            let { balance, totalSent, totalReceived } = item;
             switch (name) {
               case 'Stacks':
                 balance = ustxToStx(item.balance);

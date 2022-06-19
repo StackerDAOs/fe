@@ -1,34 +1,20 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
 import {
-  Avatar,
   Box,
   ButtonGroup,
   Container,
-  SimpleGrid,
   Stack,
   Tabs,
   TabList,
   TabPanels,
   TabPanel,
   Tab,
-  HStack,
-  VStack,
   Text,
 } from '@chakra-ui/react';
-
-// Web3
-import { useAuth, useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
-import { fetchReadOnlyFunction } from 'micro-stacks/api';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
 import { Header } from '@components/Header';
 import { AssetTable } from '@components/AssetTable';
-
-// Hooks
-import { useBalance } from '@common/hooks';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -40,65 +26,6 @@ const FADE_IN_VARIANTS = {
 };
 
 const DAODashboard = () => {
-  const router = useRouter();
-  const { dao } = router.query;
-  const currentStxAddress = useCurrentStxAddress();
-  const { isSignedIn } = useAuth();
-  const { network } = useNetwork();
-  const { isLoading, balance } = useBalance();
-  const { non_fungible_tokens, fungible_tokens } = balance;
-
-  const fetchTokenData = async (
-    contractAddress: string,
-    contractName: string,
-    senderAddress: string,
-    functionArgs: any = [],
-    functionName: string,
-  ) => {
-    const tokenData = await fetchReadOnlyFunction({
-      network,
-      contractAddress,
-      contractName,
-      senderAddress,
-      functionArgs,
-      functionName,
-    });
-    return tokenData;
-  };
-
-  const getValues = async () => {
-    const getName = await fetchTokenData(
-      'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-      'sde-sip10-token',
-      currentStxAddress || '',
-      [],
-      'get-name',
-    );
-    return {
-      name: getName,
-    };
-  };
-
-  const fungibleTokens: any = Object.assign({}, fungible_tokens);
-  const fungibleTokensList = Object.keys(fungibleTokens).map((key) => {
-    const tokenContract = key.split('::')[0].split('.')[0];
-    const tokenContractName = key.split('::')[0].split('.')[1];
-    const tokenValue = fungibleTokens[key];
-    return {
-      name: tokenContractName,
-      balance: tokenValue?.balance,
-    };
-  });
-  const nonFungibleTokens: any = Object.assign({}, non_fungible_tokens);
-  const nonFungibleTokensList = Object.keys(nonFungibleTokens).map((key) => {
-    const tokenKey = key.split('::')[1];
-    const tokenValue = nonFungibleTokens[key];
-    return {
-      name: tokenKey,
-      balance: tokenValue?.balance,
-    };
-  });
-
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}

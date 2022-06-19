@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import {
   Box,
   Badge,
-  Button,
   Container,
   Divider,
   HStack,
@@ -20,7 +19,6 @@ import { supabase } from '@utils/supabase';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
-import { Banner } from '@components/Banner';
 import { Card } from '@components/Card';
 
 // Widgets
@@ -30,15 +28,28 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 import { motion } from 'framer-motion';
 
 // Icons
-import { FaArrowLeft, FaCheckCircle, FaInfoCircle, FaVoteYea } from 'react-icons/fa';
+import {
+  FaArrowLeft,
+  FaCheckCircle,
+  FaInfoCircle,
+  FaVoteYea,
+} from 'react-icons/fa';
 import { HiX } from 'react-icons/hi';
 
 // Stacks
 import { useCurrentStxAddress } from '@micro-stacks/react';
-import { boolCV, trueCV, falseCV, contractPrincipalCV, listCV, standardPrincipalCV, tupleCV, someCV, noneCV } from 'micro-stacks/clarity';
+import {
+  trueCV,
+  falseCV,
+  contractPrincipalCV,
+  listCV,
+  standardPrincipalCV,
+  tupleCV,
+  someCV,
+  noneCV,
+} from 'micro-stacks/clarity';
 import {
   FungibleConditionCode,
-  makeStandardSTXPostCondition,
   makeContractSTXPostCondition,
 } from 'micro-stacks/transactions';
 
@@ -73,19 +84,19 @@ const SLIDE_UP_BUTTON_VARIANTS = {
   exit: { opacity: 0, x: 0, y: -15 },
 };
 
+type TProposal = {
+  postConditions?: any;
+};
+
 const ProposalView = () => {
-  const [state, setState] = useState({postConditions: []});
+  const [state, setState] = useState<TProposal>({ postConditions: [] });
   const currentStxAddress = useCurrentStxAddress();
   const router = useRouter();
   const { dao } = router.query as any;
   const { organization } = useOrganization({ name: dao });
   const { id: proposalPrincipal } = router.query as any;
   const { currentBlockHeight } = useBlocks();
-  const {
-    contractAddress: governanceTokenAddress,
-    contractName: governanceTokenName,
-    balance,
-  } = useGovernanceToken({ organization });
+  const { balance } = useGovernanceToken({ organization });
   const {
     contractAddress: votingExtensionAddress,
     contractName: votingExtensionName,
@@ -116,13 +127,15 @@ const ProposalView = () => {
     const fetchData = async () => {
       try {
         const { data, error } = await supabase
-        .from('Proposals')
-        .select(
-          'postConditions'
-        )
-        .eq('contractAddress', `${proposalContractAddress}.${proposalContractName}`)
+          .from('Proposals')
+          .select('postConditions')
+          .eq(
+            'contractAddress',
+            `${proposalContractAddress}.${proposalContractName}`,
+          );
+        if (error) throw error;
         if (data) {
-          setState({...state, postConditions: data[0].postConditions});
+          setState({ ...state, postConditions: data[0].postConditions });
         }
       } catch (error) {
         console.log('error', error);
@@ -131,49 +144,85 @@ const ProposalView = () => {
       }
     };
     fetchData();
-  }, [proposalContractAddress, proposalContractName])
+  }, [proposalContractAddress, proposalContractName]);
 
   console.log({ state });
 
-  const currentVoterDelegators = delegatorEvents?.filter((item: any) => item?.who?.value === currentStxAddress);
-  const delegateVoteFor = proposalContractAddress && proposalContractName && listCV([tupleCV({
-    for: trueCV(),
-    proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
-    delegator: noneCV(),
-  })]);
-  const delegateVoteAgainst = proposalContractAddress && proposalContractName && listCV([tupleCV({
-    for: falseCV(),
-    proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
-    delegator: noneCV(),
-  })]);
-  const delegatorsFor = currentVoterDelegators?.map((item: any, index: number) => {
-    const delegatorVotes = proposalContractAddress && proposalContractName && listCV([
+  const currentVoterDelegators = delegatorEvents?.filter(
+    (item: any) => item?.who?.value === currentStxAddress,
+  );
+  const delegateVoteFor =
+    proposalContractAddress &&
+    proposalContractName &&
+    listCV([
       tupleCV({
         for: trueCV(),
-        proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
+        proposal: contractPrincipalCV(
+          proposalContractAddress,
+          proposalContractName,
+        ),
         delegator: noneCV(),
       }),
-      tupleCV({
-        for: trueCV(),
-        proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
-        delegator: someCV(standardPrincipalCV(item?.delegator?.value)),
-      })
     ]);
+  const delegateVoteAgainst =
+    proposalContractAddress &&
+    proposalContractName &&
+    listCV([
+      tupleCV({
+        for: falseCV(),
+        proposal: contractPrincipalCV(
+          proposalContractAddress,
+          proposalContractName,
+        ),
+        delegator: noneCV(),
+      }),
+    ]);
+  const delegatorsFor = currentVoterDelegators?.map((item: any) => {
+    const delegatorVotes =
+      proposalContractAddress &&
+      proposalContractName &&
+      listCV([
+        tupleCV({
+          for: trueCV(),
+          proposal: contractPrincipalCV(
+            proposalContractAddress,
+            proposalContractName,
+          ),
+          delegator: noneCV(),
+        }),
+        tupleCV({
+          for: trueCV(),
+          proposal: contractPrincipalCV(
+            proposalContractAddress,
+            proposalContractName,
+          ),
+          delegator: someCV(standardPrincipalCV(item?.delegator?.value)),
+        }),
+      ]);
     return delegatorVotes;
   });
-  const delegatorsAgainst = currentVoterDelegators?.map((item: any, index: number) => {
-    const delegatorVotes = proposalContractAddress && proposalContractName && listCV([
-      tupleCV({
-        for: falseCV(),
-        proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
-        delegator: noneCV(),
-      }),
-      tupleCV({
-        for: falseCV(),
-        proposal: contractPrincipalCV(proposalContractAddress, proposalContractName),
-        delegator: someCV(standardPrincipalCV(item?.delegator?.value)),
-      })
-    ]);
+  const delegatorsAgainst = currentVoterDelegators?.map((item: any) => {
+    const delegatorVotes =
+      proposalContractAddress &&
+      proposalContractName &&
+      listCV([
+        tupleCV({
+          for: falseCV(),
+          proposal: contractPrincipalCV(
+            proposalContractAddress,
+            proposalContractName,
+          ),
+          delegator: noneCV(),
+        }),
+        tupleCV({
+          for: falseCV(),
+          proposal: contractPrincipalCV(
+            proposalContractAddress,
+            proposalContractName,
+          ),
+          delegator: someCV(standardPrincipalCV(item?.delegator?.value)),
+        }),
+      ]);
     return delegatorVotes;
   });
 
@@ -182,13 +231,18 @@ const ProposalView = () => {
 
   const functionArgsFor =
     proposalContractAddress &&
-    proposalContractName && delegatorsFor && delegatorsFor.length > 0
+    proposalContractName &&
+    delegatorsFor &&
+    delegatorsFor.length > 0
       ? delegatorsFor
       : [delegateVoteFor];
   const functionArgsAgainst =
     proposalContractAddress &&
-    proposalContractName && delegatorsAgainst && delegatorsAgainst.length > 0
-      ? delegatorsAgainst : [delegateVoteAgainst];
+    proposalContractName &&
+    delegatorsAgainst &&
+    delegatorsAgainst.length > 0
+      ? delegatorsAgainst
+      : [delegateVoteAgainst];
 
   const concludeFunctionName = 'conclude';
   const concludeFunctionArgs =
@@ -196,28 +250,22 @@ const ProposalView = () => {
       ? [contractPrincipalCV(proposalContractAddress, proposalContractName)]
       : [];
 
-  // TODO: 
-  // Will need to have a more advanced way to map over multiple post conditions
-  // orbe able to do the complex mapping of possible post conditions when creating a proposal
-  // in the beginning, ie if a user decided to make multiple transfers of 100, 200, and 300 STX
-  // we should just capture the post condition amount for 600 immediately rather than storing
-  // three separate post conditions for 100, 200, and 300.
-
-  const proposalPostConditions = state.postConditions?.postConditions
+  const proposalPostConditions: any = state.postConditions?.postConditions;
   const postConditionAddress = proposalPostConditions?.from?.split('.')[0];
   const postConditionName = proposalPostConditions?.from?.split('.')[1];
   const postConditionCode = FungibleConditionCode.Equal;
   const postConditionAmount = stxToUstx(proposalPostConditions?.amount);
-  const concludePostConditions = postConditionAddress && postConditionName && currentStxAddress
-    ? [
-        makeContractSTXPostCondition(
-          postConditionAddress,
-          postConditionName,
-          postConditionCode,
-          postConditionAmount,
-        ),
-      ]
-    : [];
+  const concludePostConditions =
+    postConditionAddress && postConditionName && currentStxAddress
+      ? [
+          makeContractSTXPostCondition(
+            postConditionAddress,
+            postConditionName,
+            postConditionCode,
+            postConditionAmount,
+          ),
+        ]
+      : [];
 
   const voteFor = {
     contractAddress: votingExtensionAddress,
@@ -262,11 +310,9 @@ const ProposalView = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-     
-      <Box as='section'  display='flex' alignItems='center'>
+      <Box as='section' display='flex' alignItems='center'>
         <Container maxW='5xl'>
           <Box py='5' my='5'>
-         
             <SimpleGrid
               columns={{ base: 1, md: 1, lg: 2 }}
               alignItems='flex-start'
@@ -282,18 +328,18 @@ const ProposalView = () => {
                   color='white'
                 >
                   <Box>
-                  <HStack
-                cursor='pointer'
-                onClick={() => router.back()}
-                color='gray.900'
-                _hover={{
-                  textDecoration: 'underline',
-                  color: 'light.900',
-                }}
-              >
-                <FaArrowLeft fontSize='0.9rem' />
-                <Text>Back</Text>
-              </HStack>
+                    <HStack
+                      cursor='pointer'
+                      onClick={() => router.back()}
+                      color='gray.900'
+                      _hover={{
+                        textDecoration: 'underline',
+                        color: 'light.900',
+                      }}
+                    >
+                      <FaArrowLeft fontSize='0.9rem' />
+                      <Text>Back</Text>
+                    </HStack>
                     <HStack>
                       <Text
                         fontSize='4xl'
@@ -390,39 +436,45 @@ const ProposalView = () => {
                           </Text>
                         </Box>
                       </Stack>
-                      {isPassing ? (<HStack justify='space-between'>
-                        <Text
-                          color='secondary.900'
-                          fontSize='sm'
-                          fontWeight='semibold'
-                        >
-                          Yes ({getPercentage(totalVotes, Number(votesFor))}%)
-                        </Text>
-                        <Text
-                          color='gray.900'
-                          fontSize='sm'
-                          fontWeight='semibold'
-                        >
-                          No ({getPercentage(totalVotes, Number(votesAgainst))}
-                          %)
-                        </Text>
-                      </HStack>) : (<HStack justify='space-between'>
-                        <Text
-                          color='gray.900'
-                          fontSize='sm'
-                          fontWeight='semibold'
-                        >
-                          Yes ({getPercentage(totalVotes, Number(votesFor))}%)
-                        </Text>
-                        <Text
-                          color='secondary.900'
-                          fontSize='sm'
-                          fontWeight='semibold'
-                        >
-                          No ({getPercentage(totalVotes, Number(votesAgainst))}
-                          %)
-                        </Text>
-                      </HStack>)}
+                      {isPassing ? (
+                        <HStack justify='space-between'>
+                          <Text
+                            color='secondary.900'
+                            fontSize='sm'
+                            fontWeight='semibold'
+                          >
+                            Yes ({getPercentage(totalVotes, Number(votesFor))}%)
+                          </Text>
+                          <Text
+                            color='gray.900'
+                            fontSize='sm'
+                            fontWeight='semibold'
+                          >
+                            No (
+                            {getPercentage(totalVotes, Number(votesAgainst))}
+                            %)
+                          </Text>
+                        </HStack>
+                      ) : (
+                        <HStack justify='space-between'>
+                          <Text
+                            color='gray.900'
+                            fontSize='sm'
+                            fontWeight='semibold'
+                          >
+                            Yes ({getPercentage(totalVotes, Number(votesFor))}%)
+                          </Text>
+                          <Text
+                            color='secondary.900'
+                            fontSize='sm'
+                            fontWeight='semibold'
+                          >
+                            No (
+                            {getPercentage(totalVotes, Number(votesAgainst))}
+                            %)
+                          </Text>
+                        </HStack>
+                      )}
                       <Progress
                         colorScheme='secondary'
                         size='md'
@@ -603,7 +655,8 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            {parseInt(quorumThreshold)?.toLocaleString('en-US')} MEGA
+                            {parseInt(quorumThreshold)?.toLocaleString('en-US')}{' '}
+                            MEGA
                           </Text>
                         </HStack>
                         <HStack justify='space-between'>
@@ -619,11 +672,12 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            {Number(currentBlockHeight) < Number(startBlockHeight)
+                            {Number(currentBlockHeight) <
+                            Number(startBlockHeight)
                               ? `~ ${estimateDays(
-                                Number(startBlockHeight) -
-                                  Number(currentBlockHeight),
-                              )} days`
+                                  Number(startBlockHeight) -
+                                    Number(currentBlockHeight),
+                                )} days`
                               : `Started`}
                           </Text>
                         </HStack>
@@ -686,9 +740,7 @@ const ProposalView = () => {
                           {...concludeProposal}
                         />
                       ) : isInactive ? (
-                        <>
-                          
-                        </>
+                        <></>
                       ) : (
                         <>
                           <ContractCallButton
@@ -731,7 +783,6 @@ const ProposalView = () => {
                         </>
                       )}
                     </HStack>
-                    
                   </motion.div>
                 </Container>
               </Box>
@@ -768,10 +819,7 @@ const ProposalView = () => {
                     </Stack>
                     <Box cursor='pointer'>
                       {events?.map(
-                        (
-                          { amount, event, for: vote, proposal, voter }: any,
-                          index: number,
-                        ) => (
+                        ({ amount, for: vote, voter }: any, index: number) => (
                           <Stack
                             key={index}
                             color='white'
@@ -798,11 +846,7 @@ const ProposalView = () => {
                                   fontWeight='medium'
                                   color='light.900'
                                 >
-                                  {`${
-                                    vote?.value
-                                      ? 'Approved'
-                                      : 'Rejected'
-                                  }`}
+                                  {`${vote?.value ? 'Approved' : 'Rejected'}`}
                                 </Text>
                               </HStack>
                               <HStack spacing='3'>
@@ -846,7 +890,7 @@ const ProposalView = () => {
                 </Stack>
               </Stack>
             </Box>
-          </motion.div>}
+          </motion.div>
         </Container>
       </Box>
     </motion.div>

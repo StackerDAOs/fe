@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Box,
   Button,
@@ -33,7 +34,7 @@ export const RadioButtonGroup = <T extends string>(
     () =>
       React.Children.toArray(children)
         .filter<React.ReactElement<RadioButtonProps>>(React.isValidElement)
-        .map((button, index, array) => {
+        .map((button, index, array): any => {
           const isFirstItem = index === 0;
           const isLastItem = array.length === index + 1;
 

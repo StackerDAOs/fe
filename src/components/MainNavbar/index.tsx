@@ -14,9 +14,6 @@ import {
   PopoverTrigger,
   SimpleGrid,
   Stack,
-  Tab,
-  Tabs,
-  TabList,
   Text,
   useBreakpointValue,
   useColorModeValue as mode,
@@ -27,7 +24,6 @@ import { useOrganization } from '@common/hooks';
 
 // Components
 import { Card } from '@components/Card';
-import { ContractCallButton } from '@widgets/ContractCallButton';
 
 // Icons
 import { FaEllipsisH } from 'react-icons/fa';
@@ -39,14 +35,9 @@ import { AdminModal } from '@components/Modal';
 // Web3
 import { useUser, useAuth, useNetwork } from '@micro-stacks/react';
 import { fetchAccountStxBalance, fetchNamesByAddress } from 'micro-stacks/api';
-import { uintCV } from 'micro-stacks/clarity';
-import {
-  FungibleConditionCode,
-  makeStandardSTXPostCondition,
-} from 'micro-stacks/transactions';
 
 // Utils
-import { stxToUstx, truncate, ustxToStx } from '@common/helpers';
+import { truncate, ustxToStx } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
 export const MainNavbar = () => {
@@ -66,9 +57,6 @@ export const MainNavbar = () => {
     handleSignOut();
     localStorage.setItem('chakra-ui-color-mode', 'dark');
     // router.push('/');
-  };
-  const isSelected = (path: string) => {
-    return router.pathname.split('/')[3] === path;
   };
 
   useEffect(() => {
@@ -187,7 +175,7 @@ export const MainNavbar = () => {
                         placement='bottom-start'
                         defaultIsOpen={false}
                       >
-                        {({ isOpen }) => (
+                        {() => (
                           <>
                             <PopoverTrigger>
                               <HStack>

@@ -23,12 +23,8 @@ import {
   useColorModeValue as mode,
 } from '@chakra-ui/react';
 
-// Hooks
-import { useOrganization } from '@common/hooks';
-
 // Components
 import { Card } from '@components/Card';
-import { ContractCallButton } from '@widgets/ContractCallButton';
 
 // Icons
 import { FaEllipsisH } from 'react-icons/fa';
@@ -40,14 +36,9 @@ import { AdminModal } from '@components/Modal';
 // Web3
 import { useUser, useAuth, useNetwork } from '@micro-stacks/react';
 import { fetchAccountStxBalance, fetchNamesByAddress } from 'micro-stacks/api';
-import { uintCV } from 'micro-stacks/clarity';
-import {
-  FungibleConditionCode,
-  makeStandardSTXPostCondition,
-} from 'micro-stacks/transactions';
 
 // Utils
-import { stxToUstx, truncate, ustxToStx } from '@common/helpers';
+import { truncate, ustxToStx } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
 export const AppNavbar = () => {
@@ -56,7 +47,6 @@ export const AppNavbar = () => {
   const { network } = useNetwork();
   const [bns, setBns] = useState<string | undefined>('');
   const [balance, setBalance] = useState<string | undefined>('');
-  const { organization } = useOrganization({ name: dao });
   const { currentStxAddress } = useUser();
   const { isSignedIn, handleSignIn, handleSignOut } = useAuth();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
@@ -237,7 +227,7 @@ export const AppNavbar = () => {
                         placement='bottom-start'
                         defaultIsOpen={false}
                       >
-                        {({ isOpen }) => (
+                        {() => (
                           <>
                             <PopoverTrigger>
                               <HStack>

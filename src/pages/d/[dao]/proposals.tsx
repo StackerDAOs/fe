@@ -33,7 +33,6 @@ import { AppLayout } from '@components/Layout/AppLayout';
 import { Card } from '@components/Card';
 import { EmptyState } from '@components/EmptyState';
 import { Header } from '@components/Header';
-import { VaultActionPopover } from '@components/VaultActionPopover';
 
 // Widgets
 import { ContractCallButton } from '@widgets/ContractCallButton';
@@ -65,7 +64,7 @@ const Proposals = () => {
     exit: { opacity: 0, x: 0, y: 0 },
   };
 
-  const [{ count, data, error, fetching }, execute] = useUpdate('Proposals');
+  const [_, execute] = useUpdate('Proposals');
   const onFinishUpdate = async (contractAddress: string) => {
     try {
       const { error } = await execute({ submitted: true }, (q) =>
@@ -84,6 +83,7 @@ const Proposals = () => {
         { type, contractAddress: proposalContractAddress, transactionId }: any,
         index: number,
       ) => {
+        console.log({ transactionId });
         const isLoading =
           proposalContractAddress &&
           governanceContractAddress &&
@@ -305,8 +305,6 @@ const Proposals = () => {
                             contractAddress,
                             title,
                             description,
-                            type,
-                            proposer,
                             concluded,
                             startBlockHeight,
                             endBlockHeight,

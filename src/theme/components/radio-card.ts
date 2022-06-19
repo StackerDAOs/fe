@@ -1,6 +1,4 @@
-import { mode, StyleFunctionProps } from '@chakra-ui/theme/node_modules/@chakra-ui/theme-tools';
-
-const baseStyle = (props: StyleFunctionProps) => ({
+const baseStyle = () => ({
   borderColor: 'base.800',
   borderWidth: '1px',
   borderRadius: 'lg',

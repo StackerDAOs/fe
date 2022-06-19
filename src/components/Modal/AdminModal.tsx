@@ -7,7 +7,6 @@ import {
   ModalFooter,
   Text,
   useDisclosure,
-  useColorModeValue as mode,
 } from '@chakra-ui/react';
 
 export const AdminModal = ({ title, children }: any) => {

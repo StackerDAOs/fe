@@ -3,20 +3,14 @@ import { useRouter } from 'next/router';
 import {
   Box,
   Button,
-  Container,
-  Flex,
   Grid,
   GridItem,
   Image,
-  Divider,
   FormErrorMessage,
-  FormLabel,
   FormControl,
-  Heading,
   HStack,
   Input,
   Stack,
-  Tag,
   Textarea,
   VStack,
   SimpleGrid,
@@ -24,27 +18,18 @@ import {
 } from '@chakra-ui/react';
 
 // Form
-import { useForm, Controller } from 'react-hook-form';
-
-// Widgets
-import { ContractDeployButton } from '@widgets/ContractDeployButton';
+import { useForm } from 'react-hook-form';
 
 // Hooks
 import { useStep } from '@common/hooks/use-step';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
-import { Card } from '@components/Card';
 import { VerticalStep } from '@components/VerticalStep';
-import { Step } from '@components/Step';
-import { RadioCard, RadioCardGroup } from '@components/RadioCardGroup';
 import { TransferStxButton } from '@components/Actions';
 
 //  Animation
 import { motion } from 'framer-motion';
-
-// Stacks
-import { useCurrentStxAddress } from '@micro-stacks/react';
 
 // Utils
 import { truncate } from '@common/helpers';
@@ -67,8 +52,7 @@ const Stx = () => {
     formState: { errors, isSubmitting },
   } = useForm();
   const { transferAmount, transferTo, description } = getValues();
-  const currentStxAddress = useCurrentStxAddress();
-  const [currentStep, { setStep, canGoToNextStep }] = useStep({
+  const [currentStep, { setStep }] = useStep({
     maxStep: 4,
     initialStep: 0,
   });
@@ -129,11 +113,6 @@ const Stx = () => {
       description: null,
     },
   ];
-
-  const onSubmissionCall = (data: any) => {
-    console.log({ data });
-    return null;
-  };
 
   const TransferDetails = () => {
     return (

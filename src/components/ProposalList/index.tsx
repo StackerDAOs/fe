@@ -60,6 +60,7 @@ export const ProposalList = () => {
             },
           ].map((data) => (
             <Stack
+              key={data.value}
               as={Box}
               role='group'
               justify='space-between'

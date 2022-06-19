@@ -130,6 +130,7 @@ export const VaultTransactionList = () => {
             },
           ].map((data) => (
             <Stack
+              key={data.description}
               as={Box}
               role='group'
               justify='space-between'

@@ -6,5 +6,5 @@ interface FilterIconProps extends IconProps {
 }
 
 export const FilterIcon = (props: FilterIconProps) => {
-  return <Icon aria-hidden as={MdFilterList} />;
+  return <Icon aria-hidden as={MdFilterList} {...props} />;
 };

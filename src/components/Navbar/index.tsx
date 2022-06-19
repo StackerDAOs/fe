@@ -9,7 +9,6 @@ import {
   IconButton,
   Image,
   useBreakpointValue,
-  useColorMode,
 } from '@chakra-ui/react';
 
 // Icons
@@ -42,6 +41,7 @@ export const Navbar = () => {
           console.log(names);
           setBns(names[0]);
         }
+        console.log({ bns });
       }
       setLoading(false);
     }

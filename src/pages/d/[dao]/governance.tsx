@@ -1,8 +1,6 @@
 import { useRouter } from 'next/router';
 import {
-  Badge,
   Box,
-  Button,
   Container,
   Divider,
   FormControl,
@@ -10,23 +8,13 @@ import {
   HStack,
   Input,
   InputGroup,
-  InputRightElement,
   InputRightAddon,
-  Progress,
-  SimpleGrid,
-  Skeleton,
-  Tag,
   Text,
-  VStack,
 } from '@chakra-ui/react';
 
 // Stacks
 import { useCurrentStxAddress } from '@micro-stacks/react';
-import {
-  standardPrincipalCV,
-  contractPrincipalCV,
-  uintCV,
-} from 'micro-stacks/clarity';
+import { standardPrincipalCV } from 'micro-stacks/clarity';
 
 // Hooks
 import {
@@ -40,7 +28,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { Card } from '@components/Card';
 import { AppLayout } from '@components/Layout/AppLayout';
 import { Header } from '@components/Header';
-import { VaultActionPopover } from '@components/VaultActionPopover';
 
 // Widgets
 import { ContractCallButton } from '@widgets/ContractCallButton';
@@ -48,20 +35,12 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 //  Animation
 import { motion } from 'framer-motion';
 
-// Icons
-import { FaCheck, FaTimes } from 'react-icons/fa';
-
 // Utils
-import {
-  getPercentage,
-  estimateDays,
-  truncate,
-  convertToken,
-} from '@common/helpers';
+import { convertToken } from '@common/helpers';
 
 const Governance = () => {
   const currentStxAddress = useCurrentStxAddress();
-  const { register, control, handleSubmit, getValues } = useForm();
+  const { control, handleSubmit, getValues } = useForm();
   const { delegateAddress } = getValues();
   const router = useRouter();
   const { dao } = router.query as any;

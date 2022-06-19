@@ -1,7 +1,4 @@
 import { Component } from 'react';
-import { Box, Button, Container, Stack, Text } from '@chakra-ui/react';
-
-import { EmptyState } from '@components/EmptyState';
 
 class ErrorBoundary extends Component {
   constructor(props: any) {
@@ -12,7 +9,7 @@ class ErrorBoundary extends Component {
   }
   static getDerivedStateFromError(error: any) {
     // Update state so the next render will show the fallback UI
-
+    console.log({ error });
     return { hasError: true };
   }
   componentDidCatch(error: any, errorInfo: any) {

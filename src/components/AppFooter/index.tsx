@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Box,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   Input,
   Icon,
@@ -15,14 +14,10 @@ import {
 } from '@chakra-ui/react';
 
 // Components
-import { ContractCallButton } from '@widgets/ContractCallButton';
 import { DepositButton, InitButton } from '@components/Actions';
 
 // Components
 import { DevToolModal } from '@components/Modal';
-
-// Web3
-import { useUser } from '@micro-stacks/react';
 
 // Hooks
 import { useBlocks } from '@common/hooks';

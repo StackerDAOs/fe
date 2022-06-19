@@ -32,7 +32,7 @@ export function useExecutorEvents({ filter, filterByProposal }: IEvent = {}) {
           offset: 0,
           unanchored: false,
         });
-        const { results } = data;
+        const { results } = data as any;
         const serializedEvents = results.map((event: any) => {
           const hex = event?.contract_log?.value.hex;
           const deserialized = deserializeCV(hex);

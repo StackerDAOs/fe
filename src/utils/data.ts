@@ -1,5 +1,3 @@
-import { FiBarChart, FiFileText, FiGrid, FiMousePointer, FiRepeat, FiShield } from 'react-icons/fi';
-
 export const steps = [
   {
     title: 'Members',

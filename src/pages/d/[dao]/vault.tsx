@@ -15,7 +15,6 @@ import {
 import { AppLayout } from '@components/Layout/AppLayout';
 import { AssetTable } from '@components/AssetTable';
 import { Header } from '@components/Header';
-import { VaultActionPopover } from '@components/VaultActionPopover';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -57,7 +56,6 @@ const Vault = () => {
                           List of shared assets owned by the DAO.
                         </Text>
                       </Box>
-                      {/* <VaultActionPopover /> */}
                     </Stack>
                   </Stack>
                   <Tabs color='white' variant='unstyled'>

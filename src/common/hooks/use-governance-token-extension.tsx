@@ -1,9 +1,6 @@
 // Hook (use-voting-extension.tsx)
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { useCurrentStxAddress } from '@micro-stacks/react';
-
-import { useOrganization } from './use-organization';
 
 type GovernanceTokenExtension = {
   isLoading: boolean;

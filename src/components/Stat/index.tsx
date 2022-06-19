@@ -1,15 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import {
-  Box,
-  BoxProps,
-  Heading,
-  HStack,
-  Icon,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import { BoxProps, Heading, HStack, Icon, Stack, Text } from '@chakra-ui/react';
 
 // Components
 import { Card } from '@components/Card';

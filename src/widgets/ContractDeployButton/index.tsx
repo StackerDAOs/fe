@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@utils/supabase';
 import {
   Button,
   ButtonGroup,
@@ -129,6 +128,7 @@ export const ContractDeployButton = (
     // if (onContractCall) {
     //   onContractCall();
     // }
+    console.log({ data });
     toast({
       duration: 5000,
       isClosable: true,

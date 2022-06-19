@@ -5,9 +5,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalFooter,
-  Text,
   useDisclosure,
-  useColorModeValue as mode,
 } from '@chakra-ui/react';
 
 export const DevToolModal = ({ title, children }: any) => {

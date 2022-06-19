@@ -13,9 +13,6 @@ import {
   useStyleConfig,
 } from '@chakra-ui/react';
 
-// Store
-import { useStore } from 'store/CreateDaoStore';
-
 // Icons
 import { FaPlus } from 'react-icons/fa';
 import { FaCheck } from 'react-icons/fa';
@@ -55,12 +52,11 @@ interface RadioCardProps extends BoxProps {
 export const CheckboxCard = (props: RadioCardProps) => {
   const { checkboxProps, children, ...rest } = props;
   const { getInputProps, getCheckboxProps, state } = useCheckbox(checkboxProps);
-  const { selectAsset } = useStore();
   const id = useId(undefined, 'checkbox-card');
   const styles = useStyleConfig('RadioCard', props);
 
   return (
-    <Box as='label' cursor='pointer' onChange={selectAsset}>
+    <Box as='label' cursor='pointer'>
       <input {...getInputProps()} aria-labelledby={id} />
       <Box sx={styles} {...getCheckboxProps()} {...rest}>
         <Stack display='flex' direction='row' align='center'>

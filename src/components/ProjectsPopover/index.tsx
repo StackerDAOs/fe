@@ -2,7 +2,6 @@ import {
   Button,
   Divider,
   Link,
-  Icon,
   Image,
   Popover,
   PopoverContent,
@@ -12,14 +11,8 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-// Animation
-import { motion } from 'framer-motion';
-
 import { items } from '@utils/data';
 import { PopoverIcon } from './PopoverIcon';
-
-// Icon
-import { FiArrowUpRight } from 'react-icons/fi';
 
 export const ProjectsPopover = () => (
   <Popover

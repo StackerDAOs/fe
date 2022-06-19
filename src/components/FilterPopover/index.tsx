@@ -1,8 +1,5 @@
 import {
   Button,
-  Icon,
-  Link,
-  Image,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -10,9 +7,6 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-
-// Icons
-import { MdFilterList } from 'react-icons/md';
 
 // Components
 import { Card } from '@components/Card';

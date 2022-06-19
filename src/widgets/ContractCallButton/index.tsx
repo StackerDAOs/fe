@@ -21,17 +21,7 @@ import { usePolling } from '@common/hooks/use-polling';
 import { Notification } from '@components/Notification';
 import { CloseButton } from '@components/CloseButton';
 
-type ContractCallType = {
-  title: string;
-  contractAddress: string;
-  contractName: string;
-  functionName: string;
-  functionArgs: any;
-  postConditions?: any;
-  onContractCall?: () => void;
-};
-
-export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
+export const ContractCallButton = (props: ButtonProps) => {
   const { network } = useNetwork();
   const toast = useToast();
   const [transaction, setTransaction] = useState({
@@ -71,7 +61,7 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
     functionArgs,
     postConditions,
     onContractCall,
-  } = props;
+  }: any = props;
 
   const onFinish = useCallback((data: FinishedTxData) => {
     setTransaction({ txId: data.txId, isPending: true });
@@ -145,8 +135,8 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
                   target='_blank'
                   href={
                     process.env.NODE_ENV !== 'production'
-                      ? `http://localhost:8000/txid/${data.tx_id}?chain=testnet`
-                      : `https://explorer.stacks.co/txid/${data.tx_id}?chain=mainnet`
+                      ? `http://localhost:8000/txid/${data.txId}?chain=testnet`
+                      : `https://explorer.stacks.co/txid/${data.txId}?chain=mainnet`
                   }
                 >
                   View transaction

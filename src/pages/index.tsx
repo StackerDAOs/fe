@@ -12,12 +12,6 @@ const Index = () => {
     exit: { opacity: 0, x: 0, y: -15 },
   };
 
-  const SLIDE_UP_BUTTON_VARIANTS = {
-    hidden: { opacity: 0, x: 0, y: 15 },
-    enter: { opacity: 1, x: 0, y: 0 },
-    exit: { opacity: 0, x: 0, y: -15 },
-  };
-
   return (
     <>
       <Box as='section'>
@@ -47,7 +41,7 @@ const Index = () => {
                         color='white'
                       >
                         <Text fontSize='2xl' fontWeight='medium'>
-                          Let's get started
+                          Get started
                         </Text>
                         <Text
                           fontSize='sm'
@@ -58,7 +52,7 @@ const Index = () => {
                           textAlign='center'
                         >
                           By connecting your wallet, you agree to Stacker DAO
-                          Labs' Terms, Privacy Policy, and Community Standards
+                          Labs Terms, Privacy Policy, and Community Standards
                         </Text>
 
                         <Button
