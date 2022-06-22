@@ -34,7 +34,7 @@ export const VerticalStep = (props: StepProps) => {
         />
       </Stack>
       <Stack spacing='2' pb={isLastStep ? '0' : isCompleted ? '3' : '8'}>
-        <Text color='light.900' fontSize='lg' fontWeight='regular'>
+        <Text color='light.900' fontSize='md' fontWeight='regular'>
           {title}
         </Text>
         {description}

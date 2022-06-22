@@ -17,11 +17,11 @@ export const sendFunds = (contractAddress: string, description: string, amount: 
       (print {event: "execute", sender: sender})
       (ok true)
     )
-  )    
+  )
 `;
 
 export const sendTokens = (contractAddress: string, tokenContract: string, description: string, decimals: string = '6', amount: string, recipientAddress: string, proposer: string | undefined = 'StackerDAOs') => `
-  ;; Title: SDP Transfer Fungible Tokens
+  ;; Title: SDP Transfer Tokens
   ;; Author: ${proposer}
   ;; Description: ${description}
   ;; Type: Transfer
@@ -37,5 +37,5 @@ export const sendTokens = (contractAddress: string, tokenContract: string, descr
       (print {event: "execute", sender: sender})
       (ok true)
     )
-  )    
+  )
 `;

@@ -8,6 +8,7 @@ export { useProposals } from './use-proposals';
 export { useGovernanceToken } from './use-governance-token';
 export { useGovernanceTokenExtension } from './use-governance-token-extension';
 export { useSubmissionExtension } from './use-submission-extension';
+export { useVaultExtension } from './use-vault-extension';
 export { useVotingExtension } from './use-voting-extension';
 export { useTransaction } from './use-transaction';
 export { useSubmissions } from './use-submissions';

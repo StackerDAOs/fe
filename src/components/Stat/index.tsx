@@ -14,7 +14,7 @@ import { motion } from 'framer-motion';
 interface Props extends BoxProps {
   path: string;
   label: string;
-  value: string | undefined;
+  value: any;
   assetSymbol?: string;
   info: string;
 }

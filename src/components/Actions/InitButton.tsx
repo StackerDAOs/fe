@@ -27,7 +27,7 @@ export const InitButton = ({ address }: any) => {
 
   return (
     <ContractCallButton
-      title='Deposit'
+      title='Init'
       color='white'
       size='sm'
       {...getBootstrapProposal({ address: address })}

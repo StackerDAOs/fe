@@ -1,9 +1,4 @@
-import {
-  AbsoluteCenter,
-  AbsoluteCenterProps,
-  Box,
-  useColorModeValue as mode,
-} from '@chakra-ui/react';
+import { AbsoluteCenter, AbsoluteCenterProps, Box } from '@chakra-ui/react';
 
 interface ProgressbarProps extends AbsoluteCenterProps {
   value: number;
@@ -21,15 +16,11 @@ export const Progressbar = (props: ProgressbarProps) => {
       position='absolute'
       height='2'
       axis='vertical'
-      bg={mode('light.700', 'base.700')}
+      bg='base.900'
       width='full'
       {...rest}
     >
-      <Box
-        bg={mode('primary.500', 'primary.500')}
-        height='inherit'
-        width={`${value}%`}
-      />
+      <Box bg='base.900' height='inherit' width={`${value}%`} />
     </AbsoluteCenter>
   );
 };

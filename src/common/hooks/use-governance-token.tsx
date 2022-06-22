@@ -8,7 +8,7 @@ type TVotingExtension = {
   isLoading: boolean;
   contractAddress: string;
   contractName: string;
-  balance: string;
+  balance: number;
 };
 
 interface IVotingExtension {
@@ -19,7 +19,7 @@ const initialState = {
   isLoading: true,
   contractAddress: '',
   contractName: '',
-  balance: '',
+  balance: 0,
 };
 
 export function useGovernanceToken({ organization }: IVotingExtension = {}) {
@@ -44,7 +44,7 @@ export function useGovernanceToken({ organization }: IVotingExtension = {}) {
         : [];
       try {
         if (currentStxAddress && contractAddress && contractName) {
-          const fetchBalance: any = await fetchReadOnlyFunction({
+          const balance: any = await fetchReadOnlyFunction({
             network,
             contractAddress,
             contractName,
@@ -57,7 +57,7 @@ export function useGovernanceToken({ organization }: IVotingExtension = {}) {
             isLoading: false,
             contractAddress,
             contractName,
-            balance: fetchBalance.toString(),
+            balance,
           });
         }
       } catch (e: any) {

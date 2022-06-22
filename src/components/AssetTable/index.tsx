@@ -77,7 +77,6 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
           }: any,
           { contractAddress, contractName }: any,
         ) => {
-          console.log({ type });
           const senderAddress = `${contractAddress}.${contractName}`;
           const name = await fetchReadOnlyFunction({
             network,
@@ -112,6 +111,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
             functionName: 'get-token-uri',
           });
           return {
+            contractAddress: `${contractAddress}.${contractName}`,
             name,
             balance,
             totalSent,
@@ -152,7 +152,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
           type === 'fungible' ? 'No coins found' : 'No collectibles found'
         }
         linkTo={`/d/${dao}/proposals/c/transfer/stx`}
-        buttonTitle={type === 'fungible' ? 'Transfer funds' : 'Transfer'}
+        buttonTitle={type === 'fungible' ? 'Transfer' : 'Transfer'}
       />
     );
   }
@@ -241,7 +241,9 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
                     >
                       Deposit
                     </Button>
-                    <Link href={`/d/${dao}/proposals/c/transfer/stx`}>
+                    <Link
+                      href={`/d/${dao}/proposals/c/transfer/ft/${item.contractAddress}`}
+                    >
                       <Button
                         target='_blank'
                         color='white'

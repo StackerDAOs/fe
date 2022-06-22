@@ -1,11 +1,4 @@
-import {
-  Button,
-  ButtonGroup,
-  Stack,
-  Text,
-  useToast,
-  useColorModeValue as mode,
-} from '@chakra-ui/react';
+import { Button, ButtonGroup, Stack, Text, useToast } from '@chakra-ui/react';
 
 import type { FinishedTxData } from 'micro-stacks/connect';
 
@@ -23,14 +16,10 @@ export const onFinish = async (data: FinishedTxData) => {
         <Stack direction='row' p='4' spacing='3'>
           <Stack spacing='2.5'>
             <Stack spacing='1'>
-              <Text
-                fontSize='md'
-                color={mode('light.900', 'base.900')}
-                fontWeight='medium'
-              >
+              <Text fontSize='md' color='light.900' fontWeight='medium'>
                 Transaction Submitted
               </Text>
-              <Text fontSize='sm' color={mode('light.700', 'light.200')}>
+              <Text fontSize='sm' color='gray.900'>
                 Your transaction has been submitted.
               </Text>
             </Stack>
@@ -69,14 +58,10 @@ export const onCancel = () => {
         <Stack direction='row' p='4' spacing='3'>
           <Stack spacing='2.5'>
             <Stack spacing='1'>
-              <Text
-                fontSize='md'
-                color={mode('light.900', 'base.900')}
-                fontWeight='medium'
-              >
+              <Text fontSize='md' color='light.900' fontWeight='medium'>
                 Transaction cancelled
               </Text>
-              <Text fontSize='sm' color={mode('light.700', 'light.200')}>
+              <Text fontSize='sm' color='gray.900'>
                 Your transaction has been cancelled.
               </Text>
             </Stack>

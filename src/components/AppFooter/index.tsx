@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
+  Badge,
   Box,
   FormControl,
   FormLabel,
@@ -10,8 +11,11 @@ import {
   ModalBody,
   Stack,
   Text,
-  useColorModeValue as mode,
 } from '@chakra-ui/react';
+
+// Web3
+import { useIsSignedIn, useNetwork } from '@micro-stacks/react';
+import { fetchBlocks } from 'micro-stacks/api';
 
 // Components
 import { DepositButton, InitButton } from '@components/Actions';
@@ -20,12 +24,41 @@ import { DepositButton, InitButton } from '@components/Actions';
 import { DevToolModal } from '@components/Modal';
 
 // Hooks
-import { useBlocks } from '@common/hooks';
+import { usePolling } from '@common/hooks';
 
 export const AppFooter = () => {
+  const isSignedIn = useIsSignedIn();
+  const { network } = useNetwork();
   const [depositAmount, setDepositAmount] = useState('');
   const [bootstrap, setBootstrap] = useState('');
-  const { currentBlockHeight } = useBlocks();
+  const [blockHeight, setBlockHeight] = useState(0);
+
+  const fetch = async () => {
+    if (isSignedIn) {
+      try {
+        const blocks = await fetchBlocks({
+          url: network.getCoreApiUrl(),
+          limit: 1,
+          offset: 0,
+        });
+        setBlockHeight(blocks.total);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  usePolling(
+    () => {
+      fetch();
+    },
+    true,
+    600000,
+  );
 
   // INIT
   // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
@@ -105,10 +138,10 @@ export const AppFooter = () => {
         as='nav'
         position='fixed'
         bottom='0'
-        py='5'
-        px='9'
+        py='3'
+        px='8'
         w='100%'
-        bg='transparent'
+        bg='base.900'
         zIndex='9999'
       >
         <HStack justify='space-between' flex='1'>
@@ -144,7 +177,7 @@ export const AppFooter = () => {
                           onInput={(e: any) => setDepositAmount(e.target.value)}
                         />
                       </FormControl>
-                      <DepositButton amount={depositAmount} />
+                      <DepositButton title='Deposit' amount={depositAmount} />
                     </VStack>
                   </Stack>
                 </ModalBody>
@@ -153,22 +186,24 @@ export const AppFooter = () => {
           </HStack>
           <HStack
             cursor='default'
+            align='center'
+            justify='center'
             spacing='1'
-            color={mode('base.900', 'light.900')}
+            color='light.900'
           >
-            <Icon viewBox='0 0 200 200' color='secondary.900'>
-              <path
-                fill='currentColor'
-                d='M 100, 100 m -75, 0 a 75,75 0 1,0 150,0 a 75,75 0 1,0 -150,0'
+            <HStack>
+              <Box
+                minW='1'
+                maxW='1'
+                h='1'
+                w='1'
+                bg='secondary.900'
+                borderRadius='50%'
               />
-            </Icon>
-            <Text color='gray.900' fontSize='sm'>
-              Block height
-              <Text as='span' color='light.900' ml='1'>
-                {' '}
-                {currentBlockHeight}
+              <Text color='secondary.900' fontSize='sm' fontWeight='regular'>
+                {blockHeight}
               </Text>
-            </Text>
+            </HStack>
           </HStack>
         </HStack>
       </Box>

@@ -16,7 +16,6 @@ import {
   Stack,
   Text,
   useBreakpointValue,
-  useColorModeValue as mode,
 } from '@chakra-ui/react';
 
 // Hooks
@@ -111,11 +110,7 @@ export const MainNavbar = () => {
                 <HStack spacing='3'>
                   <ButtonGroup spacing='6' alignItems='center'>
                     {isSignedIn ? (
-                      <HStack
-                        cursor='pointer'
-                        spacing='2'
-                        color={mode('base.900', 'light.900')}
-                      >
+                      <HStack cursor='pointer' spacing='2' color='light.900'>
                         <HStack px='2'>
                           <Text
                             fontSize='sm'

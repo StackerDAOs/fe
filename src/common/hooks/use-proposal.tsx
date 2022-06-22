@@ -98,6 +98,15 @@ export function useProposal({
           functionName: 'get-parameter',
         });
 
+        const executionDelay: any = await fetchReadOnlyFunction({
+          network,
+          contractAddress,
+          contractName,
+          senderAddress,
+          functionArgs: [stringAsciiCV('executionDelay')],
+          functionName: 'get-parameter',
+        });
+
         setState({
           contractAddress: proposalPrincipal
             ? proposalInfo?.contractAddress
@@ -110,6 +119,7 @@ export function useProposal({
           type,
           events: voteEvents,
           quorumThreshold: quorumThreshold.toString(),
+          executionDelay: executionDelay.toString(),
           ...proposalData,
         });
       } catch (e: any) {

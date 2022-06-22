@@ -1,12 +1,9 @@
-import { useRouter } from 'next/router';
-// Components
 import { ContractDeployButton } from '@widgets/ContractDeployButton';
 
 // Web3
 import { useUser } from '@micro-stacks/react';
 
 // Hooks
-import { useOrganization } from '@common/hooks';
 import { useInsert } from 'react-supabase';
 import { useRandomName } from '@common/hooks';
 
@@ -14,17 +11,16 @@ import { useRandomName } from '@common/hooks';
 import { sendFunds } from '@utils/proposals/transfers';
 
 export const TransferStxButton = ({
+  organization,
   description,
   transferAmount,
   transferTo,
 }: any) => {
-  const router = useRouter();
-  const { dao } = router.query as any;
-  const { organization }: any = useOrganization({ name: dao });
   const { currentStxAddress } = useUser();
   const generateContractName = useRandomName();
   const contractName = generateContractName();
   const [_, execute] = useInsert('Proposals');
+
   const insertProposals = async ({
     organizationId,
     contractAddress,
@@ -32,11 +28,21 @@ export const TransferStxButton = ({
     type,
   }: any) => {
     try {
+      const vaultExtension = organization?.Extensions?.find(
+        (extension: any) => extension?.ExtensionTypes?.name === 'Vault',
+      );
+      const vaultAddress = vaultExtension?.contractAddress?.split('.')[0];
+      const vaultName = vaultExtension?.contractAddress?.split('.')[1];
       const { error } = await execute({
         organizationId,
         contractAddress,
         submittedBy,
         type,
+        postConditions: {
+          asset: 'STX',
+          amount: transferAmount,
+          from: `${vaultAddress}.${vaultName}`,
+        },
       });
       if (error) throw error;
     } catch (error) {
@@ -44,13 +50,19 @@ export const TransferStxButton = ({
     }
   };
 
+  // TODO: type is not currently dynamic based on organization
   const onFinishInsert = async () => {
-    console.log('onFinishInsert');
+    console.info('Insert record into Proposals');
     await insertProposals({
       organizationId: organization?.id,
       contractAddress: `${currentStxAddress}.${contractName}` || '',
       submittedBy: currentStxAddress || '',
-      type: 'SDP Transfer STX',
+      type: 'MDP Transfer STX',
+      // postConditions: {
+      //   amount: transferAmount,
+      //   asset: 'STX',
+      //   from: `${vaultContractAddress}.${vaultContractName}`,
+      // },
     });
   };
 

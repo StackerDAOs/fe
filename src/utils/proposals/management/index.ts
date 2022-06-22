@@ -15,5 +15,5 @@ export const whitelistAsset = (contractAddress: string, description: string, tok
       (print {event: "execute", sender: sender})
       (ok true)
     )
-  )    
+  )
 `;

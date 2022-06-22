@@ -1,7 +1,11 @@
 // Hook (use-polling.tsx)
 import { useEffect, useRef } from 'react';
 
-export const usePolling = (callback: any, isPolling: boolean | null) => {
+export const usePolling = (
+  callback: any,
+  isPolling: boolean | null,
+  wait = 7500,
+) => {
   const savedCallback = useRef<HTMLDivElement | any>(null);
 
   useEffect(() => {
@@ -15,7 +19,7 @@ export const usePolling = (callback: any, isPolling: boolean | null) => {
     }
 
     if (isPolling) {
-      const id = setInterval(tick, 7500);
+      const id = setInterval(tick, wait);
       return () => {
         clearInterval(id);
       };

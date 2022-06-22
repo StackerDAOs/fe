@@ -30,9 +30,11 @@ import { useUpdate } from 'react-supabase';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
-import { Card } from '@components/Card';
+import { ProposalCard } from '@components/cards';
 import { EmptyState } from '@components/EmptyState';
 import { Header } from '@components/Header';
+import { DepositModal } from '@components/Modal/DepositModal';
+// import { VaultActionPopover } from '@components/VaultActionPopover';
 
 // Widgets
 import { ContractCallButton } from '@widgets/ContractCallButton';
@@ -141,7 +143,7 @@ const Proposals = () => {
               </HStack>
               <HStack spacing='3'>
                 <ContractCallButton
-                  title='Submit'
+                  title='Propose'
                   color='white'
                   bg='secondary.900'
                   size='sm'
@@ -179,57 +181,67 @@ const Proposals = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      {submissions?.length > 0 && (
-        <Box as='section'>
-          <Container maxW='5xl'>
-            <Stack spacing={{ base: '8', lg: '6' }}>
-              <Stack w='auto'>
-                <Box as='section'>
-                  <Container>
-                    <motion.div
-                      variants={FADE_IN_VARIANTS}
-                      initial={FADE_IN_VARIANTS.hidden}
-                      animate={FADE_IN_VARIANTS.enter}
-                      exit={FADE_IN_VARIANTS.exit}
-                      transition={{ duration: 0.75, type: 'linear' }}
-                    >
-                      <Box as='section'>
-                        <Stack spacing={{ base: '8', lg: '6' }}>
-                          <Stack w='auto'>
-                            <Box as='section'>
-                              <Stack spacing='5'>
-                                <Stack
-                                  spacing='4'
-                                  mb='3'
-                                  direction={{ base: 'column', md: 'row' }}
-                                  justify='space-between'
-                                  color='white'
-                                >
-                                  <Box>
-                                    <Text fontSize='lg' fontWeight='medium'>
-                                      Submissions
-                                    </Text>
-                                    <Text color='gray.900' fontSize='sm'>
-                                      Community deployed contracts ready to
-                                      submitted as proposals.
-                                    </Text>
-                                  </Box>
-                                </Stack>
-                              </Stack>
-                              {submissionsByProposal()}
-                            </Box>
-                          </Stack>
-                        </Stack>
-                      </Box>
-                    </motion.div>
-                  </Container>
-                </Box>
-              </Stack>
-            </Stack>
-          </Container>
-        </Box>
-      )}
       <Box as='section'>
+        <Container maxW='5xl'>
+          <Stack spacing={{ base: '8', lg: '6' }}>
+            <Stack w='auto'>
+              <Box as='section'>
+                <Container>
+                  <motion.div
+                    variants={FADE_IN_VARIANTS}
+                    initial={FADE_IN_VARIANTS.hidden}
+                    animate={FADE_IN_VARIANTS.enter}
+                    exit={FADE_IN_VARIANTS.exit}
+                    transition={{ duration: 0.75, type: 'linear' }}
+                  >
+                    <Box as='section'>
+                      <Stack spacing={{ base: '8', lg: '6' }}>
+                        <Stack w='auto'>
+                          <Box as='section'>
+                            <Stack spacing='5'>
+                              <Stack
+                                spacing='4'
+                                mb='3'
+                                direction={{ base: 'column', md: 'row' }}
+                                justify='space-between'
+                                color='white'
+                              >
+                                <Box>
+                                  <Text fontSize='lg' fontWeight='medium'>
+                                    Inactive proposals
+                                  </Text>
+                                  <Text color='gray.900' fontSize='sm'>
+                                    List of smart contracts that are ready to be
+                                    proposed.
+                                  </Text>
+                                </Box>
+                                <HStack spacing='8'>
+                                  <DepositModal title='Create proposal' />
+                                </HStack>
+                              </Stack>
+                            </Stack>
+                            {submissions?.length > 0 ? (
+                              submissionsByProposal()
+                            ) : (
+                              <EmptyState
+                                heading='No proposals found.'
+                                linkTo={`/d/${dao}/proposals/c/transfer/stx`}
+                                buttonTitle='Create proposal'
+                                isDisabled={false}
+                              />
+                            )}
+                          </Box>
+                        </Stack>
+                      </Stack>
+                    </Box>
+                  </motion.div>
+                </Container>
+              </Box>
+            </Stack>
+          </Stack>
+        </Container>
+      </Box>
+      <Box as='section' mb='5'>
         <Container maxW='5xl'>
           <Stack spacing={{ base: '8', lg: '6' }}>
             <Stack w='auto'>
@@ -288,214 +300,17 @@ const Proposals = () => {
                               View all pending, active, and completed proposals.
                             </Text>
                           </Box>
-                          <HStack spacing='8'>
-                            {/* <VaultActionPopover /> */}
-                            {/* <FilterPopover /> */}
-                          </HStack>
                         </Stack>
                       </Stack>
                       <SimpleGrid
-                        columns={{ base: 1 }}
+                        columns={{ base: 1, md: 2 }}
                         spacing='6'
                         mb='10'
                         color='white'
                       >
-                        {proposals?.map(
-                          ({
-                            contractAddress,
-                            title,
-                            description,
-                            concluded,
-                            startBlockHeight,
-                            endBlockHeight,
-                            votesFor,
-                            votesAgainst,
-                          }: any) => {
-                            const totalVotes =
-                              Number(votesFor) + Number(votesAgainst);
-                            const isClosed =
-                              currentBlockHeight > endBlockHeight;
-                            const isOpen =
-                              currentBlockHeight <= endBlockHeight &&
-                              currentBlockHeight >= startBlockHeight;
-                            return (
-                              <motion.div
-                                key={Math.random()}
-                                variants={FADE_IN_VARIANTS}
-                                initial={FADE_IN_VARIANTS.hidden}
-                                animate={FADE_IN_VARIANTS.enter}
-                                exit={FADE_IN_VARIANTS.exit}
-                                transition={{ duration: 0.25, type: 'linear' }}
-                              >
-                                <Link
-                                  href={`/d/${dao}/proposals/${contractAddress}`}
-                                >
-                                  <a>
-                                    <Card
-                                      bg='base.800'
-                                      position='relative'
-                                      px={{ base: '6', md: '6' }}
-                                      py={{ base: '6', md: '6' }}
-                                      border='1px solid rgb(134, 143, 152)'
-                                      _hover={{
-                                        cursor: 'pointer',
-                                      }}
-                                    >
-                                      <Box as='section'>
-                                        <VStack
-                                          align='left'
-                                          spacing='4'
-                                          direction={{
-                                            base: 'column',
-                                            md: 'row',
-                                          }}
-                                          justify='space-between'
-                                          color='white'
-                                        >
-                                          <Box>
-                                            <HStack justify='space-between'>
-                                              <Text
-                                                fontSize='xl'
-                                                w='75%'
-                                                fontWeight='medium'
-                                              >
-                                                {title}
-                                              </Text>
-                                              {concluded ? (
-                                                <Badge
-                                                  colorScheme='secondary'
-                                                  size='sm'
-                                                  px='3'
-                                                  py='2'
-                                                >
-                                                  Executed
-                                                </Badge>
-                                              ) : isClosed ? (
-                                                <Badge
-                                                  colorScheme='red'
-                                                  size='sm'
-                                                  px='3'
-                                                  py='2'
-                                                >
-                                                  Ready for execution
-                                                </Badge>
-                                              ) : isOpen ? (
-                                                <Badge
-                                                  colorScheme='green'
-                                                  size='sm'
-                                                  px='3'
-                                                  py='2'
-                                                >
-                                                  Active
-                                                </Badge>
-                                              ) : (
-                                                <Badge
-                                                  colorScheme='yellow'
-                                                  size='sm'
-                                                  px='3'
-                                                  py='2'
-                                                >
-                                                  Inactive
-                                                </Badge>
-                                              )}
-                                            </HStack>
-                                            <Stack my='3'>
-                                              <Stack
-                                                spacing='4'
-                                                direction={{
-                                                  base: 'column',
-                                                  md: 'row',
-                                                }}
-                                                justify='space-between'
-                                                color='white'
-                                              >
-                                                <Box>
-                                                  <Text
-                                                    fontSize='sm'
-                                                    fontWeight='regular'
-                                                    color='gray.900'
-                                                  >
-                                                    Description
-                                                  </Text>
-                                                </Box>
-                                              </Stack>
-                                              <Text
-                                                fontSize='sm'
-                                                maxW='sm'
-                                                _selection={{
-                                                  bg: 'base.800',
-                                                  color: 'secondary.900',
-                                                }}
-                                              >
-                                                {description}
-                                              </Text>
-                                            </Stack>
-                                            <Stack mt='5' mb='3'>
-                                              <Stack
-                                                spacing='4'
-                                                direction={{
-                                                  base: 'column',
-                                                  md: 'row',
-                                                }}
-                                                justify='space-between'
-                                                color='white'
-                                              >
-                                                <Box>
-                                                  <Text
-                                                    fontSize='sm'
-                                                    fontWeight='regular'
-                                                    color='gray.900'
-                                                  >
-                                                    Results
-                                                  </Text>
-                                                </Box>
-                                              </Stack>
-                                              <HStack justify='space-between'>
-                                                <Text
-                                                  color='gray.900'
-                                                  fontSize='sm'
-                                                  fontWeight='semibold'
-                                                >
-                                                  Yes (
-                                                  {getPercentage(
-                                                    totalVotes,
-                                                    Number(votesFor),
-                                                  )}
-                                                  %)
-                                                </Text>
-                                                <Text
-                                                  color='gray.900'
-                                                  fontSize='sm'
-                                                  fontWeight='semibold'
-                                                >
-                                                  No (
-                                                  {getPercentage(
-                                                    totalVotes,
-                                                    Number(votesAgainst),
-                                                  )}
-                                                  %)
-                                                </Text>
-                                              </HStack>
-                                              <Progress
-                                                colorScheme='secondary'
-                                                size='md'
-                                                value={getPercentage(
-                                                  totalVotes,
-                                                  Number(votesFor),
-                                                )}
-                                                bg='base.500'
-                                              />
-                                            </Stack>
-                                          </Box>
-                                        </VStack>
-                                      </Box>
-                                    </Card>
-                                  </a>
-                                </Link>
-                              </motion.div>
-                            );
-                          },
-                        )}
+                        {proposals?.map((data: any, index: number) => (
+                          <ProposalCard key={index} {...data} />
+                        ))}
                       </SimpleGrid>
                     </>
                   )}

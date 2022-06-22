@@ -1,39 +1,83 @@
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Container, Heading, HStack, Stack, VStack } from '@chakra-ui/react';
 
-// Utils
+import { useNetwork } from '@micro-stacks/react';
+import { fetchReadOnlyFunction } from 'micro-stacks/api';
+
 import { ustxToStx, convertToken } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
-// Components
 import { EmptyState } from '@components/EmptyState';
 import { Stat } from '@components/Stat';
 
-// Hooks
-import { useBalance, useOrganization, useGovernanceToken } from '@common/hooks';
-import { useSelect } from 'react-supabase';
+import {
+  useBalance,
+  useBlocks,
+  useOrganization,
+  useProposals,
+  useGovernanceToken,
+} from '@common/hooks';
+
+import { defaultTo, get } from 'lodash';
+
+type THeader = {
+  symbol: string | null;
+};
+
+const initialValue: THeader = {
+  symbol: null,
+} as THeader;
 
 export const Header = () => {
+  const { network } = useNetwork();
   const router = useRouter();
   const { dao } = router.query as any;
+  const [state, setState] = useState<THeader>(initialValue);
+  const { currentBlockHeight } = useBlocks();
   const { organization } = useOrganization({ name: dao });
+  const { proposals } = useProposals({ organization: organization });
   const { isLoading: isLoadingBalance, balance } = useBalance({
     organization: organization,
   });
-  const { balance: userBalance } = useGovernanceToken({
+  const {
+    balance: userBalance,
+    contractAddress,
+    contractName,
+  } = useGovernanceToken({
     organization: organization,
   });
-  const [{ data }] = useSelect('Proposals');
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const symbol: any = await fetchReadOnlyFunction({
+          network,
+          contractAddress,
+          contractName,
+          senderAddress: contractAddress,
+          functionArgs: [],
+          functionName: 'get-symbol',
+        });
+        setState({ ...state, symbol });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchToken();
+  }, [contractAddress]);
 
   const Vault = () => {
     const { stx } = balance as any;
+    const amount = defaultTo(stx?.balance, 0);
+    const stxBalance = ustxToStx(amount);
     return (
       <Stat
         flex='1'
         borderRadius='lg'
         label='Vault'
-        value={`${ustxToStx(stx?.balance) || 0}`}
+        value={stxBalance}
         info={`Total STX`}
         path='vault'
       />
@@ -41,15 +85,20 @@ export const Header = () => {
   };
 
   const Proposals = () => {
-    const proposalSize = data?.filter(
-      (proposal) => !proposal.submitted,
-    )?.length;
+    const openProposals = proposals.filter(
+      ({ startBlockHeight, endBlockHeight }) => {
+        const isOpen =
+          currentBlockHeight <= endBlockHeight &&
+          currentBlockHeight >= startBlockHeight;
+        return isOpen;
+      },
+    );
     return (
       <Stat
         flex='1'
         borderRadius='lg'
         label='Proposals'
-        value={proposalSize?.toString()}
+        value={openProposals?.length}
         info={`Active`}
         path='proposals'
       />
@@ -57,13 +106,17 @@ export const Header = () => {
   };
 
   const Governance = () => {
+    const { symbol } = state;
+    console.log({ userBalance });
+    const balance = defaultTo(userBalance, 0);
+    const tokenBalance = defaultTo(convertToken(balance.toString(), 2), 0);
     return (
       <Stat
         flex='1'
         borderRadius='lg'
         label='Governance'
-        value={convertToken(userBalance?.toString(), 2).toString()} // TODO: Get decimals for token
-        info={`MEGA`}
+        value={tokenBalance} // TODO: Get decimals for token
+        info={defaultTo(symbol, 'Token')}
         path='governance'
       />
     );

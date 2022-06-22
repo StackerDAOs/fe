@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
+  Badge,
   Box,
   Button,
+  Flex,
   Grid,
   GridItem,
+  Icon,
   Image,
   FormErrorMessage,
   FormControl,
@@ -14,14 +17,19 @@ import {
   Textarea,
   VStack,
   SimpleGrid,
+  Spinner,
   Text,
 } from '@chakra-ui/react';
 
-// Form
-import { useForm } from 'react-hook-form';
+// Web3
+import { useNetwork } from '@micro-stacks/react';
+import { fetchTransaction } from 'micro-stacks/api';
 
 // Hooks
+import { useOrganization } from '@common/hooks';
+import { useForm } from 'react-hook-form';
 import { useStep } from '@common/hooks/use-step';
+import { usePolling } from '@common/hooks';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
@@ -30,11 +38,16 @@ import { TransferStxButton } from '@components/Actions';
 
 //  Animation
 import { motion } from 'framer-motion';
+import Confetti from 'react-confetti';
 
 // Utils
 import { truncate } from '@common/helpers';
 import Avatar from 'boring-avatars';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
+import { FiSend } from 'react-icons/fi';
+
+// Store
+import { useStore } from 'store/TransactionStore';
 
 const FADE_IN_VARIANTS = {
   hidden: { opacity: 0, x: 0, y: 0 },
@@ -43,8 +56,13 @@ const FADE_IN_VARIANTS = {
 };
 
 const Stx = () => {
+  const { network } = useNetwork();
   const router = useRouter();
-  const [state, setState] = useState({ isDeploying: false });
+  const { dao } = router.query as any;
+  const { organization }: any = useOrganization({ name: dao });
+  const { transaction, setTransaction } = useStore();
+  const [state, setState] = useState({ isDeployed: false });
+  const { isDeployed } = state;
   const {
     register,
     handleSubmit,
@@ -56,11 +74,43 @@ const Stx = () => {
     maxStep: 4,
     initialStep: 0,
   });
-  const onSubmit = (data: any) => {
-    setStep(currentStep + 1);
-    console.log({ data });
-    setState({ ...state, isDeploying: true });
+  const handleGoBack = () => {
+    setTransaction({ txId: '', data: {} });
+    router.back();
   };
+  const onSubmit = (data: any) => {
+    console.log({ data });
+    setStep(currentStep + 1);
+  };
+
+  useEffect(() => {
+    if (transaction.txId) {
+      console.log({ transaction });
+    }
+  }, [transaction]);
+
+  usePolling(() => {
+    fetchTransactionData(transaction?.txId);
+  }, transaction.txId);
+
+  async function fetchTransactionData(transactionId: string) {
+    try {
+      const transaction = await fetchTransaction({
+        url: network.getCoreApiUrl(),
+        txid: transactionId,
+        event_offset: 0,
+        event_limit: 0,
+      });
+      if (transaction?.tx_status === 'success') {
+        setState({ ...state, isDeployed: true });
+        setTransaction({ txId: '', data: {} });
+        // onComplete(transaction);
+      }
+      console.log({ transaction });
+    } catch (e: any) {
+      console.log({ e });
+    }
+  }
 
   const transferAssetsSteps = [
     {
@@ -91,9 +141,12 @@ const Stx = () => {
         currentStep <= 1 ? (
           <></>
         ) : (
-          <Text fontSize='md' fontWeight='medium' color='light.900'>
-            {transferTo && truncate(transferTo, 4, 4)}
-          </Text>
+          <HStack>
+            <FiSend fontSize='0.9rem' />
+            <Text fontSize='md' fontWeight='medium' color='light.900'>
+              {transferTo && truncate(transferTo, 4, 8)}
+            </Text>
+          </HStack>
         ),
     },
     {
@@ -119,7 +172,7 @@ const Stx = () => {
       <>
         <Stack
           spacing='0'
-          mb='5'
+          mb='2'
           direction={{ base: 'column', md: 'column' }}
           justify='space-between'
           color='white'
@@ -128,41 +181,57 @@ const Stx = () => {
             Transfer amount
           </Text>
           <Stack direction='column'>
-            <Text fontSize='md' fontWeight='regular' color='gray.900'>
+            <Text fontSize='sm' fontWeight='regular' color='gray.900'>
               Enter the amount of STX that will be transferred.
             </Text>
           </Stack>
         </Stack>
         <Stack color='light.900' spacing='5' direction='column' maxW='xs'>
-          <SimpleGrid columns={1} spacing='5'>
-            <FormControl isInvalid={errors.transferAmount}>
+          <Stack color='light.900' direction='column' my='2'>
+            <FormControl>
               <Input
-                id='transferAmount'
-                size='lg'
-                type='number'
-                bg='base.800'
-                borderColor='base.500'
+                color='light.900'
+                py='1'
+                px='2'
+                maxW='8em'
+                type='tel'
+                bg='base.900'
+                border='none'
+                fontSize='3xl'
                 autocomplete='off'
-                placeholder='100 STX'
+                placeholder='0'
                 {...register('transferAmount', {
                   required: 'This is required',
                 })}
+                _focus={{
+                  border: 'none',
+                }}
               />
-              <FormErrorMessage>
-                {errors.transferAmount && errors.transferAmount.message}
-              </FormErrorMessage>
             </FormControl>
-            <HStack justify='flex-start'>
-              <Button
-                color='white'
-                onClick={() => setStep(currentStep + 1)}
-                _hover={{ opacity: 0.9 }}
-                _active={{ opacity: 1 }}
-              >
-                Next
-              </Button>
+            <HStack px='2'>
+              <Image
+                cursor='pointer'
+                height='15px'
+                src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                alt='logo'
+              />
+
+              <Text fontSize='md' fontWeight='regular' color='gray.900'>
+                STX
+              </Text>
             </HStack>
-          </SimpleGrid>
+          </Stack>
+          <HStack justify='flex-start'>
+            <Button
+              isFullWidth
+              color='white'
+              onClick={() => setStep(currentStep + 1)}
+              _hover={{ opacity: 0.9 }}
+              _active={{ opacity: 1 }}
+            >
+              Next
+            </Button>
+          </HStack>
         </Stack>
       </>
     );
@@ -182,50 +251,60 @@ const Stx = () => {
             Destination
           </Text>
           <Stack direction='column'>
-            <Text fontSize='md' fontWeight='regular' color='gray.900'>
+            <Text fontSize='sm' fontWeight='regular' color='gray.900'>
               Enter the STX address where the funds will be sent.
             </Text>
           </Stack>
         </Stack>
-        <Stack color='light.900' spacing='5' direction='column' maxW='lg'>
-          <SimpleGrid columns={1} spacing='5'>
-            <FormControl isInvalid={errors.transferTo}>
+        <Stack color='light.900' spacing='5' direction='column' maxW='xl'>
+          <Stack color='light.900' direction='column' my='0'>
+            <FormControl>
               <Input
-                id='transferTo'
-                size='lg'
-                type='text'
-                bg='base.800'
-                borderColor='base.500'
+                color='light.900'
+                py='1'
+                px='2'
+                type='tel'
+                bg='base.900'
+                border='none'
+                fontSize='xl'
                 autocomplete='off'
                 placeholder='SP1T...'
                 {...register('transferTo', {
                   required: 'This is required',
                 })}
+                _focus={{
+                  border: 'none',
+                }}
               />
-              <FormErrorMessage>
-                {errors.transferTo && errors.transferTo.message}
-              </FormErrorMessage>
             </FormControl>
-            <HStack justify='space-between'>
-              <Button
-                color='white'
-                variant='link'
-                _hover={{ opacity: 0.9 }}
-                _active={{ opacity: 1 }}
-                onClick={() => setStep(currentStep - 1)}
-              >
-                Previous
-              </Button>
-              <Button
-                color='white'
-                onClick={() => setStep(currentStep + 1)}
-                _hover={{ opacity: 0.9 }}
-                _active={{ opacity: 1 }}
-              >
-                Next
-              </Button>
+            <HStack px='2'>
+              <FiSend fontSize='0.9rem' />
+
+              <Text fontSize='md' fontWeight='regular' color='gray.900'>
+                Recipient
+              </Text>
             </HStack>
-          </SimpleGrid>
+          </Stack>
+          <HStack justify='space-between' spacing='10'>
+            <Button
+              color='white'
+              variant='link'
+              _hover={{ opacity: 0.9 }}
+              _active={{ opacity: 1 }}
+              onClick={() => setStep(currentStep - 1)}
+            >
+              Previous
+            </Button>
+            <Button
+              minW='20%'
+              color='white'
+              onClick={() => setStep(currentStep + 1)}
+              _hover={{ opacity: 0.9 }}
+              _active={{ opacity: 1 }}
+            >
+              Next
+            </Button>
+          </HStack>
         </Stack>
       </>
     );
@@ -245,30 +324,32 @@ const Stx = () => {
             Proposal details
           </Text>
           <Stack direction='column'>
-            <Text fontSize='md' fontWeight='regular' color='gray.900'>
+            <Text fontSize='sm' fontWeight='regular' color='gray.900'>
               Provide some additional context for the proposal.
             </Text>
           </Stack>
         </Stack>
-        <Stack color='light.900' spacing='6' direction='column'>
-          <FormControl isInvalid={errors.description}>
+        <Stack color='light.900' spacing='6' direction='column' maxW='xl'>
+          <FormControl>
             <Textarea
-              id='description'
               type='text'
-              size='lg'
-              bg='base.800'
-              borderColor='base.500'
-              rows={6}
+              color='light.900'
+              fontSize='xl'
+              py='1'
+              px='2'
+              bg='base.900'
+              border='none'
+              rows={10}
               resize='none'
               autocomplete='off'
               placeholder='Transfers 100 STX to SP14...T78Y for...'
               {...register('description', {
                 required: 'This is required',
               })}
+              _focus={{
+                border: 'none',
+              }}
             />
-            <FormErrorMessage>
-              {errors.description && errors.description.message}
-            </FormErrorMessage>
           </FormControl>
           <HStack justify='space-between'>
             <Button
@@ -281,6 +362,7 @@ const Stx = () => {
               Previous
             </Button>
             <Button
+              minW='20%'
               color='white'
               onClick={() => setStep(currentStep + 1)}
               _hover={{ opacity: 0.9 }}
@@ -298,56 +380,146 @@ const Stx = () => {
     return (
       <>
         <Stack
-          spacing='0'
+          maxW='md'
+          spacing='8'
           mx='auto'
           direction={{ base: 'column', md: 'column' }}
           justify='space-between'
           align='center'
           color='white'
         >
-          <VStack
-            maxW='md'
-            spacing='4'
-            direction={{ base: 'column', md: 'row' }}
+          <Stack mb='5' align='center' spacing='3'>
+            <Avatar
+              size={50}
+              name='MDP Transfer STX'
+              variant='bauhaus'
+              colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
+            />
+            <Text fontSize='2xl' fontWeight='semibold' color='light.900'>
+              MDP Transfer STX
+            </Text>
+          </Stack>
+          <Stack
+            display='contents'
             justify='space-between'
-            color='white'
+            align='center'
+            spacing='5'
           >
-            <Stack align='center' spacing='3'>
-              <Avatar
-                size={100}
-                name='SDP Transfer STX'
-                variant='bauhaus'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
-              <Text fontSize='3xl' fontWeight='semibold' color='light.900'>
-                MDP Transfer STX
-              </Text>
-            </Stack>
-            <Stack align='center' spacing='3'>
-              <Text fontSize='md' fontWeight='semibold' color='light.900'>
-                {description}
-              </Text>
-            </Stack>
-            <HStack width='full' justify='space-between'>
-              <Button
-                color='white'
-                variant='link'
-                fontSize='md'
-                size='md'
-                _hover={{ opacity: 0.9 }}
-                _active={{ opacity: 1 }}
-                onClick={() => setStep(currentStep - 1)}
+            <Stack
+              justifyContent='space-between'
+              borderBottom='1px solid'
+              borderBottomColor='base.500'
+              flexDirection={{ base: 'column', md: 'row' }}
+              alignItems='center'
+              w='100%'
+            >
+              <Text
+                color='gray.900'
+                fontWeight='medium'
+                mb={{ base: '10px', md: '0px' }}
               >
-                Previous
-              </Button>
-              <TransferStxButton
-                isSubmitting={isSubmitting}
-                description={description}
-                transferAmount={transferAmount}
-                transferTo={transferTo}
-              />
-            </HStack>
-          </VStack>
+                Transferring
+              </Text>
+              <Flex
+                align='center'
+                flexDirection={{ base: 'column', md: 'row' }}
+                mb={{ base: '20px', md: '0px' }}
+              >
+                <HStack>
+                  <Image
+                    cursor='pointer'
+                    height='15px'
+                    src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                    alt='logo'
+                  />
+                  <Text fontSize='md' fontWeight='medium' color='light.900'>
+                    {transferAmount}
+                  </Text>
+                  <Text fontSize='md' fontWeight='regular' color='gray.900'>
+                    STX
+                  </Text>
+                </HStack>
+                <Button
+                  variant='setup'
+                  px='24px'
+                  onClick={() => console.log('edit')}
+                  fontSize='md'
+                  fontWeight='500'
+                >
+                  Edit
+                </Button>
+              </Flex>
+            </Stack>
+            <Stack
+              justifyContent='space-between'
+              borderBottom='1px solid'
+              borderBottomColor='base.500'
+              flexDirection={{ base: 'column', md: 'row' }}
+              alignItems='center'
+              w='100%'
+            >
+              <Text
+                color='gray.900'
+                fontSize='md'
+                mb={{ base: '10px', md: '0px' }}
+              >
+                To
+              </Text>
+              <Flex
+                align='center'
+                flexDirection={{ base: 'column', md: 'row' }}
+                mb={{ base: '20px', md: '0px' }}
+              >
+                <HStack>
+                  <FiSend fontSize='0.9rem' />
+                  <Text fontSize='md' fontWeight='medium' color='light.900'>
+                    {transferTo && truncate(transferTo, 4, 8)}
+                  </Text>
+                </HStack>
+                <Button
+                  variant='setup'
+                  px='24px'
+                  onClick={() => console.log('edit')}
+                  fontSize='md'
+                  fontWeight='500'
+                >
+                  Edit
+                </Button>
+              </Flex>
+            </Stack>
+            <Stack w='100%' spacing='1'>
+              <Text
+                color='gray.900'
+                fontSize='md'
+                mb={{ base: '10px', md: '0px' }}
+              >
+                Details
+              </Text>
+              <Text fontSize='md' fontWeight='regular' color='light.900'>
+                {description && truncate(description, 75, 0)}
+              </Text>
+            </Stack>
+          </Stack>
+          <HStack width='full' justify='space-between'>
+            <Button
+              color='white'
+              variant='link'
+              fontSize='md'
+              size='md'
+              _hover={{ opacity: 0.9 }}
+              _active={{ opacity: 1 }}
+              onClick={() => setStep(currentStep - 1)}
+            >
+              Previous
+            </Button>
+            <TransferStxButton
+              organization={organization}
+              isSubmitting={isSubmitting}
+              description={description}
+              transferAmount={transferAmount}
+              transferTo={transferTo}
+            />
+          </HStack>
         </Stack>
       </>
     );
@@ -357,51 +529,146 @@ const Stx = () => {
     return (
       <>
         <Stack
-          spacing='0'
+          maxW='md'
+          spacing='8'
           mx='auto'
           direction={{ base: 'column', md: 'column' }}
           justify='space-between'
           align='center'
           color='white'
         >
-          <VStack
-            maxW='md'
-            spacing='4'
-            direction={{ base: 'column', md: 'row' }}
+          <Stack mb='5' align='center' spacing='3'>
+            <Avatar
+              size={50}
+              name='MDP Transfer STX'
+              variant='bauhaus'
+              colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
+            />
+            <Text fontSize='2xl' fontWeight='semibold' color='light.900'>
+              MDP Transfer STX
+            </Text>
+          </Stack>
+          <Stack
+            display='contents'
             justify='space-between'
-            color='white'
+            align='center'
+            spacing='5'
           >
-            <Stack mb='5' align='center' spacing='3'>
-              <Avatar
-                size={100}
-                name='SDP Transfer STX'
-                variant='bauhaus'
-                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
-              />
-              <Text fontSize='3xl' fontWeight='semibold' color='light.900'>
-                MDP Transfer STX
+            <Stack
+              justifyContent='space-between'
+              borderBottom='1px solid'
+              borderBottomColor='base.500'
+              flexDirection={{ base: 'column', md: 'row' }}
+              alignItems='center'
+              w='100%'
+            >
+              <Text
+                color='gray.900'
+                fontWeight='medium'
+                mb={{ base: '10px', md: '0px' }}
+              >
+                Transferring
+              </Text>
+              <Flex
+                align='center'
+                flexDirection={{ base: 'column', md: 'row' }}
+                mb={{ base: '20px', md: '0px' }}
+              >
+                <HStack>
+                  <Image
+                    cursor='pointer'
+                    height='15px'
+                    src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                    alt='logo'
+                  />
+                  <Text fontSize='md' fontWeight='medium' color='light.900'>
+                    {transferAmount}
+                  </Text>
+                  <Text fontSize='md' fontWeight='regular' color='gray.900'>
+                    STX
+                  </Text>
+                </HStack>
+                <Button
+                  variant='setup'
+                  px='24px'
+                  onClick={() => console.log('edit')}
+                  fontSize='md'
+                  fontWeight='500'
+                >
+                  Edit
+                </Button>
+              </Flex>
+            </Stack>
+            <Stack
+              justifyContent='space-between'
+              borderBottom='1px solid'
+              borderBottomColor='base.500'
+              flexDirection={{ base: 'column', md: 'row' }}
+              alignItems='center'
+              w='100%'
+            >
+              <Text
+                color='gray.900'
+                fontSize='md'
+                mb={{ base: '10px', md: '0px' }}
+              >
+                To
+              </Text>
+              <Flex
+                align='center'
+                flexDirection={{ base: 'column', md: 'row' }}
+                mb={{ base: '20px', md: '0px' }}
+              >
+                <HStack>
+                  <FiSend fontSize='0.9rem' />
+                  <Text fontSize='md' fontWeight='medium' color='light.900'>
+                    {transferTo && truncate(transferTo, 4, 8)}
+                  </Text>
+                </HStack>
+                <Button
+                  variant='setup'
+                  px='24px'
+                  onClick={() => console.log('edit')}
+                  fontSize='md'
+                  fontWeight='500'
+                >
+                  Edit
+                </Button>
+              </Flex>
+            </Stack>
+            <Stack w='100%' spacing='1'>
+              <Text
+                color='gray.900'
+                fontSize='md'
+                mb={{ base: '10px', md: '0px' }}
+              >
+                Details
+              </Text>
+              <Text fontSize='md' fontWeight='regular' color='light.900'>
+                {description && truncate(description, 75, 0)}
               </Text>
             </Stack>
-            <HStack width='full' justify='space-between'>
-              <Button
-                color='white'
-                variant='link'
-                fontSize='md'
-                size='md'
-                _hover={{ opacity: 0.9 }}
-                _active={{ opacity: 1 }}
-                onClick={() => setStep(currentStep - 2)}
-              >
-                Previous
-              </Button>
-              <TransferStxButton
-                isSubmitting={isSubmitting}
-                description={description}
-                transferAmount={transferAmount}
-                transferTo={transferTo}
-              />
-            </HStack>
-          </VStack>
+          </Stack>
+          <HStack width='full' justify='space-between'>
+            <Button
+              color='white'
+              variant='link'
+              fontSize='md'
+              size='md'
+              _hover={{ opacity: 0.9 }}
+              _active={{ opacity: 1 }}
+              onClick={() => setStep(currentStep - 1)}
+            >
+              Previous
+            </Button>
+            <TransferStxButton
+              organization={organization}
+              isSubmitting={isSubmitting}
+              description={description}
+              transferAmount={transferAmount}
+              transferTo={transferTo}
+            />
+          </HStack>
         </Stack>
       </>
     );
@@ -459,9 +726,9 @@ const Stx = () => {
                 <Text fontSize='2xl' fontWeight='semibold' color='light.900'>
                   Transfer Proposal
                 </Text>
-                <Text fontSize='md' fontWeight='regular' color='gray.900'>
-                  Complete the following steps to deploy a proposal for
-                  transferring STX.
+                <Text fontSize='sm' fontWeight='regular' color='gray.900'>
+                  Complete the following steps to deploy a smart contract for
+                  transferring STX from the DAO.
                 </Text>
               </Stack>
               {transferAssetsSteps.map((step, id) => (
@@ -489,7 +756,7 @@ const Stx = () => {
             position='relative'
             bottom='3'
             cursor='pointer'
-            onClick={() => router.back()}
+            onClick={handleGoBack}
             color='gray.900'
             _hover={{
               textDecoration: 'underline',
@@ -499,11 +766,319 @@ const Stx = () => {
             <FaArrowLeft fontSize='0.9rem' />
             <Text>Back</Text>
           </HStack>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl>
-              <ViewStep />
-            </FormControl>
-          </form>
+          {transaction.txId ? (
+            <Stack
+              maxW='md'
+              spacing='8'
+              mx='auto'
+              direction={{ base: 'column', md: 'column' }}
+              justify='space-between'
+              align='center'
+              color='white'
+            >
+              <Stack mb='5' align='center' spacing='3'>
+                <Avatar
+                  size={50}
+                  name='MDP Transfer STX'
+                  variant='bauhaus'
+                  colors={[
+                    '#50DDC3',
+                    '#624AF2',
+                    '#EB00FF',
+                    '#7301FA',
+                    '#25C2A0',
+                  ]}
+                />
+                <Text fontSize='2xl' fontWeight='semibold' color='light.900'>
+                  MDP Transfer STX
+                </Text>
+                <HStack justify='center' my='3'>
+                  <Badge
+                    variant='subtle'
+                    bg='base.800'
+                    color='secondary.900'
+                    px='3'
+                    py='2'
+                  >
+                    <HStack spacing='2'>
+                      <Spinner size='xs' color='secondary.900' speed='0.75s' />
+                      <Text>Deploying contract</Text>
+                    </HStack>
+                  </Badge>
+                </HStack>
+              </Stack>
+              <Stack
+                display='contents'
+                justify='space-between'
+                align='center'
+                spacing='5'
+              >
+                <Stack
+                  justifyContent='space-between'
+                  borderBottom='1px solid'
+                  borderBottomColor='base.500'
+                  flexDirection={{ base: 'column', md: 'row' }}
+                  alignItems='center'
+                  w='100%'
+                >
+                  <Text
+                    color='gray.900'
+                    fontWeight='medium'
+                    mb={{ base: '10px', md: '0px' }}
+                  >
+                    Transferring
+                  </Text>
+                  <Flex
+                    align='center'
+                    flexDirection={{ base: 'column', md: 'row' }}
+                    mb={{ base: '20px', md: '0px' }}
+                  >
+                    <HStack>
+                      <Image
+                        cursor='pointer'
+                        height='15px'
+                        src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                        alt='logo'
+                      />
+                      <Text fontSize='md' fontWeight='medium' color='light.900'>
+                        {transferAmount}
+                      </Text>
+                      <Text fontSize='md' fontWeight='regular' color='gray.900'>
+                        STX
+                      </Text>
+                    </HStack>
+                    <Button
+                      variant='setup'
+                      px='24px'
+                      onClick={() => console.log('edit')}
+                      fontSize='md'
+                      fontWeight='500'
+                    >
+                      Edit
+                    </Button>
+                  </Flex>
+                </Stack>
+                <Stack
+                  justifyContent='space-between'
+                  borderBottom='1px solid'
+                  borderBottomColor='base.500'
+                  flexDirection={{ base: 'column', md: 'row' }}
+                  alignItems='center'
+                  w='100%'
+                >
+                  <Text
+                    color='gray.900'
+                    fontSize='md'
+                    mb={{ base: '10px', md: '0px' }}
+                  >
+                    To
+                  </Text>
+                  <Flex
+                    align='center'
+                    flexDirection={{ base: 'column', md: 'row' }}
+                    mb={{ base: '20px', md: '0px' }}
+                  >
+                    <HStack>
+                      <FiSend fontSize='0.9rem' />
+                      <Text fontSize='md' fontWeight='medium' color='light.900'>
+                        {transferTo && truncate(transferTo, 4, 8)}
+                      </Text>
+                    </HStack>
+                    <Button
+                      variant='setup'
+                      px='24px'
+                      onClick={() => console.log('edit')}
+                      fontSize='md'
+                      fontWeight='500'
+                    >
+                      Edit
+                    </Button>
+                  </Flex>
+                </Stack>
+                <Stack w='100%' spacing='1'>
+                  <Text
+                    color='gray.900'
+                    fontSize='md'
+                    mb={{ base: '10px', md: '0px' }}
+                  >
+                    Details
+                  </Text>
+                  <Text fontSize='md' fontWeight='regular' color='light.900'>
+                    {description && truncate(description, 75, 0)}
+                  </Text>
+                </Stack>
+              </Stack>
+            </Stack>
+          ) : isDeployed ? (
+            <Stack
+              maxW='md'
+              spacing='8'
+              mx='auto'
+              direction={{ base: 'column', md: 'column' }}
+              justify='space-between'
+              align='center'
+              color='white'
+            >
+              <Confetti
+                height={1200}
+                width={1280}
+                recycle={false}
+                numberOfPieces={250}
+                gravity={0.15}
+                colors={['#50DDC3', '#624AF2', '#EB00FF', '#7301FA', '#25C2A0']}
+              />
+              <Stack mb='5' align='center' spacing='3'>
+                <Avatar
+                  size={50}
+                  name='MDP Transfer STX'
+                  variant='bauhaus'
+                  colors={[
+                    '#50DDC3',
+                    '#624AF2',
+                    '#EB00FF',
+                    '#7301FA',
+                    '#25C2A0',
+                  ]}
+                />
+                <Text fontSize='2xl' fontWeight='semibold' color='light.900'>
+                  MDP Transfer STX
+                </Text>
+                <HStack justify='center' my='3'>
+                  <Badge
+                    variant='subtle'
+                    bg='base.800'
+                    color='secondary.900'
+                    px='3'
+                    py='2'
+                  >
+                    <HStack spacing='2'>
+                      <Icon color='secondary.900' as={FaCheckCircle} />
+                      <Text>Deployed</Text>
+                    </HStack>
+                  </Badge>
+                </HStack>
+              </Stack>
+              <Stack
+                display='contents'
+                justify='space-between'
+                align='center'
+                spacing='5'
+              >
+                <Stack
+                  justifyContent='space-between'
+                  borderBottom='1px solid'
+                  borderBottomColor='base.500'
+                  flexDirection={{ base: 'column', md: 'row' }}
+                  alignItems='center'
+                  w='100%'
+                >
+                  <Text
+                    color='gray.900'
+                    fontWeight='medium'
+                    mb={{ base: '10px', md: '0px' }}
+                  >
+                    Transferring
+                  </Text>
+                  <Flex
+                    align='center'
+                    flexDirection={{ base: 'column', md: 'row' }}
+                    mb={{ base: '20px', md: '0px' }}
+                  >
+                    <HStack>
+                      <Image
+                        cursor='pointer'
+                        height='15px'
+                        src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                        alt='logo'
+                      />
+                      <Text fontSize='md' fontWeight='medium' color='light.900'>
+                        {transferAmount}
+                      </Text>
+                      <Text fontSize='md' fontWeight='regular' color='gray.900'>
+                        STX
+                      </Text>
+                    </HStack>
+                    <Button
+                      variant='setup'
+                      px='24px'
+                      onClick={() => console.log('edit')}
+                      fontSize='md'
+                      fontWeight='500'
+                    >
+                      Edit
+                    </Button>
+                  </Flex>
+                </Stack>
+                <Stack
+                  justifyContent='space-between'
+                  borderBottom='1px solid'
+                  borderBottomColor='base.500'
+                  flexDirection={{ base: 'column', md: 'row' }}
+                  alignItems='center'
+                  w='100%'
+                >
+                  <Text
+                    color='gray.900'
+                    fontSize='md'
+                    mb={{ base: '10px', md: '0px' }}
+                  >
+                    To
+                  </Text>
+                  <Flex
+                    align='center'
+                    flexDirection={{ base: 'column', md: 'row' }}
+                    mb={{ base: '20px', md: '0px' }}
+                  >
+                    <HStack>
+                      <FiSend fontSize='0.9rem' />
+                      <Text fontSize='md' fontWeight='medium' color='light.900'>
+                        {transferTo && truncate(transferTo, 4, 8)}
+                      </Text>
+                    </HStack>
+                    <Button
+                      variant='setup'
+                      px='24px'
+                      onClick={() => console.log('edit')}
+                      fontSize='md'
+                      fontWeight='500'
+                    >
+                      Edit
+                    </Button>
+                  </Flex>
+                </Stack>
+                <Stack w='100%' spacing='1'>
+                  <Text
+                    color='gray.900'
+                    fontSize='md'
+                    mb={{ base: '10px', md: '0px' }}
+                  >
+                    Details
+                  </Text>
+                  <Text fontSize='md' fontWeight='regular' color='light.900'>
+                    {description && truncate(description, 75, 0)}
+                  </Text>
+                </Stack>
+              </Stack>
+              <HStack width='full' justify='space-between'>
+                <Button
+                  isFullWidth
+                  bg='secondary.900'
+                  fontSize='md'
+                  size='md'
+                  _hover={{ opacity: 0.9 }}
+                  _active={{ opacity: 1 }}
+                >
+                  Submit proposal
+                </Button>
+              </HStack>
+            </Stack>
+          ) : (
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <FormControl>
+                <ViewStep />
+              </FormControl>
+            </form>
+          )}
         </GridItem>
       </Grid>
     </motion.div>

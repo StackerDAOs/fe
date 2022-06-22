@@ -12,7 +12,7 @@ import {
 // Utils
 import { stxToUstx } from '@common/helpers';
 
-export const DepositButton = ({ amount }: any) => {
+export const DepositButton = ({ title, amount }: any) => {
   const { currentStxAddress } = useUser();
 
   // TODO: make calls to get vault address of organization
@@ -38,9 +38,10 @@ export const DepositButton = ({ amount }: any) => {
 
   return (
     <ContractCallButton
-      title='Deposit'
+      title={!amount ? 'Enter an amount' : title}
       color='white'
       size='sm'
+      disabled={!amount}
       {...getDepositData({ amount: amount })}
     />
   );

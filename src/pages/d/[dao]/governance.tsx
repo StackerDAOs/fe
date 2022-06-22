@@ -2,14 +2,21 @@ import { useRouter } from 'next/router';
 import {
   Box,
   Container,
-  Divider,
   FormControl,
+  Flex,
   Stack,
   HStack,
   Input,
   InputGroup,
   InputRightAddon,
   Text,
+  ButtonGroup,
+  SimpleGrid,
+  Tab,
+  Tabs,
+  TabList,
+  TabPanel,
+  TabPanels,
 } from '@chakra-ui/react';
 
 // Stacks
@@ -25,6 +32,7 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 
 // Components
+import { AssetTable } from '@components/AssetTable';
 import { Card } from '@components/Card';
 import { AppLayout } from '@components/Layout/AppLayout';
 import { Header } from '@components/Header';
@@ -91,7 +99,156 @@ const Governance = () => {
                     exit={FADE_IN_VARIANTS.exit}
                     transition={{ duration: 0.75, type: 'linear' }}
                   >
-                    <Box as='section'>
+                    <Stack spacing={{ base: '8', lg: '6' }}>
+                      <Stack w='auto' mb='10'>
+                        <Card
+                          bg='base.800'
+                          border='1px solid'
+                          borderColor='base.500'
+                        >
+                          <Flex
+                            direction='row'
+                            gap='6'
+                            align='center'
+                            py={{ base: '3', md: '3' }}
+                            px={{ base: '6', md: '6' }}
+                          >
+                            <HStack spacing='2'>
+                              <Text color='light.900' fontWeight='regular'>
+                                Delegated tokens:
+                              </Text>
+                              <Text color='light.900' fontWeight='regular'>
+                                0{' '}
+                                <Text
+                                  as='span'
+                                  color='gray.900'
+                                  fontWeight='medium'
+                                >
+                                  MEGA
+                                </Text>
+                              </Text>
+                            </HStack>
+                            <Stack spacing='3' flex='1'>
+                              <form
+                                onSubmit={handleSubmit((data: any) =>
+                                  console.log({ data }),
+                                )}
+                              >
+                                <FormControl>
+                                  <Controller
+                                    control={control}
+                                    name='delegateAddress'
+                                    defaultValue={
+                                      'ST2ST2H80NP5C9SPR4ENJ1Z9CDM9PKAJVPYWPQZ50'
+                                    }
+                                    render={({
+                                      field: { onChange, value },
+                                    }) => (
+                                      <InputGroup size='md'>
+                                        <Input
+                                          name='delegateAddress'
+                                          color='light.900'
+                                          size='md'
+                                          p='3'
+                                          type='text'
+                                          placeholder='SPKY981...'
+                                          borderColor='base.500'
+                                          onChange={onChange}
+                                          _hover={{ borderColor: 'base.500' }}
+                                          _focus={{
+                                            borderColor: 'secondary.900',
+                                          }}
+                                        />
+                                        <InputRightAddon
+                                          width='6rem'
+                                          color='light.900'
+                                          bg='secondary.900'
+                                          borderColor='secondary.900'
+                                          border='1px solid'
+                                        >
+                                          <ContractCallButton
+                                            title='Delegate'
+                                            size='sm'
+                                            color='light.900'
+                                            bg='secondary.900'
+                                            disabled={value?.length < 40}
+                                            _disabled={{
+                                              bg: 'secondary.900',
+                                              opacity: 0.5,
+                                              cursor: 'not-allowed',
+                                              _hover: {
+                                                bg: 'secondary.900',
+                                                opacity: 0.5,
+                                                cursor: 'not-allowed',
+                                              },
+                                            }}
+                                            _hover={{ bg: 'transparent' }}
+                                            {...contractData}
+                                          />
+                                        </InputRightAddon>
+                                      </InputGroup>
+                                    )}
+                                  />
+                                </FormControl>
+                              </form>
+                            </Stack>
+                          </Flex>
+                        </Card>
+                      </Stack>
+                    </Stack>
+                    <Tabs color='white' variant='unstyled'>
+                      <TabList>
+                        <ButtonGroup bg='base.800' borderRadius='lg' p='1'>
+                          {['Delegates', 'Delegators'].map((item) => (
+                            <Tab
+                              key={item}
+                              fontSize='sm'
+                              borderRadius='lg'
+                              color='gray.900'
+                              px='5'
+                              isFullWidth
+                              w='50%'
+                              _selected={{ bg: 'base.500', color: 'light.900' }}
+                            >
+                              {item}
+                            </Tab>
+                          ))}
+                        </ButtonGroup>
+                      </TabList>
+                      <TabPanels>
+                        <TabPanel px='0'>
+                          <motion.div
+                            variants={FADE_IN_VARIANTS}
+                            initial={FADE_IN_VARIANTS.hidden}
+                            animate={FADE_IN_VARIANTS.enter}
+                            exit={FADE_IN_VARIANTS.exit}
+                            transition={{ duration: 0.25, type: 'linear' }}
+                          >
+                            <AssetTable
+                              color='light.900'
+                              size='lg'
+                              type='fungible'
+                            />
+                          </motion.div>
+                        </TabPanel>
+                        <TabPanel px='0'>
+                          <motion.div
+                            variants={FADE_IN_VARIANTS}
+                            initial={FADE_IN_VARIANTS.hidden}
+                            animate={FADE_IN_VARIANTS.enter}
+                            exit={FADE_IN_VARIANTS.exit}
+                            transition={{ duration: 0.25, type: 'linear' }}
+                          >
+                            <AssetTable
+                              color='light.900'
+                              size='lg'
+                              type='nonFungible'
+                            />
+                          </motion.div>
+                        </TabPanel>
+                      </TabPanels>
+                    </Tabs>
+                    {/* <Box as='section'>
                       <Stack spacing='5'>
                         <Stack
                           spacing='4'
@@ -259,7 +416,7 @@ const Governance = () => {
                           </Card>
                         </Stack>
                       </Stack>
-                    </Box>
+                    </Box> */}
                   </motion.div>
                 </Container>
               </Box>

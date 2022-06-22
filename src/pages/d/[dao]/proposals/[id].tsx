@@ -3,14 +3,19 @@ import { useRouter } from 'next/router';
 import {
   Box,
   Badge,
+  ButtonGroup,
   Container,
   Divider,
   HStack,
-  Icon,
   Progress,
   Stack,
   VStack,
   SimpleGrid,
+  Tab,
+  Tabs,
+  TabPanel,
+  TabList,
+  TabPanels,
   Tag,
   Text,
 } from '@chakra-ui/react';
@@ -19,6 +24,7 @@ import { supabase } from '@utils/supabase';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
+import { AssetTable } from '@components/AssetTable';
 import { Card } from '@components/Card';
 
 // Widgets
@@ -28,13 +34,7 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 import { motion } from 'framer-motion';
 
 // Icons
-import {
-  FaArrowLeft,
-  FaCheckCircle,
-  FaInfoCircle,
-  FaVoteYea,
-} from 'react-icons/fa';
-import { HiX } from 'react-icons/hi';
+import { FaArrowLeft } from 'react-icons/fa';
 
 // Stacks
 import { useCurrentStxAddress } from '@micro-stacks/react';
@@ -51,6 +51,8 @@ import {
 import {
   FungibleConditionCode,
   makeContractSTXPostCondition,
+  makeContractFungiblePostCondition,
+  createAssetInfo,
 } from 'micro-stacks/transactions';
 
 // Utils
@@ -58,6 +60,8 @@ import {
   estimateDays,
   convertToken,
   getPercentage,
+  tokenToNumber,
+  tokenToDecimals,
   truncate,
   stxToUstx,
 } from '@common/helpers';
@@ -114,6 +118,7 @@ const ProposalView = () => {
     votesFor,
     votesAgainst,
     quorumThreshold,
+    executionDelay,
     events,
   } = useProposal({ organization, filterByProposal: proposalPrincipal });
 
@@ -133,6 +138,8 @@ const ProposalView = () => {
             'contractAddress',
             `${proposalContractAddress}.${proposalContractName}`,
           );
+        console.log({ proposalContractAddress });
+        console.log({ proposalContractName });
         if (error) throw error;
         if (data) {
           setState({ ...state, postConditions: data[0].postConditions });
@@ -144,9 +151,27 @@ const ProposalView = () => {
       }
     };
     fetchData();
-  }, [proposalContractAddress, proposalContractName]);
+  }, [proposalContractAddress]);
 
-  console.log({ state });
+  const isEligible = tokenToNumber(Number(balance), 2) > 0;
+  const totalVotes = Number(votesFor) + Number(votesAgainst);
+  const currentVoterEvent = (event: any) =>
+    event?.voter?.value === currentStxAddress;
+  const hasVoted = events?.some(currentVoterEvent);
+  const isInactive = currentBlockHeight < startBlockHeight;
+  const isClosed = currentBlockHeight > Number(endBlockHeight);
+
+  const canExecute =
+    currentBlockHeight >= Number(endBlockHeight) + Number(executionDelay);
+  const isOpen =
+    currentBlockHeight <= endBlockHeight &&
+    currentBlockHeight >= startBlockHeight;
+  const convertedVotesFor = tokenToNumber(Number(votesFor), 2);
+  const convertedVotesAgainst = tokenToNumber(Number(votesAgainst), 2);
+  const convertedTotalVotes = tokenToNumber(Number(totalVotes), 2);
+  const isPassing =
+    convertedVotesFor > convertedVotesAgainst &&
+    convertedTotalVotes >= Number(quorumThreshold);
 
   const currentVoterDelegators = delegatorEvents?.filter(
     (item: any) => item?.who?.value === currentStxAddress,
@@ -181,26 +206,29 @@ const ProposalView = () => {
     const delegatorVotes =
       proposalContractAddress &&
       proposalContractName &&
-      listCV([
-        tupleCV({
-          for: trueCV(),
-          proposal: contractPrincipalCV(
-            proposalContractAddress,
-            proposalContractName,
-          ),
-          delegator: noneCV(),
-        }),
-        tupleCV({
-          for: trueCV(),
-          proposal: contractPrincipalCV(
-            proposalContractAddress,
-            proposalContractName,
-          ),
-          delegator: someCV(standardPrincipalCV(item?.delegator?.value)),
-        }),
-      ]);
+      tupleCV({
+        for: trueCV(),
+        proposal: contractPrincipalCV(
+          proposalContractAddress,
+          proposalContractName,
+        ),
+        delegator: someCV(standardPrincipalCV(item?.delegator?.value)),
+      });
     return delegatorVotes;
   });
+  const n = proposalContractAddress &&
+    proposalContractName && [
+      tupleCV({
+        for: trueCV(),
+        proposal: contractPrincipalCV(
+          proposalContractAddress,
+          proposalContractName,
+        ),
+        delegator: noneCV(),
+      }),
+      ...delegatorsFor,
+    ];
+  const t = listCV(n);
   const delegatorsAgainst = currentVoterDelegators?.map((item: any) => {
     const delegatorVotes =
       proposalContractAddress &&
@@ -234,7 +262,7 @@ const ProposalView = () => {
     proposalContractName &&
     delegatorsFor &&
     delegatorsFor.length > 0
-      ? delegatorsFor
+      ? [t]
       : [delegateVoteFor];
   const functionArgsAgainst =
     proposalContractAddress &&
@@ -250,13 +278,39 @@ const ProposalView = () => {
       ? [contractPrincipalCV(proposalContractAddress, proposalContractName)]
       : [];
 
-  const proposalPostConditions: any = state.postConditions?.postConditions;
+  const proposalPostConditions: any = state.postConditions;
+  const fungibleAsset = proposalPostConditions?.assetAddress;
+
+  const isFungibleAsset = proposalPostConditions?.assetAddress !== undefined;
+
+  const contractAddress = proposalPostConditions?.from?.split('.')[0];
+  const contractName = proposalPostConditions?.from?.split('.')[1];
+  const assetAddress = fungibleAsset?.split('.')[0];
+  const assetName = fungibleAsset?.split('.')[1];
+  const fungibleAssetInfo =
+    assetAddress &&
+    assetName &&
+    createAssetInfo(assetAddress, assetName, 'Mega');
+
+  const concludeContractFungiblePostCondition =
+    contractAddress && contractName && fungibleAssetInfo
+      ? [
+          makeContractFungiblePostCondition(
+            contractAddress,
+            contractName,
+            FungibleConditionCode.Equal,
+            tokenToDecimals(Number(proposalPostConditions?.amount), 2),
+            fungibleAssetInfo,
+          ),
+        ]
+      : [];
+
   const postConditionAddress = proposalPostConditions?.from?.split('.')[0];
   const postConditionName = proposalPostConditions?.from?.split('.')[1];
   const postConditionCode = FungibleConditionCode.Equal;
   const postConditionAmount = stxToUstx(proposalPostConditions?.amount);
   const concludePostConditions =
-    postConditionAddress && postConditionName && currentStxAddress
+    postConditionAddress && postConditionName && currentStxAddress && isPassing
       ? [
           makeContractSTXPostCondition(
             postConditionAddress,
@@ -287,20 +341,10 @@ const ProposalView = () => {
     contractName: votingExtensionName,
     functionName: concludeFunctionName,
     functionArgs: concludeFunctionArgs,
-    postConditions: concludePostConditions,
+    postConditions: isFungibleAsset
+      ? concludeContractFungiblePostCondition
+      : concludePostConditions,
   };
-
-  const totalVotes = Number(votesFor) + Number(votesAgainst);
-  const currentVoterEvent = (event: any) =>
-    event?.voter?.value === currentStxAddress;
-  const hasVoted = events?.some(currentVoterEvent);
-  const isEligible = true;
-  const isInactive = currentBlockHeight < startBlockHeight;
-  const isClosed = currentBlockHeight > endBlockHeight;
-  const isOpen =
-    currentBlockHeight <= endBlockHeight &&
-    currentBlockHeight >= startBlockHeight;
-  const isPassing = Number(votesFor) > Number(votesAgainst);
 
   return (
     <motion.div
@@ -313,22 +357,19 @@ const ProposalView = () => {
       <Box as='section' display='flex' alignItems='center'>
         <Container maxW='5xl'>
           <Box py='5' my='5'>
-            <SimpleGrid
-              columns={{ base: 1, md: 1, lg: 2 }}
-              alignItems='flex-start'
-            >
+            <SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} alignItems='center'>
               <Box as='section'>
                 <VStack
                   align='left'
                   maxW='md'
                   spacing='4'
-                  mb='3'
                   direction={{ base: 'column', md: 'row' }}
                   justify='space-between'
                   color='white'
                 >
                   <Box>
                     <HStack
+                      mb='1'
                       cursor='pointer'
                       onClick={() => router.back()}
                       color='gray.900'
@@ -349,77 +390,7 @@ const ProposalView = () => {
                         {title}
                       </Text>
                     </HStack>
-
-                    <HStack mt='1' mb='5'>
-                      <SimpleGrid
-                        display='flex'
-                        justify='center'
-                        columns={3}
-                        spacing='3'
-                      >
-                        <Tag
-                          size='sm'
-                          bg='transparent'
-                          border='1px solid'
-                          borderColor='base.500'
-                          p='2'
-                        >
-                          {type}
-                        </Tag>
-                        <Tag
-                          size='sm'
-                          bg='transparent'
-                          border='1px solid'
-                          borderColor='base.500'
-                          p='2'
-                        >
-                          {Number(currentBlockHeight) > Number(endBlockHeight)
-                            ? `Closed`
-                            : `Closes in ~ ${estimateDays(
-                                Number(endBlockHeight) -
-                                  Number(currentBlockHeight),
-                              )} days`}
-                        </Tag>
-                        <Tag
-                          size='sm'
-                          bg='transparent'
-                          border='1px solid'
-                          borderColor='base.500'
-                          p='2'
-                        >
-                          2,500 MEGA required
-                        </Tag>
-                      </SimpleGrid>
-                    </HStack>
-                    <Stack my='3'>
-                      <Stack
-                        spacing='4'
-                        direction={{ base: 'column', md: 'row' }}
-                        justify='space-between'
-                        color='white'
-                      >
-                        <Box>
-                          <Text
-                            fontSize='md'
-                            fontWeight='regular'
-                            color='gray.900'
-                          >
-                            Description
-                          </Text>
-                        </Box>
-                      </Stack>
-                      <Text
-                        fontSize='md'
-                        maxW='sm'
-                        _selection={{
-                          bg: 'base.800',
-                          color: 'secondary.900',
-                        }}
-                      >
-                        {description}
-                      </Text>
-                    </Stack>
-                    <Stack my='5'>
+                    <Stack mt='2'>
                       <Stack
                         spacing='4'
                         direction={{ base: 'column', md: 'row' }}
@@ -436,120 +407,185 @@ const ProposalView = () => {
                           </Text>
                         </Box>
                       </Stack>
-                      {isPassing ? (
-                        <HStack justify='space-between'>
-                          <Text
-                            color='secondary.900'
-                            fontSize='sm'
-                            fontWeight='semibold'
-                          >
-                            Yes ({getPercentage(totalVotes, Number(votesFor))}%)
-                          </Text>
-                          <Text
-                            color='gray.900'
-                            fontSize='sm'
-                            fontWeight='semibold'
-                          >
-                            No (
-                            {getPercentage(totalVotes, Number(votesAgainst))}
-                            %)
-                          </Text>
-                        </HStack>
-                      ) : (
-                        <HStack justify='space-between'>
-                          <Text
-                            color='gray.900'
-                            fontSize='sm'
-                            fontWeight='semibold'
-                          >
-                            Yes ({getPercentage(totalVotes, Number(votesFor))}%)
-                          </Text>
-                          <Text
-                            color='secondary.900'
-                            fontSize='sm'
-                            fontWeight='semibold'
-                          >
-                            No (
-                            {getPercentage(totalVotes, Number(votesAgainst))}
-                            %)
-                          </Text>
-                        </HStack>
-                      )}
-                      <Progress
-                        colorScheme='secondary'
-                        size='md'
-                        value={getPercentage(totalVotes, Number(votesFor))}
-                        bg='base.500'
-                      />
+                      <Stack>
+                        <Text
+                          color='gray.900'
+                          fontSize='sm'
+                          fontWeight='semibold'
+                        >
+                          Yes ({convertedVotesFor})
+                        </Text>
+                        <Progress
+                          colorScheme='secondary'
+                          size='md'
+                          value={getPercentage(totalVotes, Number(votesFor))}
+                          bg='base.500'
+                        />
+                      </Stack>
+                      <Stack>
+                        <Text
+                          color='gray.900'
+                          fontSize='sm'
+                          fontWeight='semibold'
+                        >
+                          No ({convertedVotesAgainst})
+                        </Text>
+                        <Progress
+                          colorScheme='whiteAlpha'
+                          size='md'
+                          value={getPercentage(
+                            totalVotes,
+                            Number(votesAgainst),
+                          )}
+                          bg='base.500'
+                        />
+                      </Stack>
+                      <Stack>
+                        <Text
+                          color='gray.900'
+                          fontSize='sm'
+                          fontWeight='semibold'
+                        >
+                          Quorum ({convertedVotesFor + convertedVotesAgainst})
+                        </Text>
+                        <Progress
+                          colorScheme='gray'
+                          size='md'
+                          value={getPercentage(
+                            Number(quorumThreshold),
+                            convertedVotesFor + convertedVotesAgainst,
+                          )}
+                          bg='base.500'
+                        />
+                      </Stack>
                     </Stack>
                   </Box>
+                  <motion.div
+                    variants={SLIDE_UP_BUTTON_VARIANTS}
+                    initial={SLIDE_UP_BUTTON_VARIANTS.hidden}
+                    animate={SLIDE_UP_BUTTON_VARIANTS.enter}
+                    exit={SLIDE_UP_BUTTON_VARIANTS.exit}
+                    transition={{ duration: 0.75, type: 'linear' }}
+                  >
+                    <HStack
+                      width='full'
+                      mt='5'
+                      justifyContent='flex-start'
+                      spacing='6'
+                    >
+                      {!isEligible ? (
+                        <></>
+                      ) : isClosed && !canExecute ? (
+                        <ContractCallButton
+                          title={isPassing ? 'Execute' : 'Conclude'}
+                          color='white'
+                          bg='secondary.900'
+                          isFullWidth
+                          disabled={true}
+                          _disabled={{
+                            bg: 'secondary.900',
+                            opacity: 0.5,
+                            cursor: 'not-allowed',
+                            _hover: {
+                              bg: 'secondary.900',
+                              opacity: 0.5,
+                              cursor: 'not-allowed',
+                            },
+                          }}
+                          {...concludeProposal}
+                        />
+                      ) : canExecute && !concluded ? (
+                        <ContractCallButton
+                          title={isPassing ? 'Execute' : 'Conclude'}
+                          color='white'
+                          bg='secondary.900'
+                          isFullWidth
+                          disabled={concluded}
+                          _disabled={{
+                            bg: 'secondary.900',
+                            opacity: 0.5,
+                            cursor: 'not-allowed',
+                            _hover: {
+                              bg: 'secondary.900',
+                              opacity: 0.5,
+                              cursor: 'not-allowed',
+                            },
+                          }}
+                          {...concludeProposal}
+                        />
+                      ) : isInactive || hasVoted || concluded ? (
+                        <></>
+                      ) : (
+                        <>
+                          <ContractCallButton
+                            title='Approve'
+                            bg='secondary.900'
+                            color='light.900'
+                            isFullWidth
+                            disabled={hasVoted}
+                            _disabled={{
+                              bg: 'base.800',
+                              opacity: 0.5,
+                              cursor: 'not-allowed',
+                              _hover: {
+                                bg: 'base.800',
+                                opacity: 0.5,
+                                cursor: 'not-allowed',
+                              },
+                            }}
+                            {...voteFor}
+                          />
+                          <ContractCallButton
+                            title='Reject'
+                            variant='outline'
+                            bg='base.900'
+                            color='light.900'
+                            isFullWidth
+                            disabled={hasVoted}
+                            _disabled={{
+                              bg: 'base.600',
+                              opacity: 0.5,
+                              cursor: 'not-allowed',
+                              _hover: {
+                                bg: 'base.600',
+                                opacity: 0.5,
+                                cursor: 'not-allowed',
+                              },
+                            }}
+                            {...voteAgainst}
+                          />
+                        </>
+                      )}
+                    </HStack>
+                  </motion.div>
                 </VStack>
               </Box>
               <Box as='section' display='flex' justifyContent='center'>
                 <Container>
-                  <HStack justify='center' mb='5'>
-                    <Badge
-                      variant='subtle'
-                      bg='base.800'
-                      color='gray.900'
-                      px='3'
-                      py='2'
-                    >
-                      {hasVoted ? (
-                        <HStack spacing='2'>
-                          <Icon color='secondary.900' as={FaCheckCircle} />
-                          <Text color='light.900' fontWeight='regular'>
-                            You already voted!
-                          </Text>
-                          <Text color='light.900' fontWeight='regular'>
-                            {convertToken(balance.toString(), 2)}{' '}
-                            <Text
-                              as='span'
-                              color='gray.900'
-                              fontWeight='medium'
-                            >
-                              MEGA
-                            </Text>
-                          </Text>
-                        </HStack>
-                      ) : isEligible ? (
-                        <HStack spacing='2'>
-                          <Icon color='secondary.900' as={FaCheckCircle} />
-                          <Text color='light.900' fontWeight='regular'>
-                            Voting power:
-                          </Text>
-                          <Text color='light.900' fontWeight='regular'>
-                            {convertToken(balance.toString(), 2)}{' '}
-                            <Text
-                              as='span'
-                              color='gray.900'
-                              fontWeight='medium'
-                            >
-                              MEGA
-                            </Text>
-                          </Text>
-                        </HStack>
-                      ) : (
-                        <HStack spacing='2'>
-                          <Icon color='secondary.900' as={FaInfoCircle} />
-                          <Text color='light.900' fontWeight='regular'>
-                            Not enough voting power:
-                          </Text>
-                          <Text color='light.900' fontWeight='regular'>
-                            {convertToken(balance.toString(), 2)}{' '}
-                            <Text
-                              as='span'
-                              color='gray.900'
-                              fontWeight='medium'
-                            >
-                              MEGA
-                            </Text>
-                          </Text>
-                        </HStack>
-                      )}
-                    </Badge>
-                  </HStack>
                   <Card bg='base.900' border='1px solid' borderColor='base.500'>
+                    <Box
+                      py={{ base: '3', md: '3' }}
+                      px={{ base: '6', md: '6' }}
+                      bg='base.800'
+                      borderRdaius='lg'
+                      align='center'
+                    >
+                      <HStack justify='space-between'>
+                        <Text
+                          fontSize='sm'
+                          fontWeight='medium'
+                          color='gray.900'
+                        >
+                          Voting power
+                        </Text>
+                        <Text color='light.900' fontWeight='regular'>
+                          {convertToken(balance.toString(), 2)}{' '}
+                          <Text as='span' color='gray.900' fontWeight='medium'>
+                            MEGA
+                          </Text>
+                        </Text>
+                      </HStack>
+                    </Box>
                     <Box
                       py={{ base: '3', md: '3' }}
                       px={{ base: '6', md: '6' }}
@@ -571,17 +607,21 @@ const ProposalView = () => {
                           >
                             Executed
                           </Badge>
-                        ) : isClosed ? (
-                          <Badge colorScheme='red' size='sm' px='3' py='2'>
-                            Ready for execution
+                        ) : isClosed && !canExecute ? (
+                          <Badge colorScheme='blue' size='sm' px='3' py='2'>
+                            Voting completed
+                          </Badge>
+                        ) : canExecute ? (
+                          <Badge colorScheme='green' size='sm' px='3' py='2'>
+                            Ready to execute
                           </Badge>
                         ) : isOpen ? (
                           <Badge colorScheme='green' size='sm' px='3' py='2'>
-                            Active
+                            Live
                           </Badge>
                         ) : (
                           <Badge colorScheme='yellow' size='sm' px='3' py='2'>
-                            Inactive
+                            Pending
                           </Badge>
                         )}
                       </HStack>
@@ -639,6 +679,8 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
+                            {/* TODO: get executionDelay from voting
+                            contracts and add to endBlockHeight */}
                             {Number(endBlockHeight)}
                           </Text>
                         </HStack>
@@ -678,7 +720,7 @@ const ProposalView = () => {
                                   Number(startBlockHeight) -
                                     Number(currentBlockHeight),
                                 )} days`
-                              : `Started`}
+                              : `Now`}
                           </Text>
                         </HStack>
                         <HStack justify='space-between'>
@@ -705,85 +747,6 @@ const ProposalView = () => {
                       </Stack>
                     </Stack>
                   </Card>
-                  <motion.div
-                    variants={SLIDE_UP_BUTTON_VARIANTS}
-                    initial={SLIDE_UP_BUTTON_VARIANTS.hidden}
-                    animate={SLIDE_UP_BUTTON_VARIANTS.enter}
-                    exit={SLIDE_UP_BUTTON_VARIANTS.exit}
-                    transition={{ duration: 0.75, type: 'linear' }}
-                  >
-                    <HStack
-                      width='full'
-                      mt='5'
-                      justifyContent='flex-start'
-                      spacing='6'
-                    >
-                      {isClosed ? (
-                        <ContractCallButton
-                          title='Execute'
-                          color='white'
-                          bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                          isFullWidth
-                          disabled={concluded}
-                          _disabled={{
-                            bgGradient:
-                              'linear(to-br, secondaryGradient.900, secondary.900)',
-                            opacity: 0.5,
-                            cursor: 'not-allowed',
-                            _hover: {
-                              bgGradient:
-                                'linear(to-br, secondaryGradient.900, secondary.900)',
-                              opacity: 0.5,
-                              cursor: 'not-allowed',
-                            },
-                          }}
-                          {...concludeProposal}
-                        />
-                      ) : isInactive ? (
-                        <></>
-                      ) : (
-                        <>
-                          <ContractCallButton
-                            title='Approve'
-                            color='white'
-                            bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                            isFullWidth
-                            disabled={hasVoted}
-                            _disabled={{
-                              bgGradient:
-                                'linear(to-br, secondaryGradient.900, secondary.900)',
-                              opacity: 0.5,
-                              cursor: 'not-allowed',
-                              _hover: {
-                                bgGradient:
-                                  'linear(to-br, secondaryGradient.900, secondary.900)',
-                                opacity: 0.5,
-                                cursor: 'not-allowed',
-                              },
-                            }}
-                            {...voteFor}
-                          />
-                          <ContractCallButton
-                            title='Reject'
-                            color='white'
-                            isFullWidth
-                            disabled={hasVoted}
-                            _disabled={{
-                              bg: 'base.600',
-                              opacity: 0.5,
-                              cursor: 'not-allowed',
-                              _hover: {
-                                bg: 'base.600',
-                                opacity: 0.5,
-                                cursor: 'not-allowed',
-                              },
-                            }}
-                            {...voteAgainst}
-                          />
-                        </>
-                      )}
-                    </HStack>
-                  </motion.div>
                 </Container>
               </Box>
             </SimpleGrid>
@@ -795,10 +758,10 @@ const ProposalView = () => {
             exit={FADE_IN_VARIANTS.exit}
             transition={{ duration: 0.75, type: 'linear' }}
           >
-            <Box as='section'>
+            {/* <Box as='section'>
               <Stack spacing={{ base: '8', lg: '6' }}>
                 <Stack w='auto'>
-                  <Box as='section'>
+                  <Box as='section' mb='10'>
                     <Stack spacing='5'>
                       <Stack
                         spacing='4'
@@ -886,6 +849,91 @@ const ProposalView = () => {
                         ),
                       )}
                     </Box>
+                  </Box>
+                </Stack>
+              </Stack>
+            </Box> */}
+            <Box as='section'>
+              <Stack spacing={{ base: '8', lg: '6' }}>
+                <Stack w='auto'>
+                  <Box as='section'>
+                    <Tabs color='white' variant='unstyled'>
+                      <TabList>
+                        <ButtonGroup bg='base.800' borderRadius='lg' p='1'>
+                          {['Details', 'Activity'].map((item) => (
+                            <Tab
+                              key={item}
+                              fontSize='sm'
+                              borderRadius='lg'
+                              color='gray.900'
+                              px='5'
+                              isFullWidth
+                              w='50%'
+                              _selected={{
+                                bg: 'base.500',
+                                color: 'light.900',
+                              }}
+                            >
+                              {item}
+                            </Tab>
+                          ))}
+                        </ButtonGroup>
+                      </TabList>
+                      <TabPanels>
+                        <TabPanel px='0'>
+                          <motion.div
+                            variants={FADE_IN_VARIANTS}
+                            initial={FADE_IN_VARIANTS.hidden}
+                            animate={FADE_IN_VARIANTS.enter}
+                            exit={FADE_IN_VARIANTS.exit}
+                            transition={{ duration: 0.25, type: 'linear' }}
+                          >
+                            <Stack my='3'>
+                              <Stack
+                                spacing='4'
+                                direction={{ base: 'column', md: 'row' }}
+                                justify='space-between'
+                                color='white'
+                              >
+                                <Box>
+                                  <Text
+                                    fontSize='md'
+                                    fontWeight='regular'
+                                    color='gray.900'
+                                  >
+                                    Description
+                                  </Text>
+                                </Box>
+                              </Stack>
+                              <Text
+                                fontSize='md'
+                                _selection={{
+                                  bg: 'base.800',
+                                  color: 'secondary.900',
+                                }}
+                              >
+                                {description}
+                              </Text>
+                            </Stack>
+                          </motion.div>
+                        </TabPanel>
+                        <TabPanel px='0'>
+                          <motion.div
+                            variants={FADE_IN_VARIANTS}
+                            initial={FADE_IN_VARIANTS.hidden}
+                            animate={FADE_IN_VARIANTS.enter}
+                            exit={FADE_IN_VARIANTS.exit}
+                            transition={{ duration: 0.25, type: 'linear' }}
+                          >
+                            <AssetTable
+                              color='light.900'
+                              size='lg'
+                              type='fungible'
+                            />
+                          </motion.div>
+                        </TabPanel>
+                      </TabPanels>
+                    </Tabs>
                   </Box>
                 </Stack>
               </Stack>

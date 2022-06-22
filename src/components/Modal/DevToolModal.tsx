@@ -14,9 +14,9 @@ export const DevToolModal = ({ title, children }: any) => {
   return (
     <>
       <Button
+        variant='link'
         cursor='pointer'
         color='light.900'
-        bg='secondary.900'
         fontWeight='medium'
         fontSize='xs'
         size='xs'
@@ -34,7 +34,7 @@ export const DevToolModal = ({ title, children }: any) => {
       >
         <ModalOverlay />
         <ModalContent bg='base.900' color='light.900'>
-          <ModalHeader>Admin</ModalHeader>
+          <ModalHeader>Dev Tools</ModalHeader>
           {children}
           <ModalFooter>
             <Button onClick={onClose}>Cancel</Button>

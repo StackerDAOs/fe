@@ -66,7 +66,7 @@ export const ContractCallButton = (props: ButtonProps) => {
   const onFinish = useCallback((data: FinishedTxData) => {
     setTransaction({ txId: data.txId, isPending: true });
     toast({
-      duration: 7500,
+      duration: 2500,
       isClosable: true,
       position: 'top-right',
       render: () => (
@@ -78,7 +78,7 @@ export const ContractCallButton = (props: ButtonProps) => {
                   Transaction Submitted
                 </Text>
                 <Text fontSize='sm' color='gray.900'>
-                  Your transaction was successfully submitted.
+                  Your transaction was submitted successfully.
                 </Text>
               </Stack>
               <ButtonGroup variant='link' size='sm' spacing='2'>
@@ -113,7 +113,7 @@ export const ContractCallButton = (props: ButtonProps) => {
       onContractCall();
     }
     toast({
-      duration: 5000,
+      duration: 2500,
       isClosable: true,
       position: 'top-right',
       render: () => (
@@ -163,8 +163,6 @@ export const ContractCallButton = (props: ButtonProps) => {
     postConditions,
     onFinish,
   });
-
-  console.log('rendering...');
 
   return (
     <Button

@@ -11,12 +11,22 @@ export const convertToken = (token: string, decimals: number) => {
   return (parseInt(token) / convertWithDecimals).toLocaleString('en-US');
 };
 
+export const tokenToNumber = (amount: number, decimals: number) => {
+  const convertWithDecimals = Math.pow(10, decimals);
+  return (amount / convertWithDecimals);
+};
+
 export const ustxToStx = (uStx: string) => {
   return (parseInt(uStx) / 1000000).toLocaleString('en-US');
 };
 
 export const stxToUstx = (stx: string) => {
   return parseInt(stx) * 1000000;
+};
+
+export const tokenToDecimals = (amount: number, decimals: number) => {
+  const convertWithDecimals = Math.pow(10, parseInt(decimals.toString()));
+  return amount * convertWithDecimals;
 };
 
 export const pluckSourceCode = (sourceCode: string, param: string) => {
@@ -29,10 +39,10 @@ export const estimateDays = (blocksUntil: number) => {
   return Math.round(blocksUntil * 10 / 1440);
 };
 
-export const getPercentage = (totalVotes: number, votes: number) => {
-  if (isNaN(Math.round((votes / totalVotes) * 100))) {
+export const getPercentage = (totalSupply: number, totalVotes: number) => {
+  if (isNaN((totalVotes / totalSupply) * 100)) {
     return 0;
   } else {
-    return Math.round((votes / totalVotes) * 100);
+    return (totalVotes / totalSupply) * 100;
   }
 };
