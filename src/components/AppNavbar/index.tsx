@@ -74,7 +74,6 @@ export const AppNavbar = () => {
           url: network.getCoreApiUrl(),
           principal: currentStxAddress || '',
         });
-        console.log({ stxBalance });
         const balance = stxBalance?.balance?.toString() || '0';
         setBalance(ustxToStx(balance));
         const data = await fetchNamesByAddress({
