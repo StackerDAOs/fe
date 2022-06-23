@@ -108,10 +108,11 @@ export const ContractCallButton = (props: ButtonProps) => {
     });
   }, []);
 
-  const onComplete = useCallback((data: FinishedTxData) => {
+  const onComplete = useCallback((data: any) => {
     if (onContractCall) {
       onContractCall();
     }
+    console.log({ data });
     toast({
       duration: 2500,
       isClosable: true,
@@ -135,8 +136,8 @@ export const ContractCallButton = (props: ButtonProps) => {
                   target='_blank'
                   href={
                     process.env.NODE_ENV !== 'production'
-                      ? `http://localhost:8000/txid/${data.txId}?chain=testnet`
-                      : `https://explorer.stacks.co/txid/${data.txId}?chain=mainnet`
+                      ? `http://localhost:8000/txid/${data.tx_id}?chain=testnet`
+                      : `https://explorer.stacks.co/txid/${data.tx_id}?chain=mainnet`
                   }
                 >
                   View transaction

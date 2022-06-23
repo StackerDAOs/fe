@@ -52,15 +52,17 @@ export const Header = () => {
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        const symbol: any = await fetchReadOnlyFunction({
-          network,
-          contractAddress,
-          contractName,
-          senderAddress: contractAddress,
-          functionArgs: [],
-          functionName: 'get-symbol',
-        });
-        setState({ ...state, symbol });
+        if (contractAddress) {
+          const symbol: any = await fetchReadOnlyFunction({
+            network,
+            contractAddress,
+            contractName,
+            senderAddress: contractAddress,
+            functionArgs: [],
+            functionName: 'get-symbol',
+          });
+          setState({ ...state, symbol });
+        }
       } catch (error) {
         console.error(error);
       }
@@ -107,7 +109,6 @@ export const Header = () => {
 
   const Governance = () => {
     const { symbol } = state;
-    console.log({ userBalance });
     const balance = defaultTo(userBalance, 0);
     const tokenBalance = defaultTo(convertToken(balance.toString(), 2), 0);
     return (
@@ -133,11 +134,12 @@ export const Header = () => {
   }
 
   return (
-    <Stack spacing={{ base: '6', lg: '4' }} my='3'>
+    <Stack spacing={{ base: '6', lg: '4' }} mt='5'>
       <Container>
         <Stack
           spacing='2'
-          my='4'
+          mt='4'
+          mb='2'
           direction={{ base: 'column', md: 'row' }}
           justify='flex-start'
           color='white'
@@ -166,15 +168,6 @@ export const Header = () => {
                   >
                     {organization?.name}
                   </Heading>
-                  {/* <Text
-                    as='span'
-                    pl='1'
-                    fontSize='3xl'
-                    color='gray.900'
-                    fontWeight='regular'
-                  >
-                    DAO
-                  </Text> */}
                 </HStack>
               </a>
             </Link>

@@ -1,17 +1,13 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
-  Badge,
   Box,
   Button,
   Container,
   Stack,
   HStack,
-  Progress,
   SimpleGrid,
   Skeleton,
   Text,
-  VStack,
 } from '@chakra-ui/react';
 
 // Stacks
@@ -33,8 +29,6 @@ import { AppLayout } from '@components/Layout/AppLayout';
 import { ProposalCard } from '@components/cards';
 import { EmptyState } from '@components/EmptyState';
 import { Header } from '@components/Header';
-import { DepositModal } from '@components/Modal/DepositModal';
-// import { VaultActionPopover } from '@components/VaultActionPopover';
 
 // Widgets
 import { ContractCallButton } from '@widgets/ContractCallButton';
@@ -43,7 +37,7 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 import { motion } from 'framer-motion';
 
 // Utils
-import { getPercentage, truncate } from '@common/helpers';
+import { truncate } from '@common/helpers';
 
 const Proposals = () => {
   const router = useRouter();
@@ -181,7 +175,7 @@ const Proposals = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Box as='section'>
+      {/* <Box as='section'>
         <Container maxW='5xl'>
           <Stack spacing={{ base: '8', lg: '6' }}>
             <Stack w='auto'>
@@ -215,9 +209,6 @@ const Proposals = () => {
                                     proposed.
                                   </Text>
                                 </Box>
-                                <HStack spacing='8'>
-                                  <DepositModal title='Create proposal' />
-                                </HStack>
                               </Stack>
                             </Stack>
                             {submissions?.length > 0 ? (
@@ -240,7 +231,7 @@ const Proposals = () => {
             </Stack>
           </Stack>
         </Container>
-      </Box>
+      </Box> */}
       <Box as='section' mb='5'>
         <Container maxW='5xl'>
           <Stack spacing={{ base: '8', lg: '6' }}>
@@ -303,7 +294,7 @@ const Proposals = () => {
                         </Stack>
                       </Stack>
                       <SimpleGrid
-                        columns={{ base: 1, md: 2 }}
+                        columns={{ base: 1, md: 3 }}
                         spacing='6'
                         mb='10'
                         color='white'

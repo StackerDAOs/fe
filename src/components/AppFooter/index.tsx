@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
-  Badge,
   Box,
   FormControl,
   FormLabel,
   Input,
-  Icon,
   HStack,
   VStack,
   ModalBody,

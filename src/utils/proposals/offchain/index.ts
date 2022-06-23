@@ -1,7 +1,7 @@
 import { traitPrincipal } from "@common/constants";
 
 export const offChain = (description: string, proposer: string | undefined = 'StackerDAOs') => `
-  ;; Title: SDP Offchain Proposal
+  ;; Title: SDP Survey Proposal
   ;; Author: ${proposer}
   ;; Description: ${description}
   ;; Type: Survey
