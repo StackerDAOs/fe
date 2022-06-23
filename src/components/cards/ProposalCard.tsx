@@ -54,51 +54,19 @@ export const ProposalCard = ({
   const statusBadge = (
     <>
       {concluded ? (
-        <Badge
-          colorScheme='secondary'
-          size='sm'
-          position='absolute'
-          top='3'
-          right='3'
-          px='4'
-          py='2'
-        >
+        <Badge colorScheme='secondary' size='sm' px='4' py='2'>
           Executed
         </Badge>
       ) : isClosed ? (
-        <Badge
-          colorScheme='blue'
-          size='sm'
-          position='absolute'
-          top='3'
-          right='3'
-          px='4'
-          py='2'
-        >
+        <Badge colorScheme='blue' size='sm' px='4' py='2'>
           Voting compeleted
         </Badge>
       ) : isOpen ? (
-        <Badge
-          colorScheme='green'
-          size='sm'
-          position='absolute'
-          top='3'
-          right='3'
-          px='4'
-          py='2'
-        >
+        <Badge colorScheme='green' size='sm' px='4' py='2'>
           Live
         </Badge>
       ) : (
-        <Badge
-          colorScheme='yellow'
-          size='sm'
-          position='absolute'
-          top='3'
-          right='3'
-          px='4'
-          py='2'
-        >
+        <Badge colorScheme='yellow' size='sm' px='4' py='2'>
           Pending
         </Badge>
       )}
@@ -107,7 +75,6 @@ export const ProposalCard = ({
 
   return (
     <motion.div
-      key={Math.random()}
       variants={FADE_IN_VARIANTS}
       initial={FADE_IN_VARIANTS.hidden}
       animate={FADE_IN_VARIANTS.enter}
@@ -120,12 +87,12 @@ export const ProposalCard = ({
             bg='base.800'
             position='relative'
             px={{ base: '6', md: '6' }}
-            py={{ base: '6', md: '6' }}
+            pt={{ base: '3', md: '3' }}
+            pb={{ base: '6', md: '6' }}
             _hover={{
               cursor: 'pointer',
             }}
           >
-            {statusBadge}
             <Stack direction='row'>
               <Stack
                 spacing='4'
@@ -136,10 +103,12 @@ export const ProposalCard = ({
                 justify='space-between'
                 color='white'
               >
+                <HStack>{statusBadge}</HStack>
+
                 <Stack>
                   <HStack spacing='3' justify='space-between'>
                     <Stack direction='column' spacing='3'>
-                      <HStack align='flex-end'>
+                      <HStack align='flex-start'>
                         <Avatar
                           size={30}
                           name={title}
@@ -189,24 +158,6 @@ export const ProposalCard = ({
                         colorScheme='whiteAlpha'
                         size='md'
                         value={getPercentage(totalVotes, Number(votesAgainst))}
-                        bg='base.500'
-                      />
-                    </Stack>
-                    <Stack spacing='3'>
-                      <Text
-                        color='gray.900'
-                        fontSize='sm'
-                        fontWeight='semibold'
-                      >
-                        Quorum ({convertedVotesFor + convertedVotesAgainst})
-                      </Text>
-                      <Progress
-                        colorScheme='gray'
-                        size='md'
-                        value={getPercentage(
-                          12500, // TODO: get quorum from contract
-                          convertedVotesFor + convertedVotesAgainst,
-                        )}
                         bg='base.500'
                       />
                     </Stack>
