@@ -84,226 +84,204 @@ const DAODashboard = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Box as='section'>
-        <Container maxW='5xl'>
-          <Stack spacing={{ base: '8', lg: '6' }} my='8'>
-            <Container mb='10' pb='10'>
-              <SimpleGrid
-                columns={{ base: 1, md: 2 }}
-                spacing='10'
-                align='baseline'
-              >
-                <Stack>
-                  <Stack spacing='5'>
+      <Container>
+        <Stack spacing={{ base: '8', lg: '6' }}>
+          <Container>
+            <SimpleGrid
+              columns={{ base: 1, md: 2 }}
+              spacing='10'
+              align='space-between'
+              justify='space-between'
+              my='6'
+            >
+              <Stack>
+                <Stack spacing='5'>
+                  <Stack
+                    spacing='4'
+                    direction={{ base: 'column', md: 'row' }}
+                    justify='space-between'
+                    alignItems='center'
+                    color='white'
+                  >
+                    <Box>
+                      <Text fontSize='lg' fontWeight='medium'>
+                        Activity
+                      </Text>
+                      <Text color='gray.900' fontSize='sm'>
+                        View the latest proposal activity.
+                      </Text>
+                    </Box>
+                  </Stack>
+                </Stack>
+                <BarChart />
+              </Stack>
+              <Stack align='flex-end'>
+                <Card bg='base.900' minW='lg'>
+                  <Stack spacing='0'>
                     <Stack
-                      spacing='4'
-                      direction={{ base: 'column', md: 'row' }}
-                      justify='space-between'
-                      color='white'
+                      align='flex-start'
+                      bg='base.800'
+                      borderRadius='lg'
+                      px={{ base: '6', md: '6' }}
+                      py={{ base: '3', md: '3' }}
                     >
-                      <Box>
-                        <Text fontSize='2xl' fontWeight='medium'>
-                          Activity
+                      <Text color='light.900' fontSize='md' fontWeight='medium'>
+                        Deposit
+                      </Text>
+                    </Stack>
+                    <Stack
+                      px={{ base: '6', md: '6' }}
+                      py={{ base: '6', md: '6' }}
+                      spacing='6'
+                    >
+                      <HStack
+                        justify='space-between'
+                        align='center'
+                        spacing='2'
+                      >
+                        <VStack align='flex-start' spacing='0'>
+                          <FormControl>
+                            <Input
+                              color='light.900'
+                              py='1'
+                              px='2'
+                              maxW='8em'
+                              type='tel'
+                              bg='base.900'
+                              border='none'
+                              fontSize='2xl'
+                              autoComplete='off'
+                              placeholder='0'
+                              value={depositAmount}
+                              onInput={handleInputDeposit}
+                              _focus={{
+                                border: 'none',
+                              }}
+                            />
+                          </FormControl>
+                          <HStack px='2'>
+                            <Image
+                              cursor='pointer'
+                              height='15px'
+                              src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
+                              alt='logo'
+                            />
+
+                            <Text
+                              fontSize='md'
+                              fontWeight='regular'
+                              color='gray.900'
+                            >
+                              STX
+                            </Text>
+                          </HStack>
+                        </VStack>
+
+                        <HStack>
+                          <Button
+                            color='white'
+                            size='sm'
+                            _hover={{ opacity: 0.9 }}
+                            _active={{ opacity: 1 }}
+                          >
+                            Max
+                          </Button>
+                        </HStack>
+                      </HStack>
+                      <Stack w='100%'>
+                        <DepositButton title='Deposit' amount={depositAmount} />
+                        <Text
+                          color='gray.900'
+                          textAlign='center'
+                          fontSize='sm'
+                          fontWeight='regular'
+                        >
+                          Your wallet balance: {balance} STX
                         </Text>
-                        <Text color='gray.900' fontSize='sm'>
-                          View the latest proposal activity across the DAO.
-                        </Text>
-                      </Box>
+                      </Stack>
                     </Stack>
                   </Stack>
-                  <BarChart />
-                </Stack>
-                <Stack>
-                  <Card bg='base.900'>
-                    <Stack spacing='0'>
-                      <Stack
-                        align='flex-start'
-                        bg='base.800'
-                        borderRadius='lg'
-                        px={{ base: '6', md: '6' }}
-                        py={{ base: '3', md: '3' }}
-                      >
-                        <Text
-                          color='light.900'
-                          fontSize='md'
-                          fontWeight='medium'
-                        >
-                          Deposit
-                        </Text>
-                      </Stack>
-                      <Stack
-                        px={{ base: '6', md: '6' }}
-                        py={{ base: '6', md: '6' }}
-                        spacing='6'
-                      >
-                        <HStack
-                          justify='space-between'
-                          align='center'
-                          spacing='2'
-                        >
-                          <VStack align='flex-start' spacing='0'>
-                            <FormControl>
-                              <Input
-                                color='light.900'
-                                py='1'
-                                px='2'
-                                maxW='8em'
-                                type='tel'
-                                bg='base.900'
-                                border='none'
-                                fontSize='2xl'
-                                autocomplete='off'
-                                placeholder='0'
-                                value={depositAmount}
-                                onInput={handleInputDeposit}
-                                _focus={{
-                                  border: 'none',
-                                }}
-                              />
-                            </FormControl>
-                            <HStack px='2'>
-                              <Image
-                                cursor='pointer'
-                                height='15px'
-                                src='https://cryptologos.cc/logos/stacks-stx-logo.png?v=022'
-                                alt='logo'
-                              />
-
-                              <Text
-                                fontSize='md'
-                                fontWeight='regular'
-                                color='gray.900'
-                              >
-                                STX
-                              </Text>
-                            </HStack>
-                          </VStack>
-
-                          <HStack>
-                            <Button
-                              color='white'
-                              size='sm'
-                              _hover={{ opacity: 0.9 }}
-                              _active={{ opacity: 1 }}
-                            >
-                              Max
-                            </Button>
-                          </HStack>
-                        </HStack>
-                        <Stack w='100%'>
-                          <DepositButton
-                            title='Deposit'
-                            amount={depositAmount}
-                          />
-                          <Text
-                            color='gray.900'
-                            textAlign='center'
-                            fontSize='sm'
-                            fontWeight='regular'
-                          >
-                            Your wallet balance: {balance} STX
-                          </Text>
-                        </Stack>
-                      </Stack>
-                    </Stack>
-                  </Card>
-                </Stack>
-              </SimpleGrid>
-              <Stack spacing='5' mt='6'>
-                <Stack
-                  spacing='4'
-                  my='3'
-                  direction={{ base: 'column', md: 'row' }}
-                  justify='space-between'
-                  align='flex-end'
-                  color='white'
-                >
-                  <Box>
-                    <Text fontSize='2xl' fontWeight='medium'>
-                      Assets
-                    </Text>
-                    <Text color='gray.900' fontSize='sm'>
-                      List of shared assets owned by the DAO.
-                    </Text>
-                  </Box>
-                  {/* <Link href={`/d/${dao}/vault`}>
-                    <Text
-                      as='a'
-                      cursor='pointer'
-                      color='gray.900'
-                      fontSize='sm'
-                      fontWeight='regular'
-                      textDecoration='underline'
-                    >
-                      View more
-                    </Text>
-                  </Link> */}
-                </Stack>
+                </Card>
               </Stack>
-              <motion.div
-                variants={FADE_IN_VARIANTS}
-                initial={FADE_IN_VARIANTS.hidden}
-                animate={FADE_IN_VARIANTS.enter}
-                exit={FADE_IN_VARIANTS.exit}
-                transition={{ duration: 0.25, type: 'linear' }}
+            </SimpleGrid>
+            <Stack spacing='5'>
+              <Stack
+                spacing='4'
+                my='6'
+                direction={{ base: 'column', md: 'row' }}
+                justify='space-between'
+                alignItems='center'
+                color='white'
               >
-                <Tabs color='white' variant='unstyled'>
-                  <TabList>
-                    <ButtonGroup bg='base.800' borderRadius='lg' p='1'>
-                      {['Coins', 'Collectibles'].map((item) => (
-                        <Tab
-                          key={item}
-                          fontSize='sm'
-                          borderRadius='lg'
-                          color='gray.900'
-                          px='5'
-                          isFullWidth
-                          w='50%'
-                          _selected={{ bg: 'base.500', color: 'light.900' }}
-                        >
-                          {item}
-                        </Tab>
-                      ))}
-                    </ButtonGroup>
-                  </TabList>
-                  <TabPanels>
-                    <TabPanel px='0'>
-                      <motion.div
-                        variants={FADE_IN_VARIANTS}
-                        initial={FADE_IN_VARIANTS.hidden}
-                        animate={FADE_IN_VARIANTS.enter}
-                        exit={FADE_IN_VARIANTS.exit}
-                        transition={{ duration: 0.25, type: 'linear' }}
+                <Box>
+                  <Text fontSize='lg' fontWeight='medium'>
+                    Assets
+                  </Text>
+                  <Text color='gray.900' fontSize='sm'>
+                    List of shared assets owned by the DAO
+                  </Text>
+                </Box>
+              </Stack>
+            </Stack>
+            <motion.div
+              variants={FADE_IN_VARIANTS}
+              initial={FADE_IN_VARIANTS.hidden}
+              animate={FADE_IN_VARIANTS.enter}
+              exit={FADE_IN_VARIANTS.exit}
+              transition={{ duration: 0.25, type: 'linear' }}
+            >
+              <Tabs color='white' variant='unstyled'>
+                <TabList>
+                  <ButtonGroup bg='base.800' borderRadius='lg' p='1'>
+                    {['Coins', 'Collectibles'].map((item) => (
+                      <Tab
+                        key={item}
+                        fontSize='sm'
+                        borderRadius='lg'
+                        color='gray.900'
+                        px='5'
+                        isFullWidth
+                        w='50%'
+                        _selected={{ bg: 'base.500', color: 'light.900' }}
                       >
-                        <AssetTable
-                          color='light.900'
-                          size='lg'
-                          type='fungible'
-                        />
-                      </motion.div>
-                    </TabPanel>
-                    <TabPanel px='0'>
-                      <motion.div
-                        variants={FADE_IN_VARIANTS}
-                        initial={FADE_IN_VARIANTS.hidden}
-                        animate={FADE_IN_VARIANTS.enter}
-                        exit={FADE_IN_VARIANTS.exit}
-                        transition={{ duration: 0.25, type: 'linear' }}
-                      >
-                        <AssetTable
-                          color='light.900'
-                          size='lg'
-                          type='nonFungible'
-                        />
-                      </motion.div>
-                    </TabPanel>
-                  </TabPanels>
-                </Tabs>
-              </motion.div>
-            </Container>
-          </Stack>
-        </Container>
-      </Box>
+                        {item}
+                      </Tab>
+                    ))}
+                  </ButtonGroup>
+                </TabList>
+                <TabPanels>
+                  <TabPanel px='0'>
+                    <motion.div
+                      variants={FADE_IN_VARIANTS}
+                      initial={FADE_IN_VARIANTS.hidden}
+                      animate={FADE_IN_VARIANTS.enter}
+                      exit={FADE_IN_VARIANTS.exit}
+                      transition={{ duration: 0.25, type: 'linear' }}
+                    >
+                      <AssetTable color='light.900' size='lg' type='fungible' />
+                    </motion.div>
+                  </TabPanel>
+                  <TabPanel px='0'>
+                    <motion.div
+                      variants={FADE_IN_VARIANTS}
+                      initial={FADE_IN_VARIANTS.hidden}
+                      animate={FADE_IN_VARIANTS.enter}
+                      exit={FADE_IN_VARIANTS.exit}
+                      transition={{ duration: 0.25, type: 'linear' }}
+                    >
+                      <AssetTable
+                        color='light.900'
+                        size='lg'
+                        type='nonFungible'
+                      />
+                    </motion.div>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            </motion.div>
+          </Container>
+        </Stack>
+      </Container>
     </motion.div>
   );
 };

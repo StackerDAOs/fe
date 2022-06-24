@@ -34,6 +34,14 @@ export const pluckSourceCode = (sourceCode: string, param: string) => {
   return sourceCode?.split(`;; ${sourceParam}: `)[1]?.split('\n')[0];
 };
 
+export const pluckDetails = (sourceCode: string) => {
+  let details = sourceCode.substring(
+    sourceCode.indexOf(";; DETAILS") + 14, 
+    sourceCode.lastIndexOf(";; TYPE"));
+    let newDetails = details.replace(new RegExp(';;', 'g'), '\n');
+  return newDetails;
+};
+
 export const estimateDays = (blocksUntil: number) => {
   // TODO: estimate hours/minutes when blocksUntil is less than a day
   return Math.round(blocksUntil * 10 / 1440);
@@ -46,3 +54,8 @@ export const getPercentage = (totalSupply: number, totalVotes: number) => {
     return (totalVotes / totalSupply) * 100;
   }
 };
+
+export const formatComments = (comments: string) => {
+  let newString = comments.replace(/(?:\r\n|\r|\n)/g, '\n;; ');
+  return newString;
+}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useCurrentStxAddress } from '@micro-stacks/react';
+import { useCurrentStxAddress, useNetwork } from '@micro-stacks/react';
+import { fetchReadOnlyFunction } from 'micro-stacks/api';
 import { supabase } from '@utils/supabase';
 import { contractPrincipalCV } from 'micro-stacks/clarity';
 import { ContractCallButton } from '@widgets/ContractCallButton';
@@ -8,6 +9,7 @@ import { tokenToNumber } from '@common/helpers';
 
 type TProposal = {
   postConditions?: any;
+  assetName?: string;
 };
 
 export const ExecuteProposalButton = ({
@@ -18,6 +20,8 @@ export const ExecuteProposalButton = ({
   contractName,
 }: any) => {
   const [state, setState] = useState<TProposal>({ postConditions: [] });
+  const currentStxAddress = useCurrentStxAddress();
+  const { network } = useNetwork();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,12 +33,29 @@ export const ExecuteProposalButton = ({
             'contractAddress',
             `${proposalContractAddress}.${proposalContractName}`,
           );
-        console.log({ proposalContractAddress });
-        console.log({ proposalContractName });
         if (error) throw error;
         if (data) {
-          console.log({ data });
-          setState({ ...state, postConditions: data[0].postConditions });
+          if (data[0].postConditions) {
+            if (data[0].postConditions?.assetAddress) {
+              const [contractAddress, contractName] =
+                data[0].postConditions.assetAddress.split('.');
+              const assetName: any = await fetchReadOnlyFunction({
+                network,
+                contractAddress,
+                contractName,
+                senderAddress: currentStxAddress,
+                functionArgs: [],
+                functionName: 'get-name',
+              });
+              setState({
+                ...state,
+                postConditions: data[0].postConditions,
+                assetName,
+              });
+            }
+          } else {
+            setState({ ...state, postConditions: data[0].postConditions });
+          }
         }
       } catch (error) {
         console.log('error', error);
@@ -44,7 +65,7 @@ export const ExecuteProposalButton = ({
     };
     fetchData();
   }, [proposalContractAddress]);
-
+  const { postConditions: pc, assetName } = state;
   const { votesFor, votesAgainst, totalVotes, quorumThreshold } = votingData;
 
   const convertedVotesFor = tokenToNumber(Number(votesFor), 2);
@@ -60,9 +81,12 @@ export const ExecuteProposalButton = ({
       contractPrincipalCV(proposalContractAddress, proposalContractName),
     ];
   const postConditions = generatePostConditions({
-    postConditions: state.postConditions,
+    postConditions: pc,
     isPassing,
+    assetName,
   });
+
+  console.log({ postConditions });
 
   const concludeProposal = {
     contractAddress,

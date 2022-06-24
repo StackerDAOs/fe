@@ -7,6 +7,7 @@ import { deserializeCV, cvToValue } from 'micro-stacks/clarity';
 type TEvent = {
   isLoading: boolean;
   events: any[];
+  eventSize: number;
 };
 
 interface IEvent {
@@ -14,11 +15,13 @@ interface IEvent {
   extensionName?: string;
   filter?: string;
   filterByProposal?: string;
+  offset?: number;
 }
 
 const initialState = {
   isLoading: true,
   events: [],
+  eventSize: 0,
 };
 
 export function useContractEvents({
@@ -26,6 +29,7 @@ export function useContractEvents({
   extensionName,
   filter,
   filterByProposal,
+  offset = 0,
 }: IEvent = {}) {
   const [state, setState] = useState<TEvent>(initialState);
   const { network } = useNetwork();
@@ -38,12 +42,13 @@ export function useContractEvents({
       const contractId = extension?.contractAddress;
       const data = await fetchContractEventsById({
         url,
-        limit: 0,
+        limit: 50,
         contract_id: contractId,
-        offset: 0,
+        offset: offset,
         unanchored: false,
       });
       const { results } = data as any;
+      console.log({ results });
       const serializedEvents = results.map((event: any) => {
         const hex = event?.contract_log?.value.hex;
         const deserialized = deserializeCV(hex);
@@ -60,7 +65,12 @@ export function useContractEvents({
         : filter
         ? serializedEvents.filter((item: any) => item?.event?.value === filter)
         : serializedEvents;
-      setState({ ...state, events: filteredEvents, isLoading: false });
+      setState({
+        ...state,
+        events: filteredEvents,
+        eventSize: filteredEvents.length,
+        isLoading: false,
+      });
     } catch (error) {
       console.log({ error });
     }

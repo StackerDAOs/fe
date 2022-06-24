@@ -41,7 +41,7 @@ import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
 
 // Utils
-import { truncate } from '@common/helpers';
+import { formatComments, truncate } from '@common/helpers';
 import Avatar from 'boring-avatars';
 import { FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
 import { FiSend } from 'react-icons/fi';
@@ -193,12 +193,13 @@ const Stx = () => {
                 color='light.900'
                 py='1'
                 px='2'
+                pl='0'
                 maxW='8em'
                 type='tel'
                 bg='base.900'
                 border='none'
                 fontSize='3xl'
-                autocomplete='off'
+                autoComplete='off'
                 placeholder='0'
                 {...register('transferAmount', {
                   required: 'This is required',
@@ -208,7 +209,7 @@ const Stx = () => {
                 }}
               />
             </FormControl>
-            <HStack px='2'>
+            <HStack>
               <Image
                 cursor='pointer'
                 height='15px'
@@ -263,11 +264,12 @@ const Stx = () => {
                 color='light.900'
                 py='1'
                 px='2'
+                pl='0'
                 type='tel'
                 bg='base.900'
                 border='none'
                 fontSize='xl'
-                autocomplete='off'
+                autoComplete='off'
                 placeholder='SP1T...'
                 {...register('transferTo', {
                   required: 'This is required',
@@ -277,13 +279,6 @@ const Stx = () => {
                 }}
               />
             </FormControl>
-            <HStack px='2'>
-              <FiSend fontSize='0.9rem' />
-
-              <Text fontSize='md' fontWeight='regular' color='gray.900'>
-                Recipient
-              </Text>
-            </HStack>
           </Stack>
           <HStack justify='space-between' spacing='10'>
             <Button
@@ -337,11 +332,12 @@ const Stx = () => {
               fontSize='xl'
               py='1'
               px='2'
+              pl='0'
               bg='base.900'
               border='none'
               rows={10}
               resize='none'
-              autocomplete='off'
+              autoComplete='off'
               placeholder='Transfers 100 STX to SP14...T78Y for...'
               {...register('description', {
                 required: 'This is required',
@@ -515,7 +511,7 @@ const Stx = () => {
             <TransferStxButton
               organization={organization}
               isSubmitting={isSubmitting}
-              description={description}
+              description={formatComments(description)}
               transferAmount={transferAmount}
               transferTo={transferTo}
             />
@@ -664,7 +660,7 @@ const Stx = () => {
             <TransferStxButton
               organization={organization}
               isSubmitting={isSubmitting}
-              description={description}
+              description={formatComments(description)}
               transferAmount={transferAmount}
               transferTo={transferTo}
             />
@@ -702,7 +698,7 @@ const Stx = () => {
       <Grid
         h='95vh'
         templateRows='repeat(1, 1fr)'
-        templateColumns='repeat(5, 1fr)'
+        templateColumns='repeat(6, 1fr)'
       >
         <GridItem
           rowSpan={2}
@@ -747,7 +743,7 @@ const Stx = () => {
         </GridItem>
         <GridItem
           rowSpan={2}
-          colSpan={3}
+          colSpan={4}
           bg='base.900'
           px={{ base: '15', md: '20' }}
           py={{ base: '15', md: '20' }}

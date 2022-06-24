@@ -34,88 +34,87 @@ const Vault = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Box as='section'>
-        <Container maxW='5xl'>
-          <Stack spacing={{ base: '8', lg: '6' }}>
-            <Stack w='auto'>
-              <Box as='section'>
-                <Container>
-                  <Stack spacing='5'>
-                    <Stack
-                      spacing='4'
-                      mb='3'
-                      direction={{ base: 'column', md: 'row' }}
-                      justify='space-between'
-                      color='white'
-                    >
-                      <Box>
-                        <Text fontSize='2xl' fontWeight='medium'>
-                          Assets
-                        </Text>
-                        <Text color='gray.900' fontSize='sm'>
-                          List of shared assets owned by the DAO.
-                        </Text>
-                      </Box>
-                    </Stack>
+      <Container>
+        <Stack spacing={{ base: '8', lg: '6' }}>
+          <Stack w='auto'>
+            <Box as='section'>
+              <Container>
+                <Stack spacing='5'>
+                  <Stack
+                    spacing='4'
+                    my='6'
+                    direction={{ base: 'column', md: 'row' }}
+                    justify='space-between'
+                    alignItems='center'
+                    color='white'
+                  >
+                    <Box>
+                      <Text fontSize='lg' fontWeight='medium'>
+                        Assets
+                      </Text>
+                      <Text color='gray.900' fontSize='sm'>
+                        List of shared assets owned by the DAO
+                      </Text>
+                    </Box>
                   </Stack>
-                  <Tabs color='white' variant='unstyled'>
-                    <TabList>
-                      <ButtonGroup bg='base.800' borderRadius='lg' p='1'>
-                        {['Coins', 'Collectibles'].map((item) => (
-                          <Tab
-                            key={item}
-                            fontSize='sm'
-                            borderRadius='lg'
-                            color='gray.900'
-                            px='5'
-                            isFullWidth
-                            w='50%'
-                            _selected={{ bg: 'base.500', color: 'light.900' }}
-                          >
-                            {item}
-                          </Tab>
-                        ))}
-                      </ButtonGroup>
-                    </TabList>
-                    <TabPanels>
-                      <TabPanel px='0'>
-                        <motion.div
-                          variants={FADE_IN_VARIANTS}
-                          initial={FADE_IN_VARIANTS.hidden}
-                          animate={FADE_IN_VARIANTS.enter}
-                          exit={FADE_IN_VARIANTS.exit}
-                          transition={{ duration: 0.25, type: 'linear' }}
+                </Stack>
+                <Tabs color='white' variant='unstyled'>
+                  <TabList>
+                    <ButtonGroup bg='base.800' borderRadius='lg' p='1'>
+                      {['Coins', 'Collectibles'].map((item) => (
+                        <Tab
+                          key={item}
+                          fontSize='sm'
+                          borderRadius='lg'
+                          color='gray.900'
+                          px='5'
+                          isFullWidth
+                          w='50%'
+                          _selected={{ bg: 'base.500', color: 'light.900' }}
                         >
-                          <AssetTable
-                            color='light.900'
-                            size='lg'
-                            type='fungible'
-                          />
-                        </motion.div>
-                      </TabPanel>
-                      <TabPanel px='0'>
-                        <motion.div
-                          variants={FADE_IN_VARIANTS}
-                          initial={FADE_IN_VARIANTS.hidden}
-                          animate={FADE_IN_VARIANTS.enter}
-                          exit={FADE_IN_VARIANTS.exit}
-                          transition={{ duration: 0.25, type: 'linear' }}
-                        >
-                          <AssetTable
-                            color='light.900'
-                            size='lg'
-                            type='nonFungible'
-                          />
-                        </motion.div>
-                      </TabPanel>
-                    </TabPanels>
-                  </Tabs>
-                </Container>
-              </Box>
-            </Stack>
+                          {item}
+                        </Tab>
+                      ))}
+                    </ButtonGroup>
+                  </TabList>
+                  <TabPanels>
+                    <TabPanel px='0'>
+                      <motion.div
+                        variants={FADE_IN_VARIANTS}
+                        initial={FADE_IN_VARIANTS.hidden}
+                        animate={FADE_IN_VARIANTS.enter}
+                        exit={FADE_IN_VARIANTS.exit}
+                        transition={{ duration: 0.25, type: 'linear' }}
+                      >
+                        <AssetTable
+                          color='light.900'
+                          size='lg'
+                          type='fungible'
+                        />
+                      </motion.div>
+                    </TabPanel>
+                    <TabPanel px='0'>
+                      <motion.div
+                        variants={FADE_IN_VARIANTS}
+                        initial={FADE_IN_VARIANTS.hidden}
+                        animate={FADE_IN_VARIANTS.enter}
+                        exit={FADE_IN_VARIANTS.exit}
+                        transition={{ duration: 0.25, type: 'linear' }}
+                      >
+                        <AssetTable
+                          color='light.900'
+                          size='lg'
+                          type='nonFungible'
+                        />
+                      </motion.div>
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
+              </Container>
+            </Box>
           </Stack>
-        </Container>
-      </Box>
+        </Stack>
+      </Container>
     </motion.div>
   );
 };
