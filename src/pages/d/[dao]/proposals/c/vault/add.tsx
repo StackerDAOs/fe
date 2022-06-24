@@ -41,7 +41,7 @@ import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
 
 // Utils
-import { truncate } from '@common/helpers';
+import { formatComments, truncate } from '@common/helpers';
 import Avatar from 'boring-avatars';
 import { FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
 import { FiSend } from 'react-icons/fi';
@@ -198,7 +198,7 @@ const Add = () => {
                 bg='base.900'
                 border='none'
                 fontSize='3xl'
-                autocomplete='off'
+                autoComplete='off'
                 placeholder='0'
                 {...register('transferAmount', {
                   required: 'This is required',
@@ -267,7 +267,7 @@ const Add = () => {
                 bg='base.900'
                 border='none'
                 fontSize='xl'
-                autocomplete='off'
+                autoComplete='off'
                 placeholder='SP1T...'
                 {...register('transferTo', {
                   required: 'This is required',
@@ -341,7 +341,7 @@ const Add = () => {
               border='none'
               rows={10}
               resize='none'
-              autocomplete='off'
+              autoComplete='off'
               placeholder='Transfers 100 STX to SP14...T78Y for...'
               {...register('description', {
                 required: 'This is required',
@@ -515,7 +515,7 @@ const Add = () => {
             <TransferStxButton
               organization={organization}
               isSubmitting={isSubmitting}
-              description={description}
+              description={formatComments(description)}
               transferAmount={transferAmount}
               transferTo={transferTo}
             />
@@ -664,7 +664,7 @@ const Add = () => {
             <TransferStxButton
               organization={organization}
               isSubmitting={isSubmitting}
-              description={description}
+              description={formatComments(description)}
               transferAmount={transferAmount}
               transferTo={transferTo}
             />

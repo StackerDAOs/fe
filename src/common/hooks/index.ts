@@ -11,6 +11,8 @@ export { useSubmissionExtension } from './use-submission-extension';
 export { useVaultExtension } from './use-vault-extension';
 export { useVotingExtension } from './use-voting-extension';
 export { useTransaction } from './use-transaction';
+export { useToken } from './use-token';
+export { useSubmission } from './use-submission';
 export { useSubmissions } from './use-submissions';
 
 // Utils

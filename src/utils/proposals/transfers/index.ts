@@ -1,10 +1,14 @@
 import { traitPrincipal } from "@common/constants";
 
 export const sendFunds = (contractAddress: string, description: string, amount: string, recipientAddress: string, proposer: string | undefined = 'StackerDAOs') => `
-  ;; Title: SDP Transfer Stacks
-  ;; Author: ${proposer}
-  ;; Description: ${description}
-  ;; Type: Transfer
+;; AUTHOR:
+;; ${proposer}
+;; TITLE:
+;; SDP Transfer STX
+;; DETAILS
+;; ${description}
+;; TYPE
+;; Transfer
 
   (define-constant MICRO (pow u10 u6))
 
@@ -21,10 +25,14 @@ export const sendFunds = (contractAddress: string, description: string, amount: 
 `;
 
 export const sendTokens = (contractAddress: string, tokenContract: string, description: string, decimals: string = '6', amount: string, recipientAddress: string, proposer: string | undefined = 'StackerDAOs') => `
-  ;; Title: SDP Transfer Tokens
-  ;; Author: ${proposer}
-  ;; Description: ${description}
-  ;; Type: Transfer
+;; AUTHOR:
+;; ${proposer}
+;; TITLE:
+;; SDP Transfer Tokens
+;; DETAILS
+;; ${description}
+;; TYPE
+;; Transfer
 
   (impl-trait '${traitPrincipal}.proposal-trait.proposal-trait)
 

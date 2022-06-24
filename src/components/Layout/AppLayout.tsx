@@ -23,9 +23,7 @@ export const AppLayout = ({ header, children }: any) => {
       transition={{ duration: 0.75, type: 'linear' }}
     >
       <AppNavbar />
-      <Box as='section'>
-        <Container maxW='5xl'>{header}</Container>
-      </Box>
+      {header}
       {children}
       <AppFooter />
     </motion.div>

@@ -36,7 +36,7 @@ import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
 
 // Utils
-import { truncate } from '@common/helpers';
+import { formatComments, truncate } from '@common/helpers';
 import Avatar from 'boring-avatars';
 import { FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
 
@@ -152,11 +152,12 @@ const Survey = () => {
               fontSize='xl'
               py='1'
               px='2'
+              pl='0'
               bg='base.900'
               border='none'
               rows={10}
               resize='none'
-              autocomplete='off'
+              autoComplete='off'
               placeholder='Transfers 100 STX to SP14...T78Y for...'
               {...register('description', {
                 required: 'This is required',
@@ -166,16 +167,7 @@ const Survey = () => {
               }}
             />
           </FormControl>
-          <HStack justify='space-between'>
-            <Button
-              color='white'
-              variant='link'
-              _hover={{ opacity: 0.9 }}
-              _active={{ opacity: 1 }}
-              onClick={() => setStep(currentStep - 1)}
-            >
-              Previous
-            </Button>
+          <HStack justify='flex-start'>
             <Button
               minW='20%'
               color='white'
@@ -248,7 +240,7 @@ const Survey = () => {
             <SurveyProposalButton
               organization={organization}
               isSubmitting={isSubmitting}
-              description={description}
+              description={formatComments(description)}
             />
           </HStack>
         </Stack>
@@ -313,7 +305,7 @@ const Survey = () => {
             <SurveyProposalButton
               organization={organization}
               isSubmitting={isSubmitting}
-              description={description}
+              description={formatComments(description)}
             />
           </HStack>
         </Stack>
@@ -345,7 +337,7 @@ const Survey = () => {
       <Grid
         h='95vh'
         templateRows='repeat(1, 1fr)'
-        templateColumns='repeat(5, 1fr)'
+        templateColumns='repeat(6, 1fr)'
       >
         <GridItem
           rowSpan={2}
@@ -390,7 +382,7 @@ const Survey = () => {
         </GridItem>
         <GridItem
           rowSpan={2}
-          colSpan={3}
+          colSpan={4}
           bg='base.900'
           px={{ base: '15', md: '20' }}
           py={{ base: '15', md: '20' }}

@@ -4,7 +4,7 @@ import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
 import { fetchContractSource, fetchReadOnlyFunction } from 'micro-stacks/api';
 import { contractPrincipalCV } from 'micro-stacks/clarity';
 import { useContractEvents } from '../hooks';
-import { pluckSourceCode } from '@common/helpers';
+import { pluckDetails, pluckSourceCode } from '@common/helpers';
 
 type TProposals = {
   isLoading: boolean;
@@ -13,6 +13,7 @@ type TProposals = {
 
 interface IProposals {
   organization?: any;
+  offset?: number;
 }
 
 const initialState = {
@@ -20,7 +21,7 @@ const initialState = {
   proposals: [],
 };
 
-export function useProposals({ organization }: IProposals = {}) {
+export function useProposals({ organization, offset = 0 }: IProposals = {}) {
   const [state, setState] = useState<TProposals>(initialState);
   const currentStxAddress = useCurrentStxAddress();
   const { network } = useNetwork();
@@ -28,6 +29,7 @@ export function useProposals({ organization }: IProposals = {}) {
     organization: organization,
     extensionName: 'Voting',
     filter: 'propose',
+    offset,
   });
 
   useEffect(() => {
@@ -68,7 +70,7 @@ export function useProposals({ organization }: IProposals = {}) {
             });
             const { source } = contractSource;
             const title = pluckSourceCode(source, 'title');
-            const description = pluckSourceCode(source, 'description');
+            const description = pluckDetails(source);
             const type = pluckSourceCode(source, 'type');
             return {
               contractAddress: proposal?.proposal?.value,

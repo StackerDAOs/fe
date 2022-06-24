@@ -52,7 +52,6 @@ import {
   tokenToNumber,
   truncate,
 } from '@common/helpers';
-import Countdown from 'react-countdown';
 
 // Hooks
 import {
@@ -84,9 +83,8 @@ const ProposalView = () => {
   const [state, setState] = useState<TProposal>({ postConditions: [] });
   const currentStxAddress = useCurrentStxAddress();
   const router = useRouter();
-  const { dao } = router.query as any;
+  const { dao, id: proposalPrincipal } = router.query as any;
   const { organization } = useOrganization({ name: dao });
-  const { id: proposalPrincipal } = router.query as any;
   const { currentBlockHeight } = useBlocks();
   const { balance } = useGovernanceToken({ organization });
   const {
@@ -109,7 +107,6 @@ const ProposalView = () => {
     executionDelay,
     events,
   } = useProposal({ organization, filterByProposal: proposalPrincipal });
-
   const { events: delegatorEvents } = useContractEvents({
     organization,
     extensionName: 'Voting',
@@ -180,8 +177,8 @@ const ProposalView = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Box as='section'>
-        <Container maxW='5xl'>
+      <Container>
+        <Container>
           <Box py='6' my='6'>
             <SimpleGrid
               columns={{ base: 1, md: 1, lg: 2 }}
@@ -190,7 +187,7 @@ const ProposalView = () => {
               <Box as='section'>
                 <VStack
                   align='left'
-                  maxW='md'
+                  maxW='lg'
                   spacing='6'
                   direction={{ base: 'column', md: 'row' }}
                   justify='space-between'
@@ -234,7 +231,7 @@ const ProposalView = () => {
                           <HStack>
                             <FaClock fontSize='0.9rem' />
                             <Text fontSize='sm' fontWeight='medium'>
-                              Execution begins in ~{' '}
+                              Open for execution in ~{' '}
                               {Number(endBlockHeight) +
                                 Number(executionDelay) -
                                 Number(currentBlockHeight)}{' '}
@@ -390,7 +387,7 @@ const ProposalView = () => {
                         <Text color='light.900' fontWeight='regular'>
                           {convertToken(balance.toString(), 2)}{' '}
                           <Text as='span' color='gray.900' fontWeight='medium'>
-                            MEGA
+                            CITY
                           </Text>
                         </Text>
                       </HStack>
@@ -507,7 +504,7 @@ const ProposalView = () => {
                             color='light.900'
                           >
                             {parseInt(quorumThreshold)?.toLocaleString('en-US')}{' '}
-                            MEGA
+                            CITY
                           </Text>
                         </HStack>
                         <HStack justify='space-between'>
@@ -669,7 +666,7 @@ const ProposalView = () => {
                     <Tabs color='white' variant='unstyled'>
                       <TabList>
                         <ButtonGroup bg='base.800' borderRadius='lg' p='1'>
-                          {['Details', 'Activity'].map((item) => (
+                          {['Details', 'Code', 'Activity'].map((item) => (
                             <Tab
                               key={item}
                               fontSize='sm'
@@ -734,6 +731,43 @@ const ProposalView = () => {
                             exit={FADE_IN_VARIANTS.exit}
                             transition={{ duration: 0.25, type: 'linear' }}
                           >
+                            <Stack my='3'>
+                              <Stack
+                                spacing='4'
+                                direction={{ base: 'column', md: 'row' }}
+                                justify='space-between'
+                                color='white'
+                              >
+                                <Box>
+                                  <Text
+                                    fontSize='md'
+                                    fontWeight='regular'
+                                    color='gray.900'
+                                  >
+                                    Code
+                                  </Text>
+                                </Box>
+                              </Stack>
+                              <Text
+                                fontSize='md'
+                                _selection={{
+                                  bg: 'base.800',
+                                  color: 'secondary.900',
+                                }}
+                              >
+                                {description}
+                              </Text>
+                            </Stack>
+                          </motion.div>
+                        </TabPanel>
+                        <TabPanel px='0'>
+                          <motion.div
+                            variants={FADE_IN_VARIANTS}
+                            initial={FADE_IN_VARIANTS.hidden}
+                            animate={FADE_IN_VARIANTS.enter}
+                            exit={FADE_IN_VARIANTS.exit}
+                            transition={{ duration: 0.25, type: 'linear' }}
+                          >
                             <AssetTable
                               color='light.900'
                               size='lg'
@@ -749,7 +783,7 @@ const ProposalView = () => {
             </Box>
           </motion.div>
         </Container>
-      </Box>
+      </Container>
     </motion.div>
   );
 };

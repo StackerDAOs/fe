@@ -64,16 +64,12 @@ export const Step = (props: StepProps) => {
           orientation={orientation}
           borderWidth='1px'
           borderColor={
-            isCompleted ? 'accent' : isLastStep ? 'transparent' : 'inherit'
+            isCompleted ? 'base.500' : isLastStep ? 'transparent' : 'base.500'
           }
         />
       </Stack>
-      <Stack
-        spacing='0.5'
-        pb={isMobile && !isLastStep ? '8' : '0'}
-        align={{ base: 'start', md: 'center' }}
-      >
-        <Text color='base.800' fontWeight='regular'>
+      <Stack spacing='2' pb={isLastStep ? '0' : isCompleted ? '3' : '8'}>
+        <Text color='light.900' fontSize='md' fontWeight='regular'>
           {title}
         </Text>
         {description}

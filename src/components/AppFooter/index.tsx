@@ -139,7 +139,7 @@ export const AppFooter = () => {
         py='3'
         px='8'
         w='100%'
-        bg='base.900'
+        bg='transparent'
         zIndex='9999'
       >
         <HStack justify='space-between' flex='1'>
@@ -155,7 +155,7 @@ export const AppFooter = () => {
                           id='bootstrapContract'
                           bg='base.800'
                           borderColor='base.500'
-                          autocomplete='off'
+                          autoComplete='off'
                           placeholder='ST...'
                           onInput={(e: any) => setBootstrap(e.target.value)}
                         />
@@ -170,7 +170,7 @@ export const AppFooter = () => {
                           type='number'
                           bg='base.800'
                           borderColor='base.500'
-                          autocomplete='off'
+                          autoComplete='off'
                           placeholder='100 STX'
                           onInput={(e: any) => setDepositAmount(e.target.value)}
                         />
@@ -181,27 +181,6 @@ export const AppFooter = () => {
                 </ModalBody>
               </DevToolModal>
             ) : null}
-          </HStack>
-          <HStack
-            cursor='default'
-            align='center'
-            justify='center'
-            spacing='1'
-            color='light.900'
-          >
-            <HStack>
-              <Box
-                minW='1'
-                maxW='1'
-                h='1'
-                w='1'
-                bg='secondary.900'
-                borderRadius='50%'
-              />
-              <Text color='secondary.900' fontSize='sm' fontWeight='regular'>
-                {blockHeight}
-              </Text>
-            </HStack>
           </HStack>
         </HStack>
       </Box>

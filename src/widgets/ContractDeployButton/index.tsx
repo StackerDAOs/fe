@@ -24,7 +24,7 @@ type ContractDeployType = {
   title?: string;
   codeBody: string;
   contractName: string;
-  onContractCall?: () => void;
+  onContractCall?: (data: any) => void;
 };
 
 export const ContractDeployButton = (
@@ -34,16 +34,15 @@ export const ContractDeployButton = (
   const toast = useToast();
   const { title, contractName, codeBody, onContractCall } = props;
 
-  const onFinish = useCallback((data: FinishedTxData) => {
+  const onFinish = useCallback((data: any) => {
     if (onContractCall) {
-      console.log('onFinish: onContractCall');
-      onContractCall();
+      onContractCall(data);
     }
     setTransaction(data);
     toast({
-      duration: 2500,
+      duration: 3500,
       isClosable: true,
-      position: 'top-right',
+      position: 'bottom-right',
       render: () => (
         <Notification>
           <Stack direction='row' p='4' spacing='3'>
@@ -84,6 +83,9 @@ export const ContractDeployButton = (
   }, []);
 
   const onError = useCallback((data: FinishedTxData) => {
+    // if (onContractCallError) {
+    // TODO: Delete record from Proposals
+    // }
     toast({
       duration: 2500,
       isClosable: true,

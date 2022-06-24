@@ -28,6 +28,7 @@ export const TransferTokenButton = ({
     contractAddress,
     submittedBy,
     type,
+    transactionId,
   }: any) => {
     try {
       const vaultExtension = organization?.Extensions?.find(
@@ -40,6 +41,7 @@ export const TransferTokenButton = ({
         contractAddress,
         submittedBy,
         type,
+        transactionId,
         postConditions: {
           assetAddress,
           amount: transferAmount,
@@ -53,18 +55,14 @@ export const TransferTokenButton = ({
   };
 
   // TODO: type is not currently dynamic based on organization
-  const onFinishInsert = async () => {
-    console.info('Insert record into Proposals');
+  const onFinishInsert: any = async (data: any) => {
+    console.info('Insert record into Proposals', { data });
     await insertProposals({
       organizationId: organization?.id,
       contractAddress: `${currentStxAddress}.${contractName}` || '',
       submittedBy: currentStxAddress || '',
       type: 'MDP Transfer Tokens',
-      // postConditions: {
-      //   amount: transferAmount,
-      //   asset: 'STX',
-      //   from: `${vaultContractAddress}.${vaultContractName}`,
-      // },
+      transactionId: data.txId,
     });
   };
 

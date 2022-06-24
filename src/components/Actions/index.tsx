@@ -5,5 +5,6 @@ export * from './InitButton';
 export * from './SurveyProposalButton';
 export * from './TransferStxButton';
 export * from './TransferTokenButton';
-export * from './VoteManyAgainstButton';
+export * from './ProposeButton';
 export * from './VoteManyForButton';
+export * from './VoteManyAgainstButton';

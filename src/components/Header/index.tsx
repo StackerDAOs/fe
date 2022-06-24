@@ -134,58 +134,59 @@ export const Header = () => {
   }
 
   return (
-    <Stack spacing={{ base: '6', lg: '4' }} mt='5'>
-      <Container>
-        <Stack
-          spacing='2'
-          mt='4'
-          mb='2'
-          direction={{ base: 'column', md: 'row' }}
-          justify='flex-start'
-          color='white'
-        >
-          <VStack maxW='xl' spacing='3'>
-            <Link href={`/d/${dao}`}>
-              <a>
-                <HStack align='baseline'>
-                  <Avatar
-                    size={40}
-                    name={organization?.name}
-                    variant='sunset'
-                    colors={[
-                      '#50DDC3',
-                      '#624AF2',
-                      '#EB00FF',
-                      '#7301FA',
-                      '#25C2A0',
-                    ]}
-                  />
-                  <Heading
-                    size='lg'
-                    pb='2'
-                    fontWeight='light'
-                    color='light.900'
-                  >
-                    {organization?.name}
-                  </Heading>
-                </HStack>
-              </a>
-            </Link>
-          </VStack>
-        </Stack>
-        <Stack
-          spacing='4'
-          mb='4'
-          direction={{ base: 'column', md: 'row' }}
-          justify='center'
-          align='center'
-          color='white'
-        >
-          <Vault />
-          <Proposals />
-          <Governance />
-        </Stack>
-      </Container>
-    </Stack>
+    <Container>
+      <Stack spacing={{ base: '6', lg: '4' }} mt='5'>
+        <Container>
+          <Stack
+            spacing='2'
+            mt='4'
+            mb='2'
+            direction={{ base: 'column', md: 'row' }}
+            justify='flex-start'
+            color='white'
+          >
+            <VStack maxW='xl' spacing='3'>
+              <Link href={`/d/${dao}`}>
+                <a>
+                  <HStack align='baseline'>
+                    <Avatar
+                      size={40}
+                      name={organization?.name}
+                      variant='marble'
+                      colors={[
+                        '#50DDC3',
+                        '#624AF2',
+                        '#EB00FF',
+                        '#7301FA',
+                        '#25C2A0',
+                      ]}
+                    />
+                    <Heading
+                      size='lg'
+                      pb='2'
+                      fontWeight='light'
+                      color='light.900'
+                    >
+                      {organization?.name}
+                    </Heading>
+                  </HStack>
+                </a>
+              </Link>
+            </VStack>
+          </Stack>
+          <Stack
+            spacing='6'
+            direction={{ base: 'column', md: 'row' }}
+            justify='center'
+            align='center'
+            color='white'
+          >
+            <Vault />
+            <Proposals />
+            <Governance />
+          </Stack>
+        </Container>
+      </Stack>
+    </Container>
   );
 };

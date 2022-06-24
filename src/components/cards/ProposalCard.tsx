@@ -5,6 +5,7 @@ import {
   Badge,
   Box,
   HStack,
+  Icon,
   Progress,
   Stack,
   Text,
@@ -22,6 +23,7 @@ import { Card } from '@components/Card';
 // Utils
 import { getPercentage, tokenToNumber, truncate } from '@common/helpers';
 import Avatar from 'boring-avatars';
+import { FiArrowUpRight } from 'react-icons/fi';
 
 const FADE_IN_VARIANTS = {
   hidden: { opacity: 0, x: 0, y: 0 },
@@ -39,6 +41,7 @@ export const ProposalCard = ({
   votesFor,
   votesAgainst,
 }: any) => {
+  const [isHovered, setHovered] = useState(false);
   const { currentBlockHeight } = useBlocks();
   const router = useRouter();
   const { dao } = router.query as any;
@@ -80,15 +83,24 @@ export const ProposalCard = ({
       animate={FADE_IN_VARIANTS.enter}
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.25, type: 'linear' }}
+      whileHover={{
+        scale: 1.015,
+      }}
+      whileTap={{
+        scale: 1,
+      }}
     >
       <Link href={`/d/${dao}/proposals/${contractAddress}`}>
         <a>
           <Card
-            bg='base.800'
+            bg='base.900'
+            h='xs'
             position='relative'
             px={{ base: '6', md: '6' }}
-            pt={{ base: '3', md: '3' }}
-            pb={{ base: '6', md: '6' }}
+            py={{ base: '6', md: '6' }}
+            justifyContent='center'
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
             _hover={{
               cursor: 'pointer',
             }}
@@ -103,8 +115,20 @@ export const ProposalCard = ({
                 justify='space-between'
                 color='white'
               >
-                <HStack>{statusBadge}</HStack>
-
+                <HStack justify='space-between'>
+                  {statusBadge}
+                  {isHovered && (
+                    <motion.div
+                      variants={FADE_IN_VARIANTS}
+                      initial={FADE_IN_VARIANTS.hidden}
+                      animate={FADE_IN_VARIANTS.enter}
+                      exit={FADE_IN_VARIANTS.exit}
+                      transition={{ duration: 0.5, type: 'linear' }}
+                    >
+                      <Icon as={FiArrowUpRight} boxSize='5' color='light.900' />
+                    </motion.div>
+                  )}
+                </HStack>
                 <Stack>
                   <HStack spacing='3' justify='space-between'>
                     <Stack direction='column' spacing='3'>
@@ -126,7 +150,7 @@ export const ProposalCard = ({
                         </Text>
                       </HStack>
                       <Text fontWeight='regular' color='gray.900'>
-                        {truncate(description, 75)}
+                        {truncate(description, 50)}
                       </Text>
                     </Stack>
                   </HStack>

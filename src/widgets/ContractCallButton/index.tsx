@@ -21,7 +21,11 @@ import { usePolling } from '@common/hooks/use-polling';
 import { Notification } from '@components/Notification';
 import { CloseButton } from '@components/CloseButton';
 
-export const ContractCallButton = (props: ButtonProps) => {
+type ContractCallType = {
+  onContractCall?: (data: any) => void;
+};
+
+export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
   const { network } = useNetwork();
   const toast = useToast();
   const [transaction, setTransaction] = useState({
@@ -66,9 +70,9 @@ export const ContractCallButton = (props: ButtonProps) => {
   const onFinish = useCallback((data: FinishedTxData) => {
     setTransaction({ txId: data.txId, isPending: true });
     toast({
-      duration: 2500,
+      duration: 3500,
       isClosable: true,
-      position: 'top-right',
+      position: 'bottom-right',
       render: () => (
         <Notification>
           <Stack direction='row' p='4' spacing='3'>
@@ -114,9 +118,9 @@ export const ContractCallButton = (props: ButtonProps) => {
     }
     console.log({ data });
     toast({
-      duration: 2500,
+      duration: 3500,
       isClosable: true,
-      position: 'top-right',
+      position: 'bottom-right',
       render: () => (
         <Notification>
           <Stack direction='row' p='4' spacing='3'>

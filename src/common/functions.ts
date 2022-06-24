@@ -50,14 +50,13 @@ export const generateWithDelegators = ({voteFor, proposalContractAddress, propos
   }
 };
 
-export const generatePostConditions = ({postConditions, isPassing}: any) => {
+export const generatePostConditions = ({postConditions, isPassing, assetName}: any) => {
   if (postConditions) {
     const { from, amount } = postConditions;
     const isFungible = has(postConditions, 'assetAddress');
     if (isFungible) {
       // Fungible Post Conditions
       const { assetAddress } = postConditions;
-      // const assetName = fetchAssetName(assetAddress);
       const contractAddress = from?.split('.')[0];
       const contractName = from?.split('.')[1];
       const contractAssetAddress = assetAddress?.split('.')[0];
@@ -65,7 +64,7 @@ export const generatePostConditions = ({postConditions, isPassing}: any) => {
       const fungibleAssetInfo =
         contractAssetAddress &&
         contractAssetName &&
-        createAssetInfo(contractAssetAddress, contractAssetName, 'Mega');
+        createAssetInfo(contractAssetAddress, contractAssetName, assetName);
       const pc =
         contractAddress &&
         contractName &&
@@ -105,31 +104,3 @@ export const generatePostConditions = ({postConditions, isPassing}: any) => {
     }
   }
 };
-
-export const fetchAssetName = async (tokenAddress: string) => {
-  return 'Mega';
-}
-
-// else {
-//   // STX Post Condition
-//   const isPassing = true; // TODO fix this
-//   const contractAddress = from?.split('.')[0];
-//   const contractName = from?.split('.')[1];
-//   const postConditionCode = FungibleConditionCode.Equal;
-//   const postConditionAmount = stxToUstx(amount);
-//   const postConditions =
-//     contractAddress &&
-//     contractName &&
-//     isPassing
-//       ? [
-//           makeContractSTXPostCondition(
-//             contractAddress,
-//             contractName,
-//             postConditionCode,
-//             postConditionAmount,
-//           ),
-//         ]
-//       : [];
-//       return postConditions;
-//     }
-//     return ['hi'];

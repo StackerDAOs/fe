@@ -8,7 +8,7 @@ import { contractPrincipalCV, stringAsciiCV } from 'micro-stacks/clarity';
 
 import { useContractEvents } from '../hooks';
 
-import { pluckSourceCode } from '@common/helpers';
+import { pluckDetails, pluckSourceCode } from '@common/helpers';
 
 interface IProposal {
   organization?: any;
@@ -85,8 +85,9 @@ export function useProposal({
         });
 
         const { source } = contractSource;
+        console.log({ source });
         const title = pluckSourceCode(source, 'title');
-        const description = pluckSourceCode(source, 'description');
+        const description = pluckDetails(source);
         const type = pluckSourceCode(source, 'type');
 
         const quorumThreshold: any = await fetchReadOnlyFunction({
