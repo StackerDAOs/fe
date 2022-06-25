@@ -34,7 +34,7 @@ const Vault = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Container>
+      <Container maxW='5xl'>
         <Stack spacing={{ base: '8', lg: '6' }}>
           <Stack w='auto'>
             <Box as='section'>

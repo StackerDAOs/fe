@@ -83,7 +83,7 @@ const DAODashboard = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Container>
+      <Container maxW='5xl'>
         <Stack spacing={{ base: '8', lg: '6' }}>
           <Container>
             <SimpleGrid
@@ -114,8 +114,8 @@ const DAODashboard = () => {
                 </Stack>
                 <BarChart />
               </Stack>
-              <Stack align='flex-end'>
-                <Card bg='base.900' minW='lg'>
+              <Stack>
+                <Card bg='base.900'>
                   <Stack spacing='0'>
                     <Stack
                       align='flex-start'
@@ -179,6 +179,7 @@ const DAODashboard = () => {
                         <HStack>
                           <Button
                             color='white'
+                            bg='base.800'
                             size='sm'
                             _hover={{ opacity: 0.9 }}
                             _active={{ opacity: 1 }}

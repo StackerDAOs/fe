@@ -175,7 +175,7 @@ const ProposalView = () => {
       exit={FADE_IN_VARIANTS.exit}
       transition={{ duration: 0.75, type: 'linear' }}
     >
-      <Container>
+      <Container maxW='5xl'>
         <Container>
           <Box py='6' my='6'>
             <SimpleGrid
