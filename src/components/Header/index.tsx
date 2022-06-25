@@ -87,14 +87,15 @@ export const Header = () => {
   };
 
   const Proposals = () => {
-    const openProposals = proposals?.filter(
-      ({ startBlockHeight, endBlockHeight }) => {
+    const openProposals = proposals?.filter((proposal) => {
+      if (proposal?.startBlockHeight && proposal?.endBlockHeight) {
         const isOpen =
-          currentBlockHeight <= endBlockHeight &&
-          currentBlockHeight >= startBlockHeight;
+          currentBlockHeight <= proposal?.endBlockHeight &&
+          currentBlockHeight >= proposal?.startBlockHeight;
         return isOpen;
-      },
-    );
+      }
+    });
+
     return (
       <Stat
         flex='1'

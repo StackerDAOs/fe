@@ -131,7 +131,8 @@ const Proposals = () => {
               </HStack>
               <HStack spacing='3'>
                 <Text color='gray.900' fontSize='sm'>
-                  {truncate(`${proposalContractAddress}`, 4, 24)}
+                  {proposalContractAddress &&
+                    truncate(`${proposalContractAddress}`, 4, 24)}
                 </Text>
               </HStack>
               <HStack spacing='3'>
