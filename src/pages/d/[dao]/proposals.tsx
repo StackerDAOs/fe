@@ -167,8 +167,6 @@ const Proposals = () => {
     );
   };
 
-  console.log({ proposals });
-
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}

@@ -87,7 +87,7 @@ export const Header = () => {
   };
 
   const Proposals = () => {
-    const openProposals = proposals.filter(
+    const openProposals = proposals?.filter(
       ({ startBlockHeight, endBlockHeight }) => {
         const isOpen =
           currentBlockHeight <= endBlockHeight &&

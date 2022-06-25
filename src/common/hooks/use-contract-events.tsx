@@ -57,13 +57,13 @@ export function useContractEvents({
       });
 
       const filteredEvents = filterByProposal
-        ? serializedEvents.filter(
+        ? serializedEvents?.filter(
             (item: any) =>
               item?.event?.value === filter &&
               item?.proposal?.value === filterByProposal,
           )
         : filter
-        ? serializedEvents.filter((item: any) => item?.event?.value === filter)
+        ? serializedEvents?.filter((item: any) => item?.event?.value === filter)
         : serializedEvents;
       setState({
         ...state,

@@ -25,7 +25,7 @@ export function useSubmissions() {
 
         if (error) throw error;
         if (Proposals.length > 0) {
-          const proposals = Proposals.filter(
+          const proposals = Proposals?.filter(
             (proposal) => proposal.Organizations.id === organization?.id,
           );
           setState({ ...state, isLoading: false, proposals });

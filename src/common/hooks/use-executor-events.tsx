@@ -41,13 +41,13 @@ export function useExecutorEvents({ filter, filterByProposal }: IEvent = {}) {
         });
 
         const filteredEvents = filterByProposal
-          ? serializedEvents.filter(
+          ? serializedEvents?.filter(
               (item: any) =>
                 item?.event?.value === filter &&
                 item?.proposal?.value === filterByProposal,
             )
           : filter
-          ? serializedEvents.filter(
+          ? serializedEvents?.filter(
               (item: any) => item?.event?.value === filter,
             )
           : serializedEvents;
