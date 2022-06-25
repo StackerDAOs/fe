@@ -1,5 +1,3 @@
-import { Box, Container } from '@chakra-ui/react';
-
 // Animations
 import { motion } from 'framer-motion';
 

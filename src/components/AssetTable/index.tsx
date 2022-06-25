@@ -77,6 +77,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
           }: any,
           { contractAddress, contractName }: any,
         ) => {
+          console.log({ type });
           const senderAddress = `${contractAddress}.${contractName}`;
           const name = await fetchReadOnlyFunction({
             network,

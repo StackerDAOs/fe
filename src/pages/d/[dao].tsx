@@ -5,7 +5,6 @@ import {
   ButtonGroup,
   Container,
   FormControl,
-  FormLabel,
   HStack,
   Image,
   Input,
@@ -21,8 +20,8 @@ import {
 } from '@chakra-ui/react';
 
 // Web3
-import { useUser, useAuth, useNetwork } from '@micro-stacks/react';
-import { fetchAccountStxBalance, fetchNamesByAddress } from 'micro-stacks/api';
+import { useUser, useNetwork } from '@micro-stacks/react';
+import { fetchAccountStxBalance } from 'micro-stacks/api';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
@@ -32,7 +31,7 @@ import { AssetTable } from '@components/AssetTable';
 import { DepositButton } from '@components/Actions';
 
 // Charts
-import { BarChart, LineChart } from '@components/Chart';
+import { BarChart } from '@components/Chart';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -74,8 +73,8 @@ const DAODashboard = () => {
     if (e.target.value === '' || re.test(e.target.value)) {
       setDepositAmount(e.target.value);
     }
-    // setDepositAmount(e.target.value);
   };
+
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}

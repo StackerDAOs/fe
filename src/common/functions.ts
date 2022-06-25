@@ -3,7 +3,6 @@ import {
   trueCV,
   falseCV,
   contractPrincipalCV,
-  listCV,
   standardPrincipalCV,
   tupleCV,
   someCV,

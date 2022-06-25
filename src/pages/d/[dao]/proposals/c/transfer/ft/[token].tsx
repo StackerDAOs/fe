@@ -9,7 +9,6 @@ import {
   Grid,
   GridItem,
   Icon,
-  Image,
   FormControl,
   HStack,
   Input,
@@ -73,7 +72,7 @@ const Token = () => {
     register,
     handleSubmit,
     getValues,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm();
   const { transferAmount, transferTo, description } = getValues();
   const [currentStep, { setStep }] = useStep({

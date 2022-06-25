@@ -10,7 +10,6 @@ import {
 } from '@chakra-ui/react';
 
 // Stacks
-import type { FinishedTxData } from 'micro-stacks/connect';
 import { useContractDeploy } from '@micro-stacks/react';
 
 // Components
@@ -82,52 +81,52 @@ export const ContractDeployButton = (
     });
   }, []);
 
-  const onError = useCallback((data: FinishedTxData) => {
-    // if (onContractCallError) {
-    // TODO: Delete record from Proposals
-    // }
-    toast({
-      duration: 2500,
-      isClosable: true,
-      position: 'top-right',
-      render: () => (
-        <Notification>
-          <Stack direction='row' p='4' spacing='3'>
-            <Stack spacing='2.5'>
-              <Stack spacing='1'>
-                <Text fontSize='md' color='light.900' fontWeight='medium'>
-                  Transaction failed
-                </Text>
-                <Text fontSize='sm' color='gray.900'>
-                  Your transaction failed.
-                </Text>
-              </Stack>
-              <ButtonGroup variant='link' size='md' spacing='3'>
-                <Button
-                  color='secondary.900'
-                  as='a'
-                  target='_blank'
-                  href={
-                    process.env.NODE_ENV !== 'production'
-                      ? `http://localhost:8000/txid/${data.txId}?chain=testnet`
-                      : `https://explorer.stacks.co/txid/${data.txId}?chain=mainnet`
-                  }
-                >
-                  View transaction
-                </Button>
-              </ButtonGroup>
-            </Stack>
-            <CloseButton
-              aria-label='close'
-              transform='translateY(-6px)'
-              color='white'
-              onClick={() => toast.closeAll()}
-            />
-          </Stack>
-        </Notification>
-      ),
-    });
-  }, []);
+  // const onError = useCallback((data: FinishedTxData) => {
+  //   // if (onContractCallError) {
+  //   // TODO: Delete record from Proposals
+  //   // }
+  //   toast({
+  //     duration: 2500,
+  //     isClosable: true,
+  //     position: 'top-right',
+  //     render: () => (
+  //       <Notification>
+  //         <Stack direction='row' p='4' spacing='3'>
+  //           <Stack spacing='2.5'>
+  //             <Stack spacing='1'>
+  //               <Text fontSize='md' color='light.900' fontWeight='medium'>
+  //                 Transaction failed
+  //               </Text>
+  //               <Text fontSize='sm' color='gray.900'>
+  //                 Your transaction failed.
+  //               </Text>
+  //             </Stack>
+  //             <ButtonGroup variant='link' size='md' spacing='3'>
+  //               <Button
+  //                 color='secondary.900'
+  //                 as='a'
+  //                 target='_blank'
+  //                 href={
+  //                   process.env.NODE_ENV !== 'production'
+  //                     ? `http://localhost:8000/txid/${data.txId}?chain=testnet`
+  //                     : `https://explorer.stacks.co/txid/${data.txId}?chain=mainnet`
+  //                 }
+  //               >
+  //                 View transaction
+  //               </Button>
+  //             </ButtonGroup>
+  //           </Stack>
+  //           <CloseButton
+  //             aria-label='close'
+  //             transform='translateY(-6px)'
+  //             color='white'
+  //             onClick={() => toast.closeAll()}
+  //           />
+  //         </Stack>
+  //       </Notification>
+  //     ),
+  //   });
+  // }, []);
 
   const { handleContractDeploy, isLoading } = useContractDeploy({
     codeBody,

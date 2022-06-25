@@ -11,7 +11,6 @@ import {
   InputRightAddon,
   Text,
   ButtonGroup,
-  SimpleGrid,
   Tab,
   Tabs,
   TabList,
@@ -20,15 +19,10 @@ import {
 } from '@chakra-ui/react';
 
 // Stacks
-import { useCurrentStxAddress } from '@micro-stacks/react';
 import { standardPrincipalCV } from 'micro-stacks/clarity';
 
 // Hooks
-import {
-  useOrganization,
-  useVotingExtension,
-  useGovernanceToken,
-} from '@common/hooks';
+import { useOrganization, useVotingExtension } from '@common/hooks';
 import { useForm, Controller } from 'react-hook-form';
 
 // Components
@@ -43,17 +37,12 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 //  Animation
 import { motion } from 'framer-motion';
 
-// Utils
-import { convertToken } from '@common/helpers';
-
 const Governance = () => {
-  const currentStxAddress = useCurrentStxAddress();
   const { control, handleSubmit, getValues } = useForm();
   const { delegateAddress } = getValues();
   const router = useRouter();
   const { dao } = router.query as any;
   const { organization } = useOrganization({ name: dao });
-  const { balance: userBalance } = useGovernanceToken({ organization });
   const { contractAddress, contractName } = useVotingExtension({
     organization,
   });

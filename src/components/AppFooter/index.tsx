@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   FormControl,
@@ -8,12 +8,7 @@ import {
   VStack,
   ModalBody,
   Stack,
-  Text,
 } from '@chakra-ui/react';
-
-// Web3
-import { useIsSignedIn, useNetwork } from '@micro-stacks/react';
-import { fetchBlocks } from 'micro-stacks/api';
 
 // Components
 import { DepositButton, InitButton } from '@components/Actions';
@@ -21,42 +16,9 @@ import { DepositButton, InitButton } from '@components/Actions';
 // Components
 import { DevToolModal } from '@components/Modal';
 
-// Hooks
-import { usePolling } from '@common/hooks';
-
 export const AppFooter = () => {
-  const isSignedIn = useIsSignedIn();
-  const { network } = useNetwork();
   const [depositAmount, setDepositAmount] = useState('');
   const [bootstrap, setBootstrap] = useState('');
-  const [blockHeight, setBlockHeight] = useState(0);
-
-  const fetch = async () => {
-    if (isSignedIn) {
-      try {
-        const blocks = await fetchBlocks({
-          url: network.getCoreApiUrl(),
-          limit: 1,
-          offset: 0,
-        });
-        setBlockHeight(blocks.total);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetch();
-  }, []);
-
-  usePolling(
-    () => {
-      fetch();
-    },
-    true,
-    600000,
-  );
 
   // INIT
   // const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
