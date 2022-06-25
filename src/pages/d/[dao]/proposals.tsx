@@ -151,6 +151,7 @@ const Proposals = () => {
                       ? `http://localhost:8000/txid/${proposalContractAddress}?chain=testnet`
                       : `https://explorer.stacks.co/txid/${proposalContractAddress}?chain=mainnet`
                   }
+                  bg='base.800'
                   color='white'
                   size='sm'
                   _hover={{ opacity: 0.9 }}
