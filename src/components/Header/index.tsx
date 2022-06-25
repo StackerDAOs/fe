@@ -20,7 +20,7 @@ import {
   useGovernanceToken,
 } from '@common/hooks';
 
-import { defaultTo, get } from 'lodash';
+import { defaultTo } from 'lodash';
 
 type THeader = {
   symbol: string | null;

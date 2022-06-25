@@ -76,7 +76,7 @@ const Proposals = () => {
     const startHeight = currentBlockHeight + 15; // TODO: 15 needs to be dynamic startBlockHeight min
     return submissions?.map(
       (
-        { type, contractAddress: proposalContractAddress, transactionId }: any,
+        { type, contractAddress: proposalContractAddress }: any,
         index: number,
       ) => {
         const isLoading =
@@ -177,127 +177,127 @@ const Proposals = () => {
       transition={{ duration: 0.75, type: 'linear' }}
     >
       <Container>
-      <Stack spacing={{ base: '8', lg: '6' }}>
-        <Stack w='auto'>
-          <Box as='section'>
-            <Container>
-              {isLoading ? (
-                <Stack>
-                  <Skeleton height='20px' />
-                  <Skeleton height='20px' />
-                  <Skeleton height='20px' />
-                </Stack>
-              ) : proposals?.length === 0 ? (
-                <>
-                  <Stack spacing='5'>
-                    <Stack
-                      spacing='4'
-                      my='6'
-                      direction={{ base: 'column', md: 'row' }}
-                      justify='space-between'
-                      alignItems='center'
+        <Stack spacing={{ base: '8', lg: '6' }}>
+          <Stack w='auto'>
+            <Box as='section'>
+              <Container>
+                {isLoading ? (
+                  <Stack>
+                    <Skeleton height='20px' />
+                    <Skeleton height='20px' />
+                    <Skeleton height='20px' />
+                  </Stack>
+                ) : proposals?.length === 0 ? (
+                  <>
+                    <Stack spacing='5'>
+                      <Stack
+                        spacing='4'
+                        my='6'
+                        direction={{ base: 'column', md: 'row' }}
+                        justify='space-between'
+                        alignItems='center'
+                        color='white'
+                      >
+                        <Box>
+                          <Text fontSize='lg' fontWeight='medium'>
+                            Proposals
+                          </Text>
+                          <Text color='gray.900' fontSize='sm'>
+                            View all pending, active, and completed proposals.
+                          </Text>
+                        </Box>
+                      </Stack>
+                    </Stack>
+                    <EmptyState
+                      heading='No proposals found.'
+                      linkTo={`/d/${dao}/proposals/c/survey`}
+                      buttonTitle='Create proposal'
+                      isDisabled={false}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Stack spacing='5'>
+                      <Stack
+                        spacing='4'
+                        my='6'
+                        direction={{ base: 'column', md: 'row' }}
+                        justify='space-between'
+                        alignItems='center'
+                        color='white'
+                      >
+                        <Box>
+                          <Text fontSize='lg' fontWeight='medium'>
+                            Proposals
+                          </Text>
+                          <Text color='gray.900' fontSize='sm'>
+                            View all pending, active, and completed proposals.
+                          </Text>
+                        </Box>
+                      </Stack>
+                    </Stack>
+                    <SimpleGrid
+                      columns={{ base: 1, md: 3 }}
+                      spacing='6'
+                      mb='10'
                       color='white'
                     >
-                      <Box>
-                        <Text fontSize='lg' fontWeight='medium'>
-                          Proposals
-                        </Text>
-                        <Text color='gray.900' fontSize='sm'>
-                          View all pending, active, and completed proposals.
-                        </Text>
-                      </Box>
-                    </Stack>
-                  </Stack>
-                  <EmptyState
-                    heading='No proposals found.'
-                    linkTo={`/d/${dao}/proposals/c/survey`}
-                    buttonTitle='Create proposal'
-                    isDisabled={false}
-                  />
-                </>
-              ) : (
-                <>
-                  <Stack spacing='5'>
-                    <Stack
-                      spacing='4'
-                      my='6'
-                      direction={{ base: 'column', md: 'row' }}
-                      justify='space-between'
-                      alignItems='center'
-                      color='white'
-                    >
-                      <Box>
-                        <Text fontSize='lg' fontWeight='medium'>
-                          Proposals
-                        </Text>
-                        <Text color='gray.900' fontSize='sm'>
-                          View all pending, active, and completed proposals.
-                        </Text>
-                      </Box>
-                    </Stack>
-                  </Stack>
-                  <SimpleGrid
-                    columns={{ base: 1, md: 3 }}
-                    spacing='6'
-                    mb='10'
-                    color='white'
-                  >
-                    {proposals?.map((data: any, index: number) => (
-                      <ProposalCard key={index} {...data} />
-                    ))}
-                  </SimpleGrid>
-                </>
-              )}
-              {/* <motion.div
-                variants={FADE_IN_VARIANTS}
-                initial={FADE_IN_VARIANTS.hidden}
-                animate={FADE_IN_VARIANTS.enter}
-                exit={FADE_IN_VARIANTS.exit}
-                transition={{ duration: 0.75, type: 'linear' }}
-              >
-                <Box as='section'>
-                  <Stack spacing={{ base: '8', lg: '6' }}>
-                    <Stack w='auto'>
-                      <Box as='section'>
-                        <Stack spacing='5'>
-                          <Stack
-                            spacing='4'
-                            mb='3'
-                            direction={{ base: 'column', md: 'row' }}
-                            justify='space-between'
-                            color='white'
-                          >
-                            <Box>
-                              <Text fontSize='lg' fontWeight='medium'>
-                                Inactive proposals
-                              </Text>
-                              <Text color='gray.900' fontSize='sm'>
-                                List of smart contracts that are ready to be
-                                proposed.
-                              </Text>
-                            </Box>
+                      {proposals?.map((data: any, index: number) => (
+                        <ProposalCard key={index} {...data} />
+                      ))}
+                    </SimpleGrid>
+                  </>
+                )}
+                <motion.div
+                  variants={FADE_IN_VARIANTS}
+                  initial={FADE_IN_VARIANTS.hidden}
+                  animate={FADE_IN_VARIANTS.enter}
+                  exit={FADE_IN_VARIANTS.exit}
+                  transition={{ duration: 0.75, type: 'linear' }}
+                >
+                  <Box as='section'>
+                    <Stack spacing={{ base: '8', lg: '6' }}>
+                      <Stack w='auto'>
+                        <Box as='section'>
+                          <Stack spacing='5'>
+                            <Stack
+                              spacing='4'
+                              mb='3'
+                              direction={{ base: 'column', md: 'row' }}
+                              justify='space-between'
+                              color='white'
+                            >
+                              <Box>
+                                <Text fontSize='lg' fontWeight='medium'>
+                                  Inactive proposals
+                                </Text>
+                                <Text color='gray.900' fontSize='sm'>
+                                  List of smart contracts that are ready to be
+                                  proposed.
+                                </Text>
+                              </Box>
+                            </Stack>
                           </Stack>
-                        </Stack>
-                        {submissions?.length > 0 ? (
-                          submissionsByProposal()
-                        ) : (
-                          <EmptyState
-                            heading='No proposals found.'
-                            linkTo={`/d/${dao}/proposals/c/survey`}
-                            buttonTitle='Create proposal'
-                            isDisabled={false}
-                          />
-                        )}
-                      </Box>
+                          {submissions?.length > 0 ? (
+                            submissionsByProposal()
+                          ) : (
+                            <EmptyState
+                              heading='No proposals found.'
+                              linkTo={`/d/${dao}/proposals/c/survey`}
+                              buttonTitle='Create proposal'
+                              isDisabled={false}
+                            />
+                          )}
+                        </Box>
+                      </Stack>
                     </Stack>
-                  </Stack>
-                </Box>
-              </motion.div> */}
-            </Container>
-          </Box>
+                  </Box>
+                </motion.div>
+              </Container>
+            </Box>
+          </Stack>
         </Stack>
-      </Stack>
-      </Container>>
+      </Container>
     </motion.div>
   );
 };

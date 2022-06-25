@@ -5,7 +5,6 @@ import { supabase } from '@utils/supabase';
 import { ContractCallButton } from '@widgets/ContractCallButton';
 
 // Web3
-import { useUser } from '@micro-stacks/react';
 import { contractPrincipalCV, uintCV } from 'micro-stacks/clarity';
 
 // Hooks
@@ -66,7 +65,7 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
     }
   };
 
-  const startHeight = currentBlockHeight + 15; // TODO: 15 needs to be dynamic startBlockHeight min
+  const startHeight = currentBlockHeight + 50; // TODO: 50 needs to be dynamic startBlockHeight min
 
   const isLoading =
     proposalContractAddress &&

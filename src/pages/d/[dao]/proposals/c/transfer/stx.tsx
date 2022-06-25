@@ -9,14 +9,12 @@ import {
   GridItem,
   Icon,
   Image,
-  FormErrorMessage,
   FormControl,
   HStack,
   Input,
   Stack,
   Textarea,
   VStack,
-  SimpleGrid,
   Spinner,
   Text,
 } from '@chakra-ui/react';
@@ -67,7 +65,7 @@ const Stx = () => {
     register,
     handleSubmit,
     getValues,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm();
   const { transferAmount, transferTo, description } = getValues();
   const [currentStep, { setStep }] = useStep({

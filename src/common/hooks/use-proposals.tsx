@@ -4,7 +4,7 @@ import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
 import { fetchContractSource, fetchReadOnlyFunction } from 'micro-stacks/api';
 import { contractPrincipalCV } from 'micro-stacks/clarity';
 import { useContractEvents } from '../hooks';
-import { pluckDetails, pluckSourceCode } from '@common/helpers';
+import { pluckSourceCode } from '@common/helpers';
 
 type TProposals = {
   isLoading: boolean;
@@ -70,7 +70,7 @@ export function useProposals({ organization, offset = 0 }: IProposals = {}) {
             });
             const { source } = contractSource;
             const title = pluckSourceCode(source, 'title');
-            const description = pluckDetails(source);
+            const description = pluckSourceCode(source, 'description');
             const type = pluckSourceCode(source, 'type');
             return {
               contractAddress: proposal?.proposal?.value,

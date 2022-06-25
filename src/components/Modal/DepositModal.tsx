@@ -10,7 +10,7 @@ import {
 
 import { FaPlus } from 'react-icons/fa';
 
-export const DepositModal = ({ title, children }: any) => {
+export const DepositModal = ({ children }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

@@ -94,7 +94,6 @@ const ProposalView = () => {
   const {
     title,
     description,
-    type,
     contractAddress: proposalContractAddress,
     contractName: proposalContractName,
     proposer,
@@ -151,7 +150,6 @@ const ProposalView = () => {
     currentBlockHeight >= startBlockHeight;
   const convertedVotesFor = tokenToNumber(Number(votesFor), 2);
   const convertedVotesAgainst = tokenToNumber(Number(votesAgainst), 2);
-  const convertedTotalVotes = tokenToNumber(Number(totalVotes), 2);
 
   const voteData = {
     contractAddress: votingExtensionAddress,

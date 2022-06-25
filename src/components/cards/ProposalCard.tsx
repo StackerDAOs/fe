@@ -1,16 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import {
-  Badge,
-  Box,
-  HStack,
-  Icon,
-  Progress,
-  Stack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Badge, HStack, Icon, Progress, Stack, Text } from '@chakra-ui/react';
 
 import { motion } from 'framer-motion';
 
@@ -52,7 +43,6 @@ export const ProposalCard = ({
     currentBlockHeight >= startBlockHeight;
   const convertedVotesFor = tokenToNumber(Number(votesFor), 2);
   const convertedVotesAgainst = tokenToNumber(Number(votesAgainst), 2);
-  const convertedTotalVotes = tokenToNumber(Number(totalVotes), 2);
 
   const statusBadge = (
     <>
