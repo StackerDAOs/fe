@@ -134,7 +134,7 @@ export const Header = () => {
   }
 
   return (
-    <Container>
+    <Container maxW='5xl'>
       <Stack spacing={{ base: '6', lg: '4' }} mt='5'>
         <Container>
           <Stack
