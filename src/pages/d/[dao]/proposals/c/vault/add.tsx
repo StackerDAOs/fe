@@ -222,6 +222,7 @@ const Add = () => {
           <HStack justify='flex-start'>
             <Button
               isFullWidth
+              bg='base.800'
               color='white'
               onClick={() => setStep(currentStep + 1)}
               _hover={{ opacity: 0.9 }}
