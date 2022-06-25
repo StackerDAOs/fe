@@ -19,7 +19,7 @@ export const DepositButton = ({ title, amount }: any) => {
   const getDepositData = ({ amount }: any) => {
     if (amount) {
       return {
-        contractAddress: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+        contractAddress: 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5',
         contractName: 'sde-vault',
         functionName: 'deposit',
         functionArgs: [uintCV(stxToUstx(amount))],
@@ -40,6 +40,7 @@ export const DepositButton = ({ title, amount }: any) => {
     <ContractCallButton
       title={!amount ? 'Enter an amount' : title}
       color='white'
+      bg='base.800'
       size='sm'
       disabled={!amount}
       {...getDepositData({ amount: amount })}
