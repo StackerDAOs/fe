@@ -235,6 +235,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
                     <Button
                       as='a'
                       target='_blank'
+                      bg='base.800'
                       color='white'
                       size='sm'
                       _hover={{ opacity: 0.9 }}
