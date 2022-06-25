@@ -140,7 +140,7 @@ export const ProposalCard = ({
                         </Text>
                       </HStack>
                       <Text fontWeight='regular' color='gray.900'>
-                        {truncate(description, 50)}
+                        {description && truncate(description, 50)}
                       </Text>
                     </Stack>
                   </HStack>
