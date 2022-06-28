@@ -19,7 +19,7 @@ export const DepositButton = ({ title, amount }: any) => {
   const getDepositData = ({ amount }: any) => {
     if (amount) {
       return {
-        contractAddress: 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5',
+        contractAddress: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
         contractName: 'sde-vault',
         functionName: 'deposit',
         functionArgs: [uintCV(stxToUstx(amount))],

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import {
   Box,
   Badge,
+  Button,
   ButtonGroup,
   Container,
   Divider,
@@ -86,7 +87,7 @@ const ProposalView = () => {
   const { dao, id: proposalPrincipal } = router.query as any;
   const { organization } = useOrganization({ name: dao });
   const { currentBlockHeight } = useBlocks();
-  const { balance } = useGovernanceToken({ organization });
+  const { balance, decimals, symbol } = useGovernanceToken({ organization });
   const {
     contractAddress: votingExtensionAddress,
     contractName: votingExtensionName,
@@ -135,7 +136,7 @@ const ProposalView = () => {
     fetchData();
   }, [proposalContractAddress]);
 
-  const isEligible = tokenToNumber(Number(balance), 2) > 0;
+  const isEligible = tokenToNumber(Number(balance), Number(decimals)) > 0;
   const totalVotes = Number(votesFor) + Number(votesAgainst);
   const currentVoterEvent = (event: any) =>
     event?.voter?.value === currentStxAddress;
@@ -148,8 +149,18 @@ const ProposalView = () => {
   const isOpen =
     currentBlockHeight <= endBlockHeight &&
     currentBlockHeight >= startBlockHeight;
-  const convertedVotesFor = tokenToNumber(Number(votesFor), 2);
-  const convertedVotesAgainst = tokenToNumber(Number(votesAgainst), 2);
+  const convertedVotesFor = tokenToNumber(Number(votesFor), Number(decimals));
+  const convertedVotesAgainst = tokenToNumber(
+    Number(votesAgainst),
+    Number(decimals),
+  );
+  const convertedTotalVotes = tokenToNumber(
+    Number(totalVotes),
+    Number(decimals),
+  );
+  const isPassing =
+    convertedVotesFor > convertedVotesAgainst &&
+    convertedTotalVotes >= Number(quorumThreshold);
 
   const voteData = {
     contractAddress: votingExtensionAddress,
@@ -216,7 +227,13 @@ const ProposalView = () => {
                     </HStack>
                     <HStack>
                       {concluded ? (
-                        <Badge colorScheme='secondary' size='sm' px='3' py='2'>
+                        <Badge
+                          bg='base.800'
+                          color='secondary.900'
+                          size='sm'
+                          px='3'
+                          py='1'
+                        >
                           <HStack>
                             <FaInfoCircle fontSize='0.9rem' />
                             <Text fontSize='sm' fontWeight='medium'>
@@ -225,7 +242,13 @@ const ProposalView = () => {
                           </HStack>
                         </Badge>
                       ) : isClosed && !canExecute ? (
-                        <Badge colorScheme='secondary' size='sm' px='3' py='2'>
+                        <Badge
+                          bg='base.800'
+                          color='secondary.900'
+                          size='sm'
+                          px='3'
+                          py='1'
+                        >
                           <HStack>
                             <FaClock fontSize='0.9rem' />
                             <Text fontSize='sm' fontWeight='medium'>
@@ -238,16 +261,28 @@ const ProposalView = () => {
                           </HStack>
                         </Badge>
                       ) : canExecute && !concluded ? (
-                        <Badge colorScheme='secondary' size='sm' px='3' py='2'>
+                        <Badge
+                          bg='base.800'
+                          color='secondary.900'
+                          size='sm'
+                          px='3'
+                          py='1'
+                        >
                           <HStack>
                             <FaClock fontSize='0.9rem' />
                             <Text fontSize='sm' fontWeight='medium'>
-                              Awaiting proposal execution
+                              Ready to {isPassing ? `execute` : `conclude`}
                             </Text>
                           </HStack>
                         </Badge>
                       ) : hasVoted ? (
-                        <Badge colorScheme='secondary' size='sm' px='3' py='2'>
+                        <Badge
+                          bg='base.800'
+                          color='secondary.900'
+                          size='sm'
+                          px='3'
+                          py='1'
+                        >
                           <HStack>
                             <FaCheckCircle fontSize='0.9rem' />
                             <Text fontSize='sm' fontWeight='medium'>
@@ -256,7 +291,13 @@ const ProposalView = () => {
                           </HStack>
                         </Badge>
                       ) : isInactive ? (
-                        <Badge colorScheme='secondary' size='sm' px='3' py='2'>
+                        <Badge
+                          bg='base.800'
+                          color='secondary.900'
+                          size='sm'
+                          px='3'
+                          py='1'
+                        >
                           <HStack>
                             <FaClock fontSize='0.9rem' />
                             <Text fontSize='sm' fontWeight='medium'>
@@ -268,7 +309,13 @@ const ProposalView = () => {
                           </HStack>
                         </Badge>
                       ) : !isEligible ? (
-                        <Badge colorScheme='secondary' size='sm' px='3' py='2'>
+                        <Badge
+                          bg='base.800'
+                          color='secondary.900'
+                          size='sm'
+                          px='3'
+                          py='1'
+                        >
                           <HStack>
                             <FaExclamationCircle fontSize='0.9rem' />
                             <Text fontSize='sm' fontWeight='medium'>
@@ -383,9 +430,9 @@ const ProposalView = () => {
                           Voting power
                         </Text>
                         <Text color='light.900' fontWeight='regular'>
-                          {convertToken(balance.toString(), 2)}{' '}
+                          {convertToken(balance.toString(), Number(decimals))}{' '}
                           <Text as='span' color='gray.900' fontWeight='medium'>
-                            CITY
+                            {symbol}
                           </Text>
                         </Text>
                       </HStack>
@@ -404,27 +451,52 @@ const ProposalView = () => {
                         </Text>
                         {concluded ? (
                           <Badge
-                            colorScheme='secondary'
+                            bg='base.800'
+                            color='secondary.900'
                             size='sm'
                             px='3'
-                            py='2'
+                            py='1'
                           >
                             Executed
                           </Badge>
                         ) : isClosed && !canExecute ? (
-                          <Badge colorScheme='blue' size='sm' px='3' py='2'>
+                          <Badge
+                            bg='base.800'
+                            color='secondary.900'
+                            size='sm'
+                            px='3'
+                            py='1'
+                          >
                             Voting completed
                           </Badge>
                         ) : canExecute ? (
-                          <Badge colorScheme='green' size='sm' px='3' py='2'>
-                            Ready to execute
+                          <Badge
+                            bg='base.800'
+                            color='secondary.900'
+                            size='sm'
+                            px='3'
+                            py='1'
+                          >
+                            Ready to {isPassing ? `execute` : `conclude`}
                           </Badge>
                         ) : isOpen ? (
-                          <Badge colorScheme='green' size='sm' px='3' py='2'>
+                          <Badge
+                            bg='base.800'
+                            color='secondary.900'
+                            size='sm'
+                            py='1'
+                            px='3'
+                          >
                             Live
                           </Badge>
                         ) : (
-                          <Badge colorScheme='yellow' size='sm' px='3' py='2'>
+                          <Badge
+                            bg='base.800'
+                            color='secondary.900'
+                            size='sm'
+                            px='3'
+                            py='1'
+                          >
                             Pending
                           </Badge>
                         )}
@@ -502,7 +574,7 @@ const ProposalView = () => {
                             color='light.900'
                           >
                             {parseInt(quorumThreshold)?.toLocaleString('en-US')}{' '}
-                            CITY
+                            {symbol}
                           </Text>
                         </HStack>
                         <HStack justify='space-between'>
@@ -562,101 +634,6 @@ const ProposalView = () => {
             exit={FADE_IN_VARIANTS.exit}
             transition={{ duration: 0.75, type: 'linear' }}
           >
-            {/* <Box as='section'>
-              <Stack spacing={{ base: '8', lg: '6' }}>
-                <Stack w='auto'>
-                  <Box as='section' mb='10'>
-                    <Stack spacing='5'>
-                      <Stack
-                        spacing='4'
-                        mb='3'
-                        direction={{ base: 'column', md: 'row' }}
-                        justify='space-between'
-                        color='white'
-                      >
-                        <Box>
-                          <Text fontSize='lg' fontWeight='medium'>
-                            Activity
-                          </Text>
-                          <Text color='gray.900' fontSize='sm'>
-                            View the latest activity for the current proposal.
-                          </Text>
-                        </Box>
-                      </Stack>
-                    </Stack>
-                    <Box cursor='pointer'>
-                      {events?.map(
-                        ({ amount, for: vote, voter }: any, index: number) => (
-                          <Stack
-                            key={index}
-                            color='white'
-                            py='2'
-                            px='3'
-                            my='2'
-                            borderRadius='lg'
-                            _hover={{ bg: 'base.800' }}
-                          >
-                            <Stack
-                              direction='row'
-                              spacing='5'
-                              display='flex'
-                              justifyContent='space-between'
-                            >
-                              <HStack spacing='3'>
-                                {vote?.value ? (
-                                  <FaVoteYea fontSize='0.85rem' />
-                                ) : (
-                                  <HiX fontSize='0.85rem' />
-                                )}
-                                <Text
-                                  fontSize='sm'
-                                  fontWeight='medium'
-                                  color='light.900'
-                                >
-                                  {`${vote?.value ? 'Approved' : 'Rejected'}`}
-                                </Text>
-                              </HStack>
-                              <HStack spacing='3'>
-                                <Text
-                                  fontSize='sm'
-                                  fontWeight='regular'
-                                  color='light.900'
-                                >
-                                  {convertToken(amount?.value, 2)}
-                                </Text>
-                                <Text
-                                  fontSize='sm'
-                                  fontWeight='medium'
-                                  color='gray.900'
-                                >
-                                  MEGA
-                                </Text>
-                              </HStack>
-                              <HStack spacing='3'>
-                                <Text
-                                  fontSize='xs'
-                                  fontWeight='regular'
-                                  color='gray.900'
-                                >
-                                  submitted by
-                                </Text>
-                                <Text
-                                  fontSize='xs'
-                                  fontWeight='regular'
-                                  color='gray.900'
-                                >
-                                  {voter && truncate(voter?.value, 4, 4)}
-                                </Text>
-                              </HStack>
-                            </Stack>
-                          </Stack>
-                        ),
-                      )}
-                    </Box>
-                  </Box>
-                </Stack>
-              </Stack>
-            </Box> */}
             <Box as='section'>
               <Stack spacing={{ base: '8', lg: '6' }}>
                 <Stack w='auto'>
@@ -664,7 +641,7 @@ const ProposalView = () => {
                     <Tabs color='white' variant='unstyled'>
                       <TabList>
                         <ButtonGroup bg='base.800' borderRadius='lg' p='1'>
-                          {['Details', 'Code', 'Activity'].map((item) => (
+                          {['Details', 'Activity'].map((item) => (
                             <Tab
                               key={item}
                               fontSize='sm'
@@ -692,72 +669,70 @@ const ProposalView = () => {
                             exit={FADE_IN_VARIANTS.exit}
                             transition={{ duration: 0.25, type: 'linear' }}
                           >
-                            <Stack my='3'>
+                            <Stack>
                               <Stack
                                 spacing='4'
-                                direction={{ base: 'column', md: 'row' }}
-                                justify='space-between'
+                                direction={{ base: 'column', md: 'column' }}
                                 color='white'
                               >
-                                <Box>
+                                <Stack>
+                                  <Box>
+                                    <Text
+                                      fontSize='md'
+                                      fontWeight='regular'
+                                      color='gray.900'
+                                    >
+                                      Description
+                                    </Text>
+                                  </Box>
                                   <Text
                                     fontSize='md'
-                                    fontWeight='regular'
-                                    color='gray.900'
+                                    _selection={{
+                                      bg: 'base.800',
+                                      color: 'secondary.900',
+                                    }}
                                   >
-                                    Description
+                                    {description}
                                   </Text>
-                                </Box>
+                                </Stack>
+                                <Stack align='flex-start'>
+                                  <Box>
+                                    <Text
+                                      fontSize='md'
+                                      fontWeight='regular'
+                                      color='gray.900'
+                                    >
+                                      Code
+                                    </Text>
+                                  </Box>
+                                  <Button
+                                    as='a'
+                                    variant='link'
+                                    target='_blank'
+                                    href={
+                                      process.env.NODE_ENV !== 'production'
+                                        ? `http://localhost:8000/txid/${proposalContractAddress}.${proposalContractName}?chain=testnet`
+                                        : `https://explorer.stacks.co/txid/${proposalContractAddress}.${proposalContractName}?chain=mainnet`
+                                    }
+                                  >
+                                    <Text
+                                      cursor='pointer'
+                                      textDecoration='underline'
+                                      fontSize='md'
+                                      _selection={{
+                                        bg: 'base.800',
+                                        color: 'secondary.900',
+                                      }}
+                                    >
+                                      View source code
+                                    </Text>
+                                  </Button>
+                                </Stack>
                               </Stack>
-                              <Text
-                                fontSize='md'
-                                _selection={{
-                                  bg: 'base.800',
-                                  color: 'secondary.900',
-                                }}
-                              >
-                                {description}
-                              </Text>
                             </Stack>
                           </motion.div>
                         </TabPanel>
-                        <TabPanel px='0'>
-                          <motion.div
-                            variants={FADE_IN_VARIANTS}
-                            initial={FADE_IN_VARIANTS.hidden}
-                            animate={FADE_IN_VARIANTS.enter}
-                            exit={FADE_IN_VARIANTS.exit}
-                            transition={{ duration: 0.25, type: 'linear' }}
-                          >
-                            <Stack my='3'>
-                              <Stack
-                                spacing='4'
-                                direction={{ base: 'column', md: 'row' }}
-                                justify='space-between'
-                                color='white'
-                              >
-                                <Box>
-                                  <Text
-                                    fontSize='md'
-                                    fontWeight='regular'
-                                    color='gray.900'
-                                  >
-                                    Code
-                                  </Text>
-                                </Box>
-                              </Stack>
-                              <Text
-                                fontSize='md'
-                                _selection={{
-                                  bg: 'base.800',
-                                  color: 'secondary.900',
-                                }}
-                              >
-                                {description}
-                              </Text>
-                            </Stack>
-                          </motion.div>
-                        </TabPanel>
+
                         <TabPanel px='0'>
                           <motion.div
                             variants={FADE_IN_VARIANTS}

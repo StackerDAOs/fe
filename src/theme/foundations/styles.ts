@@ -11,5 +11,9 @@ export default {
     '*, *::before, &::after': {
       borderColor: 'base.500',
     },
+    code: {
+      color: 'light.900',
+      bg: 'base.900',
+    },
   }),
 };

@@ -3,13 +3,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Badge, HStack, Icon, Progress, Stack, Text } from '@chakra-ui/react';
 
-import { motion } from 'framer-motion';
-
 // Hooks
 import { useBlocks } from '@common/hooks';
 
 // Components
 import { Card } from '@components/Card';
+
+// Animation
+import { motion } from 'framer-motion';
 
 // Utils
 import { getPercentage, tokenToNumber, truncate } from '@common/helpers';
@@ -47,19 +48,19 @@ export const ProposalCard = ({
   const statusBadge = (
     <>
       {concluded ? (
-        <Badge colorScheme='secondary' size='sm' px='4' py='2'>
+        <Badge bg='base.800' color='secondary.900' size='sm' py='1' px='3'>
           Executed
         </Badge>
       ) : isClosed ? (
-        <Badge colorScheme='blue' size='sm' px='4' py='2'>
+        <Badge bg='base.800' color='secondary.900' size='sm' py='1' px='3'>
           Voting compeleted
         </Badge>
       ) : isOpen ? (
-        <Badge colorScheme='green' size='sm' px='4' py='2'>
+        <Badge bg='base.800' color='secondary.900' size='sm' py='1' px='3'>
           Live
         </Badge>
       ) : (
-        <Badge colorScheme='yellow' size='sm' px='4' py='2'>
+        <Badge bg='base.800' color='secondary.900' size='sm' py='1' px='3'>
           Pending
         </Badge>
       )}
@@ -84,7 +85,7 @@ export const ProposalCard = ({
         <a>
           <Card
             bg='base.900'
-            h='xs'
+            h='auto'
             position='relative'
             px={{ base: '6', md: '6' }}
             py={{ base: '6', md: '6' }}

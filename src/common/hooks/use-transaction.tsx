@@ -1,7 +1,7 @@
 // Hook (use-transaction.tsx)
 import { useEffect, useState } from 'react';
 import { fetchTransaction } from 'micro-stacks/api';
-import { StacksTestnet } from 'micro-stacks/network';
+import { useNetwork } from '@micro-stacks/react';
 
 interface TransactionProps {
   txId: string;
@@ -15,7 +15,7 @@ export const useTransaction = ({ txId }: TransactionProps) => {
   const [error, setError] = useState(null);
 
   async function fetch() {
-    const network = new StacksTestnet();
+    const { network } = useNetwork();
     try {
       const transaction = await fetchTransaction({
         url: network.getCoreApiUrl(),
