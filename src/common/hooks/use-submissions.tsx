@@ -22,7 +22,6 @@ export function useSubmissions() {
             'contractAddress, type, transactionId, submittedBy, Organizations (id, name)',
           )
           .eq('submitted', false);
-
         if (error) throw error;
         if (Proposals.length > 0) {
           const proposals = Proposals?.filter(

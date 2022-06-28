@@ -121,6 +121,7 @@ export function useProposal({
           events: voteEvents,
           quorumThreshold: quorumThreshold.toString(),
           executionDelay: executionDelay.toString(),
+          source,
           ...proposalData,
         });
       } catch (e: any) {

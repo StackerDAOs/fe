@@ -35,7 +35,7 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
         const { data: Proposals, error } = await supabase
           .from('Proposals')
           .select('contractAddress')
-          .eq('transactionId', formattedTransactionId);
+          .eq('transactionId', transactionId);
         if (error) throw error;
         if (Proposals.length > 0) {
           const proposal = Proposals[0];
@@ -95,7 +95,7 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
       title='Propose'
       color='white'
       bg='secondary.900'
-      size='sm'
+      size='md'
       isFullWidth
       onContractCall={() => onFinishUpdate(proposalContractAddress)}
       {...contractData}

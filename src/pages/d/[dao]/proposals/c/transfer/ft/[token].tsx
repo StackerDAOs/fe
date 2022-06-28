@@ -89,6 +89,7 @@ const Token = () => {
   };
 
   useEffect(() => {
+    setTransaction({ txId: '', data: {} });
     const fetchAssetData = async ({ contractAddress, contractName }: any) => {
       const senderAddress = `${contractAddress}.${contractName}`;
       const name = await fetchReadOnlyFunction({

@@ -62,7 +62,7 @@ export const TransferTokenButton = ({
       contractAddress: `${currentStxAddress}.${contractName}` || '',
       submittedBy: currentStxAddress || '',
       type: 'MDP Transfer Tokens',
-      transactionId: data.txId,
+      transactionId: `0x${data.txId}`,
     });
   };
 
@@ -78,13 +78,14 @@ export const TransferTokenButton = ({
 
   return (
     <ContractDeployButton
+      title='Deploy'
       color='white'
       bg='secondary.900'
       fontSize='md'
       size='md'
+      flex='1'
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
-      title='Deploy'
       contractName={contractName}
       codeBody={contract}
       onContractCall={onFinishInsert}

@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
+  Box,
   Button,
   HStack,
+  IconButton,
   Table,
   Thead,
   Th,
@@ -26,6 +28,16 @@ import { fetchReadOnlyFunction } from 'micro-stacks/api';
 import { ustxToStx, convertToken } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
+// Hooks
+import { useBalance, useOrganization } from '@common/hooks';
+
+// Animation
+import { motion } from 'framer-motion';
+import { FADE_IN_VARIANTS } from '@utils/animation';
+
+// Icons
+import { TransferTokenModal } from '@components/Modal';
+
 type AssetTableProps = {
   type: string;
 };
@@ -39,9 +51,6 @@ const initialState = {
   isLoading: true,
   fungibleTokensList: [],
 };
-
-// Hooks
-import { useBalance, useOrganization } from '@common/hooks';
 
 export const AssetTable = (props: TableProps & AssetTableProps) => {
   const [state, setState] = useState<TAssetTable>(initialState);
@@ -160,121 +169,100 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
 
   return (
     <Skeleton isLoaded={!isLoading}>
-      <Table {...props}>
-        <Thead color='gray.900'>
-          <Tr>
-            <Th bg='transparent' border='none' pl='0'>
-              Name
-            </Th>
-            <Th bg='transparent' border='none'>
-              Balance
-            </Th>
-            <Th bg='transparent' border='none'>
-              Total sent
-            </Th>
-            <Th bg='transparent' border='none'>
-              Total received
-            </Th>
-            <Th bg='transparent' border='none'></Th>
-          </Tr>
-        </Thead>
-        <Tbody color='light.900'>
-          {listItems.map((item) => {
-            const { name, symbol, decimals } = item;
-            let { balance, totalSent, totalReceived } = item;
-            switch (name) {
-              case 'Stacks':
-                balance = ustxToStx(item.balance);
-                totalSent = ustxToStx(item.totalSent);
-                totalReceived = ustxToStx(item.totalReceived);
-                break;
+      <motion.div
+        variants={FADE_IN_VARIANTS}
+        initial={FADE_IN_VARIANTS.hidden}
+        animate={FADE_IN_VARIANTS.enter}
+        exit={FADE_IN_VARIANTS.exit}
+        transition={{ duration: 1, type: 'linear' }}
+      >
+        <Table {...props}>
+          <Thead color='gray.900'>
+            <Tr>
+              <Th bg='transparent' border='none' pl='0'>
+                Name
+              </Th>
+              <Th bg='transparent' border='none'>
+                Balance
+              </Th>
+              <Th bg='transparent' border='none'>
+                Total sent
+              </Th>
+              <Th bg='transparent' border='none'>
+                Total received
+              </Th>
+              <Th bg='transparent' border='none'></Th>
+            </Tr>
+          </Thead>
+          <Tbody color='light.900'>
+            {listItems.map((item) => {
+              const { contractAddress, name, symbol, decimals } = item;
+              let { balance, totalSent, totalReceived } = item;
+              switch (name) {
+                case 'Stacks':
+                  balance = ustxToStx(item.balance);
+                  totalSent = ustxToStx(item.totalSent);
+                  totalReceived = ustxToStx(item.totalReceived);
+                  break;
 
-              default:
-                balance = convertToken(item.balance, decimals);
-                totalSent = convertToken(item.totalSent, decimals);
-                totalReceived = convertToken(item.totalReceived, decimals);
-                break;
-            }
-            return (
-              <Tr key={item.name} cursor='pointer'>
-                <Td borderColor='base.500' pl='0'>
-                  <HStack spacing='2' align='center'>
-                    {/* <Avatar
+                default:
+                  balance = convertToken(item.balance, decimals);
+                  totalSent = convertToken(item.totalSent, decimals);
+                  totalReceived = convertToken(item.totalReceived, decimals);
+                  break;
+              }
+              return (
+                <Tr key={item.name} cursor='pointer'>
+                  <Td borderColor='base.500' pl='0'>
+                    <HStack spacing='2' align='center'>
+                      {/* <Avatar
                       src={
                         'ipfs://Qmdgks1HjYZQhF4sTnkoeh7naic7J3G5aHQk91Uq25RwmF'
                       }
                       boxSize='6'
                     /> */}
-                    <Avatar
-                      size={15}
-                      name={item.symbol}
-                      variant='marble'
-                      colors={[
-                        '#50DDC3',
-                        '#624AF2',
-                        '#EB00FF',
-                        '#7301FA',
-                        '#25C2A0',
-                      ]}
-                    />
-                    <HStack align='baseline'>
-                      <Text color='light.900' fontWeight='medium'>
-                        {item.name}
-                      </Text>
-                      <Text fontSize='xs' color='gray.900'>
-                        ({symbol})
-                      </Text>
+                      <Avatar
+                        size={15}
+                        name={item.symbol}
+                        variant='marble'
+                        colors={[
+                          '#50DDC3',
+                          '#624AF2',
+                          '#EB00FF',
+                          '#7301FA',
+                          '#25C2A0',
+                        ]}
+                      />
+                      <HStack align='baseline'>
+                        <Text color='light.900' fontWeight='medium'>
+                          {item.name}
+                        </Text>
+                        <Text fontSize='xs' color='gray.900'>
+                          ({symbol})
+                        </Text>
+                      </HStack>
                     </HStack>
-                  </HStack>
-                </Td>
-                <Td borderColor='base.500'>{balance}</Td>
-                <Td borderColor='base.500'>{totalSent}</Td>
-                <Td borderColor='base.500'>{totalReceived}</Td>
-                <Td borderColor='base.500'>
-                  <HStack spacing='3'>
-                    <Button
-                      as='a'
-                      target='_blank'
-                      bg='base.800'
-                      color='white'
-                      size='sm'
-                      _hover={{ opacity: 0.9 }}
-                      _active={{ opacity: 1 }}
-                    >
-                      Deposit
-                    </Button>
-                    <Link
-                      href={`/d/${dao}/proposals/c/transfer/ft/${item.contractAddress}`}
-                    >
-                      <Button
-                        target='_blank'
-                        color='white'
-                        bg='secondary.900'
-                        size='sm'
-                        disabled={false}
-                        _disabled={{
-                          bg: 'secondary.900',
-                          opacity: 0.5,
-                          cursor: 'not-allowed',
-                          _hover: {
-                            bg: 'secondary.900',
-                            opacity: 0.5,
-                            cursor: 'not-allowed',
-                          },
-                        }}
-                        _hover={{ opacity: 0.9 }}
-                        _active={{ opacity: 1 }}
-                      >
-                        Transfer
-                      </Button>
-                    </Link>
-                  </HStack>
-                </Td>
-              </Tr>
-            );
-          })}
-        </Tbody>
-      </Table>
+                  </Td>
+                  <Td borderColor='base.500'>{balance}</Td>
+                  <Td borderColor='base.500'>{totalSent}</Td>
+                  <Td borderColor='base.500'>{totalReceived}</Td>
+                  <Td borderColor='base.500'>
+                    {/* <IconButton
+                      icon={<FaArrowRight />}
+                      bg='base.900'
+                      border='1px solid'
+                      borderColor='base.500'
+                      aria-label='Transfer'
+                      _hover={{ bg: 'base.500' }}
+                    /> */}
+                    <TransferTokenModal contractAddress={contractAddress} />
+                  </Td>
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+      </motion.div>
     </Skeleton>
   );
 };

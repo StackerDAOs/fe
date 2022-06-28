@@ -9,6 +9,8 @@ type TVotingExtension = {
   contractAddress: string;
   contractName: string;
   balance: number;
+  decimals: number;
+  symbol: string;
 };
 
 interface IVotingExtension {
@@ -20,6 +22,8 @@ const initialState = {
   contractAddress: '',
   contractName: '',
   balance: 0,
+  decimals: 0,
+  symbol: '',
 };
 
 export function useGovernanceToken({ organization }: IVotingExtension = {}) {
@@ -52,12 +56,30 @@ export function useGovernanceToken({ organization }: IVotingExtension = {}) {
             functionArgs: functionArgsForBalance,
             functionName: 'get-balance',
           });
+          const decimals: any = await fetchReadOnlyFunction({
+            network,
+            contractAddress,
+            contractName,
+            senderAddress,
+            functionArgs: [],
+            functionName: 'get-decimals',
+          });
+          const symbol: any = await fetchReadOnlyFunction({
+            network,
+            contractAddress,
+            contractName,
+            senderAddress,
+            functionArgs: [],
+            functionName: 'get-symbol',
+          });
           setState({
             ...state,
             isLoading: false,
             contractAddress,
             contractName,
             balance,
+            decimals,
+            symbol,
           });
         }
       } catch (e: any) {
@@ -74,5 +96,7 @@ export function useGovernanceToken({ organization }: IVotingExtension = {}) {
     contractAddress: state.contractAddress,
     contractName: state.contractName,
     balance: state.balance,
+    decimals: state.decimals,
+    symbol: state.symbol,
   };
 }
