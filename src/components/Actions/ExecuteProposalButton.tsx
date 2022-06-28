@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { useCurrentStxAddress, useNetwork } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
 import { supabase } from '@utils/supabase';
@@ -6,6 +7,7 @@ import { contractPrincipalCV } from 'micro-stacks/clarity';
 import { ContractCallButton } from '@widgets/ContractCallButton';
 import { generatePostConditions } from '@common/functions';
 import { tokenToNumber } from '@common/helpers';
+import { useOrganization, useGovernanceToken } from '@common/hooks';
 
 type TProposal = {
   postConditions?: any;
@@ -21,7 +23,11 @@ export const ExecuteProposalButton = ({
 }: any) => {
   const [state, setState] = useState<TProposal>({ postConditions: [] });
   const currentStxAddress = useCurrentStxAddress();
+  const router = useRouter();
+  const { dao } = router.query as any;
   const { network } = useNetwork();
+  const { organization } = useOrganization({ name: dao });
+  const { decimals } = useGovernanceToken({ organization });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,9 +74,15 @@ export const ExecuteProposalButton = ({
   const { postConditions: pc, assetName } = state;
   const { votesFor, votesAgainst, totalVotes, quorumThreshold } = votingData;
 
-  const convertedVotesFor = tokenToNumber(Number(votesFor), 2);
-  const convertedVotesAgainst = tokenToNumber(Number(votesAgainst), 2);
-  const convertedTotalVotes = tokenToNumber(Number(totalVotes), 2);
+  const convertedVotesFor = tokenToNumber(Number(votesFor), Number(decimals));
+  const convertedVotesAgainst = tokenToNumber(
+    Number(votesAgainst),
+    Number(decimals),
+  );
+  const convertedTotalVotes = tokenToNumber(
+    Number(totalVotes),
+    Number(decimals),
+  );
   const isPassing =
     convertedVotesFor > convertedVotesAgainst &&
     convertedTotalVotes >= Number(quorumThreshold);
@@ -86,8 +98,6 @@ export const ExecuteProposalButton = ({
     assetName,
   });
 
-  console.log({ postConditions });
-
   const concludeProposal = {
     contractAddress,
     contractName,
@@ -98,7 +108,7 @@ export const ExecuteProposalButton = ({
 
   return (
     <ContractCallButton
-      title={'Execute'}
+      title={isPassing ? 'Execute' : 'Conclude'}
       color='white'
       bg='secondary.900'
       isFullWidth

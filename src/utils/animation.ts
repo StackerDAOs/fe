@@ -93,3 +93,15 @@ export const FADE_IN = {
     duration: 0.25,
   },
 };
+
+export const FADE_IN_VARIANTS = {
+  hidden: {
+    opacity: 0, x: 0, y: 0
+  },
+  enter: {
+    opacity: 1, x: 0, y: 0
+  },
+  exit: {
+    opacity: 0, x: 0, y: 0
+  },
+};

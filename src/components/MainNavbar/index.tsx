@@ -203,28 +203,6 @@ export const MainNavbar = () => {
                                           fontSize='sm'
                                           fontWeight='regular'
                                           color='white'
-                                        >
-                                          Settings
-                                        </Text>
-                                      </HStack>
-                                    </Card>
-                                    <Card
-                                      bg='transparent'
-                                      border='none'
-                                      minW='150px'
-                                      px={{ base: '2', md: '2' }}
-                                      py={{ base: '2', md: '2' }}
-                                      _hover={{
-                                        cursor: 'pointer',
-                                        bg: 'base.900',
-                                      }}
-                                    >
-                                      <HStack>
-                                        <Text
-                                          px='2'
-                                          fontSize='sm'
-                                          fontWeight='regular'
-                                          color='white'
                                           onClick={switchAccount}
                                         >
                                           Switch account

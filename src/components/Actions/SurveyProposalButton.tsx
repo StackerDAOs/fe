@@ -21,6 +21,7 @@ export const SurveyProposalButton = ({ organization, description }: any) => {
     contractAddress,
     submittedBy,
     type,
+    transactionId,
   }: any) => {
     try {
       const { error } = await execute({
@@ -28,6 +29,7 @@ export const SurveyProposalButton = ({ organization, description }: any) => {
         contractAddress,
         submittedBy,
         type,
+        transactionId,
       });
       if (error) throw error;
     } catch (error) {
@@ -36,18 +38,14 @@ export const SurveyProposalButton = ({ organization, description }: any) => {
   };
 
   // TODO: type is not currently dynamic based on organization
-  const onFinishInsert = async () => {
-    console.info('Insert record into Proposals');
+  const onFinishInsert = async (data: any) => {
+    console.info('Insert record into Proposals', data);
     await insertProposals({
       organizationId: organization?.id,
       contractAddress: `${currentStxAddress}.${contractName}` || '',
       submittedBy: currentStxAddress || '',
       type: 'MDP Survey Proposal',
-      // postConditions: {
-      //   amount: transferAmount,
-      //   asset: 'STX',
-      //   from: `${vaultContractAddress}.${vaultContractName}`,
-      // },
+      transactionId: `0x${data.txId}`,
     });
   };
 

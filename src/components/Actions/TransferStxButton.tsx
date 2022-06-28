@@ -26,6 +26,7 @@ export const TransferStxButton = ({
     contractAddress,
     submittedBy,
     type,
+    transactionId,
   }: any) => {
     try {
       const vaultExtension = organization?.Extensions?.find(
@@ -38,6 +39,7 @@ export const TransferStxButton = ({
         contractAddress,
         submittedBy,
         type,
+        transactionId,
         postConditions: {
           asset: 'STX',
           amount: transferAmount,
@@ -51,18 +53,14 @@ export const TransferStxButton = ({
   };
 
   // TODO: type is not currently dynamic based on organization
-  const onFinishInsert = async () => {
+  const onFinishInsert = async (data: any) => {
     console.info('Insert record into Proposals');
     await insertProposals({
       organizationId: organization?.id,
       contractAddress: `${currentStxAddress}.${contractName}` || '',
       submittedBy: currentStxAddress || '',
       type: 'MDP Transfer STX',
-      // postConditions: {
-      //   amount: transferAmount,
-      //   asset: 'STX',
-      //   from: `${vaultContractAddress}.${vaultContractName}`,
-      // },
+      transactionId: `0x${data.txId}`,
     });
   };
 

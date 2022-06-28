@@ -136,7 +136,7 @@ export const AppNavbar = () => {
         bg='base.900'
         borderBottom='1px solid'
         borderColor='base.800'
-        zIndex='9999'
+        zIndex='2'
       >
         <HStack justify='space-around' spacing='2'>
           <Link href={`/d/${dao}`}>
@@ -288,28 +288,6 @@ export const AppNavbar = () => {
                               <SimpleGrid columns={{ base: 1 }}>
                                 <Stack spacing='4' direction='row' p='3'>
                                   <Stack spacing='1'>
-                                    <Card
-                                      bg='transparent'
-                                      border='none'
-                                      minW='150px'
-                                      px={{ base: '2', md: '2' }}
-                                      py={{ base: '2', md: '2' }}
-                                      _hover={{
-                                        cursor: 'pointer',
-                                        bg: 'base.900',
-                                      }}
-                                    >
-                                      <HStack>
-                                        <Text
-                                          px='2'
-                                          fontSize='sm'
-                                          fontWeight='regular'
-                                          color='white'
-                                        >
-                                          Settings
-                                        </Text>
-                                      </HStack>
-                                    </Card>
                                     <Card
                                       bg='transparent'
                                       border='none'
