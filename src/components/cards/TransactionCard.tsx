@@ -1,20 +1,9 @@
-import type { StackProps } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { Button, HStack, Stack, Text } from '@chakra-ui/react';
-import { supabase } from '@utils/supabase';
+import { HStack, Stack, Text } from '@chakra-ui/react';
 
 // Web3
 import { useNetwork } from '@micro-stacks/react';
 import { fetchTransaction } from 'micro-stacks/api';
-
-// Hooks
-import { useUpdate } from 'react-supabase';
-
-// Components
-import { ContractCallButton } from '@widgets/ContractCallButton';
-
-// Utils
-import { truncate } from '@common/helpers';
 
 export const TransactionCard = ({ transactionId }: any) => {
   const { network } = useNetwork();

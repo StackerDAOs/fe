@@ -21,7 +21,8 @@ export function useSubmissions() {
           .select(
             'contractAddress, type, transactionId, submittedBy, Organizations (id, name)',
           )
-          .eq('submitted', false);
+          .eq('submitted', false)
+          .eq('disabled', false);
         if (error) throw error;
         if (Proposals.length > 0) {
           const proposals = Proposals?.filter(
@@ -40,5 +41,9 @@ export function useSubmissions() {
     fetchSubmissions();
   }, [organization]);
 
-  return { isLoading: state.isLoading, proposals: state.proposals };
+  return {
+    isLoading: state.isLoading,
+    proposals: state.proposals,
+    setSubmissions: setState,
+  };
 }

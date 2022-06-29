@@ -8,7 +8,6 @@ import {
   HStack,
   IconButton,
   Image,
-  ModalBody,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -29,7 +28,7 @@ import { FaEllipsisH } from 'react-icons/fa';
 
 // Components
 import { WalletConnectButton } from '@components/WalletConnectButton';
-import { AdminModal } from '@components/Modal';
+import { NotificationModal } from '@components/Modal';
 
 // Web3
 import { useUser, useAuth, useNetwork } from '@micro-stacks/react';
@@ -240,27 +239,14 @@ export const AppNavbar = () => {
                               '#25C2A0',
                             ]}
                           />
-                          <AdminModal
+                          <NotificationModal
                             title={
                               bns
                                 ? bns
                                 : currentStxAddress &&
                                   truncate(currentStxAddress, 4, 4)
                             }
-                          >
-                            <ModalBody pb={6}>
-                              <HStack>
-                                <Text
-                                  px='2'
-                                  fontSize='sm'
-                                  fontWeight='regular'
-                                  color='white'
-                                >
-                                  Activity
-                                </Text>
-                              </HStack>
-                            </ModalBody>
-                          </AdminModal>
+                          />
                         </HStack>
                       </HStack>
                     ) : null}
@@ -281,7 +267,7 @@ export const AppNavbar = () => {
                             <PopoverContent
                               borderColor='base.500'
                               _focus={{ outline: 'none' }}
-                              bg='base.800'
+                              bg='base.900'
                               w='auto'
                               my='2'
                             >

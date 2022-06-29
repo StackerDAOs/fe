@@ -1,27 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import {
-  Button,
   Flex,
-  FormControl,
   HStack,
-  Image,
   InputGroup,
   InputRightAddon,
   Input,
   Stack,
   Text,
-  VStack,
 } from '@chakra-ui/react';
 
 // Components
 import { Card } from '@components/Card';
 import { DelegateButton } from '@components/Actions/DelegateButton';
-
-// Web3
-import { useNetwork, useUser } from '@micro-stacks/react';
-import { fetchAccountStxBalance } from 'micro-stacks/api';
-import { standardPrincipalCV } from 'micro-stacks/clarity';
 
 // Hooks
 import {
@@ -29,17 +20,13 @@ import {
   useGovernanceToken,
   useVotingExtension,
 } from '@common/hooks';
-import { useForm, Controller } from 'react-hook-form';
-
-// Utils
-import { ustxToStx } from '@common/helpers';
 
 export const DelegateCard = () => {
   const [state, setState] = useState<any>({ delegateAddress: '' });
   const router = useRouter();
   const { dao } = router.query as any;
   const { organization } = useOrganization({ name: dao });
-  const { decimals, symbol } = useGovernanceToken({ organization });
+  const { symbol } = useGovernanceToken({ organization });
   const { contractAddress, contractName } = useVotingExtension({
     organization,
   });

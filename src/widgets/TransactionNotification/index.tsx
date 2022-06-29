@@ -1,9 +1,7 @@
 import { Button, ButtonGroup, Stack, Text, useToast } from '@chakra-ui/react';
-
 import { Notification } from '@components/Notification';
-import { CloseButton } from '@components/CloseButton';
 
-export const TransactionNotification = ({ title }: any) => {
+export const TransactionNotification = () => {
   const toast = useToast();
 
   const onSuccess = () => {
