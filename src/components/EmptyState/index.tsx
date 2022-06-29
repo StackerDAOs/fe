@@ -12,44 +12,46 @@ export const EmptyState = ({
       <Text fontSize='lg' fontWeight='medium'>
         {heading}
       </Text>
-      <Link href={linkTo}>
-        {isDisabled ? (
-          <Button
-            my='10'
-            py='4'
-            color='white'
-            bg='secondary.900'
-            size='sm'
-            disabled={true}
-            _disabled={{
-              bg: 'secondary.900',
-              opacity: 0.5,
-              cursor: 'not-allowed',
-              _hover: {
+      {buttonTitle ? (
+        <Link href={linkTo}>
+          {isDisabled ? (
+            <Button
+              my='10'
+              py='4'
+              color='white'
+              bg='secondary.900'
+              size='sm'
+              disabled={true}
+              _disabled={{
                 bg: 'secondary.900',
                 opacity: 0.5,
                 cursor: 'not-allowed',
-              },
-            }}
-            _hover={{ opacity: 0.9 }}
-            _active={{ opacity: 1 }}
-          >
-            {buttonTitle}
-          </Button>
-        ) : (
-          <Button
-            my='10'
-            py='4'
-            color='white'
-            bg='secondary.900'
-            size='sm'
-            _hover={{ opacity: 0.9 }}
-            _active={{ opacity: 1 }}
-          >
-            {buttonTitle}
-          </Button>
-        )}
-      </Link>
+                _hover: {
+                  bg: 'secondary.900',
+                  opacity: 0.5,
+                  cursor: 'not-allowed',
+                },
+              }}
+              _hover={{ opacity: 0.9 }}
+              _active={{ opacity: 1 }}
+            >
+              {buttonTitle}
+            </Button>
+          ) : (
+            <Button
+              my='10'
+              py='4'
+              color='white'
+              bg='secondary.900'
+              size='sm'
+              _hover={{ opacity: 0.9 }}
+              _active={{ opacity: 1 }}
+            >
+              {buttonTitle}
+            </Button>
+          )}
+        </Link>
+      ) : null}
     </Stack>
   );
 };
