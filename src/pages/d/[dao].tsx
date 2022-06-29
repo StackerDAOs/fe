@@ -16,9 +16,6 @@ import { AssetTable } from '@components/AssetTable';
 import { SectionHeader } from '@components/SectionHeader';
 import { Wrapper } from '@components/Wrapper';
 
-// Charts
-import { BarChart } from '@components/Chart';
-
 // Animation
 import { motion } from 'framer-motion';
 import { FADE_IN_VARIANTS } from '@utils/animation';

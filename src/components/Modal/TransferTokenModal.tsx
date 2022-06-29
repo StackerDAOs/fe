@@ -8,19 +8,12 @@ import { fetchTransaction, fetchReadOnlyFunction } from 'micro-stacks/api';
 // Hooks
 import { useOrganization } from '@common/hooks';
 import { useForm, Controller } from 'react-hook-form';
-import { useStep } from '@common/hooks/use-step';
 import { usePolling } from '@common/hooks';
 
 // Components
-import { AppLayout } from '@components/Layout/AppLayout';
 import { Card } from '@components/Card';
 import { TransferTokenButton } from '@components/Actions';
 import { ProposeButton } from '@components/Actions/ProposeButton';
-import { Notification } from '@components/Notification';
-
-//  Animation
-import { motion } from 'framer-motion';
-import Confetti from 'react-confetti';
 
 // Utils
 import { truncate, formatComments } from '@common/helpers';
@@ -40,22 +33,17 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
-  ModalFooter,
   Spinner,
   Stack,
   Text,
   Textarea,
-  VStack,
   useDisclosure,
-  useToast,
 } from '@chakra-ui/react';
 
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
 
 export const TransferTokenModal = ({ contractAddress }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const toast = useToast();
   const { network } = useNetwork();
   const router = useRouter();
   const { dao } = router.query as any;
@@ -134,6 +122,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
   }, [organization, isOpen]);
 
   const onSubmit = (data: any) => {
+    console.log({ data });
     setState({ ...state, inReview: true });
   };
 
@@ -155,6 +144,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
           isDeployed: true,
           transactionId: transaction?.tx_id,
         });
+        setTransaction({ txId: '', data: {} });
       }
       console.log({ transaction });
     } catch (e: any) {
@@ -191,6 +181,13 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
           py='5'
           px='8'
         >
+          <CloseButton
+            onClick={onClose}
+            color='gray.900'
+            position='absolute'
+            right='2'
+            top='2'
+          />
           {state.inReview ? (
             <>
               <Stack align='center' spacing='3'>
@@ -466,7 +463,6 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                 <Text fontSize='xl' fontWeight='semibold' color='light.900'>
                   Create Transfer Proposal
                 </Text>
-                <CloseButton onClick={onClose} color='gray.900' />
               </Stack>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Stack
@@ -557,9 +553,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                         <Controller
                           control={control}
                           name='transferTo'
-                          render={({
-                            field: { onChange, onBlur, value, ref },
-                          }) => (
+                          render={({ field: { onChange, onBlur, value } }) => (
                             <>
                               <Input
                                 color='light.900'
