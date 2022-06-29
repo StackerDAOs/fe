@@ -32,10 +32,13 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
     const fetchProposal = async (transactionId: string) => {
       try {
         const formattedTransactionId = transactionId.substring(2);
+        console.log({ formattedTransactionId });
+        console.log({ transactionId });
         const { data: Proposals, error } = await supabase
           .from('Proposals')
           .select('contractAddress')
           .eq('transactionId', transactionId);
+        console.log({ Proposals });
         if (error) throw error;
         if (Proposals.length > 0) {
           const proposal = Proposals[0];
@@ -89,6 +92,8 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
     functionArgs,
     postConditions,
   };
+
+  console.log({ contractData });
 
   return (
     <ContractCallButton

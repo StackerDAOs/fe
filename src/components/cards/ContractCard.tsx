@@ -1,5 +1,5 @@
-import type { StackProps } from '@chakra-ui/react';
-import { Button, HStack, Stack, Text } from '@chakra-ui/react';
+import { useState } from 'react';
+import { Button, HStack, Stack, IconButton, Text } from '@chakra-ui/react';
 
 // Hooks
 import { useUpdate } from 'react-supabase';
@@ -10,15 +10,29 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 // Utils
 import { truncate } from '@common/helpers';
 
+// Icons
+import { FiExternalLink } from 'react-icons/fi';
+
 export const ContractCard = ({
-  type,
   proposalContractAddress,
   contractData,
 }: any) => {
+  const [state, setState] = useState({ isRemoving: false });
   const [_, execute] = useUpdate('Proposals');
   const onFinishUpdate = async (contractAddress: string) => {
     try {
       const { error } = await execute({ submitted: true }, (q) =>
+        q.eq('contractAddress', contractAddress),
+      );
+      if (error) throw error;
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const onRemove = async (contractAddress: string) => {
+    try {
+      const { error } = await execute({ disabled: true }, (q) =>
         q.eq('contractAddress', contractAddress),
       );
       if (error) throw error;
@@ -35,7 +49,6 @@ export const ContractCard = ({
       borderColor='base.500'
       py='2'
       px='3'
-      mb='2'
       borderRadius='lg'
       _even={{
         bg: 'base.800',
@@ -51,14 +64,9 @@ export const ContractCard = ({
         justifyContent='space-between'
       >
         <HStack spacing='3'>
-          <Text fontSize='sm' fontWeight='medium' color='light.900'>
-            {type}
-          </Text>
-        </HStack>
-        <HStack spacing='3'>
-          <Text color='gray.900' fontSize='sm'>
+          <Text color='light.900' fontSize='sm'>
             {proposalContractAddress &&
-              truncate(`${proposalContractAddress}`, 4, 24)}
+              truncate(`${proposalContractAddress}`, 4, 14)}
           </Text>
         </HStack>
         <HStack spacing='3'>
@@ -70,7 +78,32 @@ export const ContractCard = ({
             onContractCall={() => onFinishUpdate(proposalContractAddress)}
             {...contractData}
           />
-          <Button
+          {state.isRemoving ? (
+            <Button
+              bg='red.900'
+              color='white'
+              size='sm'
+              fontWeight='semibold'
+              onClick={() => onRemove(proposalContractAddress)}
+              _hover={{ opacity: 0.9 }}
+              _active={{ opacity: 1 }}
+            >
+              Confirm
+            </Button>
+          ) : (
+            <Button
+              bg='red.600'
+              color='white'
+              size='sm'
+              onClick={() => setState({ isRemoving: true })}
+              _hover={{ opacity: 0.9 }}
+              _active={{ opacity: 1 }}
+            >
+              Remove
+            </Button>
+          )}
+          <IconButton
+            icon={<FiExternalLink />}
             as='a'
             target='_blank'
             href={
@@ -78,14 +111,13 @@ export const ContractCard = ({
                 ? `http://localhost:8000/txid/${proposalContractAddress}?chain=testnet`
                 : `https://explorer.stacks.co/txid/${proposalContractAddress}?chain=mainnet`
             }
-            bg='base.800'
-            color='white'
             size='sm'
-            _hover={{ opacity: 0.9 }}
-            _active={{ opacity: 1 }}
-          >
-            View details
-          </Button>
+            bg='base.800'
+            border='1px solid'
+            borderColor='base.500'
+            aria-label='Transfer'
+            _hover={{ bg: 'base.500' }}
+          />
         </HStack>
       </Stack>
     </Stack>

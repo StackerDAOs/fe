@@ -1,11 +1,13 @@
-import { ContractDeployButton } from '@widgets/ContractDeployButton';
-
+import { useEffect, useState } from 'react';
+import { supabase } from '@utils/supabase';
 // Web3
 import { useUser } from '@micro-stacks/react';
 
+// Components
+import { ContractDeployButton } from '@widgets/ContractDeployButton';
+
 // Hooks
 import { useInsert } from 'react-supabase';
-import { useRandomName } from '@common/hooks';
 
 // Utils
 import { sendTokens } from '@utils/proposals/transfers';
@@ -18,10 +20,45 @@ export const TransferTokenButton = ({
   transferAmount,
   transferTo,
 }: any) => {
+  const [state, setState] = useState<any>({ contractName: '' });
   const { currentStxAddress } = useUser();
-  const generateContractName = useRandomName();
-  const contractName = generateContractName();
+
   const [_, execute] = useInsert('Proposals');
+
+  useEffect(() => {
+    const fetchContractName = async () => {
+      try {
+        const { data: Proposals, error } = await supabase
+          .from('Proposals')
+          .select('contractAddress, Organizations (id, name, prefix)');
+        if (error) throw error;
+        if (Proposals.length > 0) {
+          const proposals = Proposals.filter(
+            (proposal) => proposal.Organizations.id === organization?.id,
+          );
+          const proposalSize = (proposals.length + 1).toString();
+          const [proposal] = proposals;
+          const targetLength = proposals.length + 1 < 1000 ? 3 : 4;
+          const contractName = `${
+            proposal.Organizations.prefix
+          }-${proposalSize.padStart(targetLength, '0')}`;
+          setState({
+            ...state,
+            contractName,
+          });
+        } else {
+          const contractName = `${organization?.prefix}-001`;
+          setState({
+            ...state,
+            contractName,
+          });
+        }
+      } catch (error) {
+        console.log({ error });
+      }
+    };
+    fetchContractName();
+  }, [organization]);
 
   const insertProposals = async ({
     organizationId,
@@ -29,6 +66,7 @@ export const TransferTokenButton = ({
     submittedBy,
     type,
     transactionId,
+    contractName,
   }: any) => {
     try {
       const vaultExtension = organization?.Extensions?.find(
@@ -42,6 +80,7 @@ export const TransferTokenButton = ({
         submittedBy,
         type,
         transactionId,
+        contractName,
         postConditions: {
           assetAddress,
           amount: transferAmount,
@@ -54,16 +93,44 @@ export const TransferTokenButton = ({
     }
   };
 
-  // TODO: type is not currently dynamic based on organization
   const onFinishInsert: any = async (data: any) => {
-    console.info('Insert record into Proposals', { data });
-    await insertProposals({
-      organizationId: organization?.id,
-      contractAddress: `${currentStxAddress}.${contractName}` || '',
-      submittedBy: currentStxAddress || '',
-      type: 'MDP Transfer Tokens',
-      transactionId: `0x${data.txId}`,
-    });
+    try {
+      const { data: Proposals, error } = await supabase
+        .from('Proposals')
+        .select('contractAddress, Organizations (id, name, prefix)');
+      if (error) throw error;
+      if (Proposals.length > 0) {
+        const proposals = Proposals?.filter(
+          (proposal) => proposal.Organizations.id === organization?.id,
+        );
+        const proposalSize = (proposals?.length + 1).toString();
+        const [proposal] = proposals;
+        const targetLength = proposals?.length + 1 < 1000 ? 3 : 4;
+        const contractName = `${
+          proposal?.Organizations?.prefix
+        }-${proposalSize.padStart(targetLength, '0')}`;
+        await insertProposals({
+          organizationId: organization?.id,
+          contractAddress: `${currentStxAddress}.${contractName}` || '',
+          submittedBy: currentStxAddress || '',
+          type: 'Transfer Tokens',
+          transactionId: `0x${data.txId}`,
+          contractName,
+        });
+      } else {
+        const contractName = `${organization?.prefix}-001`;
+        await insertProposals({
+          organizationId: organization?.id,
+          contractAddress: `${currentStxAddress}.${contractName}` || '',
+          submittedBy: currentStxAddress || '',
+          type: 'Transfer Tokens',
+          transactionId: `0x${data.txId}`,
+          contractName,
+        });
+      }
+    } catch (error) {
+      console.log({ error });
+    }
   };
 
   const contract = sendTokens(
@@ -86,7 +153,7 @@ export const TransferTokenButton = ({
       flex='1'
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
-      contractName={contractName}
+      contractName={state.contractName}
       codeBody={contract}
       onContractCall={onFinishInsert}
     />
