@@ -72,7 +72,7 @@ const Index = () => {
   }, [currentStxAddress]);
 
   if (state.isLoading) {
-    return <div></div>;
+    return null;
   }
 
   if (state.projects.length === 0) {

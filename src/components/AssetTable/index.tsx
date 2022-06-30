@@ -173,8 +173,6 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
         heading={
           type === 'fungible' ? 'No coins found' : 'No collectibles found'
         }
-        linkTo={`/d/${dao}/proposals/c/transfer/stx`}
-        buttonTitle={type === 'fungible' ? 'Transfer' : 'Transfer'}
       />
     );
   }

@@ -133,8 +133,8 @@ export const NotificationModal = ({ title }: any) => {
                     Action items
                   </Text>
                   <Text color='gray.900' fontSize='sm'>
-                    Manage contracts that you deploy by viewing the source code,
-                    submitting as proposals, or removing them.
+                    Submit and review contracts you deploy before submitting
+                    them as proposals.
                   </Text>
                 </Stack>
                 <motion.div
@@ -148,7 +148,7 @@ export const NotificationModal = ({ title }: any) => {
                     {submissions?.length > 0 ? (
                       <ContractCardList submissions={submissions} />
                     ) : (
-                      <EmptyState heading='No contracts found.' />
+                      <EmptyState heading='No action items found.' />
                     )}
                   </Stack>
                 </motion.div>

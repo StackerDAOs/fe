@@ -218,9 +218,7 @@ const Governance = () => {
                   state.isDelegating ? 'revoke-delegation' : 'delegate'
                 }
                 delegateAddress={
-                  state.isDelegating
-                    ? state.currentDelegate
-                    : state.delegateAddress
+                  state.isDelegating ? currentStxAddress : state.delegateAddress
                 }
                 isDisabled={
                   state.isDelegating
@@ -293,14 +291,24 @@ const Governance = () => {
                         >
                           Delegate
                         </Text>
-                        <Text
-                          fontSize='sm'
-                          fontWeight='medium'
-                          color='light.900'
-                        >
-                          {state.currentDelegate &&
-                            truncate(state.currentDelegate, 4, 4)}
-                        </Text>
+                        {state.isDelegating ? (
+                          <Text
+                            fontSize='sm'
+                            fontWeight='medium'
+                            color='light.900'
+                          >
+                            {state.currentDelegate &&
+                              truncate(state.currentDelegate, 4, 4)}
+                          </Text>
+                        ) : (
+                          <Text
+                            fontSize='sm'
+                            fontWeight='medium'
+                            color='light.900'
+                          >
+                            NA
+                          </Text>
+                        )}
                       </HStack>
                     </Stack>
                   </Stack>

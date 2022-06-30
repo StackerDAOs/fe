@@ -91,12 +91,7 @@ const Proposals = () => {
                 </Stack>
               </ButtonGroup>
             </SectionHeader>
-            <EmptyState
-              heading='No proposals found.'
-              linkTo={`/d/${dao}/proposals/c/survey`}
-              buttonTitle='Create proposal'
-              isDisabled={false}
-            />
+            <EmptyState heading='No proposals found.' />
           </>
         ) : (
           <>
