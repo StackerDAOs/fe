@@ -21,6 +21,7 @@ import { motion } from 'framer-motion';
 import { EmptyState } from '@components/EmptyState';
 import { MainLayout } from '@components/Layout/MainLayout';
 import { SectionHeader } from '@components/SectionHeader';
+import { WalletConnectButton } from '@components/WalletConnectButton';
 import { Wrapper } from '@components/Wrapper';
 
 // Utils
@@ -140,62 +141,36 @@ const Index = () => {
                         One-stop shop to to launch and manage DAOs secured by
                         Bitcoin via Stacks.
                       </Text>
-                      <Stack
-                        direction='row'
-                        spacing={4}
-                        align='center'
-                        justify='center'
+                      <motion.div
+                        variants={SLIDE_UP_VARIANTS}
+                        initial={SLIDE_UP_VARIANTS.hidden}
+                        animate={SLIDE_UP_VARIANTS.enter}
+                        exit={SLIDE_UP_VARIANTS.exit}
+                        transition={{ duration: 0.8, type: 'linear' }}
                       >
-                        {/* <a
-                  href={`${baseUrl}/communities/get-started`}
-                  target='_blank'
-                  rel='noreferrer'
-                > */}
-                        <motion.div
-                          variants={SLIDE_UP_VARIANTS}
-                          initial={SLIDE_UP_VARIANTS.hidden}
-                          animate={SLIDE_UP_VARIANTS.enter}
-                          exit={SLIDE_UP_VARIANTS.exit}
-                          transition={{ duration: 0.8, type: 'linear' }}
+                        <Stack
+                          direction={{ base: 'column', md: 'row' }}
+                          spacing={{ base: '0', md: '3' }}
+                          align='center'
+                          justify='center'
                         >
-                          <Stack>
-                            <Button
-                              position='relative'
-                              color='white'
-                              bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                              p='6'
-                              my='8'
-                              size='md'
-                              fontWeight='semibold'
-                              disabled={true}
-                              _hover={{ opacity: 0.35 }}
-                              _active={{ opacity: 1 }}
-                            >
-                              Launch your DAO
-                              <Text
-                                as='span'
-                                position='absolute'
-                                bottom='-20px'
-                                fontSize='sm'
-                                color='light.900'
-                              >
-                                Coming soon.
-                              </Text>
-                            </Button>
-                          </Stack>
-                        </motion.div>
-                        {/* </a> */}
-                        <a
-                          href={`https://discord.gg/nRbvWMBEQq`}
-                          target='_blank'
-                          rel='noreferrer'
-                        >
-                          <motion.div
-                            variants={SLIDE_UP_VARIANTS}
-                            initial={SLIDE_UP_VARIANTS.hidden}
-                            animate={SLIDE_UP_VARIANTS.enter}
-                            exit={SLIDE_UP_VARIANTS.exit}
-                            transition={{ duration: 0.8, type: 'linear' }}
+                          <Button
+                            position='relative'
+                            color='white'
+                            bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
+                            p='6'
+                            size='md'
+                            fontWeight='semibold'
+                            disabled={true}
+                            _hover={{ opacity: 0.35 }}
+                            _active={{ opacity: 1 }}
+                          >
+                            Launch your DAO
+                          </Button>
+                          <a
+                            href={`https://discord.gg/nRbvWMBEQq`}
+                            target='_blank'
+                            rel='noreferrer'
                           >
                             <Button
                               bg='base.800'
@@ -208,9 +183,9 @@ const Index = () => {
                             >
                               Join the Discord
                             </Button>
-                          </motion.div>
-                        </a>
-                      </Stack>
+                          </a>
+                        </Stack>
+                      </motion.div>
                     </Box>
                   </Stack>
                   <SectionHeader
@@ -279,34 +254,106 @@ const Index = () => {
                   </Stack>
                 </>
               ) : (
-                <Stack spacing='3' m='6' alignItems='center' color='white'>
-                  <Text fontSize='2xl' fontWeight='medium'>
-                    Get started
-                  </Text>
-                  <Text
-                    fontSize='sm'
-                    fontWeight='regular'
-                    color='gray.900'
-                    maxW='md'
+                <>
+                  <Stack
+                    spacing={{ base: '8', md: '10' }}
+                    align='center'
+                    justify='center'
+                    minH='xl'
+                    maxW='3xl'
                     mx='auto'
-                    textAlign='center'
                   >
-                    By connecting your wallet, you agree to Stacker DAO Labs
-                    Terms, Privacy Policy, and Community Standards
-                  </Text>
+                    <Box textAlign='center' maxW='900px'>
+                      <Heading
+                        as='h1'
+                        size='xl'
+                        fontWeight='extrabold'
+                        maxW='48rem'
+                        mx='auto'
+                        lineHeight='1.2'
+                        letterSpacing='tight'
+                        color='light.900'
+                      >
+                        DAOs on {''}
+                        <Text
+                          as='span'
+                          pr='2'
+                          maxW='xl'
+                          mx='auto'
+                          color='light.900'
+                          bgGradient='linear(to-br, secondary.900, secondaryGradient.900)'
+                          bgClip='text'
+                          fontStyle='italic'
+                        >
+                          Bitcoin
+                        </Text>
+                      </Heading>
+                      <Text
+                        p='4'
+                        maxW='xl'
+                        mx='auto'
+                        fontSize='lg'
+                        color='gray.900'
+                      >
+                        One-stop shop to to launch and manage DAOs secured by
+                        Bitcoin via Stacks.
+                      </Text>
+                      <Stack
+                        direction='row'
+                        spacing={4}
+                        align='center'
+                        justify='center'
+                      >
+                        <motion.div
+                          variants={SLIDE_UP_VARIANTS}
+                          initial={SLIDE_UP_VARIANTS.hidden}
+                          animate={SLIDE_UP_VARIANTS.enter}
+                          exit={SLIDE_UP_VARIANTS.exit}
+                          transition={{ duration: 0.8, type: 'linear' }}
+                        >
+                          <Stack>
+                            <WalletConnectButton
+                              position='relative'
+                              color='white'
+                              bg='secondary.900'
+                              p='6'
+                              size='md'
+                              fontWeight='semibold'
+                              _hover={{ opacity: 0.9 }}
+                              _active={{ opacity: 1 }}
+                            />
+                          </Stack>
+                        </motion.div>
+                      </Stack>
+                    </Box>
+                  </Stack>
+                </>
+                // <Stack spacing='3' m='6' alignItems='center' color='white'>
+                //   <Text fontSize='2xl' fontWeight='medium'>
+                //     Get started
+                //   </Text>
+                //   <Text
+                //     fontSize='sm'
+                //     fontWeight='regular'
+                //     color='gray.900'
+                //     maxW='md'
+                //     mx='auto'
+                //     textAlign='center'
+                //   >
+                //     By connecting your wallet, you agree to Stacker DAO Labs
+                //     Terms, Privacy Policy, and Community Standards
+                //   </Text>
 
-                  <Button
-                    my='10'
-                    py='4'
-                    color='white'
-                    bg='secondary.900'
-                    size='sm'
-                    _hover={{ opacity: 0.9 }}
-                    _active={{ opacity: 1 }}
-                  >
-                    Connect your wallet
-                  </Button>
-                </Stack>
+                // <WalletConnectButton
+                //       color='white'
+                //       size='sm'
+                //       fontWeight='medium'
+                //       bg='secondary.900'
+                //       _hover={{ opacity: 0.9 }}
+                //       _active={{ opacity: 1 }}
+                //     />
+                //     )}
+                // </Stack>
               )}
             </Wrapper>
           </Box>

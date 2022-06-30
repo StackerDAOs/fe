@@ -333,7 +333,6 @@ export const AppNavbar = () => {
                         )}
                       </Popover>
                     )}
-
                     {!currentStxAddress && (
                       <WalletConnectButton
                         color='white'
