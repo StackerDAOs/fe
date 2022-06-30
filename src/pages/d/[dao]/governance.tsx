@@ -18,7 +18,7 @@ import {
 import { defaultTo } from 'lodash';
 
 // Web3
-import { useUser, useNetwork } from '@micro-stacks/react';
+import { useAuth, useUser, useNetwork } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
 import { standardPrincipalCV } from 'micro-stacks/clarity';
 
@@ -55,6 +55,7 @@ const Governance = () => {
   const router = useRouter();
   const { dao } = router.query as any;
   const { currentStxAddress } = useUser();
+  const { isSignedIn } = useAuth();
   const { network } = useNetwork();
   const { organization } = useOrganization({ name: dao });
   const { balance: userBalance, symbol } = useGovernanceToken({ organization });
@@ -186,7 +187,7 @@ const Governance = () => {
                   <Stack spacing='3'>
                     <FormControl>
                       <Input
-                        disabled={state.isDelegating ?? true}
+                        disabled={(state.isDelegating || !isSignedIn) ?? true}
                         color='light.900'
                         py='1'
                         px='2'
@@ -223,11 +224,16 @@ const Governance = () => {
                 isDisabled={
                   state.isDelegating
                     ? false
-                    : state.delegateAddress.length < 40
+                    : state.delegateAddress.length < 40 || !isSignedIn
                     ? true
                     : false
                 }
               />
+              {!isSignedIn && (
+                <Text fontSize='sm' color='gray.900'>
+                  Connect wallet to delegate
+                </Text>
+              )}
             </VStack>
             <Box as='section' display='flex' justifyContent='center'>
               <Container>
