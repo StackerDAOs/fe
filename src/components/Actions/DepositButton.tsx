@@ -11,6 +11,7 @@ import {
 
 // Utils
 import { stxToUstx } from '@common/helpers';
+import { vaultAddress } from '@common/constants';
 
 export const DepositButton = ({ title, amount }: any) => {
   const { currentStxAddress } = useUser();
@@ -19,8 +20,8 @@ export const DepositButton = ({ title, amount }: any) => {
   const getDepositData = ({ amount }: any) => {
     if (amount) {
       return {
-        contractAddress: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-        contractName: 'sde-vault',
+        contractAddress: vaultAddress.split('.')[0],
+        contractName: vaultAddress.split('.')[1],
         functionName: 'deposit',
         functionArgs: [uintCV(stxToUstx(amount))],
         postConditions: currentStxAddress

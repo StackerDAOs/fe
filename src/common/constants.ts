@@ -11,3 +11,4 @@ export const appDetails = {
   icon: 'https://stackerdaos-assets.s3.us-east-2.amazonaws.com/app/stackerdaos-hiro-logo.png',
 };
 export const adminAddress = devnet ? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM' : 'SPX9XMC02T56N9PRXV4AM9TS88MMQ6A1Z3375MHD' || 'SPKPXQ0X3A4D1KZ4XTP1GABJX1N36VW10D02TK9X';
+export const vaultAddress = devnet ? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.sde-vault' : 'SPKPXQ0X3A4D1KZ4XTP1GABJX1N36VW10D02TK9X.mega-vault';
