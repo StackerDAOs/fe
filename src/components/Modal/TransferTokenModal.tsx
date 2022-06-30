@@ -213,8 +213,8 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
               >
                 <VStack maxW='xl' spacing='2' align='flex-start'>
                   <Avatar
-                    size={50}
-                    name='Social'
+                    size={40}
+                    name='Transfer Tokens'
                     variant='bauhaus'
                     colors={[
                       '#50DDC3',
@@ -459,7 +459,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
               >
                 <VStack maxW='xl' spacing='2' align='flex-start'>
                   <Avatar
-                    size={50}
+                    size={40}
                     name='Transfer Tokens'
                     variant='bauhaus'
                     colors={[

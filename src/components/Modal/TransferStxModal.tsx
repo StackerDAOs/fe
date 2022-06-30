@@ -162,7 +162,7 @@ export const TransferStxModal = () => {
               >
                 <VStack maxW='xl' spacing='2' align='flex-start'>
                   <Avatar
-                    size={50}
+                    size={40}
                     name='Transfer STX'
                     variant='bauhaus'
                     colors={[
@@ -398,7 +398,7 @@ export const TransferStxModal = () => {
               >
                 <VStack maxW='xl' spacing='2' align='flex-start'>
                   <Avatar
-                    size={50}
+                    size={40}
                     name='Transfer STX'
                     variant='bauhaus'
                     colors={[

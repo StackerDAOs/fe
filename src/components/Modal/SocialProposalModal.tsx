@@ -105,16 +105,18 @@ export const SocialProposalModal = ({ icon }: any) => {
 
   return (
     <>
-      <IconButton
+      <Button
         onClick={onOpen}
-        icon={icon}
-        size='md'
+        leftIcon={icon}
+        size='sm'
         bg='base.800'
         border='1px solid'
         borderColor='base.500'
         aria-label='Transfer'
         _hover={{ bg: 'base.500' }}
-      />
+      >
+        Social proposal
+      </Button>
       <Modal
         blockScrollOnMount={true}
         isCentered
@@ -157,7 +159,7 @@ export const SocialProposalModal = ({ icon }: any) => {
               >
                 <VStack maxW='xl' spacing='2' align='flex-start'>
                   <Avatar
-                    size={50}
+                    size={40}
                     name='Social'
                     variant='bauhaus'
                     colors={[
@@ -321,7 +323,7 @@ export const SocialProposalModal = ({ icon }: any) => {
               >
                 <VStack maxW='xl' spacing='2' align='flex-start'>
                   <Avatar
-                    size={50}
+                    size={40}
                     name='Social'
                     variant='bauhaus'
                     colors={[

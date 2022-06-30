@@ -106,7 +106,7 @@ export const NotificationModal = ({ title }: any) => {
                       Contracts deployed
                     </Text>
                     <Text color='gray.900' fontSize='sm' fontWeight='semibold'>
-                      3
+                      0
                     </Text>
                   </Stack>
                   <Stack spacing='2' direction='row'>
@@ -114,7 +114,7 @@ export const NotificationModal = ({ title }: any) => {
                       Proposals submitted
                     </Text>
                     <Text color='gray.900' fontSize='sm' fontWeight='semibold'>
-                      1
+                      0
                     </Text>
                   </Stack>
                 </HStack>
