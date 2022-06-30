@@ -13,7 +13,6 @@ import {
   useGovernanceTokenExtension,
   useSubmissionExtension,
 } from '@common/hooks';
-import { useUpdate } from 'react-supabase';
 
 export const ProposeButton = ({ organization, transactionId }: any) => {
   const [state, setState] = useState<any>({ proposalContractAddress: null });
@@ -25,8 +24,6 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
   const { contractName, contractAddress } = useSubmissionExtension({
     organization: organization,
   });
-
-  const [_, execute] = useUpdate('Proposals');
 
   useEffect(() => {
     const fetchProposal = async (transactionId: string) => {
@@ -57,12 +54,18 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
   }, [transactionId]);
 
   const { proposalContractAddress } = state;
-  const onFinishUpdate = async (proposalContractAddress: string) => {
+  const onFinishUpdate = async () => {
+    console.log(
+      'onFinishUpdate / data / proposalContractAddress',
+      proposalContractAddress,
+    );
     try {
-      const { error } = await execute({ submitted: true }, (q) =>
-        q.eq('contractAddress', proposalContractAddress),
-      );
+      const { data, error } = await supabase
+        .from('Proposals')
+        .update({ submitted: true })
+        .match({ contractAddress: proposalContractAddress });
       if (error) throw error;
+      console.log({ data });
     } catch (error) {
       console.log({ error });
     }
@@ -102,7 +105,7 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
       bg='secondary.900'
       size='md'
       isFullWidth
-      onContractCall={() => onFinishUpdate(proposalContractAddress)}
+      onContractCall={onFinishUpdate}
       {...contractData}
     />
   );

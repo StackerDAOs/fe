@@ -30,15 +30,13 @@ export const TransferTokenButton = ({
       try {
         const { data: Proposals, error } = await supabase
           .from('Proposals')
-          .select('contractAddress, Organizations (id, name, prefix)');
+          .select('contractAddress, Organizations!inner(id, name, prefix)')
+          .eq('Organizations.id', organization?.id);
         if (error) throw error;
         if (Proposals.length > 0) {
-          const proposals = Proposals.filter(
-            (proposal) => proposal.Organizations.id === organization?.id,
-          );
-          const proposalSize = (proposals.length + 1).toString();
-          const [proposal] = proposals;
-          const targetLength = proposals.length + 1 < 1000 ? 3 : 4;
+          const proposalSize = (Proposals.length + 1).toString();
+          const [proposal] = Proposals;
+          const targetLength = Proposals.length + 1 < 1000 ? 3 : 4;
           const contractName = `${
             proposal.Organizations.prefix
           }-${proposalSize.padStart(targetLength, '0')}`;
@@ -66,7 +64,7 @@ export const TransferTokenButton = ({
     submittedBy,
     type,
     transactionId,
-    contractName,
+    name,
   }: any) => {
     try {
       const vaultExtension = organization?.Extensions?.find(
@@ -80,7 +78,7 @@ export const TransferTokenButton = ({
         submittedBy,
         type,
         transactionId,
-        contractName,
+        name,
         postConditions: {
           assetAddress,
           amount: transferAmount,
@@ -97,15 +95,13 @@ export const TransferTokenButton = ({
     try {
       const { data: Proposals, error } = await supabase
         .from('Proposals')
-        .select('contractAddress, Organizations (id, name, prefix)');
+        .select('contractAddress, Organizations!inner(id, name, prefix)')
+        .eq('Organizations.id', organization?.id);
       if (error) throw error;
       if (Proposals.length > 0) {
-        const proposals = Proposals?.filter(
-          (proposal) => proposal.Organizations.id === organization?.id,
-        );
-        const proposalSize = (proposals?.length + 1).toString();
-        const [proposal] = proposals;
-        const targetLength = proposals?.length + 1 < 1000 ? 3 : 4;
+        const proposalSize = (Proposals?.length + 1).toString();
+        const [proposal] = Proposals;
+        const targetLength = Proposals?.length + 1 < 1000 ? 3 : 4;
         const contractName = `${
           proposal?.Organizations?.prefix
         }-${proposalSize.padStart(targetLength, '0')}`;
@@ -115,7 +111,7 @@ export const TransferTokenButton = ({
           submittedBy: currentStxAddress || '',
           type: 'Transfer Tokens',
           transactionId: `0x${data.txId}`,
-          contractName,
+          name: contractName,
         });
       } else {
         const contractName = `${organization?.prefix}-001`;
@@ -125,7 +121,7 @@ export const TransferTokenButton = ({
           submittedBy: currentStxAddress || '',
           type: 'Transfer Tokens',
           transactionId: `0x${data.txId}`,
-          contractName,
+          name: contractName,
         });
       }
     } catch (error) {
@@ -134,6 +130,7 @@ export const TransferTokenButton = ({
   };
 
   const contract = sendTokens(
+    state.contractName,
     organization?.contractAddress?.split('.')[0],
     assetAddress,
     description,

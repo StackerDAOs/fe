@@ -1,10 +1,10 @@
 import { traitPrincipal } from "@common/constants";
 
-export const offChain = (description: string, proposer: string | undefined = 'StackerDAOs') => `
-  ;; Title: SDP Survey Proposal
-  ;; Author: ${proposer}
-  ;; Description: ${description}
-  ;; Type: Survey
+export const socialProposal = (title: string, description: string, proposer: string | undefined = 'StackerDAOs') => `
+;; Type: Social
+;; Author: ${proposer}
+;; Title: ${title}
+;; Description: ${description}
 
   (impl-trait '${traitPrincipal}.proposal-trait.proposal-trait)
 

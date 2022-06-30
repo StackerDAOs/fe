@@ -94,6 +94,7 @@ const ProposalView = () => {
   } = useVotingExtension({ organization });
   const {
     title,
+    type,
     description,
     contractAddress: proposalContractAddress,
     contractName: proposalContractName,
@@ -222,7 +223,7 @@ const ProposalView = () => {
                         fontWeight='medium'
                         color='light.600'
                       >
-                        {title}
+                        {title} {type}
                       </Text>
                     </HStack>
                     <HStack>

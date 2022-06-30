@@ -33,11 +33,12 @@ const Extensions = () => {
               Available Extensions
             </Text>
             <Text color='gray.900' fontSize='sm'>
-              Add new features to the DAO.
+              Coming soon...
             </Text>
           </Box>
         </SectionHeader>
         <SimpleGrid
+          display='none'
           columns={{ base: 1, md: 2, lg: 3 }}
           spacing='6'
           pb='4'

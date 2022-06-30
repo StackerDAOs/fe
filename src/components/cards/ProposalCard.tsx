@@ -26,6 +26,7 @@ const FADE_IN_VARIANTS = {
 export const ProposalCard = ({
   contractAddress,
   title,
+  type,
   description,
   concluded,
   startBlockHeight,
@@ -123,10 +124,10 @@ export const ProposalCard = ({
                 <Stack>
                   <HStack spacing='3' justify='space-between'>
                     <Stack direction='column' spacing='3'>
-                      <HStack align='flex-start'>
+                      <HStack align='center' spacing='2'>
                         <Avatar
-                          size={30}
-                          name={title}
+                          size={40}
+                          name={type}
                           variant='bauhaus'
                           colors={[
                             '#50DDC3',
@@ -136,8 +137,12 @@ export const ProposalCard = ({
                             '#25C2A0',
                           ]}
                         />
-                        <Text fontWeight='medium' fontSize='lg'>
-                          {title}
+                        <Text
+                          fontWeight='medium'
+                          fontSize='lg'
+                          lineHeight='1.15'
+                        >
+                          {title} {type}
                         </Text>
                       </HStack>
                       <Text fontWeight='regular' color='gray.900'>

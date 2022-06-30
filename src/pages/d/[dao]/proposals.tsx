@@ -26,6 +26,7 @@ import { SectionHeader } from '@components/SectionHeader';
 
 // Icons
 import { FaEllipsisH, FaPlusCircle } from 'react-icons/fa';
+import { SocialProposalModal } from '@components/Modal/SocialProposalModal';
 
 const MotionGrid = motion(SimpleGrid);
 const MotionProposalCard = motion(ProposalCard);
@@ -63,13 +64,7 @@ const Proposals = () => {
               </Box>
               <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
                 <Stack align='center' direction='row' spacing='3'>
-                  <IconButton
-                    aria-label='action-item'
-                    bg='base.800'
-                    variant='outline'
-                    color='light.900'
-                    borderColor='base.500'
-                    size='md'
+                  <SocialProposalModal
                     icon={
                       <Icon
                         as={FaPlusCircle}
@@ -77,9 +72,6 @@ const Proposals = () => {
                         fontSize='sm'
                       />
                     }
-                    _hover={{
-                      bg: 'base.800',
-                    }}
                   />
                   <IconButton
                     aria-label='action-item'
@@ -118,25 +110,17 @@ const Proposals = () => {
               </Box>
               <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
                 <Stack align='center' direction='row' spacing='3'>
-                  <IconButton
-                    aria-label='action-item'
-                    bg='base.800'
-                    variant='outline'
-                    color='light.900'
-                    borderColor='base.500'
-                    size='md'
+                  <SocialProposalModal
                     icon={
                       <Icon
                         as={FaPlusCircle}
                         color='whiteAlpha'
-                        fontSize='sm'
+                        fontSize='md'
                       />
                     }
-                    _hover={{
-                      bg: 'base.800',
-                    }}
                   />
                   <IconButton
+                    display='none'
                     aria-label='action-item'
                     bg='base.800'
                     variant='outline'

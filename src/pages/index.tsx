@@ -71,6 +71,10 @@ const Index = () => {
     fetchProjects();
   }, [currentStxAddress]);
 
+  if (state.isLoading) {
+    return <div></div>;
+  }
+
   if (state.projects.length === 0) {
     return <EmptyState heading='No projects found' />;
   }

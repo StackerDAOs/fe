@@ -32,7 +32,7 @@ import { motion } from 'framer-motion';
 import { FADE_IN_VARIANTS } from '@utils/animation';
 
 // Icons
-import { TransferTokenModal } from '@components/Modal';
+import { TransferTokenModal, TransferStxModal } from '@components/Modal';
 
 type AssetTableProps = {
   type: string;
@@ -56,7 +56,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
   const { dao } = router.query as any;
   const { organization } = useOrganization({ name: dao });
   const { isLoading, balance } = useBalance({ organization });
-  const { non_fungible_tokens, fungible_tokens } = balance;
+  const { stx, non_fungible_tokens, fungible_tokens } = balance;
   const fungibleTokens: any = Object.assign({}, fungible_tokens);
   const nonFungibleTokens: any = Object.assign({}, non_fungible_tokens);
   const nonFungibleTokensList = Object.keys(nonFungibleTokens).map((key) => {
@@ -69,6 +69,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
       totalReceived: tokenValue?.total_received,
     };
   });
+  console.log({ stx });
 
   useEffect(() => {
     const fetchAssets = async () => {
@@ -138,7 +139,20 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
           });
         });
         const fungibleTokensList = await Promise.all(assets);
-        setState({ ...state, isLoading: false, fungibleTokensList });
+        const stacks: any = {
+          contractAddress: null,
+          name: 'Stacks',
+          symbol: 'STX',
+          balance: stx?.balance,
+          totalSent: stx?.total_sent,
+          totalReceived: stx?.total_received,
+        };
+        const withStacks = fungibleTokensList.concat(stacks);
+        setState({
+          ...state,
+          isLoading: false,
+          fungibleTokensList: withStacks,
+        });
       } catch (error) {
         console.error({ error });
       } finally {
@@ -150,6 +164,8 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
 
   const listItems =
     type === 'fungible' ? state.fungibleTokensList : nonFungibleTokensList;
+
+  console.log(state.fungibleTokensList);
 
   if (listItems.length === 0) {
     return (
@@ -175,7 +191,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
         <Table {...props}>
           <Thead color='gray.900'>
             <Tr>
-              <Th bg='transparent' border='none' pl='0'>
+              <Th bg='transparent' border='none'>
                 Name
               </Th>
               <Th bg='transparent' border='none'>
@@ -202,14 +218,16 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
                   break;
 
                 default:
-                  balance = convertToken(item.balance, decimals);
-                  totalSent = convertToken(item.totalSent, decimals);
-                  totalReceived = convertToken(item.totalReceived, decimals);
-                  break;
+                  if (contractAddress) {
+                    balance = convertToken(item.balance, decimals);
+                    totalSent = convertToken(item.totalSent, decimals);
+                    totalReceived = convertToken(item.totalReceived, decimals);
+                    break;
+                  }
               }
               return (
                 <Tr key={item.name} cursor='pointer'>
-                  <Td borderColor='base.500' pl='0'>
+                  <Td borderColor='base.500'>
                     <HStack spacing='2' align='center'>
                       {/* <Avatar
                       src={
@@ -243,15 +261,11 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
                   <Td borderColor='base.500'>{totalSent}</Td>
                   <Td borderColor='base.500'>{totalReceived}</Td>
                   <Td borderColor='base.500'>
-                    {/* <IconButton
-                      icon={<FaArrowRight />}
-                      bg='base.900'
-                      border='1px solid'
-                      borderColor='base.500'
-                      aria-label='Transfer'
-                      _hover={{ bg: 'base.500' }}
-                    /> */}
-                    <TransferTokenModal contractAddress={contractAddress} />
+                    {contractAddress ? (
+                      <TransferTokenModal contractAddress={contractAddress} />
+                    ) : (
+                      <TransferStxModal />
+                    )}
                   </Td>
                 </Tr>
               );

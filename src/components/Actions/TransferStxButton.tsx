@@ -1,11 +1,13 @@
-import { ContractDeployButton } from '@widgets/ContractDeployButton';
-
+import { useEffect, useState } from 'react';
+import { supabase } from '@utils/supabase';
 // Web3
 import { useUser } from '@micro-stacks/react';
 
+// Components
+import { ContractDeployButton } from '@widgets/ContractDeployButton';
+
 // Hooks
 import { useInsert } from 'react-supabase';
-import { useRandomName } from '@common/hooks';
 
 // Utils
 import { sendFunds } from '@utils/proposals/transfers';
@@ -16,10 +18,43 @@ export const TransferStxButton = ({
   transferAmount,
   transferTo,
 }: any) => {
+  const [state, setState] = useState<any>({ contractName: '' });
   const { currentStxAddress } = useUser();
-  const generateContractName = useRandomName();
-  const contractName = generateContractName();
+
   const [_, execute] = useInsert('Proposals');
+
+  useEffect(() => {
+    const fetchContractName = async () => {
+      try {
+        const { data: Proposals, error } = await supabase
+          .from('Proposals')
+          .select('contractAddress, Organizations!inner(id, name, prefix)')
+          .eq('Organizations.id', organization?.id);
+        if (error) throw error;
+        if (Proposals.length > 0) {
+          const proposalSize = (Proposals.length + 1).toString();
+          const [proposal] = Proposals;
+          const targetLength = Proposals.length + 1 < 1000 ? 3 : 4;
+          const contractName = `${
+            proposal.Organizations.prefix
+          }-${proposalSize.padStart(targetLength, '0')}`;
+          setState({
+            ...state,
+            contractName,
+          });
+        } else {
+          const contractName = `${organization?.prefix}-001`;
+          setState({
+            ...state,
+            contractName,
+          });
+        }
+      } catch (error) {
+        console.log({ error });
+      }
+    };
+    fetchContractName();
+  }, [organization]);
 
   const insertProposals = async ({
     organizationId,
@@ -27,6 +62,7 @@ export const TransferStxButton = ({
     submittedBy,
     type,
     transactionId,
+    name,
   }: any) => {
     try {
       const vaultExtension = organization?.Extensions?.find(
@@ -40,6 +76,7 @@ export const TransferStxButton = ({
         submittedBy,
         type,
         transactionId,
+        name,
         postConditions: {
           asset: 'STX',
           amount: transferAmount,
@@ -52,19 +89,46 @@ export const TransferStxButton = ({
     }
   };
 
-  // TODO: type is not currently dynamic based on organization
-  const onFinishInsert = async (data: any) => {
-    console.info('Insert record into Proposals');
-    await insertProposals({
-      organizationId: organization?.id,
-      contractAddress: `${currentStxAddress}.${contractName}` || '',
-      submittedBy: currentStxAddress || '',
-      type: 'MDP Transfer STX',
-      transactionId: `0x${data.txId}`,
-    });
+  const onFinishInsert: any = async (data: any) => {
+    try {
+      const { data: Proposals, error } = await supabase
+        .from('Proposals')
+        .select('contractAddress, Organizations!inner(id, name, prefix)')
+        .eq('Organizations.id', organization?.id);
+      if (error) throw error;
+      if (Proposals.length > 0) {
+        const proposalSize = (Proposals?.length + 1).toString();
+        const [proposal] = Proposals;
+        const targetLength = Proposals?.length + 1 < 1000 ? 3 : 4;
+        const contractName = `${
+          proposal?.Organizations?.prefix
+        }-${proposalSize.padStart(targetLength, '0')}`;
+        await insertProposals({
+          organizationId: organization?.id,
+          contractAddress: `${currentStxAddress}.${contractName}` || '',
+          submittedBy: currentStxAddress || '',
+          type: 'Transfer STX',
+          transactionId: `0x${data.txId}`,
+          name: contractName,
+        });
+      } else {
+        const contractName = `${organization?.prefix}-001`;
+        await insertProposals({
+          organizationId: organization?.id,
+          contractAddress: `${currentStxAddress}.${contractName}` || '',
+          submittedBy: currentStxAddress || '',
+          type: 'Transfer STX',
+          transactionId: `0x${data.txId}`,
+          name: contractName,
+        });
+      }
+    } catch (error) {
+      console.log({ error });
+    }
   };
 
   const contract = sendFunds(
+    state.contractName,
     organization?.contractAddress?.split('.')[0],
     description,
     transferAmount,
@@ -74,14 +138,15 @@ export const TransferStxButton = ({
 
   return (
     <ContractDeployButton
+      title='Deploy'
       color='white'
       bg='secondary.900'
       fontSize='md'
       size='md'
+      flex='1'
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
-      title='Deploy'
-      contractName={contractName}
+      contractName={state.contractName}
       codeBody={contract}
       onContractCall={onFinishInsert}
     />

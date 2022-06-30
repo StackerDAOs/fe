@@ -41,7 +41,7 @@ const Governance = () => {
               <DelegateCard />
             </Stack>
           </Stack>
-          <Tabs color='white' variant='unstyled'>
+          <Tabs color='white' variant='unstyled' display='none'>
             <TabList>
               <ButtonGroup bg='base.800' borderRadius='lg' p='1'>
                 {['Delegates', 'Activity'].map((item) => (

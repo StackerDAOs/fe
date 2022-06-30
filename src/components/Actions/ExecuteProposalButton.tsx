@@ -28,6 +28,7 @@ export const ExecuteProposalButton = ({
   const { network } = useNetwork();
   const { organization } = useOrganization({ name: dao });
   const { decimals } = useGovernanceToken({ organization });
+  console.log({ proposalContractAddress, proposalContractName });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,7 +43,13 @@ export const ExecuteProposalButton = ({
         if (error) throw error;
         if (data) {
           if (data[0].postConditions) {
-            if (data[0].postConditions?.assetAddress) {
+            // Post Conditions are either for STX or for Tokens
+            if (data[0].postConditions?.asset) {
+              setState({
+                ...state,
+                postConditions: data[0].postConditions,
+              });
+            } else if (data[0].postConditions?.assetAddress) {
               const [contractAddress, contractName] =
                 data[0].postConditions.assetAddress.split('.');
               const assetName: any = await fetchReadOnlyFunction({
@@ -72,6 +79,7 @@ export const ExecuteProposalButton = ({
     fetchData();
   }, [proposalContractAddress]);
   const { postConditions: pc, assetName } = state;
+  console.log({ pc });
   const { votesFor, votesAgainst, totalVotes, quorumThreshold } = votingData;
 
   const convertedVotesFor = tokenToNumber(Number(votesFor), Number(decimals));

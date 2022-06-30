@@ -69,6 +69,9 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
 
   const onFinish = useCallback((data: FinishedTxData) => {
     setTransaction({ txId: data.txId, isPending: true });
+    if (onContractCall) {
+      onContractCall();
+    }
     toast({
       duration: 3500,
       isClosable: true,
@@ -113,10 +116,6 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
   }, []);
 
   const onComplete = useCallback((data: any) => {
-    if (onContractCall) {
-      onContractCall();
-    }
-    console.log({ data });
     toast({
       duration: 3500,
       isClosable: true,

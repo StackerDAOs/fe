@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import {
   CloseButton,
   Heading,
@@ -33,8 +32,6 @@ import { truncate } from '@common/helpers';
 export const NotificationModal = ({ title }: any) => {
   const { currentStxAddress } = useUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const router = useRouter();
-  const { dao } = router.query as any;
   const { proposals: submissions } = useSubmissions();
 
   return (
@@ -151,12 +148,7 @@ export const NotificationModal = ({ title }: any) => {
                     {submissions?.length > 0 ? (
                       <ContractCardList submissions={submissions} />
                     ) : (
-                      <EmptyState
-                        heading='No contracts found.'
-                        linkTo={`/d/${dao}/proposals/c/survey`}
-                        buttonTitle='Create proposal'
-                        isDisabled={false}
-                      />
+                      <EmptyState heading='No contracts found.' />
                     )}
                   </Stack>
                 </motion.div>

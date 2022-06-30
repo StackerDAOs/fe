@@ -30,7 +30,7 @@ export const ContractCard = ({
     }
   };
 
-  const onRemove = async (contractAddress: string) => {
+  const onDisable = async (contractAddress: string) => {
     try {
       const { error } = await execute({ disabled: true }, (q) =>
         q.eq('contractAddress', contractAddress),
@@ -84,7 +84,7 @@ export const ContractCard = ({
               color='white'
               size='sm'
               fontWeight='semibold'
-              onClick={() => onRemove(proposalContractAddress)}
+              onClick={() => onDisable(proposalContractAddress)}
               _hover={{ opacity: 0.9 }}
               _active={{ opacity: 1 }}
             >
@@ -99,7 +99,7 @@ export const ContractCard = ({
               _hover={{ opacity: 0.9 }}
               _active={{ opacity: 1 }}
             >
-              Remove
+              Disable
             </Button>
           )}
           <IconButton
