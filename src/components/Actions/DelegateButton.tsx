@@ -5,12 +5,14 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 import { standardPrincipalCV } from 'micro-stacks/clarity';
 
 export const DelegateButton = ({
+  title,
   delegateAddress,
   contractAddress,
   contractName,
+  functionName,
+  isDisabled,
 }: any) => {
   const isValid = delegateAddress && delegateAddress.length > 40; // TODO: validate for STX address
-  const functionName = 'delegate';
   const functionArgs = delegateAddress &&
     isValid && [standardPrincipalCV(delegateAddress)];
   const postConditions: any = [];
@@ -25,11 +27,24 @@ export const DelegateButton = ({
 
   return (
     <ContractCallButton
-      title='Delegate'
+      title={title}
       color='white'
       bg='secondary.900'
-      size='sm'
+      size='md'
       isFullWidth
+      disabled={isDisabled}
+      _disabled={{
+        bg: 'secondary.900',
+        opacity: 0.5,
+        cursor: 'not-allowed',
+        _hover: {
+          bg: 'secondary.900',
+          opacity: 0.5,
+          cursor: 'not-allowed',
+        },
+      }}
+      _hover={{ opacity: 0.9 }}
+      _active={{ opacity: 1 }}
       {...contractData}
     />
   );

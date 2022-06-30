@@ -1,111 +1,136 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
-  Flex,
-  HStack,
+  FormControl,
   InputGroup,
-  InputRightAddon,
   Input,
   Stack,
-  Text,
+  VStack,
 } from '@chakra-ui/react';
 
+// Web3
+import { useUser, useNetwork } from '@micro-stacks/react';
+import { fetchReadOnlyFunction } from 'micro-stacks/api';
+import { standardPrincipalCV } from 'micro-stacks/clarity';
+
 // Components
-import { Card } from '@components/Card';
 import { DelegateButton } from '@components/Actions/DelegateButton';
 
+// Animation
+import { motion } from 'framer-motion';
+import { FADE_IN_VARIANTS } from '@utils/animation';
+
 // Hooks
-import {
-  useOrganization,
-  useGovernanceToken,
-  useVotingExtension,
-} from '@common/hooks';
+import { useOrganization, useVotingExtension } from '@common/hooks';
 
 export const DelegateCard = () => {
-  const [state, setState] = useState<any>({ delegateAddress: '' });
+  const [state, setState] = useState<any>({
+    isDelegating: false,
+    currentDelegate: null,
+    delegateAddress: '',
+  });
   const router = useRouter();
   const { dao } = router.query as any;
+  const { currentStxAddress } = useUser();
+  const { network } = useNetwork();
   const { organization } = useOrganization({ name: dao });
-  const { symbol } = useGovernanceToken({ organization });
   const { contractAddress, contractName } = useVotingExtension({
     organization,
   });
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        console.log({ currentStxAddress, contractAddress, contractName });
+        const isDelegating: any = await fetchReadOnlyFunction({
+          network,
+          contractAddress,
+          contractName,
+          senderAddress: currentStxAddress,
+          functionArgs: [standardPrincipalCV(currentStxAddress || '')],
+          functionName: 'is-delegating',
+        });
+        const getDelegate: any = await fetchReadOnlyFunction({
+          network,
+          contractAddress,
+          contractName,
+          senderAddress: currentStxAddress,
+          functionArgs: [standardPrincipalCV(currentStxAddress || '')],
+          functionName: 'get-delegate',
+        });
+        console.log({ isDelegating, getDelegate });
+      } catch (error) {
+        console.error({ error });
+      }
+    };
+    fetch();
+  }, [organization, contractAddress, contractName]);
 
   const handleDelegateAddress = (e: any) => {
     setState({ ...state, delegateAddress: e.target.value });
   };
 
   return (
-    <Card bg='base.800' border='1px solid' borderColor='base.500'>
-      <Flex
-        direction='row'
-        gap='6'
-        align='center'
-        py={{ base: '3', md: '3' }}
-        px={{ base: '6', md: '6' }}
-      >
-        <HStack spacing='2'>
-          <Text color='light.900' fontWeight='regular'>
-            Delegated tokens:
-          </Text>
-          <Text color='light.900' fontWeight='regular'>
-            0{' '}
-            <Text as='span' color='gray.900' fontWeight='medium'>
-              {symbol}
-            </Text>
-          </Text>
-        </HStack>
-        <Stack spacing='3' flex='1'>
-          <InputGroup size='md'>
-            <Input
-              color='light.900'
-              py='1'
-              px='2'
-              maxW='8em'
-              type='tel'
-              bg='base.900'
-              border='none'
-              fontSize='2xl'
-              autoComplete='off'
-              placeholder='0'
-              value={state.delegateAddress}
-              onChange={handleDelegateAddress}
-              _focus={{
-                border: 'none',
-              }}
-            />
-            <InputRightAddon
-              width='6rem'
-              color='light.900'
-              bg='secondary.900'
-              borderColor='secondary.900'
-              border='1px solid'
-            >
-              <DelegateButton
-                contractAddress={contractAddress}
-                contractName={contractName}
-                delegateAddress={state.delegateAddress}
-                bg='secondary.900'
-                fontSize='md'
-                size='md'
-                disabled={state.delegateAddress?.length < 40}
-                _disabled={{
-                  bg: 'secondary.900',
-                  opacity: 0.5,
-                  cursor: 'not-allowed',
-                  _hover: {
-                    bg: 'secondary.900',
-                    opacity: 0.5,
-                    cursor: 'not-allowed',
-                  },
+    <VStack
+      align='left'
+      spacing='6'
+      direction={{ base: 'column', md: 'row' }}
+      justify='space-between'
+      color='white'
+    >
+      <Stack spacing='1'>
+        <motion.div
+          variants={FADE_IN_VARIANTS}
+          initial={FADE_IN_VARIANTS.hidden}
+          animate={FADE_IN_VARIANTS.enter}
+          exit={FADE_IN_VARIANTS.exit}
+          transition={{ duration: 0.25, type: 'linear' }}
+        >
+          <Stack mt='2' spacing='3'>
+            <FormControl>
+              <Input
+                color='light.900'
+                py='1'
+                px='2'
+                type='tel'
+                bg='base.900'
+                border='none'
+                fontSize='lg'
+                autoComplete='off'
+                placeholder='SP1T...'
+                value={state.delegateAddress}
+                onInput={handleDelegateAddress}
+                _focus={{
+                  border: 'none',
                 }}
-                _hover={{ opacity: 0.9 }}
-                _active={{ opacity: 1 }}
               />
-            </InputRightAddon>
-          </InputGroup>
-        </Stack>
-      </Flex>
-    </Card>
+            </FormControl>
+          </Stack>
+        </motion.div>
+      </Stack>
+      <InputGroup>
+        <DelegateButton
+          contractAddress={contractAddress}
+          contractName={contractName}
+          delegateAddress={state.delegateAddress}
+          bg='secondary.900'
+          fontSize='md'
+          size='md'
+          disabled={state.delegateAddress?.length < 40}
+          _disabled={{
+            bg: 'secondary.900',
+            opacity: 0.5,
+            cursor: 'not-allowed',
+            _hover: {
+              bg: 'secondary.900',
+              opacity: 0.5,
+              cursor: 'not-allowed',
+            },
+          }}
+          _hover={{ opacity: 0.9 }}
+          _active={{ opacity: 1 }}
+        />
+      </InputGroup>
+    </VStack>
   );
 };

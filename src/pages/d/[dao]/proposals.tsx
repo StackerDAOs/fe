@@ -74,6 +74,7 @@ const Proposals = () => {
                     }
                   />
                   <IconButton
+                    display='none'
                     aria-label='action-item'
                     bg='base.800'
                     variant='outline'

@@ -71,7 +71,7 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
     }
   };
 
-  const startHeight = currentBlockHeight + 50; // TODO: 50 needs to be dynamic startBlockHeight min
+  const startHeight = currentBlockHeight + 199; // TODO: 50 needs to be dynamic startBlockHeight min
 
   const isLoading =
     proposalContractAddress &&

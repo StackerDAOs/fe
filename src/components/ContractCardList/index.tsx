@@ -27,7 +27,7 @@ export const ContractCardList = ({ submissions }: any) => {
     organization: organization,
   });
 
-  const startHeight = currentBlockHeight + 30; // TODO: 30 needs to be dynamic startBlockHeight min
+  const startHeight = currentBlockHeight + 199; // TODO: 30 needs to be dynamic startBlockHeight min
   return submissions?.map(
     (
       { type, contractAddress: proposalContractAddress }: any,
