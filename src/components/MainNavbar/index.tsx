@@ -137,7 +137,7 @@ export const MainNavbar = () => {
           justify={isMobile ? 'space-between' : 'space-around'}
           spacing='2'
         >
-          <Link href={`/d/${dao}`}>
+          <Link href={`/`}>
             <Image
               cursor='pointer'
               height='30px'
