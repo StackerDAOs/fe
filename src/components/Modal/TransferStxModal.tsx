@@ -108,6 +108,11 @@ export const TransferStxModal = () => {
     }
   }
 
+  const onCloseModal = () => {
+    setState({ ...state, inReview: false });
+    onClose();
+  };
+
   return (
     <>
       <IconButton
@@ -125,7 +130,7 @@ export const TransferStxModal = () => {
         isCentered
         closeOnOverlayClick={transaction?.txId ? false : true}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={onCloseModal}
         size='xl'
       >
         <ModalOverlay />
@@ -138,7 +143,7 @@ export const TransferStxModal = () => {
           px='8'
         >
           <CloseButton
-            onClick={onClose}
+            onClick={onCloseModal}
             color='gray.900'
             position='absolute'
             right='2'

@@ -159,6 +159,11 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
     }
   }
 
+  const onCloseModal = () => {
+    setState({ ...state, inReview: false });
+    onClose();
+  };
+
   return (
     <>
       <IconButton
@@ -176,7 +181,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
         isCentered
         closeOnOverlayClick={transaction?.txId ? false : true}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={onCloseModal}
         size='xl'
       >
         <ModalOverlay />
@@ -189,7 +194,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
           px='8'
         >
           <CloseButton
-            onClick={onClose}
+            onClick={onCloseModal}
             color='gray.900'
             position='absolute'
             right='2'

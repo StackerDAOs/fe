@@ -102,6 +102,11 @@ export const SocialProposalModal = ({ icon }: any) => {
     }
   }
 
+  const onCloseModal = () => {
+    setState({ ...state, inReview: false });
+    onClose();
+  };
+
   return (
     <>
       <Button
@@ -121,7 +126,7 @@ export const SocialProposalModal = ({ icon }: any) => {
         isCentered
         closeOnOverlayClick={transaction?.txId ? false : true}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={onCloseModal}
         size='xl'
       >
         <ModalOverlay />
@@ -134,7 +139,7 @@ export const SocialProposalModal = ({ icon }: any) => {
           px='8'
         >
           <CloseButton
-            onClick={onClose}
+            onClick={onCloseModal}
             color='gray.900'
             position='absolute'
             right='2'
