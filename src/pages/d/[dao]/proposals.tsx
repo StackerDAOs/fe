@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 
 // Hooks
-import { useOrganization, useMempool, useProposals } from '@common/hooks';
+import { useOrganization, useProposals } from '@common/hooks';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
@@ -36,9 +36,6 @@ const Proposals = () => {
   const { dao } = router.query as any;
   const { organization } = useOrganization({ name: dao });
   const { isLoading, proposals } = useProposals({ organization });
-  const { transactions } = useMempool({ organization, extensionName: 'Vault' });
-
-  console.log({ transactions });
 
   return (
     <motion.div

@@ -1,6 +1,9 @@
 import {
   Box,
   ButtonGroup,
+  Icon,
+  IconButton,
+  Stack,
   Text,
   Tab,
   Tabs,
@@ -19,6 +22,9 @@ import { Wrapper } from '@components/Wrapper';
 //  Animation
 import { motion } from 'framer-motion';
 
+// Icons
+import { FaEllipsisH } from 'react-icons/fa';
+
 const Vault = () => {
   const FADE_IN_VARIANTS = {
     hidden: { opacity: 0, x: 0, y: 0 },
@@ -35,15 +41,50 @@ const Vault = () => {
       transition={{ duration: 1, type: 'linear' }}
     >
       <Wrapper>
-        <SectionHeader justify='flex-start' align='center' color='white'>
+        <SectionHeader justify='space-between' align='center' color='white'>
           <Box>
             <Text fontSize='lg' fontWeight='medium'>
               Assets
             </Text>
             <Text color='gray.900' fontSize='sm'>
-              List of shared assets owned by the DAO
+              View and initiate proposals from a list of assets managed by the
+              DAO
             </Text>
           </Box>
+          <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
+            <Stack align='center' direction='row' spacing='3'>
+              <IconButton
+                display='none'
+                aria-label='action-item'
+                bg='base.800'
+                variant='outline'
+                color='light.900'
+                borderColor='base.500'
+                size='md'
+                icon={
+                  <Icon as={FaEllipsisH} color='whiteAlpha' fontSize='sm' />
+                }
+                _hover={{
+                  bg: 'base.800',
+                }}
+              />
+              <IconButton
+                display='none'
+                aria-label='action-item'
+                bg='base.800'
+                variant='outline'
+                color='light.900'
+                borderColor='base.500'
+                size='md'
+                icon={
+                  <Icon as={FaEllipsisH} color='whiteAlpha' fontSize='sm' />
+                }
+                _hover={{
+                  bg: 'base.800',
+                }}
+              />
+            </Stack>
+          </ButtonGroup>
         </SectionHeader>
         <Tabs color='white' variant='unstyled'>
           <TabList>

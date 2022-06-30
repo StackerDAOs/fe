@@ -8,7 +8,6 @@ import {
   FormControl,
   Heading,
   HStack,
-  IconButton,
   Modal,
   ModalOverlay,
   ModalContent,

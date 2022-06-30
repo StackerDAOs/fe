@@ -124,6 +124,8 @@ export const AppNavbar = () => {
     fetch();
   }, [currentStxAddress, network]);
 
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
   return (
     <Box as='section' height='5vh'>
       <Box
@@ -137,7 +139,10 @@ export const AppNavbar = () => {
         borderColor='base.800'
         zIndex='2'
       >
-        <HStack justify='space-around' spacing='2'>
+        <HStack
+          justify={isMobile ? 'space-between' : 'space-around'}
+          spacing='2'
+        >
           <Link href={`/d/${dao}`}>
             <Image
               cursor='pointer'
@@ -345,6 +350,7 @@ export const AppNavbar = () => {
             </>
           ) : (
             <IconButton
+              display='none'
               color='white'
               icon={<FaEllipsisH fontSize='1.25rem' />}
               aria-label='Open Menu'

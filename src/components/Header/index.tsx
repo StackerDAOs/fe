@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Container, Heading, HStack, Stack, VStack } from '@chakra-ui/react';
+import {
+  Container,
+  Heading,
+  HStack,
+  Stack,
+  VStack,
+  useBreakpointValue,
+} from '@chakra-ui/react';
 
 import { useNetwork } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
@@ -48,6 +55,7 @@ export const Header = () => {
   } = useGovernanceToken({
     organization: organization,
   });
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -177,6 +185,7 @@ export const Header = () => {
           </Stack>
           <Stack
             spacing='6'
+            display={isMobile ? 'block' : 'flex'}
             direction={{ base: 'column', md: 'row' }}
             justify='center'
             align='center'

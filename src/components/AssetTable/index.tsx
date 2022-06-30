@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import {
   HStack,
   Table,
+  TableContainer,
   Thead,
   Th,
   TableProps,
@@ -186,90 +187,95 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
         exit={FADE_IN_VARIANTS.exit}
         transition={{ duration: 1, type: 'linear' }}
       >
-        <Table {...props}>
-          <Thead color='gray.900'>
-            <Tr>
-              <Th bg='transparent' border='none'>
-                Name
-              </Th>
-              <Th bg='transparent' border='none'>
-                Balance
-              </Th>
-              <Th bg='transparent' border='none'>
-                Total sent
-              </Th>
-              <Th bg='transparent' border='none'>
-                Total received
-              </Th>
-              <Th bg='transparent' border='none'></Th>
-            </Tr>
-          </Thead>
-          <Tbody color='light.900'>
-            {listItems.map((item) => {
-              const { contractAddress, name, symbol, decimals } = item;
-              let { balance, totalSent, totalReceived } = item;
-              switch (name) {
-                case 'Stacks':
-                  balance = ustxToStx(item.balance);
-                  totalSent = ustxToStx(item.totalSent);
-                  totalReceived = ustxToStx(item.totalReceived);
-                  break;
-
-                default:
-                  if (contractAddress) {
-                    balance = convertToken(item.balance, decimals);
-                    totalSent = convertToken(item.totalSent, decimals);
-                    totalReceived = convertToken(item.totalReceived, decimals);
+        <TableContainer>
+          <Table {...props}>
+            <Thead color='gray.900'>
+              <Tr>
+                <Th bg='transparent' border='none'>
+                  Name
+                </Th>
+                <Th bg='transparent' border='none'>
+                  Balance
+                </Th>
+                <Th bg='transparent' border='none'>
+                  Total sent
+                </Th>
+                <Th bg='transparent' border='none'>
+                  Total received
+                </Th>
+                <Th bg='transparent' border='none'></Th>
+              </Tr>
+            </Thead>
+            <Tbody color='light.900'>
+              {listItems.map((item) => {
+                const { contractAddress, name, symbol, decimals } = item;
+                let { balance, totalSent, totalReceived } = item;
+                switch (name) {
+                  case 'Stacks':
+                    balance = ustxToStx(item.balance);
+                    totalSent = ustxToStx(item.totalSent);
+                    totalReceived = ustxToStx(item.totalReceived);
                     break;
-                  }
-              }
-              return (
-                <Tr key={item.name} cursor='pointer'>
-                  <Td borderColor='base.500'>
-                    <HStack spacing='2' align='center'>
-                      {/* <Avatar
+
+                  default:
+                    if (contractAddress) {
+                      balance = convertToken(item.balance, decimals);
+                      totalSent = convertToken(item.totalSent, decimals);
+                      totalReceived = convertToken(
+                        item.totalReceived,
+                        decimals,
+                      );
+                      break;
+                    }
+                }
+                return (
+                  <Tr key={item.name} cursor='pointer'>
+                    <Td borderColor='base.500'>
+                      <HStack spacing='2' align='center'>
+                        {/* <Avatar
                       src={
                         'ipfs://Qmdgks1HjYZQhF4sTnkoeh7naic7J3G5aHQk91Uq25RwmF'
                       }
                       boxSize='6'
                     /> */}
-                      <Avatar
-                        size={15}
-                        name={item.symbol}
-                        variant='marble'
-                        colors={[
-                          '#50DDC3',
-                          '#624AF2',
-                          '#EB00FF',
-                          '#7301FA',
-                          '#25C2A0',
-                        ]}
-                      />
-                      <HStack align='baseline'>
-                        <Text color='light.900' fontWeight='medium'>
-                          {item.name}
-                        </Text>
-                        <Text fontSize='xs' color='gray.900'>
-                          ({symbol})
-                        </Text>
+                        <Avatar
+                          size={15}
+                          name={item.symbol}
+                          variant='marble'
+                          colors={[
+                            '#50DDC3',
+                            '#624AF2',
+                            '#EB00FF',
+                            '#7301FA',
+                            '#25C2A0',
+                          ]}
+                        />
+                        <HStack align='baseline'>
+                          <Text color='light.900' fontWeight='medium'>
+                            {item.name}
+                          </Text>
+                          <Text fontSize='xs' color='gray.900'>
+                            ({symbol})
+                          </Text>
+                        </HStack>
                       </HStack>
-                    </HStack>
-                  </Td>
-                  <Td borderColor='base.500'>{balance}</Td>
-                  <Td borderColor='base.500'>{totalSent}</Td>
-                  <Td borderColor='base.500'>{totalReceived}</Td>
-                  <Td borderColor='base.500'>
-                    {contractAddress ? (
-                      <TransferTokenModal contractAddress={contractAddress} />
-                    ) : (
-                      <TransferStxModal />
-                    )}
-                  </Td>
-                </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
+                    </Td>
+                    <Td borderColor='base.500'>{balance}</Td>
+                    <Td borderColor='base.500'>{totalSent}</Td>
+                    <Td borderColor='base.500'>{totalReceived}</Td>
+                    <Td borderColor='base.500'>
+                      {contractAddress ? (
+                        <TransferTokenModal contractAddress={contractAddress} />
+                      ) : (
+                        <TransferStxModal />
+                      )}
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </TableContainer>
       </motion.div>
     </Skeleton>
   );
