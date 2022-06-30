@@ -137,9 +137,8 @@ const Index = () => {
                         fontSize='lg'
                         color='gray.900'
                       >
-                        Unleashing the ownership economy. No-code platform, dev
-                        tools, & legal tech to build & manage #Bitcoin DAOs via
-                        @Stacks.
+                        One-stop shop to to launch and manage DAOs secured by
+                        Bitcoin via Stacks.
                       </Text>
                       <Stack
                         direction='row'
