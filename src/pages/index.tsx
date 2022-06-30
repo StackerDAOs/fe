@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Box,
-  Button,
   Heading,
   HStack,
   IconButton,
@@ -141,51 +140,6 @@ const Index = () => {
                         One-stop shop to to launch and manage DAOs secured by
                         Bitcoin via Stacks.
                       </Text>
-                      <motion.div
-                        variants={SLIDE_UP_VARIANTS}
-                        initial={SLIDE_UP_VARIANTS.hidden}
-                        animate={SLIDE_UP_VARIANTS.enter}
-                        exit={SLIDE_UP_VARIANTS.exit}
-                        transition={{ duration: 0.8, type: 'linear' }}
-                      >
-                        <Stack
-                          direction={{ base: 'column', md: 'row' }}
-                          spacing={{ base: '0', md: '3' }}
-                          align='center'
-                          justify='center'
-                        >
-                          <Button
-                            position='relative'
-                            color='white'
-                            bgGradient='linear(to-br, secondaryGradient.900, secondary.900)'
-                            p='6'
-                            size='md'
-                            fontWeight='semibold'
-                            disabled={true}
-                            _hover={{ opacity: 0.35 }}
-                            _active={{ opacity: 1 }}
-                          >
-                            Launch your DAO
-                          </Button>
-                          <a
-                            href={`https://discord.gg/nRbvWMBEQq`}
-                            target='_blank'
-                            rel='noreferrer'
-                          >
-                            <Button
-                              bg='base.800'
-                              color='white'
-                              p='6'
-                              my='8'
-                              size='md'
-                              fontWeight='medium'
-                              _hover={{ opacity: 0.9 }}
-                            >
-                              Join the Discord
-                            </Button>
-                          </a>
-                        </Stack>
-                      </motion.div>
                     </Box>
                   </Stack>
                   <SectionHeader
@@ -194,9 +148,9 @@ const Index = () => {
                     color='white'
                   >
                     <Box>
-                      <Heading size='xs' fontWeight='regular'>
+                      <Text size='lg' fontWeight='regular'>
                         Featured projects
-                      </Heading>
+                      </Text>
                     </Box>
                   </SectionHeader>
                   <Stack spacing='0'>
@@ -204,10 +158,9 @@ const Index = () => {
                       <Stack
                         key={project.id}
                         px='3'
-                        py='5'
-                        borderBottom='1px'
-                        borderColor='base.500'
-                        _hover={{ bg: 'base.800' }}
+                        py='3'
+                        borderRadius='lg'
+                        _odd={{ bg: 'base.800' }}
                       >
                         <HStack justify='space-between'>
                           <HStack spacing='3'>
