@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import {
   Box,
   ButtonGroup,
@@ -43,8 +42,6 @@ import { truncate, ustxToStx } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
 export const MainNavbar = () => {
-  const router = useRouter();
-  const { dao } = router.query as any;
   const { network } = useNetwork();
   const [bns, setBns] = useState<string | undefined>('');
   const [balance, setBalance] = useState<string | undefined>('');
