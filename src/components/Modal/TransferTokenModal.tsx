@@ -17,6 +17,7 @@ import {
   Stack,
   Text,
   Textarea,
+  Tooltip,
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -26,7 +27,7 @@ import { useUser, useNetwork } from '@micro-stacks/react';
 import { fetchTransaction, fetchReadOnlyFunction } from 'micro-stacks/api';
 
 // Hooks
-import { useOrganization } from '@common/hooks';
+import { useOrganization, useDAO } from '@common/hooks';
 import { useForm, Controller } from 'react-hook-form';
 import { usePolling } from '@common/hooks';
 
@@ -55,6 +56,9 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
   const router = useRouter();
   const { dao } = router.query as any;
   const { organization }: any = useOrganization({ name: dao });
+  const { symbol, proposeThreshold, canPropose } = useDAO({
+    organization,
+  });
   const { transaction, setTransaction } = useStore();
   const [state, setState] = useState<any>({
     name: '',
@@ -166,16 +170,26 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
 
   return (
     <>
-      <IconButton
-        onClick={onOpen}
-        icon={<FaArrowRight />}
-        size='sm'
-        bg='base.800'
-        border='1px solid'
-        borderColor='base.500'
-        aria-label='Transfer'
-        _hover={{ bg: 'base.500' }}
-      />
+      <Tooltip
+        bg='base.900'
+        color='light.900'
+        label={`${proposeThreshold} ${symbol} required for proposals`}
+        my='3'
+        w='sm'
+        shouldWrapChildren={!canPropose ? true : false}
+      >
+        <IconButton
+          onClick={onOpen}
+          disabled={!canPropose}
+          icon={<FaArrowRight />}
+          size='sm'
+          bg='base.800'
+          border='1px solid'
+          borderColor='base.500'
+          aria-label='Transfer'
+          _hover={{ bg: 'base.500' }}
+        />
+      </Tooltip>
       <Modal
         blockScrollOnMount={true}
         isCentered

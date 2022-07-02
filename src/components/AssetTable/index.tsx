@@ -70,7 +70,6 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
       totalReceived: tokenValue?.total_received,
     };
   });
-  console.log({ stx });
 
   useEffect(() => {
     const fetchAssets = async () => {

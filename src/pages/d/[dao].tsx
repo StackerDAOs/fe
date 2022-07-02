@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import {
   Box,
   ButtonGroup,
@@ -8,6 +10,9 @@ import {
   Tab,
   Text,
 } from '@chakra-ui/react';
+
+// Hooks
+import { useOrganization } from '@common/hooks';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
@@ -21,6 +26,16 @@ import { motion } from 'framer-motion';
 import { FADE_IN_VARIANTS } from '@utils/animation';
 
 const DAODashboard = () => {
+  const router = useRouter();
+  const { dao } = router.query as any;
+  const { organization }: any = useOrganization({ name: dao });
+
+  useEffect(() => {
+    if (!organization) {
+      // router.push('/');
+    }
+  }, [organization]);
+
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}

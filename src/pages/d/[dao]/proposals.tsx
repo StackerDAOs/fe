@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -35,6 +36,13 @@ const Proposals = () => {
   const router = useRouter();
   const { dao } = router.query as any;
   const { organization } = useOrganization({ name: dao });
+
+  useEffect(() => {
+    if (!organization) {
+      // router.push('/');
+    }
+  }, [organization]);
+
   const { isLoading, proposals } = useProposals({ organization });
 
   return (

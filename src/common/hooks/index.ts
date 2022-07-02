@@ -1,6 +1,7 @@
 export { useBalance } from './use-balance';
 export { useBlocks } from './use-blocks';
 export { useContractEvents } from './use-contract-events';
+export { useDAO } from './use-dao';
 export { useExecutorEvents } from './use-executor-events';
 export { useOrganization } from './use-organization';
 export { useProposal } from './use-proposal';

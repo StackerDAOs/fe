@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import {
   Box,
   ButtonGroup,
@@ -19,18 +21,31 @@ import { Header } from '@components/Header';
 import { SectionHeader } from '@components/SectionHeader';
 import { Wrapper } from '@components/Wrapper';
 
+// Hooks
+import { useOrganization } from '@common/hooks';
+
 //  Animation
 import { motion } from 'framer-motion';
 
 // Icons
 import { FaEllipsisH } from 'react-icons/fa';
 
+const FADE_IN_VARIANTS = {
+  hidden: { opacity: 0, x: 0, y: 0 },
+  enter: { opacity: 1, x: 0, y: 0 },
+  exit: { opacity: 0, x: 0, y: 0 },
+};
+
 const Vault = () => {
-  const FADE_IN_VARIANTS = {
-    hidden: { opacity: 0, x: 0, y: 0 },
-    enter: { opacity: 1, x: 0, y: 0 },
-    exit: { opacity: 0, x: 0, y: 0 },
-  };
+  const router = useRouter();
+  const { dao } = router.query as any;
+  const { organization }: any = useOrganization({ name: dao });
+
+  useEffect(() => {
+    if (!organization) {
+      // router.push('/');
+    }
+  }, [organization]);
 
   return (
     <motion.div

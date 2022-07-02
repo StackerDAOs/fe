@@ -70,6 +70,12 @@ const Governance = () => {
   const tokenBalance = defaultTo(convertToken(balance.toString(), 2), 0);
 
   useEffect(() => {
+    if (!organization) {
+      // router.push('/');
+    }
+  }, [organization]);
+
+  useEffect(() => {
     const fetch = async () => {
       try {
         console.log({ currentStxAddress, contractAddress, contractName });
@@ -101,8 +107,6 @@ const Governance = () => {
     };
     fetch();
   }, [organization, contractAddress, contractName, currentStxAddress]);
-
-  console.log(state.delegateAddress.length < 40);
 
   return (
     <motion.div
