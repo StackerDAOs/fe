@@ -38,7 +38,6 @@ export const Navbar = () => {
         });
         const { names } = data;
         if (names?.length > 0) {
-          console.log(names);
           setBns(names[0]);
         }
         console.log({ bns });

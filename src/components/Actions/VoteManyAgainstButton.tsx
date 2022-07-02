@@ -55,7 +55,6 @@ export const VoteManyAgainstButton = ({
         ),
       ]
     : [delegateVoteAgainst];
-  console.log('vote against', { functionArgs });
 
   const functionName = 'vote-many';
   const postConditions: any = [];

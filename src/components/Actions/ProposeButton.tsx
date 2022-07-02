@@ -28,14 +28,10 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
   useEffect(() => {
     const fetchProposal = async (transactionId: string) => {
       try {
-        const formattedTransactionId = transactionId.substring(2);
-        console.log({ formattedTransactionId });
-        console.log({ transactionId });
         const { data: Proposals, error } = await supabase
           .from('Proposals')
           .select('contractAddress')
           .eq('transactionId', transactionId);
-        console.log({ Proposals });
         if (error) throw error;
         if (Proposals.length > 0) {
           const proposal = Proposals[0];
@@ -44,10 +40,8 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
             proposalContractAddress: proposal.contractAddress,
           });
         }
-      } catch (error) {
-        console.log({ error });
-      } finally {
-        console.log('done');
+      } catch (e: any) {
+        console.error({ e });
       }
     };
     fetchProposal(transactionId);
@@ -55,10 +49,6 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
 
   const { proposalContractAddress } = state;
   const onFinishUpdate = async () => {
-    console.log(
-      'onFinishUpdate / data / proposalContractAddress',
-      proposalContractAddress,
-    );
     try {
       const { data, error } = await supabase
         .from('Proposals')
@@ -66,8 +56,8 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
         .match({ contractAddress: proposalContractAddress });
       if (error) throw error;
       console.log({ data });
-    } catch (error) {
-      console.log({ error });
+    } catch (e: any) {
+      console.error({ e });
     }
   };
 
@@ -95,8 +85,6 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
     functionArgs,
     postConditions,
   };
-
-  console.log({ contractData });
 
   return (
     <ContractCallButton

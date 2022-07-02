@@ -45,7 +45,6 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
         event_offset: 0,
         event_limit: 0,
       });
-      console.log({ transaction });
       if (transaction?.tx_status === 'success') {
         setTransaction({
           txId: '',
@@ -54,7 +53,7 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
         onComplete(transaction);
       }
     } catch (e: any) {
-      console.log({ e });
+      console.error({ e });
     }
   }
 

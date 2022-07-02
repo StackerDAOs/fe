@@ -51,8 +51,8 @@ export const TransferTokenButton = ({
             contractName,
           });
         }
-      } catch (error) {
-        console.log({ error });
+      } catch (e: any) {
+        console.error({ e });
       }
     };
     fetchContractName();
@@ -86,8 +86,8 @@ export const TransferTokenButton = ({
         },
       });
       if (error) throw error;
-    } catch (error) {
-      console.log({ error });
+    } catch (e: any) {
+      console.error({ e });
     }
   };
 
@@ -124,8 +124,8 @@ export const TransferTokenButton = ({
           name: contractName,
         });
       }
-    } catch (error) {
-      console.log({ error });
+    } catch (e: any) {
+      console.error({ e });
     }
   };
 

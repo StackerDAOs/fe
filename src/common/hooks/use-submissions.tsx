@@ -32,10 +32,8 @@ export function useSubmissions() {
         } else {
           setState({ ...state, isLoading: false, proposals: [] });
         }
-      } catch (error) {
-        console.log({ error });
-      } finally {
-        console.log('done');
+      } catch (e: any) {
+        console.error({ e });
       }
     };
     fetchSubmissions();

@@ -44,8 +44,8 @@ export const SocialProposalButton = ({ organization, description }: any) => {
             contractName,
           });
         }
-      } catch (error) {
-        console.log({ error });
+      } catch (e: any) {
+        console.error({ e });
       }
     };
     fetchContractName();
@@ -69,8 +69,8 @@ export const SocialProposalButton = ({ organization, description }: any) => {
         name,
       });
       if (error) throw error;
-    } catch (error) {
-      console.log({ error });
+    } catch (e: any) {
+      console.error({ e });
     }
   };
 
@@ -107,8 +107,8 @@ export const SocialProposalButton = ({ organization, description }: any) => {
           name: contractName,
         });
       }
-    } catch (error) {
-      console.log({ error });
+    } catch (e: any) {
+      console.error({ e });
     }
   };
 

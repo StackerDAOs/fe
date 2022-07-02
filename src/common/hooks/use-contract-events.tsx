@@ -48,7 +48,6 @@ export function useContractEvents({
         unanchored: false,
       });
       const { results } = data as any;
-      console.log({ results });
       const serializedEvents = results.map((event: any) => {
         const hex = event?.contract_log?.value.hex;
         const deserialized = deserializeCV(hex);
@@ -71,8 +70,8 @@ export function useContractEvents({
         eventSize: filteredEvents.length,
         isLoading: false,
       });
-    } catch (error) {
-      console.log({ error });
+    } catch (e: any) {
+      console.error({ e });
     }
   }, [organization]);
 

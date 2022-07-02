@@ -78,7 +78,6 @@ const Governance = () => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        console.log({ currentStxAddress, contractAddress, contractName });
         const isDelegating: any = await fetchReadOnlyFunction({
           network,
           contractAddress,
@@ -95,7 +94,6 @@ const Governance = () => {
           functionArgs: [standardPrincipalCV(currentStxAddress || '')],
           functionName: 'get-delegate',
         });
-        console.log({ isDelegating, currentDelegate });
         setState({
           ...state,
           isDelegating,

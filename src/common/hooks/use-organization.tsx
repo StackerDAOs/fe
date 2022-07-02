@@ -34,10 +34,8 @@ export function useOrganization({ name }: IOrganization = {}) {
           const organization = Organizations[0];
           setState({ ...state, isLoading: false, organization });
         }
-      } catch (error) {
-        console.log({ error });
-      } finally {
-        console.log('done');
+      } catch (e: any) {
+        console.error({ e });
       }
     };
     fetchOrganization();

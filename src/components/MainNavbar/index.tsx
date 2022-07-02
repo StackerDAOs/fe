@@ -107,7 +107,6 @@ export const MainNavbar = () => {
         });
         const { names } = data;
         if (names?.length > 0) {
-          console.log(names);
           setBns(names[0]);
         }
       }

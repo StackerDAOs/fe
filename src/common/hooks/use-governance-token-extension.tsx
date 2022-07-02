@@ -34,10 +34,8 @@ export function useGovernanceTokenExtension({
         const contractAddress = tokenExtension?.contractAddress.split('.')[0];
         const contractName = tokenExtension?.contractAddress.split('.')[1];
         setState({ ...state, isLoading: false, contractAddress, contractName });
-      } catch (error) {
-        console.error({ error });
-      } finally {
-        console.log('finally');
+      } catch (e: any) {
+        console.error({ e });
       }
     }
     fetchTokenExtension();

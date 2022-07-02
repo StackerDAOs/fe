@@ -25,8 +25,8 @@ export const ContractCard = ({
         q.eq('contractAddress', contractAddress),
       );
       if (error) throw error;
-    } catch (error) {
-      console.log({ error });
+    } catch (e: any) {
+      console.error({ e });
     }
   };
 
@@ -36,8 +36,8 @@ export const ContractCard = ({
         q.eq('contractAddress', contractAddress),
       );
       if (error) throw error;
-    } catch (error) {
-      console.log({ error });
+    } catch (e: any) {
+      console.error({ e });
     }
   };
 

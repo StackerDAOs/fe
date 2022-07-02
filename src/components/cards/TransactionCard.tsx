@@ -20,7 +20,6 @@ export const TransactionCard = ({ transactionId }: any) => {
         event_offset: 0,
         event_limit: 0,
       });
-      console.log({ transaction });
       setState({ ...state, transaction });
     } catch (e: any) {
       console.error({ e });

@@ -80,9 +80,7 @@ export function useProposals({ organization, offset = 0 }: IProposals = {}) {
               ...proposalData,
             };
           } catch (e: any) {
-            console.log({ e });
-          } finally {
-            console.log('done');
+            console.error({ e });
           }
         }
         const proposals = proposalEvents.map((proposal: any) => {
@@ -90,10 +88,8 @@ export function useProposals({ organization, offset = 0 }: IProposals = {}) {
         });
         const final = await Promise.all(proposals);
         setState({ ...state, isLoading: false, proposals: final });
-      } catch (error) {
-        console.log({ error });
-      } finally {
-        console.log('done');
+      } catch (e: any) {
+        console.error({ e });
       }
     };
     fetchProposals();

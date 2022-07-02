@@ -62,9 +62,7 @@ export function useToken(
           });
         }
       } catch (e: any) {
-        console.log({ e });
-      } finally {
-        console.log('done');
+        console.error({ e });
       }
     }
     fetchGovernanceToken();

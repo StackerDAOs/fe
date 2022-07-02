@@ -92,20 +92,12 @@ export const VaultTransactionList = () => {
               <ModalBody pb={6}>
                 <FormControl>
                   <FormLabel>Amount</FormLabel>
-                  <Input
-                    placeholder='Amount'
-                    name='amount'
-                    onChange={(e) => console.log(e)}
-                  />
+                  <Input placeholder='Amount' name='amount' />
                 </FormControl>
 
                 <FormControl mt={4}>
                   <FormLabel>Recipient</FormLabel>
-                  <Input
-                    placeholder='Recipient'
-                    name='recipientAddress'
-                    onChange={(e) => console.log(e)}
-                  />
+                  <Input placeholder='Recipient' name='recipientAddress' />
                 </FormControl>
               </ModalBody>
             </ActionModal>

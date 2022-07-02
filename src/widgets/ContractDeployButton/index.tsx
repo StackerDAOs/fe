@@ -32,7 +32,6 @@ export const ContractDeployButton = (
   const { setTransaction } = useStore();
   const toast = useToast();
   const { title, contractName, codeBody, onContractCall } = props;
-  console.log('contractDeployButton', { contractName });
 
   const onFinish = useCallback((data: any) => {
     if (onContractCall) {

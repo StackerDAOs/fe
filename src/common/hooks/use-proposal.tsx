@@ -85,7 +85,6 @@ export function useProposal({
         });
 
         const { source } = contractSource;
-        console.log({ source });
         const title = pluckSourceCode(source, 'title');
         const description = pluckSourceCode(source, 'description');
         const type = pluckSourceCode(source, 'type');
@@ -125,9 +124,7 @@ export function useProposal({
           ...proposalData,
         });
       } catch (e: any) {
-        console.log({ e });
-      } finally {
-        console.log('done');
+        console.error({ e });
       }
     };
     fetchProposal();

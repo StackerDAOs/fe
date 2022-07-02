@@ -131,9 +131,7 @@ export function useDAO({ organization }: IDAO = {}) {
           canVote,
         });
       } catch (e: any) {
-        console.log(e);
-      } finally {
-        console.log('finally');
+        console.error({ e });
       }
     }
   }, [

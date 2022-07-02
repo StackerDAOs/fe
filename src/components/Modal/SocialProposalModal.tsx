@@ -100,9 +100,8 @@ export const SocialProposalModal = ({ icon }: any) => {
         });
         setTransaction({ txId: '', data: {} });
       }
-      console.log({ transaction });
     } catch (e: any) {
-      console.log({ e });
+      console.error({ e });
     }
   }
 

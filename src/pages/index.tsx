@@ -62,10 +62,8 @@ const Index = () => {
           const projects = Organizations;
           setState({ ...state, isLoading: false, projects });
         }
-      } catch (error) {
-        console.log({ error });
-      } finally {
-        console.log('done');
+      } catch (e: any) {
+        console.error({ e });
       }
     };
     fetchProjects();

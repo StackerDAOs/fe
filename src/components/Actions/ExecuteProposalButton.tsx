@@ -28,7 +28,6 @@ export const ExecuteProposalButton = ({
   const { network } = useNetwork();
   const { organization } = useOrganization({ name: dao });
   const { decimals } = useGovernanceToken({ organization });
-  console.log({ proposalContractAddress, proposalContractName });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,16 +69,13 @@ export const ExecuteProposalButton = ({
             setState({ ...state, postConditions: data[0].postConditions });
           }
         }
-      } catch (error) {
-        console.log('error', error);
-      } finally {
-        console.log('finally');
+      } catch (e: any) {
+        console.error({ e });
       }
     };
     fetchData();
   }, [proposalContractAddress]);
   const { postConditions: pc, assetName } = state;
-  console.log({ pc });
   const { votesFor, votesAgainst, totalVotes, quorumThreshold } = votingData;
 
   const convertedVotesFor = tokenToNumber(Number(votesFor), Number(decimals));

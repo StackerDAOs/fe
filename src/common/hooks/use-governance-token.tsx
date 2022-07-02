@@ -83,9 +83,7 @@ export function useGovernanceToken({ organization }: IVotingExtension = {}) {
           });
         }
       } catch (e: any) {
-        console.log({ e });
-      } finally {
-        console.log('done');
+        console.error({ e });
       }
     }
     fetchGovernanceToken();

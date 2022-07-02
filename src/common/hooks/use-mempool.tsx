@@ -35,10 +35,8 @@ export function useMempool({ organization, extensionName }: IMempool = {}) {
         limit: 20,
       });
       setState({ ...state, isLoading: false, transactions });
-    } catch (error) {
-      console.error({ error });
-    } finally {
-      console.log('finally');
+    } catch (e: any) {
+      console.error({ e });
     }
   }, [organization]);
 

@@ -35,10 +35,8 @@ export function useSubmissionExtension({
         const contractName =
           submissionExtension?.contractAddress?.split('.')[1];
         setState({ ...state, isLoading: false, contractAddress, contractName });
-      } catch (error) {
-        console.error({ error });
-      } finally {
-        console.log('finally');
+      } catch (e: any) {
+        console.error({ e });
       }
     }
     fetchSubmissionExtension();

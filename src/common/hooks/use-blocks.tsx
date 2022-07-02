@@ -28,9 +28,7 @@ export function useBlocks() {
         currentBlockHeight: blocks.total,
       });
     } catch (e: any) {
-      console.log(e);
-    } finally {
-      console.log('finally');
+      console.error({ e });
     }
   }, []);
 

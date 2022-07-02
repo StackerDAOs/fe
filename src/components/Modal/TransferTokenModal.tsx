@@ -157,9 +157,8 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
         });
         setTransaction({ txId: '', data: {} });
       }
-      console.log({ transaction });
     } catch (e: any) {
-      console.log({ e });
+      console.error({ e });
     }
   }
 

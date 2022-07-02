@@ -128,10 +128,8 @@ const ProposalView = () => {
         if (data) {
           setState({ ...state, postConditions: data[0].postConditions });
         }
-      } catch (error) {
-        console.log('error', error);
-      } finally {
-        console.log('finally');
+      } catch (e: any) {
+        console.error({ e });
       }
     };
     fetchData();

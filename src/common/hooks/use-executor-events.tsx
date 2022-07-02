@@ -53,10 +53,8 @@ export function useExecutorEvents({ filter, filterByProposal }: IEvent = {}) {
           : serializedEvents;
         setEvents(filteredEvents);
         setIsLoading(false);
-      } catch (error) {
-        console.log({ error });
-      } finally {
-        console.log('finally');
+      } catch (e: any) {
+        console.error({ e });
       }
     };
     fetchEvents();

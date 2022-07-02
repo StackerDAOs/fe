@@ -35,8 +35,6 @@ export function useBalance({ organization }: IBalance = {}) {
       setState({ ...state, isLoading: false, balance: balance });
     } catch (error) {
       console.error({ error });
-    } finally {
-      console.log('finally');
     }
   }, [organization]);
 

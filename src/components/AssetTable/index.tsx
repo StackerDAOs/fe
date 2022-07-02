@@ -153,10 +153,8 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
           isLoading: false,
           fungibleTokensList: withStacks,
         });
-      } catch (error) {
-        console.error({ error });
-      } finally {
-        console.log('done');
+      } catch (e: any) {
+        console.error({ e });
       }
     };
     fetchAssets();
@@ -164,8 +162,6 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
 
   const listItems =
     type === 'fungible' ? state.fungibleTokensList : nonFungibleTokensList;
-
-  console.log(state.fungibleTokensList);
 
   if (listItems.length === 0) {
     return (
