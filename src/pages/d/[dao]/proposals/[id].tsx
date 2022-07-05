@@ -24,7 +24,7 @@ import { supabase } from '@utils/supabase';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
-import { AssetTable } from '@components/AssetTable';
+import { ProposalActivityTable } from '@components/tables';
 import { Card } from '@components/Card';
 import { ExecuteProposalButton } from '@components/Actions';
 import { VoteManyForButton } from '@components/Actions';
@@ -54,15 +54,17 @@ import {
   truncate,
 } from '@common/helpers';
 
-// Hooks
+// Queries
 import {
-  useOrganization,
-  useBlocks,
-  useContractEvents,
-  useGovernanceToken,
+  useExtension,
+  useEvents,
   useProposal,
-  useVotingExtension,
-} from '@common/hooks';
+  useToken,
+  useTokenBalance,
+} from '@common/queries';
+
+// Hooks
+import { useBlocks } from '@common/hooks';
 
 const FADE_IN_VARIANTS = {
   hidden: { opacity: 0, x: 0, y: 0 },
@@ -84,40 +86,31 @@ const ProposalView = () => {
   const [state, setState] = useState<TProposal>({ postConditions: [] });
   const currentStxAddress = useCurrentStxAddress();
   const router = useRouter();
-  const { dao, id: proposalPrincipal } = router.query as any;
-  const { organization } = useOrganization({ name: dao });
+  const { id: proposalPrincipal } = router.query as any;
   const { currentBlockHeight } = useBlocks();
-  const { balance, decimals, symbol } = useGovernanceToken({ organization });
+  const { token } = useToken();
+  const { balance } = useTokenBalance();
+  const { extension: voting } = useExtension('Voting');
   const {
-    contractAddress: votingExtensionAddress,
-    contractName: votingExtensionName,
-  } = useVotingExtension({ organization });
-  const {
-    title,
-    type,
-    description,
-    contractAddress: proposalContractAddress,
-    contractName: proposalContractName,
-    proposer,
-    concluded,
-    startBlockHeight,
-    endBlockHeight,
-    votesFor,
-    votesAgainst,
-    quorumThreshold,
-    executionDelay,
-    events,
-  } = useProposal({ organization, filterByProposal: proposalPrincipal });
-  const { events: delegatorEvents } = useContractEvents({
-    organization,
-    extensionName: 'Voting',
-    filter: 'delegate',
-  });
+    isLoading,
+    isIdle,
+    data: proposalInfo,
+  } = useProposal(proposalPrincipal);
+
+  const { data: delegatorEvents } = useEvents(
+    voting?.contractAddress,
+    'delegate',
+    proposalPrincipal,
+    0,
+  );
+
+  const proposalContractAddress = proposalInfo?.contractAddress.split('.')[0];
+  const proposalContractName = proposalInfo?.contractAddress.split('.')[1];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data, error } = await supabase
+        const { data, error }: any = await supabase
           .from('Proposals')
           .select('postConditions')
           .eq(
@@ -126,56 +119,78 @@ const ProposalView = () => {
           );
         if (error) throw error;
         if (data) {
-          setState({ ...state, postConditions: data[0].postConditions });
+          setState({
+            ...state,
+            postConditions: data ?? data[0]?.postConditions,
+          });
         }
       } catch (e: any) {
         console.error({ e });
       }
     };
     fetchData();
-  }, [proposalContractAddress]);
+  }, [proposalPrincipal]);
 
-  const isEligible = tokenToNumber(Number(balance), Number(decimals)) > 0;
-  const totalVotes = Number(votesFor) + Number(votesAgainst);
+  const isEligible =
+    tokenToNumber(Number(balance), Number(token?.decimals)) > 0;
+  const totalVotes =
+    Number(proposalInfo?.proposal?.votesFor) +
+    Number(proposalInfo?.proposal?.votesAgainst);
   const currentVoterEvent = (event: any) =>
     event?.voter?.value === currentStxAddress;
-  const hasVoted = events?.some(currentVoterEvent);
-  const isInactive = currentBlockHeight < startBlockHeight;
-  const isClosed = currentBlockHeight > Number(endBlockHeight);
+  const hasVoted = delegatorEvents?.some(currentVoterEvent);
+  const isInactive =
+    currentBlockHeight < proposalInfo?.proposal?.startBlockHeight;
+  const isClosed =
+    currentBlockHeight > Number(proposalInfo?.proposal?.endBlockHeight);
 
   const canExecute =
-    currentBlockHeight >= Number(endBlockHeight) + Number(executionDelay);
+    currentBlockHeight >=
+    Number(proposalInfo?.proposal?.endBlockHeight) +
+      Number(proposalInfo?.executionDelay);
   const isOpen =
-    currentBlockHeight <= endBlockHeight &&
-    currentBlockHeight >= startBlockHeight;
-  const convertedVotesFor = tokenToNumber(Number(votesFor), Number(decimals));
+    currentBlockHeight <= proposalInfo?.proposal?.endBlockHeight &&
+    currentBlockHeight >= proposalInfo?.proposal?.startBlockHeight;
+  const convertedVotesFor = tokenToNumber(
+    Number(proposalInfo?.proposal?.votesFor),
+    Number(token?.decimals),
+  );
   const convertedVotesAgainst = tokenToNumber(
-    Number(votesAgainst),
-    Number(decimals),
+    Number(proposalInfo?.proposal?.votesAgainst),
+    Number(token?.decimals),
   );
   const convertedTotalVotes = tokenToNumber(
     Number(totalVotes),
-    Number(decimals),
+    Number(token?.decimals),
   );
   const isPassing =
     convertedVotesFor > convertedVotesAgainst &&
-    convertedTotalVotes >= Number(quorumThreshold);
+    convertedTotalVotes >= Number(proposalInfo?.quorumThreshold);
 
   const voteData = {
-    contractAddress: votingExtensionAddress,
-    contractName: votingExtensionName,
-    proposalContractAddress,
-    proposalContractName,
+    contractAddress: voting?.contractAddress.split('.')[0],
+    contractName: voting?.contractAddress.split('.')[1],
+    proposalContractAddress: proposalInfo?.contractAddress.split('.')[0],
+    proposalContractName: proposalInfo?.contractAddress.split('.')[1],
     delegatorEvents,
   };
 
   const concludeData = {
-    contractAddress: votingExtensionAddress,
-    contractName: votingExtensionName,
-    votingData: { votesFor, votesAgainst, totalVotes, quorumThreshold },
-    proposalContractAddress,
-    proposalContractName,
+    contractAddress: voting?.contractAddress.split('.')[0],
+    contractName: voting?.contractAddress.split('.')[1],
+    votingData: {
+      votesFor: proposalInfo?.proposal?.votesFor,
+      votesAgainst: proposalInfo?.proposal?.votesAgainst,
+      totalVotes,
+      quorumThreshold: proposalInfo?.quorumThreshold,
+    },
+    proposalContractAddress: proposalInfo?.contractAddress.split('.')[0],
+    proposalContractName: proposalInfo?.contractAddress.split('.')[1],
   };
+
+  if (isLoading || isIdle) {
+    return null;
+  }
 
   return (
     <motion.div
@@ -221,11 +236,11 @@ const ProposalView = () => {
                         fontWeight='medium'
                         color='light.600'
                       >
-                        {title} {type}
+                        {proposalInfo?.title} {proposalInfo?.type}
                       </Text>
                     </HStack>
                     <HStack>
-                      {concluded ? (
+                      {proposalInfo?.proposal?.concluded ? (
                         <Badge
                           bg='base.800'
                           color='secondary.900'
@@ -252,14 +267,14 @@ const ProposalView = () => {
                             <FaClock fontSize='0.9rem' />
                             <Text fontSize='sm' fontWeight='medium'>
                               Open for execution in ~{' '}
-                              {Number(endBlockHeight) +
-                                Number(executionDelay) -
+                              {Number(proposalInfo?.proposal?.endBlockHeight) +
+                                Number(proposalInfo?.executionDelay) -
                                 Number(currentBlockHeight)}{' '}
                               blocks
                             </Text>
                           </HStack>
                         </Badge>
-                      ) : canExecute && !concluded ? (
+                      ) : canExecute && !proposalInfo?.proposal?.concluded ? (
                         <Badge
                           bg='base.800'
                           color='secondary.900'
@@ -301,8 +316,9 @@ const ProposalView = () => {
                             <FaClock fontSize='0.9rem' />
                             <Text fontSize='sm' fontWeight='medium'>
                               Voting begins in ~{' '}
-                              {Number(startBlockHeight) -
-                                Number(currentBlockHeight)}{' '}
+                              {Number(
+                                proposalInfo?.proposal?.startBlockHeight,
+                              ) - Number(currentBlockHeight)}{' '}
                               blocks{' '}
                             </Text>
                           </HStack>
@@ -343,7 +359,10 @@ const ProposalView = () => {
                           <Progress
                             colorScheme='secondary'
                             size='md'
-                            value={getPercentage(totalVotes, Number(votesFor))}
+                            value={getPercentage(
+                              totalVotes,
+                              Number(proposalInfo?.proposal?.votesFor),
+                            )}
                             bg='base.500'
                           />
                         </Stack>
@@ -360,7 +379,7 @@ const ProposalView = () => {
                             size='md'
                             value={getPercentage(
                               totalVotes,
-                              Number(votesAgainst),
+                              Number(proposalInfo?.proposal?.votesAgainst),
                             )}
                             bg='base.500'
                           />
@@ -377,7 +396,7 @@ const ProposalView = () => {
                             colorScheme='gray'
                             size='md'
                             value={getPercentage(
-                              Number(quorumThreshold),
+                              Number(proposalInfo?.quorumThreshold),
                               convertedVotesFor + convertedVotesAgainst,
                             )}
                             bg='base.500'
@@ -404,7 +423,7 @@ const ProposalView = () => {
                         <VoteManyAgainstButton {...voteData} />
                       </HStack>
                     </motion.div>
-                  ) : canExecute && !concluded ? (
+                  ) : canExecute && !proposalInfo?.proposal?.concluded ? (
                     <ExecuteProposalButton {...concludeData} />
                   ) : null}
                 </VStack>
@@ -429,9 +448,12 @@ const ProposalView = () => {
                           Voting power
                         </Text>
                         <Text color='light.900' fontWeight='regular'>
-                          {convertToken(balance.toString(), Number(decimals))}{' '}
+                          {convertToken(
+                            balance.toString(),
+                            Number(token?.decimals),
+                          )}{' '}
                           <Text as='span' color='gray.900' fontWeight='medium'>
-                            {symbol}
+                            {token?.symbol}
                           </Text>
                         </Text>
                       </HStack>
@@ -448,7 +470,7 @@ const ProposalView = () => {
                         >
                           Status
                         </Text>
-                        {concluded ? (
+                        {proposalInfo?.proposal?.concluded ? (
                           <Badge
                             bg='base.800'
                             color='secondary.900'
@@ -513,7 +535,8 @@ const ProposalView = () => {
                           fontWeight='medium'
                           color='light.900'
                         >
-                          {proposer && truncate(proposer, 4, 4)}
+                          {proposalInfo?.proposal?.proposer &&
+                            truncate(proposalInfo?.proposal?.proposer, 4, 4)}
                         </Text>
                       </HStack>
                     </Box>
@@ -538,7 +561,7 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            {Number(startBlockHeight)}
+                            {Number(proposalInfo?.proposal?.startBlockHeight)}
                           </Text>
                         </HStack>
                         <HStack justify='space-between'>
@@ -556,7 +579,26 @@ const ProposalView = () => {
                           >
                             {/* TODO: get executionDelay from voting
                             contracts and add to endBlockHeight */}
-                            {Number(endBlockHeight)}
+                            {Number(proposalInfo?.proposal?.endBlockHeight)}
+                          </Text>
+                        </HStack>
+                        <HStack justify='space-between'>
+                          <Text
+                            fontSize='sm'
+                            fontWeight='medium'
+                            color='gray.900'
+                          >
+                            Execution Block
+                          </Text>
+                          <Text
+                            fontSize='sm'
+                            fontWeight='medium'
+                            color='light.900'
+                          >
+                            {/* TODO: get executionDelay from voting
+                            contracts and add to endBlockHeight */}
+                            {Number(proposalInfo?.proposal?.endBlockHeight) +
+                              Number(proposalInfo?.executionDelay)}
                           </Text>
                         </HStack>
                         <HStack justify='space-between'>
@@ -572,8 +614,10 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            {parseInt(quorumThreshold)?.toLocaleString('en-US')}{' '}
-                            {symbol}
+                            {parseInt(
+                              proposalInfo?.quorumThreshold,
+                            )?.toLocaleString('en-US')}{' '}
+                            {token?.symbol}
                           </Text>
                         </HStack>
                         <HStack justify='space-between'>
@@ -590,10 +634,11 @@ const ProposalView = () => {
                             color='light.900'
                           >
                             {Number(currentBlockHeight) <
-                            Number(startBlockHeight)
+                            Number(proposalInfo?.proposal?.startBlockHeight)
                               ? `~ ${estimateDays(
-                                  Number(startBlockHeight) -
-                                    Number(currentBlockHeight),
+                                  Number(
+                                    proposalInfo?.proposal?.startBlockHeight,
+                                  ) - Number(currentBlockHeight),
                                 )} days`
                               : `Now`}
                           </Text>
@@ -611,11 +656,13 @@ const ProposalView = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            {Number(currentBlockHeight) > Number(endBlockHeight)
+                            {Number(currentBlockHeight) >
+                            Number(proposalInfo?.proposal?.endBlockHeight)
                               ? `Closed`
                               : `~ ${estimateDays(
-                                  Number(endBlockHeight) -
-                                    Number(currentBlockHeight),
+                                  Number(
+                                    proposalInfo?.proposal?.endBlockHeight,
+                                  ) - Number(currentBlockHeight),
                                 )} days`}
                           </Text>
                         </HStack>
@@ -691,7 +738,7 @@ const ProposalView = () => {
                                       color: 'secondary.900',
                                     }}
                                   >
-                                    {description}
+                                    {proposalInfo?.description}
                                   </Text>
                                 </Stack>
                                 <Stack align='flex-start'>
@@ -716,7 +763,6 @@ const ProposalView = () => {
                                   >
                                     <Text
                                       cursor='pointer'
-                                      textDecoration='underline'
                                       fontSize='md'
                                       _selection={{
                                         bg: 'base.800',
@@ -740,10 +786,10 @@ const ProposalView = () => {
                             exit={FADE_IN_VARIANTS.exit}
                             transition={{ duration: 0.25, type: 'linear' }}
                           >
-                            <AssetTable
+                            <ProposalActivityTable
                               color='light.900'
                               size='lg'
-                              type='fungible'
+                              proposalPrincipal={`${proposalContractAddress}.${proposalContractName}`}
                             />
                           </motion.div>
                         </TabPanel>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import {
   Badge,
   Button,
@@ -22,15 +21,18 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
+import { ErrorMessage } from '@hookform/error-message';
 
 // Web3
 import { useUser, useNetwork } from '@micro-stacks/react';
 import { fetchTransaction } from 'micro-stacks/api';
 
 // Hooks
-import { useOrganization, useDAO } from '@common/hooks';
 import { useForm, Controller } from 'react-hook-form';
 import { usePolling } from '@common/hooks';
+
+// Queries
+import { useAuth, useDAO, useToken } from '@common/queries';
 
 // Components
 import { Card } from '@components/Card';
@@ -42,7 +44,12 @@ import { motion } from 'framer-motion';
 import { FADE_IN_VARIANTS } from '@utils/animation';
 
 // Utils
-import { truncate, formatComments } from '@common/helpers';
+import {
+  truncate,
+  formatComments,
+  validateStacksAddress,
+  microToStacks,
+} from '@common/helpers';
 import Avatar from 'boring-avatars';
 
 // Store
@@ -54,12 +61,9 @@ export const TransferStxModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStxAddress } = useUser();
   const { network } = useNetwork();
-  const router = useRouter();
-  const { dao } = router.query as any;
-  const { organization }: any = useOrganization({ name: dao });
-  const { symbol, proposeThreshold, canPropose } = useDAO({
-    organization,
-  });
+  const { dao } = useDAO();
+  const { proposeData } = useAuth();
+  const { token, balance } = useToken();
   const { transaction, setTransaction } = useStore();
   const [state, setState] = useState<any>({
     name: '',
@@ -73,13 +77,13 @@ export const TransferStxModal = () => {
     control,
     handleSubmit,
     getValues,
-    formState: { isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm();
   const { transferAmount, transferTo, description } = getValues();
 
   useEffect(() => {
     setTransaction({ txId: '', data: {} });
-  }, [organization, isOpen, currentStxAddress, canPropose]);
+  }, [dao, isOpen, currentStxAddress, proposeData?.canPropose]);
 
   const onSubmit = (data: any) => {
     console.log({ data });
@@ -116,19 +120,23 @@ export const TransferStxModal = () => {
     onClose();
   };
 
+  const tooltipProps = {
+    isDisabled: proposeData?.canPropose,
+  };
+
   return (
     <>
       <Tooltip
         bg='base.900'
         color='light.900'
-        label={`${proposeThreshold} ${symbol} required for proposals`}
+        label={`${proposeData?.proposeThreshold} ${token?.symbol} required for proposals`}
         my='3'
         w='sm'
-        shouldWrapChildren={!canPropose ? true : false}
+        {...tooltipProps}
       >
         <IconButton
           onClick={onOpen}
-          disabled={!canPropose}
+          disabled={!proposeData?.canPropose}
           icon={<FaArrowRight />}
           size='sm'
           bg='base.800'
@@ -224,14 +232,14 @@ export const TransferStxModal = () => {
                   <HStack spacing='3'>
                     <Stack spacing='2' direction='row'>
                       <Text fontSize='sm' fontWeight='regular'>
-                        Type
+                        Required
                       </Text>
                       <Text
                         color='gray.900'
                         fontSize='sm'
                         fontWeight='semibold'
                       >
-                        Transfer STX
+                        {Number(proposeData?.proposeThreshold)} {token?.symbol}
                       </Text>
                     </Stack>
                     <Stack spacing='2' direction='row'>
@@ -376,7 +384,7 @@ export const TransferStxModal = () => {
                       >
                         {state.isDeployed && (
                           <ProposeButton
-                            organization={organization}
+                            organization={dao}
                             transactionId={state.transactionId}
                             _hover={{ opacity: 0.9 }}
                             _active={{ opacity: 1 }}
@@ -385,7 +393,7 @@ export const TransferStxModal = () => {
 
                         {state.isDeployed || transaction?.txId ? null : (
                           <TransferStxButton
-                            organization={organization}
+                            organization={dao}
                             isSubmitting={isSubmitting}
                             description={formatComments(description)}
                             transferAmount={transferAmount}
@@ -438,14 +446,14 @@ export const TransferStxModal = () => {
                   <HStack spacing='3'>
                     <Stack spacing='2' direction='row'>
                       <Text fontSize='sm' fontWeight='regular'>
-                        Type
+                        Required
                       </Text>
                       <Text
                         color='gray.900'
                         fontSize='sm'
                         fontWeight='semibold'
                       >
-                        Transfer STX
+                        {Number(proposeData?.proposeThreshold)} {token?.symbol}
                       </Text>
                     </Stack>
                     <Stack spacing='2' direction='row'>
@@ -506,6 +514,7 @@ export const TransferStxModal = () => {
                                   px='2'
                                   pl='0'
                                   type='tel'
+                                  min='0'
                                   bg='base.900'
                                   border='none'
                                   fontSize='lg'
@@ -513,10 +522,27 @@ export const TransferStxModal = () => {
                                   placeholder='0'
                                   {...register('transferAmount', {
                                     required: 'This is required',
+                                    validate: (value) =>
+                                      Number(value) <=
+                                      microToStacks(
+                                        balance?.stx?.balance,
+                                        false,
+                                      ),
                                   })}
                                   _focus={{
                                     border: 'none',
                                   }}
+                                />
+                                <ErrorMessage
+                                  errors={errors}
+                                  name='transferTo'
+                                  render={() => (
+                                    <p>
+                                      {errors?.transferAmount?.type
+                                        ? 'This is required'
+                                        : ''}
+                                    </p>
+                                  )}
                                 />
                               </FormControl>
                               <HStack>
@@ -554,6 +580,15 @@ export const TransferStxModal = () => {
                                 <Controller
                                   control={control}
                                   name='transferTo'
+                                  rules={{
+                                    required: {
+                                      value: true,
+                                      message:
+                                        'Destination address is required.',
+                                    },
+                                    validate: (value) =>
+                                      validateStacksAddress(value),
+                                  }}
                                   render={({
                                     field: { onChange, onBlur, value },
                                   }) => (
@@ -602,6 +637,11 @@ export const TransferStxModal = () => {
                                     </>
                                   )}
                                 />
+                                <ErrorMessage
+                                  errors={errors}
+                                  name='transferTo'
+                                  render={() => <p>Invalid Stacks Address</p>}
+                                />
                               </FormControl>
                             </Stack>
                             <Stack
@@ -631,11 +671,24 @@ export const TransferStxModal = () => {
                                   autoComplete='off'
                                   placeholder='Provide some additional context for the proposal'
                                   {...register('description', {
-                                    required: 'This is required',
+                                    required: {
+                                      value: true,
+                                      message: 'Proposal details are required.',
+                                    },
+                                    minLength: {
+                                      value: 25,
+                                      message:
+                                        'Proposal details must be at least 25 characters.',
+                                    },
                                   })}
                                   _focus={{
                                     border: 'none',
                                   }}
+                                />
+                                <ErrorMessage
+                                  errors={errors}
+                                  name='description'
+                                  render={({ message }) => <p>{message}</p>}
                                 />
                               </FormControl>
                             </Stack>

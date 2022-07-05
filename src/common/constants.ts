@@ -1,3 +1,6 @@
+import { StacksMocknet, StacksMainnet } from 'micro-stacks/network';
+
+export const stacksNetwork = process.env.NODE_ENV === 'production' ? StacksMainnet : StacksMocknet;
 export const baseUrl =
 process.env.NODE_ENV === 'production'
   ? 'https://app.stackerdaos.com'

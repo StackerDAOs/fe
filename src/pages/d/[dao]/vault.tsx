@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import {
   Box,
   ButtonGroup,
@@ -21,9 +19,6 @@ import { Header } from '@components/Header';
 import { SectionHeader } from '@components/SectionHeader';
 import { Wrapper } from '@components/Wrapper';
 
-// Hooks
-import { useOrganization } from '@common/hooks';
-
 //  Animation
 import { motion } from 'framer-motion';
 
@@ -37,16 +32,6 @@ const FADE_IN_VARIANTS = {
 };
 
 const Vault = () => {
-  const router = useRouter();
-  const { dao } = router.query as any;
-  const { organization }: any = useOrganization({ name: dao });
-
-  useEffect(() => {
-    if (!organization) {
-      // router.push('/');
-    }
-  }, [organization]);
-
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import {
   Badge,
   Button,
@@ -25,9 +24,11 @@ import { useUser, useNetwork } from '@micro-stacks/react';
 import { fetchTransaction } from 'micro-stacks/api';
 
 // Hooks
-import { useOrganization, useDAO } from '@common/hooks';
 import { useForm } from 'react-hook-form';
 import { usePolling } from '@common/hooks';
+
+// Queries
+import { useAuth, useDAO, useToken } from '@common/queries';
 
 // Components
 import { Card } from '@components/Card';
@@ -49,12 +50,9 @@ export const SocialProposalModal = ({ icon }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStxAddress } = useUser();
   const { network } = useNetwork();
-  const router = useRouter();
-  const { dao } = router.query as any;
-  const { organization }: any = useOrganization({ name: dao });
-  const { symbol, proposeThreshold, canPropose } = useDAO({
-    organization,
-  });
+  const { dao } = useDAO();
+  const { proposeData } = useAuth();
+  const { token } = useToken();
   const { transaction, setTransaction } = useStore();
   const [state, setState] = useState<any>({
     name: '',
@@ -73,7 +71,7 @@ export const SocialProposalModal = ({ icon }: any) => {
 
   useEffect(() => {
     setTransaction({ txId: '', data: {} });
-  }, [organization, isOpen]);
+  }, [dao, isOpen]);
 
   const onSubmit = (data: any) => {
     console.log({ data });
@@ -110,15 +108,19 @@ export const SocialProposalModal = ({ icon }: any) => {
     onClose();
   };
 
+  const tooltipProps = {
+    isDisabled: proposeData?.canPropose,
+  };
+
   return (
     <>
       <Tooltip
         bg='base.900'
         color='light.900'
-        label={`${proposeThreshold} ${symbol} required for proposals`}
+        label={`${proposeData?.proposeThreshold} ${token?.symbol} required for proposals`}
         my='3'
         w='sm'
-        shouldWrapChildren={!canPropose ? true : false}
+        {...tooltipProps}
       >
         <Button
           onClick={onOpen}
@@ -128,7 +130,7 @@ export const SocialProposalModal = ({ icon }: any) => {
           border='1px solid'
           borderColor='base.500'
           aria-label='Transfer'
-          disabled={!canPropose}
+          disabled={!proposeData?.canPropose}
           _hover={{ bg: 'base.500' }}
         >
           Social proposal
@@ -220,14 +222,14 @@ export const SocialProposalModal = ({ icon }: any) => {
                   <HStack spacing='3'>
                     <Stack spacing='2' direction='row'>
                       <Text fontSize='sm' fontWeight='regular'>
-                        Type
+                        Required
                       </Text>
                       <Text
                         color='gray.900'
                         fontSize='sm'
                         fontWeight='semibold'
                       >
-                        Social
+                        {Number(proposeData?.proposeThreshold)} {token?.symbol}
                       </Text>
                     </Stack>
                     <Stack spacing='2' direction='row'>
@@ -302,7 +304,7 @@ export const SocialProposalModal = ({ icon }: any) => {
                       >
                         {state.isDeployed && (
                           <ProposeButton
-                            organization={organization}
+                            organization={dao}
                             transactionId={state.transactionId}
                             _hover={{ opacity: 0.9 }}
                             _active={{ opacity: 1 }}
@@ -311,7 +313,7 @@ export const SocialProposalModal = ({ icon }: any) => {
 
                         {state.isDeployed || transaction?.txId ? null : (
                           <SocialProposalButton
-                            organization={organization}
+                            organization={dao}
                             isSubmitting={isSubmitting}
                             description={formatComments(description)}
                           />
@@ -362,14 +364,14 @@ export const SocialProposalModal = ({ icon }: any) => {
                   <HStack spacing='3'>
                     <Stack spacing='2' direction='row'>
                       <Text fontSize='sm' fontWeight='regular'>
-                        Type
+                        Required
                       </Text>
                       <Text
                         color='gray.900'
                         fontSize='sm'
                         fontWeight='semibold'
                       >
-                        Social
+                        {Number(proposeData?.proposeThreshold)} {token?.symbol}
                       </Text>
                     </Stack>
                     <Stack spacing='2' direction='row'>

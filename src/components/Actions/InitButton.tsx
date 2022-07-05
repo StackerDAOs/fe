@@ -5,7 +5,6 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 import { contractPrincipalCV } from 'micro-stacks/clarity';
 
 export const InitButton = ({ address }: any) => {
-  // TODO: make calls to get executor address of organization
   const getBootstrapProposal = ({ address }: any) => {
     const startsWith = process.env.NODE_ENV === 'development' ? 'ST' : 'SP';
     const isValid =

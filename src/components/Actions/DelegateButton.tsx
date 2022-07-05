@@ -4,6 +4,9 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 // Web3
 import { standardPrincipalCV } from 'micro-stacks/clarity';
 
+// Utils
+import { validateStacksAddress } from '@common/helpers';
+
 export const DelegateButton = ({
   title,
   delegateAddress,
@@ -12,9 +15,8 @@ export const DelegateButton = ({
   functionName,
   isDisabled,
 }: any) => {
-  const isValid = delegateAddress && delegateAddress.length > 40; // TODO: validate for STX address
-  const functionArgs = delegateAddress &&
-    isValid && [standardPrincipalCV(delegateAddress)];
+  const isValid = delegateAddress && validateStacksAddress(delegateAddress);
+  const functionArgs = isValid && [standardPrincipalCV(delegateAddress)];
   const postConditions: any = [];
 
   const contractData = {

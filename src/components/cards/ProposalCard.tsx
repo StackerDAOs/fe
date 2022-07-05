@@ -28,27 +28,28 @@ export const ProposalCard = ({
   title,
   type,
   description,
-  concluded,
-  startBlockHeight,
-  endBlockHeight,
-  votesFor,
-  votesAgainst,
+  proposal,
 }: any) => {
   const [isHovered, setHovered] = useState(false);
   const { currentBlockHeight } = useBlocks();
   const router = useRouter();
   const { dao } = router.query as any;
-  const totalVotes = Number(votesFor) + Number(votesAgainst);
-  const isClosed = currentBlockHeight > endBlockHeight;
+  const totalVotes =
+    Number(proposal?.votesFor) + Number(proposal?.votesAgainst);
+  const isClosed = currentBlockHeight > proposal?.endBlockHeight;
   const isOpen =
-    currentBlockHeight <= endBlockHeight &&
-    currentBlockHeight >= startBlockHeight;
-  const convertedVotesFor = tokenToNumber(Number(votesFor), 2);
-  const convertedVotesAgainst = tokenToNumber(Number(votesAgainst), 2);
+    currentBlockHeight <= proposal?.endBlockHeight &&
+    currentBlockHeight >= proposal?.startBlockHeight;
+
+  const convertedVotesFor = tokenToNumber(Number(proposal?.votesFor), 2);
+  const convertedVotesAgainst = tokenToNumber(
+    Number(proposal?.votesAgainst),
+    2,
+  );
 
   const statusBadge = (
     <>
-      {concluded ? (
+      {proposal?.concluded ? (
         <Badge bg='base.800' color='secondary.900' size='sm' py='1' px='3'>
           Executed
         </Badge>
@@ -86,7 +87,7 @@ export const ProposalCard = ({
         <a>
           <Card
             bg='base.900'
-            h='auto'
+            minH='xs'
             position='relative'
             px={{ base: '6', md: '6' }}
             py={{ base: '6', md: '6' }}
@@ -126,7 +127,7 @@ export const ProposalCard = ({
                     <Stack direction='column' spacing='3'>
                       <HStack align='center' spacing='2'>
                         <Avatar
-                          size={40}
+                          size={30}
                           name={type}
                           variant='bauhaus'
                           colors={[
@@ -162,7 +163,10 @@ export const ProposalCard = ({
                       <Progress
                         colorScheme='secondary'
                         size='md'
-                        value={getPercentage(totalVotes, Number(votesFor))}
+                        value={getPercentage(
+                          totalVotes,
+                          Number(proposal?.votesFor),
+                        )}
                         bg='base.500'
                       />
                     </Stack>
@@ -177,7 +181,10 @@ export const ProposalCard = ({
                       <Progress
                         colorScheme='whiteAlpha'
                         size='md'
-                        value={getPercentage(totalVotes, Number(votesAgainst))}
+                        value={getPercentage(
+                          totalVotes,
+                          Number(proposal?.votesAgainst),
+                        )}
                         bg='base.500'
                       />
                     </Stack>

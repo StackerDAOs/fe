@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import {
   Container,
   Heading,
@@ -10,8 +8,8 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react';
 
-import { useNetwork } from '@micro-stacks/react';
-import { fetchReadOnlyFunction } from 'micro-stacks/api';
+import { motion } from 'framer-motion';
+import { FADE_IN_VARIANTS } from '@utils/animation';
 
 import { ustxToStx, convertToken } from '@common/helpers';
 import Avatar from 'boring-avatars';
@@ -19,67 +17,28 @@ import Avatar from 'boring-avatars';
 import { EmptyState } from '@components/EmptyState';
 import { Stat } from '@components/Stat';
 
+import { useBlocks } from '@common/hooks';
+
+import { defaultTo, sumBy } from 'lodash';
+
 import {
-  useBalance,
-  useBlocks,
-  useOrganization,
+  useDAO,
+  useToken,
+  useTokenBalance,
   useProposals,
-  useGovernanceToken,
-} from '@common/hooks';
-
-import { defaultTo } from 'lodash';
-
-type THeader = {
-  symbol: string | null;
-};
-
-const initialValue: THeader = {
-  symbol: null,
-} as THeader;
+} from '@common/queries';
 
 export const Header = () => {
-  const { network } = useNetwork();
-  const router = useRouter();
-  const { dao } = router.query as any;
-  const [state, setState] = useState<THeader>(initialValue);
+  const { dao } = useDAO();
   const { currentBlockHeight } = useBlocks();
-  const { organization } = useOrganization({ name: dao });
-  const { proposals } = useProposals({ organization: organization });
-  const { isLoading: isLoadingBalance, balance } = useBalance({
-    organization: organization,
-  });
-  const {
-    balance: userBalance,
-    contractAddress,
-    contractName,
-  } = useGovernanceToken({
-    organization: organization,
-  });
+  const { isLoading: isLoadingProposals, proposals } = useProposals();
+  const { dao: DAO } = useDAO();
+  const { isLoading, isIdle, isError, token, balance } = useToken();
+  const { balance: userBalance } = useTokenBalance();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        if (contractAddress) {
-          const symbol: any = await fetchReadOnlyFunction({
-            network,
-            contractAddress,
-            contractName,
-            senderAddress: contractAddress,
-            functionArgs: [],
-            functionName: 'get-symbol',
-          });
-          setState({ ...state, symbol });
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchToken();
-  }, [contractAddress]);
-
   const Vault = () => {
-    const { stx } = balance as any;
+    const stx = balance?.stx;
     const amount = defaultTo(stx?.balance, 0);
     const stxBalance = ustxToStx(amount);
     return (
@@ -95,13 +54,11 @@ export const Header = () => {
   };
 
   const Proposals = () => {
-    const openProposals = proposals?.filter((proposal) => {
-      if (proposal?.startBlockHeight && proposal?.endBlockHeight) {
-        const isOpen =
-          currentBlockHeight <= proposal?.endBlockHeight &&
-          currentBlockHeight >= proposal?.startBlockHeight;
-        return isOpen;
-      }
+    const activeProposalCount = sumBy(proposals, (p): any => {
+      return (
+        currentBlockHeight <= p?.data?.proposal?.endBlockHeight &&
+        currentBlockHeight >= p?.data?.proposal?.startBlockHeight
+      );
     });
 
     return (
@@ -109,7 +66,7 @@ export const Header = () => {
         flex='1'
         borderRadius='lg'
         label='Proposals'
-        value={openProposals?.length}
+        value={activeProposalCount}
         info={`Active`}
         path='proposals'
       />
@@ -117,7 +74,6 @@ export const Header = () => {
   };
 
   const Governance = () => {
-    const { symbol } = state;
     const balance = defaultTo(userBalance, 0);
     const tokenBalance = defaultTo(convertToken(balance.toString(), 2), 0);
     return (
@@ -126,13 +82,13 @@ export const Header = () => {
         borderRadius='lg'
         label='Governance'
         value={tokenBalance} // TODO: Get decimals for token
-        info={defaultTo(symbol, 'Token')}
+        info={defaultTo(token?.symbol, 'Token')}
         path='governance'
       />
     );
   };
 
-  if (isLoadingBalance) {
+  if (isError) {
     return (
       <EmptyState
         heading='Unable to load balance'
@@ -140,6 +96,70 @@ export const Header = () => {
         buttonTitle='Try again'
       />
     );
+  }
+
+  if (isLoading || isLoadingProposals || isIdle) {
+    <Container maxW='5xl'>
+      <Stack spacing={{ base: '6', lg: '4' }} mt='5'>
+        <Container>
+          <Stack
+            spacing='2'
+            mt='4'
+            mb='2'
+            direction={{ base: 'column', md: 'row' }}
+            justify='flex-start'
+            color='white'
+          >
+            <VStack maxW='xl' spacing='3'>
+              <Link href={`/d/${dao}`}>
+                <a>
+                  <HStack align='baseline'>
+                    <Avatar
+                      size={40}
+                      name={DAO?.name}
+                      variant='marble'
+                      colors={[
+                        '#50DDC3',
+                        '#624AF2',
+                        '#EB00FF',
+                        '#7301FA',
+                        '#25C2A0',
+                      ]}
+                    />
+                    <Heading
+                      size='lg'
+                      pb='2'
+                      fontWeight='light'
+                      color='light.900'
+                    >
+                      {DAO?.name}
+                    </Heading>
+                  </HStack>
+                </a>
+              </Link>
+            </VStack>
+          </Stack>
+          <motion.div
+            variants={FADE_IN_VARIANTS}
+            initial={FADE_IN_VARIANTS.hidden}
+            animate={FADE_IN_VARIANTS.enter}
+            exit={FADE_IN_VARIANTS.exit}
+            transition={{ duration: 0.75, type: 'linear' }}
+          >
+            <Stack
+              spacing='6'
+              display={isMobile ? 'block' : 'flex'}
+              direction={{ base: 'column', md: 'row' }}
+              justify='center'
+              align='center'
+              color='white'
+            >
+              <EmptyState heading='Fetching vault data...' />
+            </Stack>
+          </motion.div>
+        </Container>
+      </Stack>
+    </Container>;
   }
 
   return (
@@ -160,7 +180,7 @@ export const Header = () => {
                   <HStack align='baseline'>
                     <Avatar
                       size={40}
-                      name={organization?.name}
+                      name={DAO?.name}
                       variant='marble'
                       colors={[
                         '#50DDC3',
@@ -176,25 +196,33 @@ export const Header = () => {
                       fontWeight='light'
                       color='light.900'
                     >
-                      {organization?.name}
+                      {DAO?.name}
                     </Heading>
                   </HStack>
                 </a>
               </Link>
             </VStack>
           </Stack>
-          <Stack
-            spacing='6'
-            display={isMobile ? 'block' : 'flex'}
-            direction={{ base: 'column', md: 'row' }}
-            justify='center'
-            align='center'
-            color='white'
+          <motion.div
+            variants={FADE_IN_VARIANTS}
+            initial={FADE_IN_VARIANTS.hidden}
+            animate={FADE_IN_VARIANTS.enter}
+            exit={FADE_IN_VARIANTS.exit}
+            transition={{ duration: 0.75, type: 'linear' }}
           >
-            <Vault />
-            <Proposals />
-            <Governance />
-          </Stack>
+            <Stack
+              spacing='6'
+              display={isMobile ? 'block' : 'flex'}
+              direction={{ base: 'column', md: 'row' }}
+              justify='center'
+              align='center'
+              color='white'
+            >
+              <Vault />
+              <Proposals />
+              <Governance />
+            </Stack>
+          </motion.div>
         </Container>
       </Stack>
     </Container>

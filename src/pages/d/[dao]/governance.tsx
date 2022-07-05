@@ -44,13 +44,13 @@ import { FADE_IN_VARIANTS } from '@utils/animation';
 import { FaEllipsisH } from 'react-icons/fa';
 
 // Utils
-import { convertToken, truncate } from '@common/helpers';
+import { convertToken, truncate, validateStacksAddress } from '@common/helpers';
 
 const Governance = () => {
   const [state, setState] = useState<any>({
     isDelegating: false,
     currentDelegate: null,
-    delegateAddress: '',
+    delegateAddress: null,
   });
   const router = useRouter();
   const { dao } = router.query as any;
@@ -68,12 +68,6 @@ const Governance = () => {
 
   const balance = defaultTo(userBalance, 0);
   const tokenBalance = defaultTo(convertToken(balance.toString(), 2), 0);
-
-  useEffect(() => {
-    if (!organization) {
-      // router.push('/');
-    }
-  }, [organization]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -104,7 +98,13 @@ const Governance = () => {
       }
     };
     fetch();
-  }, [organization, contractAddress, contractName, currentStxAddress]);
+  }, [
+    organization,
+    contractAddress,
+    contractName,
+    currentStxAddress,
+    isSignedIn,
+  ]);
 
   return (
     <motion.div
@@ -189,7 +189,7 @@ const Governance = () => {
                   <Stack spacing='3'>
                     <FormControl>
                       <Input
-                        disabled={(state.isDelegating || !isSignedIn) ?? true}
+                        isDisabled={state.isDelegating}
                         color='light.900'
                         py='1'
                         px='2'
@@ -226,7 +226,8 @@ const Governance = () => {
                 isDisabled={
                   state.isDelegating
                     ? false
-                    : state.delegateAddress.length < 40 || !isSignedIn
+                    : !validateStacksAddress(state.delegateAddress) ||
+                      !isSignedIn
                     ? true
                     : false
                 }

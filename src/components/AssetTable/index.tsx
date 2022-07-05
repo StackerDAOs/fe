@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import {
   HStack,
   Table,
@@ -25,8 +24,8 @@ import { fetchReadOnlyFunction } from 'micro-stacks/api';
 import { ustxToStx, convertToken } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
-// Hooks
-import { useBalance, useOrganization } from '@common/hooks';
+// Queries
+import { useDAO, useToken } from '@common/queries';
 
 // Animation
 import { motion } from 'framer-motion';
@@ -53,13 +52,15 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
   const [state, setState] = useState<TAssetTable>(initialState);
   const { type } = props;
   const { network } = useNetwork();
-  const router = useRouter();
-  const { dao } = router.query as any;
-  const { organization } = useOrganization({ name: dao });
-  const { isLoading, balance } = useBalance({ organization });
-  const { stx, non_fungible_tokens, fungible_tokens } = balance;
-  const fungibleTokens: any = Object.assign({}, fungible_tokens);
-  const nonFungibleTokens: any = Object.assign({}, non_fungible_tokens);
+
+  const { dao: DAO } = useDAO();
+  const { isLoading, isIdle, isError, balance } = useToken();
+
+  const fungibleTokens: any = Object.assign({}, balance?.fungible_tokens);
+  const nonFungibleTokens: any = Object.assign(
+    {},
+    balance?.non_fungible_tokens,
+  );
   const nonFungibleTokensList = Object.keys(nonFungibleTokens).map((key) => {
     const tokenKey = key.split('::')[1];
     const tokenValue = nonFungibleTokens[key];
@@ -75,7 +76,6 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
     const fetchAssets = async () => {
       try {
         const fetchAssetData = async (
-          type: string,
           {
             balance,
             total_sent: totalSent,
@@ -83,7 +83,6 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
           }: any,
           { contractAddress, contractName }: any,
         ) => {
-          console.log({ type });
           const senderAddress = `${contractAddress}.${contractName}`;
           const name = await fetchReadOnlyFunction({
             network,
@@ -133,7 +132,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
           const contractName = key.split('::')[0].split('.')[1];
           const { balance, total_sent, total_received } = fungibleTokens[key];
           const rest = { balance, total_sent, total_received };
-          return fetchAssetData('fungible', rest, {
+          return fetchAssetData(rest, {
             contractAddress,
             contractName,
           });
@@ -143,9 +142,9 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
           contractAddress: null,
           name: 'Stacks',
           symbol: 'STX',
-          balance: stx?.balance,
-          totalSent: stx?.total_sent,
-          totalReceived: stx?.total_received,
+          balance: balance?.stx?.balance,
+          totalSent: balance?.stx?.total_sent,
+          totalReceived: balance?.stx?.total_received,
         };
         const withStacks = fungibleTokensList.concat(stacks);
         setState({
@@ -158,7 +157,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
       }
     };
     fetchAssets();
-  }, [organization, balance]);
+  }, [DAO, balance]);
 
   const listItems =
     type === 'fungible' ? state.fungibleTokensList : nonFungibleTokensList;
@@ -168,6 +167,26 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
       <EmptyState
         heading={
           type === 'fungible' ? 'No coins found' : 'No collectibles found'
+        }
+      />
+    );
+  }
+
+  if (isLoading || isIdle) {
+    return (
+      <EmptyState
+        heading={
+          type === 'fungible' ? 'Loading assets...' : 'Loading assets...'
+        }
+      />
+    );
+  }
+
+  if (isError) {
+    return (
+      <EmptyState
+        heading={
+          type === 'fungible' ? 'Error loading assets' : 'Error loading assets'
         }
       />
     );

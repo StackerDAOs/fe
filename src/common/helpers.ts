@@ -1,3 +1,5 @@
+import { c32addressDecode } from 'c32check';
+
 export const truncate = (str: string, firstCharCount = str.length, endCharCount = 0, dotCount = 3) => {
   let convertedStr='';
   convertedStr+=str.substring(0, firstCharCount);
@@ -18,6 +20,17 @@ export const tokenToNumber = (amount: number, decimals: number) => {
 
 export const ustxToStx = (uStx: string) => {
   return (parseInt(uStx) / 1000000).toLocaleString('en-US');
+};
+
+export const microToStacks = (
+  amountInMicroStacks: string | number,
+  localString = true
+): number | string => {
+  const value = Number(Number(amountInMicroStacks) / Math.pow(10, 6));
+  if (localString) {
+    return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 });
+  }
+  return value;
 };
 
 export const stxToUstx = (stx: string) => {
@@ -51,3 +64,27 @@ export const formatComments = (comments: string) => {
   let newString = comments.replace(/(?:\r\n|\r|\n)/g, ' ');
   return newString;
 }
+
+export const validateStacksAddress = (stacksAddress: string): boolean => {
+  try {
+    c32addressDecode(stacksAddress);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+export const validateContractName = (contractString: string): boolean => {
+  if (!contractString.includes('.')) return false;
+
+  const stxAddress = contractString.split('.')[0];
+  const contractName = contractString.split('.')[1];
+  const nameRegex = /[a-zA-Z]([a-zA-Z0-9]|[-_!?+<>=/*])*$|^[-+=/*]$|^[<>]=?$/;
+  try {
+    const validStacksAddress = validateStacksAddress(stxAddress);
+    const validName = nameRegex.exec(contractName);
+    return !!(validName && validStacksAddress);
+  } catch (e) {
+    return false;
+  }
+};

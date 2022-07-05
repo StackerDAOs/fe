@@ -184,7 +184,7 @@ const Index = () => {
                           <Stack>
                             <Stack spacing='1'>
                               <Link href={`/d/${project.slug}`}>
-                                <a target='_blank' rel='noreferrer'>
+                                <a rel='noreferrer'>
                                   <IconButton
                                     icon={<FaArrowRight fontSize='0.75em' />}
                                     bg='base.900'

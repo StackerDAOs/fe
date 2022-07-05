@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import {
   Badge,
   Button,
@@ -27,9 +26,11 @@ import { useUser, useNetwork } from '@micro-stacks/react';
 import { fetchTransaction, fetchReadOnlyFunction } from 'micro-stacks/api';
 
 // Hooks
-import { useOrganization, useDAO } from '@common/hooks';
 import { useForm, Controller } from 'react-hook-form';
 import { usePolling } from '@common/hooks';
+
+// Queries
+import { useAuth, useDAO, useToken } from '@common/queries';
 
 // Components
 import { Card } from '@components/Card';
@@ -53,12 +54,9 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStxAddress } = useUser();
   const { network } = useNetwork();
-  const router = useRouter();
-  const { dao } = router.query as any;
-  const { organization }: any = useOrganization({ name: dao });
-  const { symbol, proposeThreshold, canPropose } = useDAO({
-    organization,
-  });
+  const { dao } = useDAO();
+  const { proposeData } = useAuth();
+  const { token } = useToken();
   const { transaction, setTransaction } = useStore();
   const [state, setState] = useState<any>({
     name: '',
@@ -130,7 +128,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
     } catch (error) {
       console.error(error);
     }
-  }, [organization, isOpen]);
+  }, [dao, isOpen]);
 
   const onSubmit = (data: any) => {
     console.log({ data });
@@ -167,19 +165,25 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
     onClose();
   };
 
+  const tooltipProps = {
+    isDisabled: proposeData?.canPropose,
+  };
+
   return (
     <>
       <Tooltip
         bg='base.900'
         color='light.900'
-        label={`${proposeThreshold} ${symbol} required for proposals`}
+        label={`${Number(proposeData?.proposeThreshold)} ${
+          token?.symbol
+        } required for proposals`}
         my='3'
         w='sm'
-        shouldWrapChildren={!canPropose ? true : false}
+        {...tooltipProps}
       >
         <IconButton
           onClick={onOpen}
-          disabled={!canPropose}
+          disabled={!proposeData?.canPropose}
           icon={<FaArrowRight />}
           size='sm'
           bg='base.800'
@@ -275,14 +279,14 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                   <HStack spacing='3'>
                     <Stack spacing='2' direction='row'>
                       <Text fontSize='sm' fontWeight='regular'>
-                        Type
+                        Required
                       </Text>
                       <Text
                         color='gray.900'
                         fontSize='sm'
                         fontWeight='semibold'
                       >
-                        Transfer Tokens
+                        {Number(proposeData?.proposeThreshold)} {token?.symbol}
                       </Text>
                     </Stack>
                     <Stack spacing='2' direction='row'>
@@ -433,7 +437,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                       >
                         {state.isDeployed && (
                           <ProposeButton
-                            organization={organization}
+                            organization={dao}
                             transactionId={state.transactionId}
                             _hover={{ opacity: 0.9 }}
                             _active={{ opacity: 1 }}
@@ -442,7 +446,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
 
                         {state.isDeployed || transaction?.txId ? null : (
                           <TransferTokenButton
-                            organization={organization}
+                            organization={dao}
                             isSubmitting={isSubmitting}
                             description={
                               description && formatComments(description)
@@ -499,14 +503,14 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                   <HStack spacing='3'>
                     <Stack spacing='2' direction='row'>
                       <Text fontSize='sm' fontWeight='regular'>
-                        Type
+                        Required
                       </Text>
                       <Text
                         color='gray.900'
                         fontSize='sm'
                         fontWeight='semibold'
                       >
-                        Transfer Tokens
+                        {Number(proposeData?.proposeThreshold)} {token?.symbol}
                       </Text>
                     </Stack>
                     <Stack spacing='2' direction='row'>
