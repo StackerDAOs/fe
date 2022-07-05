@@ -10,7 +10,6 @@ import {
   Td,
   Text,
   Tr,
-  Skeleton,
 } from '@chakra-ui/react';
 
 // Components
@@ -162,21 +161,21 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
   const listItems =
     type === 'fungible' ? state.fungibleTokensList : nonFungibleTokensList;
 
-  if (listItems.length === 0) {
+  if ((state.isLoading && isLoading) || isIdle) {
     return (
       <EmptyState
         heading={
-          type === 'fungible' ? 'No coins found' : 'No collectibles found'
+          type === 'fungible' ? 'Loading assets...' : 'Loading assets...'
         }
       />
     );
   }
 
-  if (isLoading || isIdle) {
+  if (listItems.length === 0) {
     return (
       <EmptyState
         heading={
-          type === 'fungible' ? 'Loading assets...' : 'Loading assets...'
+          type === 'fungible' ? 'No coins found' : 'No collectibles found'
         }
       />
     );
@@ -193,104 +192,93 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
   }
 
   return (
-    <Skeleton isLoaded={!isLoading}>
-      <motion.div
-        variants={FADE_IN_VARIANTS}
-        initial={FADE_IN_VARIANTS.hidden}
-        animate={FADE_IN_VARIANTS.enter}
-        exit={FADE_IN_VARIANTS.exit}
-        transition={{ duration: 1, type: 'linear' }}
-      >
-        <TableContainer>
-          <Table {...props}>
-            <Thead color='gray.900'>
-              <Tr>
-                <Th bg='transparent' border='none'>
-                  Name
-                </Th>
-                <Th bg='transparent' border='none'>
-                  Balance
-                </Th>
-                <Th bg='transparent' border='none'>
-                  Total sent
-                </Th>
-                <Th bg='transparent' border='none'>
-                  Total received
-                </Th>
-                <Th bg='transparent' border='none'></Th>
-              </Tr>
-            </Thead>
-            <Tbody color='light.900'>
-              {listItems.map((item) => {
-                const { contractAddress, name, symbol, decimals } = item;
-                let { balance, totalSent, totalReceived } = item;
-                switch (name) {
-                  case 'Stacks':
-                    balance = ustxToStx(item.balance);
-                    totalSent = ustxToStx(item.totalSent);
-                    totalReceived = ustxToStx(item.totalReceived);
-                    break;
+    <motion.div
+      variants={FADE_IN_VARIANTS}
+      initial={FADE_IN_VARIANTS.hidden}
+      animate={FADE_IN_VARIANTS.enter}
+      exit={FADE_IN_VARIANTS.exit}
+      transition={{ duration: 1, type: 'linear' }}
+    >
+      <TableContainer>
+        <Table {...props}>
+          <Thead color='gray.900'>
+            <Tr>
+              <Th bg='transparent' border='none'>
+                Name
+              </Th>
+              <Th bg='transparent' border='none'>
+                Balance
+              </Th>
+              <Th bg='transparent' border='none'>
+                Total sent
+              </Th>
+              <Th bg='transparent' border='none'>
+                Total received
+              </Th>
+              <Th bg='transparent' border='none'></Th>
+            </Tr>
+          </Thead>
+          <Tbody color='light.900'>
+            {listItems.map((item) => {
+              const { contractAddress, name, symbol, decimals } = item;
+              let { balance, totalSent, totalReceived } = item;
+              switch (name) {
+                case 'Stacks':
+                  balance = ustxToStx(item.balance);
+                  totalSent = ustxToStx(item.totalSent);
+                  totalReceived = ustxToStx(item.totalReceived);
+                  break;
 
-                  default:
-                    if (contractAddress) {
-                      balance = convertToken(item.balance, decimals);
-                      totalSent = convertToken(item.totalSent, decimals);
-                      totalReceived = convertToken(
-                        item.totalReceived,
-                        decimals,
-                      );
-                      break;
-                    }
-                }
-                return (
-                  <Tr key={item.name} cursor='pointer'>
-                    <Td borderColor='base.500'>
-                      <HStack spacing='2' align='center'>
-                        {/* <Avatar
-                      src={
-                        'ipfs://Qmdgks1HjYZQhF4sTnkoeh7naic7J3G5aHQk91Uq25RwmF'
-                      }
-                      boxSize='6'
-                    /> */}
-                        <Avatar
-                          size={15}
-                          name={item.symbol}
-                          variant='marble'
-                          colors={[
-                            '#50DDC3',
-                            '#624AF2',
-                            '#EB00FF',
-                            '#7301FA',
-                            '#25C2A0',
-                          ]}
-                        />
-                        <HStack align='baseline'>
-                          <Text color='light.900' fontWeight='medium'>
-                            {item.name}
-                          </Text>
-                          <Text fontSize='xs' color='gray.900'>
-                            ({symbol})
-                          </Text>
-                        </HStack>
+                default:
+                  if (contractAddress) {
+                    balance = convertToken(item.balance, decimals);
+                    totalSent = convertToken(item.totalSent, decimals);
+                    totalReceived = convertToken(item.totalReceived, decimals);
+                    break;
+                  }
+              }
+              return (
+                <Tr key={item.name} cursor='pointer'>
+                  <Td borderColor='base.500'>
+                    <HStack spacing='2' align='center'>
+                      <Avatar
+                        size={15}
+                        name={item.symbol}
+                        variant='marble'
+                        colors={[
+                          '#50DDC3',
+                          '#624AF2',
+                          '#EB00FF',
+                          '#7301FA',
+                          '#25C2A0',
+                        ]}
+                      />
+                      <HStack align='baseline'>
+                        <Text color='light.900' fontWeight='medium'>
+                          {item.name}
+                        </Text>
+                        <Text fontSize='xs' color='gray.900'>
+                          ({symbol})
+                        </Text>
                       </HStack>
-                    </Td>
-                    <Td borderColor='base.500'>{balance}</Td>
-                    <Td borderColor='base.500'>{totalSent}</Td>
-                    <Td borderColor='base.500'>{totalReceived}</Td>
-                    <Td borderColor='base.500'>
-                      {contractAddress ? (
-                        <TransferTokenModal contractAddress={contractAddress} />
-                      ) : (
-                        <TransferStxModal />
-                      )}
-                    </Td>
-                  </Tr>
-                );
-              })}
-            </Tbody>
-          </Table>
-        </TableContainer>
-      </motion.div>
-    </Skeleton>
+                    </HStack>
+                  </Td>
+                  <Td borderColor='base.500'>{balance}</Td>
+                  <Td borderColor='base.500'>{totalSent}</Td>
+                  <Td borderColor='base.500'>{totalReceived}</Td>
+                  <Td borderColor='base.500'>
+                    {contractAddress ? (
+                      <TransferTokenModal contractAddress={contractAddress} />
+                    ) : (
+                      <TransferStxModal />
+                    )}
+                  </Td>
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+      </TableContainer>
+    </motion.div>
   );
 };

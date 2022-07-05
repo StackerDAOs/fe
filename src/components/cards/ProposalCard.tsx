@@ -87,7 +87,7 @@ export const ProposalCard = ({
         <a>
           <Card
             bg='base.900'
-            minH='xs'
+            minH='auto'
             position='relative'
             px={{ base: '6', md: '6' }}
             py={{ base: '6', md: '6' }}
@@ -127,7 +127,7 @@ export const ProposalCard = ({
                     <Stack direction='column' spacing='3'>
                       <HStack align='center' spacing='2'>
                         <Avatar
-                          size={30}
+                          size={15}
                           name={type}
                           variant='bauhaus'
                           colors={[
@@ -140,13 +140,13 @@ export const ProposalCard = ({
                         />
                         <Text
                           fontWeight='medium'
-                          fontSize='lg'
+                          fontSize='md'
                           lineHeight='1.15'
                         >
                           {title} {type}
                         </Text>
                       </HStack>
-                      <Text fontWeight='regular' color='gray.900'>
+                      <Text fontWeight='regular' fontSize='sm' color='gray.900'>
                         {description && truncate(description, 50)}
                       </Text>
                     </Stack>

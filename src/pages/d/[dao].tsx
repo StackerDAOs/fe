@@ -77,10 +77,10 @@ const DAODashboard = () => {
           </TabList>
           <TabPanels>
             <TabPanel px='0'>
-              <AssetTable color='light.900' size='lg' type='fungible' />
+              <AssetTable color='light.900' size='md' type='fungible' />
             </TabPanel>
             <TabPanel px='0'>
-              <AssetTable color='light.900' size='lg' type='nonFungible' />
+              <AssetTable color='light.900' size='md' type='nonFungible' />
             </TabPanel>
           </TabPanels>
         </Tabs>

@@ -83,7 +83,7 @@ export const TransferStxModal = () => {
 
   useEffect(() => {
     setTransaction({ txId: '', data: {} });
-  }, [dao, isOpen, currentStxAddress, proposeData?.canPropose]);
+  }, [dao, isOpen]);
 
   const onSubmit = (data: any) => {
     console.log({ data });
@@ -122,6 +122,7 @@ export const TransferStxModal = () => {
 
   const tooltipProps = {
     isDisabled: proposeData?.canPropose,
+    shouldWrapChildren: !proposeData?.canPropose,
   };
 
   return (
@@ -139,11 +140,11 @@ export const TransferStxModal = () => {
           disabled={!proposeData?.canPropose}
           icon={<FaArrowRight />}
           size='sm'
-          bg='base.800'
+          bg='base.900'
           border='1px solid'
           borderColor='base.500'
           aria-label='Transfer'
-          _hover={{ bg: 'base.500' }}
+          _hover={{ bg: 'base.800' }}
         />
       </Tooltip>
       <Modal

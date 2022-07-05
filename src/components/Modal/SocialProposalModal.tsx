@@ -71,6 +71,7 @@ export const SocialProposalModal = ({ icon }: any) => {
 
   useEffect(() => {
     setTransaction({ txId: '', data: {} });
+    console.log({ proposeData });
   }, [dao, isOpen]);
 
   const onSubmit = (data: any) => {
@@ -110,6 +111,7 @@ export const SocialProposalModal = ({ icon }: any) => {
 
   const tooltipProps = {
     isDisabled: proposeData?.canPropose,
+    shouldWrapChildren: !proposeData?.canPropose,
   };
 
   return (

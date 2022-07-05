@@ -114,7 +114,7 @@ const Vault = () => {
                 exit={FADE_IN_VARIANTS.exit}
                 transition={{ duration: 0.25, type: 'linear' }}
               >
-                <AssetTable color='light.900' size='lg' type='fungible' />
+                <AssetTable color='light.900' size='md' type='fungible' />
               </motion.div>
             </TabPanel>
             <TabPanel px='0'>
@@ -125,7 +125,7 @@ const Vault = () => {
                 exit={FADE_IN_VARIANTS.exit}
                 transition={{ duration: 0.25, type: 'linear' }}
               >
-                <AssetTable color='light.900' size='lg' type='nonFungible' />
+                <AssetTable color='light.900' size='md' type='nonFungible' />
               </motion.div>
             </TabPanel>
           </TabPanels>

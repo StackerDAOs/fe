@@ -29,6 +29,7 @@ import { Card } from '@components/Card';
 import { ExecuteProposalButton } from '@components/Actions';
 import { VoteManyForButton } from '@components/Actions';
 import { VoteManyAgainstButton } from '@components/Actions';
+import { WalletConnectButton } from '@components/WalletConnectButton';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -51,11 +52,11 @@ import {
   convertToken,
   getPercentage,
   tokenToNumber,
-  truncate,
 } from '@common/helpers';
 
 // Queries
 import {
+  useAuth,
   useExtension,
   useEvents,
   useProposal,
@@ -88,6 +89,7 @@ const ProposalView = () => {
   const router = useRouter();
   const { id: proposalPrincipal } = router.query as any;
   const { currentBlockHeight } = useBlocks();
+  const { isSignedIn, voteData: votingData } = useAuth();
   const { token } = useToken();
   const { balance } = useTokenBalance();
   const { extension: voting } = useExtension('Voting');
@@ -100,6 +102,13 @@ const ProposalView = () => {
   const { data: delegatorEvents } = useEvents(
     voting?.contractAddress,
     'delegate',
+    undefined,
+    0,
+  );
+
+  const { data: voterEvents } = useEvents(
+    voting?.contractAddress,
+    'vote',
     proposalPrincipal,
     0,
   );
@@ -129,16 +138,15 @@ const ProposalView = () => {
       }
     };
     fetchData();
-  }, [proposalPrincipal]);
+  }, [currentStxAddress, proposalPrincipal]);
 
-  const isEligible =
-    tokenToNumber(Number(balance), Number(token?.decimals)) > 0;
+  const isEligible = votingData?.canVote;
   const totalVotes =
     Number(proposalInfo?.proposal?.votesFor) +
     Number(proposalInfo?.proposal?.votesAgainst);
   const currentVoterEvent = (event: any) =>
     event?.voter?.value === currentStxAddress;
-  const hasVoted = delegatorEvents?.some(currentVoterEvent);
+  const hasVoted = voterEvents?.some(currentVoterEvent);
   const isInactive =
     currentBlockHeight < proposalInfo?.proposal?.startBlockHeight;
   const isClosed =
@@ -334,7 +342,8 @@ const ProposalView = () => {
                           <HStack>
                             <FaExclamationCircle fontSize='0.9rem' />
                             <Text fontSize='sm' fontWeight='medium'>
-                              Not enough tokens to vote
+                              At least {Number(votingData?.voteThreshold)}{' '}
+                              {token?.symbol} required to vote
                             </Text>
                           </HStack>
                         </Badge>
@@ -405,7 +414,16 @@ const ProposalView = () => {
                       </Stack>
                     </motion.div>
                   </Stack>
-                  {isEligible && isOpen && !hasVoted ? (
+                  {!isSignedIn ? (
+                    <WalletConnectButton
+                      color='white'
+                      isFullWidth
+                      fontWeight='medium'
+                      bg='secondary.900'
+                      _hover={{ opacity: 0.9 }}
+                      _active={{ opacity: 1 }}
+                    />
+                  ) : isEligible && isOpen && !hasVoted ? (
                     <motion.div
                       variants={SLIDE_UP_BUTTON_VARIANTS}
                       initial={SLIDE_UP_BUTTON_VARIANTS.hidden}
@@ -449,7 +467,7 @@ const ProposalView = () => {
                         </Text>
                         <Text color='light.900' fontWeight='regular'>
                           {convertToken(
-                            balance.toString(),
+                            balance?.toString(),
                             Number(token?.decimals),
                           )}{' '}
                           <Text as='span' color='gray.900' fontWeight='medium'>
@@ -462,7 +480,7 @@ const ProposalView = () => {
                       py={{ base: '3', md: '3' }}
                       px={{ base: '6', md: '6' }}
                     >
-                      <HStack pb='3' justify='space-between'>
+                      <HStack justify='space-between'>
                         <Text
                           fontSize='sm'
                           fontWeight='medium'
@@ -521,23 +539,6 @@ const ProposalView = () => {
                             Pending
                           </Badge>
                         )}
-                      </HStack>
-                      <HStack justify='space-between'>
-                        <Text
-                          fontSize='sm'
-                          fontWeight='medium'
-                          color='gray.900'
-                        >
-                          Submitted by
-                        </Text>
-                        <Text
-                          fontSize='sm'
-                          fontWeight='medium'
-                          color='light.900'
-                        >
-                          {proposalInfo?.proposal?.proposer &&
-                            truncate(proposalInfo?.proposal?.proposer, 4, 4)}
-                        </Text>
                       </HStack>
                     </Box>
                     <Divider borderColor='base.500' />
@@ -788,7 +789,7 @@ const ProposalView = () => {
                           >
                             <ProposalActivityTable
                               color='light.900'
-                              size='lg'
+                              size='md'
                               proposalPrincipal={`${proposalContractAddress}.${proposalContractName}`}
                             />
                           </motion.div>

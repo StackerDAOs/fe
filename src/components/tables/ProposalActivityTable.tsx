@@ -112,11 +112,15 @@ export const ProposalActivityTable = (
                     <Td borderColor='base.500'>
                       {from && truncate(from, 4, 4)}
                     </Td>
-                    <Td borderColor='base.500'>
-                      {delegate
-                        ? truncate(delegate, 4, 4)
-                        : truncate(from, 4, 4)}
-                    </Td>
+                    {delegate?.value ? (
+                      <Td borderColor='base.500'>
+                        {delegate?.value && truncate(delegate?.value, 4, 4)}
+                      </Td>
+                    ) : (
+                      <Td borderColor='base.500'>
+                        {from && truncate(from, 4, 4)}
+                      </Td>
+                    )}
                   </Tr>
                 );
               })}

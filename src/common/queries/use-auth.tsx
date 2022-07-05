@@ -1,5 +1,6 @@
 // Hook (use-auth.tsx)
 import { useQuery } from 'react-query';
+import { useAuth as useMicroStacks } from '@micro-stacks/react';
 import { useDAO, useExtension, useTokenBalance } from '@common/queries';
 import { getParameter } from '@common/api';
 
@@ -8,6 +9,7 @@ export function useAuth() {
   const { balance } = useTokenBalance();
   const { extension: submission } = useExtension('Submission');
   const { extension: voting } = useExtension('Voting');
+  const { isSignedIn } = useMicroStacks();
 
   const {
     isFetching,
@@ -28,7 +30,10 @@ export function useAuth() {
       return { proposeThreshold, canPropose };
     },
     {
-      enabled: !!submission?.contractAddress,
+      enabled:
+        !!voting?.contractAddress &&
+        !!submission?.contractAddress &&
+        balance >= 0,
     },
   );
 
@@ -45,7 +50,10 @@ export function useAuth() {
       return { voteThreshold, canVote };
     },
     {
-      enabled: !!voting?.contractAddress,
+      enabled:
+        !!voting?.contractAddress &&
+        !!submission?.contractAddress &&
+        balance >= 0,
     },
   );
 
@@ -54,7 +62,9 @@ export function useAuth() {
     isIdle,
     isLoading,
     isError,
+    isSignedIn,
     dao,
+    balance,
     proposeData,
     voteData,
   };
