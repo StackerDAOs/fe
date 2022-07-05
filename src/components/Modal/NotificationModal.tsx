@@ -105,7 +105,7 @@ export const NotificationModal = ({ title }: any) => {
                     <Text fontSize='sm' fontWeight='regular'>
                       Contracts deployed
                     </Text>
-                    <Text color='gray.900' fontSize='sm' fontWeight='semibold'>
+                    <Text color='gray.900' fontSize='sm' fontWeight='regular'>
                       0
                     </Text>
                   </Stack>
@@ -113,7 +113,7 @@ export const NotificationModal = ({ title }: any) => {
                     <Text fontSize='sm' fontWeight='regular'>
                       Proposals submitted
                     </Text>
-                    <Text color='gray.900' fontSize='sm' fontWeight='semibold'>
+                    <Text color='gray.900' fontSize='sm' fontWeight='regular'>
                       0
                     </Text>
                   </Stack>

@@ -167,6 +167,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
 
   const tooltipProps = {
     isDisabled: proposeData?.canPropose,
+    shouldWrapChildren: !proposeData?.canPropose,
   };
 
   return (
@@ -227,7 +228,6 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
             >
               <Stack
                 spacing='2'
-                mt='4'
                 mb='6'
                 direction={{ base: 'column', md: 'row' }}
                 justify='flex-start'
@@ -465,7 +465,6 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
             >
               <Stack
                 spacing='2'
-                mt='4'
                 mb='6'
                 direction={{ base: 'column', md: 'row' }}
                 justify='flex-start'

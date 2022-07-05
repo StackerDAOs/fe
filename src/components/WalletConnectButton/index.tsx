@@ -12,10 +12,12 @@ export const WalletConnectButton = (props: ButtonProps) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (window.StacksProvider) {
-      setInstalled(true);
-    }
-  }, [window]);
+    setTimeout(() => {
+      if (window?.StacksProvider) {
+        setInstalled(true);
+      }
+    }, 250);
+  }, [installed]);
 
   const handleClick = () => {
     if (isSignedIn) {

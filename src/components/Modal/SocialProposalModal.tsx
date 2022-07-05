@@ -172,7 +172,6 @@ export const SocialProposalModal = ({ icon }: any) => {
             >
               <Stack
                 spacing='2'
-                mt='4'
                 mb='6'
                 direction={{ base: 'column', md: 'row' }}
                 justify='flex-start'
@@ -328,7 +327,6 @@ export const SocialProposalModal = ({ icon }: any) => {
             >
               <Stack
                 spacing='2'
-                mt='4'
                 mb='6'
                 direction={{ base: 'column', md: 'row' }}
                 justify='flex-start'

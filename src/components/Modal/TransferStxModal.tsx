@@ -181,7 +181,6 @@ export const TransferStxModal = () => {
             >
               <Stack
                 spacing='2'
-                mt='4'
                 mb='6'
                 direction={{ base: 'column', md: 'row' }}
                 justify='flex-start'
@@ -409,7 +408,6 @@ export const TransferStxModal = () => {
             >
               <Stack
                 spacing='2'
-                mt='4'
                 mb='6'
                 direction={{ base: 'column', md: 'row' }}
                 justify='flex-start'

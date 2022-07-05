@@ -59,7 +59,7 @@ export const ConnectWalletModal = (props: ButtonProps) => {
         closeOnOverlayClick={true}
         isOpen={isOpen}
         onClose={onClose}
-        size='xl'
+        size='lg'
       >
         <ModalOverlay />
         <ModalContent
@@ -67,7 +67,7 @@ export const ConnectWalletModal = (props: ButtonProps) => {
           borderColor='base.500'
           borderWidth='1px'
           color='light.900'
-          py='5'
+          py='8'
           px='8'
         >
           <motion.div
@@ -79,14 +79,13 @@ export const ConnectWalletModal = (props: ButtonProps) => {
           >
             <Stack
               spacing='2'
-              mt='4'
               mb='6'
               direction={{ base: 'column', md: 'row' }}
               justify='flex-start'
               color='white'
             >
               <VStack maxW='xl' spacing='2' align='flex-start'>
-                <Heading size='sm' pb='2' fontWeight='light' color='light.900'>
+                <Heading size='sm' fontWeight='light' color='light.900'>
                   Connect your wallet
                 </Heading>
                 <HStack spacing='3'>
@@ -128,7 +127,7 @@ export const ConnectWalletModal = (props: ButtonProps) => {
                         <Stack spacing='0'>
                           <Text color='light.900'>Hiro wallet</Text>
                           <Text color='gray.900' size='xs'>
-                            Browser exensions for Chrome
+                            Browser extension for Chrome
                           </Text>
                         </Stack>
                       </HStack>

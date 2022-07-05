@@ -28,14 +28,7 @@ import { NotificationModal } from '@components/Modal';
 
 // Web3
 import { useUser, useAuth, useNetwork } from '@micro-stacks/react';
-import {
-  fetchAccountStxBalance,
-  fetchNamesByAddress,
-  fetchBlocks,
-} from 'micro-stacks/api';
-
-// Hooks
-import { usePolling } from '@common/hooks';
+import { fetchAccountStxBalance, fetchNamesByAddress } from 'micro-stacks/api';
 
 // Utils
 import { truncate, ustxToStx } from '@common/helpers';
@@ -45,51 +38,22 @@ export const MainNavbar = () => {
   const { network } = useNetwork();
   const [bns, setBns] = useState<string | undefined>('');
   const [balance, setBalance] = useState<string | undefined>('');
-  const [blockHeight, setBlockHeight] = useState(0);
   const { currentStxAddress } = useUser();
   const { isSignedIn, handleSignIn, handleSignOut } = useAuth();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
-  const NETWORK_CHAIN_ID: any = {
-    1: 'Mainnet',
-    2147483648: network.bnsLookupUrl?.includes('testnet')
-      ? 'Testnet'
-      : 'Devnet',
-  };
+  // const NETWORK_CHAIN_ID: any = {
+  //   1: 'Mainnet',
+  //   2147483648: network.bnsLookupUrl?.includes('testnet')
+  //     ? 'Testnet'
+  //     : 'Devnet',
+  // };
   const switchAccount = () => {
     handleSignIn();
   };
   const signOut = () => {
     handleSignOut();
     localStorage.setItem('chakra-ui-color-mode', 'dark');
-    // router.push('/');
   };
-
-  const fetch = async () => {
-    if (isSignedIn) {
-      try {
-        const blocks = await fetchBlocks({
-          url: network.getCoreApiUrl(),
-          limit: 1,
-          offset: 0,
-        });
-        setBlockHeight(blocks.total);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetch();
-  }, []);
-
-  usePolling(
-    () => {
-      fetch();
-    },
-    true,
-    600000,
-  );
 
   useEffect(() => {
     async function fetch() {
@@ -136,8 +100,8 @@ export const MainNavbar = () => {
           <Link href={`/`}>
             <Image
               cursor='pointer'
-              height='30px'
-              src='/img/logo-only.png'
+              height='35px'
+              src='/img/logo-with-name.png'
               alt='logo'
             />
           </Link>
@@ -148,7 +112,7 @@ export const MainNavbar = () => {
                   <ButtonGroup spacing='6' alignItems='center'>
                     {isSignedIn ? (
                       <HStack cursor='pointer' spacing='5' color='light.900'>
-                        <HStack
+                        {/* <HStack
                           cursor='default'
                           align='center'
                           justify='center'
@@ -178,7 +142,7 @@ export const MainNavbar = () => {
                               {blockHeight}
                             </Text>
                           </HStack>
-                        </HStack>
+                        </HStack> */}
                         <HStack spacing='1'>
                           <Text
                             as='span'

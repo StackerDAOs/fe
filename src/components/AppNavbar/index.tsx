@@ -85,7 +85,7 @@ export const AppNavbar = () => {
       }
     }
     fetch();
-  }, [currentStxAddress, network]);
+  }, [currentStxAddress, balance, network]);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
