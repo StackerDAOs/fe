@@ -167,7 +167,6 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
 
   const tooltipProps = {
     isDisabled: proposeData?.canPropose,
-    shouldWrapChildren: !proposeData?.canPropose,
   };
 
   return (
@@ -235,19 +234,19 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                 color='white'
               >
                 <VStack maxW='xl' spacing='2' align='flex-start'>
+                  <Avatar
+                    size={40}
+                    name='Transfer Tokens'
+                    variant='bauhaus'
+                    colors={[
+                      '#50DDC3',
+                      '#624AF2',
+                      '#EB00FF',
+                      '#7301FA',
+                      '#25C2A0',
+                    ]}
+                  />
                   <HStack spacing='3' align='center'>
-                    <Avatar
-                      size={15}
-                      name='Transfer Tokens'
-                      variant='bauhaus'
-                      colors={[
-                        '#50DDC3',
-                        '#624AF2',
-                        '#EB00FF',
-                        '#7301FA',
-                        '#25C2A0',
-                      ]}
-                    />
                     <Heading
                       size='sm'
                       pb='2'
@@ -473,24 +472,26 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                 color='white'
               >
                 <VStack maxW='xl' spacing='2' align='flex-start'>
-                  <HStack spacing='2' align='center'>
-                    <Avatar
-                      size={20}
-                      name='Transfer Tokens'
-                      variant='bauhaus'
-                      colors={[
-                        '#50DDC3',
-                        '#624AF2',
-                        '#EB00FF',
-                        '#7301FA',
-                        '#25C2A0',
-                      ]}
-                    />
-                    <Heading size='xs' fontWeight='light' color='light.900'>
-                      Transfer Tokens Proposal
-                    </Heading>
-                  </HStack>
-
+                  <Avatar
+                    size={40}
+                    name='Transfer Tokens'
+                    variant='bauhaus'
+                    colors={[
+                      '#50DDC3',
+                      '#624AF2',
+                      '#EB00FF',
+                      '#7301FA',
+                      '#25C2A0',
+                    ]}
+                  />
+                  <Heading
+                    size='sm'
+                    pb='2'
+                    fontWeight='light'
+                    color='light.900'
+                  >
+                    Transfer Tokens Proposal
+                  </Heading>
                   <HStack spacing='3'>
                     <Stack spacing='2' direction='row'>
                       <Text fontSize='sm' fontWeight='regular'>
@@ -543,7 +544,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                               borderColor='base.500'
                             >
                               <Stack spacing='1' maxW='lg'>
-                                <Text fontSize='sm' fontWeight='regular'>
+                                <Text fontSize='lg' fontWeight='medium'>
                                   Amount
                                 </Text>
                               </Stack>
@@ -556,7 +557,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                                   type='tel'
                                   bg='base.900'
                                   border='none'
-                                  fontSize='md'
+                                  fontSize='lg'
                                   autoComplete='off'
                                   placeholder='0'
                                   {...register('transferAmount', {
@@ -569,7 +570,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                               </FormControl>
                               <HStack>
                                 <Avatar
-                                  size={10}
+                                  size={15}
                                   name={state.symbol}
                                   variant='marble'
                                   colors={[
@@ -582,7 +583,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                                 />
 
                                 <Text
-                                  fontSize='sm'
+                                  fontSize='md'
                                   fontWeight='regular'
                                   color='light.900'
                                 >
@@ -599,7 +600,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                             >
                               <Stack direction='column'>
                                 <Stack spacing='1' maxW='lg'>
-                                  <Text fontSize='sm' fontWeight='regular'>
+                                  <Text fontSize='lg' fontWeight='medium'>
                                     Destination address
                                   </Text>
                                 </Stack>
@@ -617,10 +618,11 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                                         py='0'
                                         px='2'
                                         pl='0'
+                                        my='2'
                                         type='tel'
                                         bg='base.900'
                                         border='none'
-                                        fontSize='md'
+                                        fontSize='lg'
                                         autoComplete='off'
                                         placeholder='SP1T...'
                                         onChange={onChange}
@@ -630,9 +632,9 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                                           border: 'none',
                                         }}
                                       />
-                                      <HStack spacing='2' maxH='10px'>
+                                      <HStack>
                                         <Avatar
-                                          size={10}
+                                          size={15}
                                           name={value}
                                           variant='beam'
                                           colors={[
@@ -645,7 +647,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                                         />
 
                                         <Text
-                                          fontSize='sm'
+                                          fontSize='md'
                                           fontWeight='regular'
                                           color='gray.900'
                                         >
@@ -664,7 +666,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                             >
                               <Stack direction='column'>
                                 <Stack spacing='1' maxW='lg'>
-                                  <Text fontSize='sm' fontWeight='regular'>
+                                  <Text fontSize='lg' fontWeight='medium'>
                                     Details
                                   </Text>
                                 </Stack>
@@ -673,7 +675,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                                 <Textarea
                                   type='text'
                                   color='light.900'
-                                  fontSize='md'
+                                  fontSize='lg'
                                   py='1'
                                   px='2'
                                   pl='0'

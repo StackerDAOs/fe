@@ -300,10 +300,10 @@ export const MainNavbar = () => {
                     )}
                     {!currentStxAddress && (
                       <WalletConnectButton
-                        color='white'
+                        color='base.900'
                         size='sm'
                         fontWeight='medium'
-                        bg='secondary.900'
+                        bg='light.900'
                         _hover={{ opacity: 0.9 }}
                         _active={{ opacity: 1 }}
                       />

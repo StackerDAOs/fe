@@ -24,7 +24,6 @@ import { WalletConnectButton } from '@components/WalletConnectButton';
 import { Wrapper } from '@components/Wrapper';
 
 // Utils
-import Avatar from 'boring-avatars';
 import { truncate } from '@common/helpers';
 
 // Icons
@@ -151,56 +150,42 @@ const Index = () => {
                       </Text>
                     </Box>
                   </SectionHeader>
-                  <Stack spacing='0'>
+                  <Stack spacing='3'>
                     {state?.projects?.map((project) => (
-                      <Stack
-                        key={project.id}
-                        px='3'
-                        py='3'
-                        borderRadius='lg'
-                        _odd={{ bg: 'base.800' }}
-                      >
-                        <HStack justify='space-between'>
-                          <HStack spacing='3'>
-                            <Avatar
-                              size={35}
-                              name={project.name}
-                              variant='marble'
-                              colors={[
-                                '#50DDC3',
-                                '#624AF2',
-                                '#EB00FF',
-                                '#7301FA',
-                                '#25C2A0',
-                              ]}
-                            />
-                            <Stack spacing='0'>
-                              <Text color='light.900'>{project.name}</Text>
-                              <Text color='gray.900' size='xs'>
-                                {truncate(project.contractAddress, 4, 14)}
-                              </Text>
+                      <Link key={project.name} href={`/d/${project.slug}`}>
+                        <Stack
+                          cursor='pointer'
+                          px='6'
+                          py='3'
+                          bg='base.900'
+                          borderRadius='lg'
+                          border='1px solid'
+                          borderColor='base.500'
+                          _hover={{ bg: 'base.800' }}
+                        >
+                          <HStack justify='space-between'>
+                            <HStack spacing='6'>
+                              <Stack spacing='0'>
+                                <Text color='light.900'>{project.name}</Text>
+                                <Text color='gray.900' size='xs'>
+                                  {truncate(project.contractAddress, 4, 14)}
+                                </Text>
+                              </Stack>
+                            </HStack>
+                            <Stack>
+                              <IconButton
+                                icon={<FaArrowRight fontSize='0.75em' />}
+                                bg='none'
+                                color='light.900'
+                                size='md'
+                                aria-label='Transfer'
+                                _active={{ bg: 'none' }}
+                                _hover={{ bg: 'none' }}
+                              />
                             </Stack>
                           </HStack>
-                          <Stack>
-                            <Stack spacing='1'>
-                              <Link href={`/d/${project.slug}`}>
-                                <a rel='noreferrer'>
-                                  <IconButton
-                                    icon={<FaArrowRight fontSize='0.75em' />}
-                                    bg='base.900'
-                                    color='light.900'
-                                    size='md'
-                                    border='1px solid'
-                                    borderColor='base.500'
-                                    aria-label='Transfer'
-                                    _hover={{ bg: 'secondary.900' }}
-                                  />
-                                </a>
-                              </Link>
-                            </Stack>
-                          </Stack>
-                        </HStack>
-                      </Stack>
+                        </Stack>
+                      </Link>
                     ))}
                   </Stack>
                 </>
@@ -264,12 +249,11 @@ const Index = () => {
                         >
                           <Stack>
                             <WalletConnectButton
-                              position='relative'
-                              color='white'
-                              bg='secondary.900'
                               p='6'
                               size='md'
-                              fontWeight='semibold'
+                              color='base.900'
+                              fontWeight='medium'
+                              bg='light.900'
                               _hover={{ opacity: 0.9 }}
                               _active={{ opacity: 1 }}
                             />
@@ -279,32 +263,6 @@ const Index = () => {
                     </Box>
                   </Stack>
                 </>
-                // <Stack spacing='3' m='6' alignItems='center' color='white'>
-                //   <Text fontSize='2xl' fontWeight='medium'>
-                //     Get started
-                //   </Text>
-                //   <Text
-                //     fontSize='sm'
-                //     fontWeight='regular'
-                //     color='gray.900'
-                //     maxW='md'
-                //     mx='auto'
-                //     textAlign='center'
-                //   >
-                //     By connecting your wallet, you agree to Stacker DAO Labs
-                //     Terms, Privacy Policy, and Community Standards
-                //   </Text>
-
-                // <WalletConnectButton
-                //       color='white'
-                //       size='sm'
-                //       fontWeight='medium'
-                //       bg='secondary.900'
-                //       _hover={{ opacity: 0.9 }}
-                //       _active={{ opacity: 1 }}
-                //     />
-                //     )}
-                // </Stack>
               )}
             </Wrapper>
           </Box>

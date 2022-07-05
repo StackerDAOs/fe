@@ -1,10 +1,22 @@
+import { useEffect, useState } from 'react';
 import { Button, ButtonProps, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@micro-stacks/react';
 
+// Components
+import { ConnectWalletModal } from '@components/Modal/ConnectWalletModal';
+
 export const WalletConnectButton = (props: ButtonProps) => {
+  const [installed, setInstalled] = useState(false);
   const { isSignedIn, handleSignIn, handleSignOut, isLoading } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (window.StacksProvider) {
+      setInstalled(true);
+    }
+  }, [window]);
+
   const handleClick = () => {
     if (isSignedIn) {
       handleSignOut();
@@ -14,15 +26,20 @@ export const WalletConnectButton = (props: ButtonProps) => {
       handleSignIn();
     }
   };
-  return (
-    <Button {...props} onClick={handleClick}>
-      {isLoading ? (
-        'Loading...'
-      ) : isSignedIn ? (
-        <Text isTruncated>Disconnect</Text>
-      ) : (
-        'Connect'
-      )}
-    </Button>
-  );
+
+  if (installed) {
+    return (
+      <Button {...props} onClick={handleClick}>
+        {isLoading ? (
+          'Loading...'
+        ) : isSignedIn ? (
+          <Text isTruncated>Disconnect</Text>
+        ) : (
+          'Connect'
+        )}
+      </Button>
+    );
+  }
+
+  return <ConnectWalletModal {...props} />;
 };

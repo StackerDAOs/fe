@@ -416,10 +416,10 @@ const ProposalView = () => {
                   </Stack>
                   {!isSignedIn ? (
                     <WalletConnectButton
-                      color='white'
+                      color='baes.900'
                       isFullWidth
                       fontWeight='medium'
-                      bg='secondary.900'
+                      bg='light.900'
                       _hover={{ opacity: 0.9 }}
                       _active={{ opacity: 1 }}
                     />

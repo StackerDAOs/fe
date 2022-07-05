@@ -32,14 +32,7 @@ import { NotificationModal } from '@components/Modal';
 
 // Web3
 import { useUser, useAuth, useNetwork } from '@micro-stacks/react';
-import {
-  fetchAccountStxBalance,
-  fetchNamesByAddress,
-  fetchBlocks,
-} from 'micro-stacks/api';
-
-// Hooks
-import { usePolling } from '@common/hooks';
+import { fetchAccountStxBalance, fetchNamesByAddress } from 'micro-stacks/api';
 
 // Utils
 import { truncate, ustxToStx } from '@common/helpers';
@@ -51,54 +44,25 @@ export const AppNavbar = () => {
   const { network } = useNetwork();
   const [bns, setBns] = useState<string | undefined>('');
   const [balance, setBalance] = useState<string | undefined>('');
-  const [blockHeight, setBlockHeight] = useState(0);
   const { currentStxAddress } = useUser();
   const { isSignedIn, handleSignIn, handleSignOut } = useAuth();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
-  const NETWORK_CHAIN_ID: any = {
-    1: 'Mainnet',
-    2147483648: network.bnsLookupUrl?.includes('testnet')
-      ? 'Testnet'
-      : 'Devnet',
-  };
+  // const NETWORK_CHAIN_ID: any = {
+  //   1: 'Mainnet',
+  //   2147483648: network.bnsLookupUrl?.includes('testnet')
+  //     ? 'Testnet'
+  //     : 'Devnet',
+  // };
   const switchAccount = () => {
     handleSignIn();
   };
   const signOut = () => {
     handleSignOut();
     localStorage.setItem('chakra-ui-color-mode', 'dark');
-    // router.push('/');
   };
   const isSelected = (path: string) => {
     return router.pathname.split('/')[3] === path;
   };
-
-  const fetch = async () => {
-    if (isSignedIn) {
-      try {
-        const blocks = await fetchBlocks({
-          url: network.getCoreApiUrl(),
-          limit: 1,
-          offset: 0,
-        });
-        setBlockHeight(blocks.total);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetch();
-  }, []);
-
-  usePolling(
-    () => {
-      fetch();
-    },
-    true,
-    600000,
-  );
 
   useEffect(() => {
     async function fetch() {
@@ -188,7 +152,7 @@ export const AppNavbar = () => {
                           justify='center'
                           color='light.900'
                         >
-                          <HStack>
+                          {/* <HStack>
                             <Text
                               color='secondary.900'
                               fontSize='sm'
@@ -211,7 +175,7 @@ export const AppNavbar = () => {
                             >
                               {blockHeight}
                             </Text>
-                          </HStack>
+                          </HStack> */}
                         </HStack>
                         <HStack spacing='1'>
                           <Text
@@ -334,10 +298,10 @@ export const AppNavbar = () => {
                     )}
                     {!currentStxAddress && (
                       <WalletConnectButton
-                        color='white'
+                        color='base.900'
                         size='sm'
                         fontWeight='medium'
-                        bg='secondary.900'
+                        bg='light.900'
                         _hover={{ opacity: 0.9 }}
                         _active={{ opacity: 1 }}
                       />

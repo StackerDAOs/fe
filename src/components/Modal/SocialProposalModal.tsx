@@ -226,11 +226,7 @@ export const SocialProposalModal = ({ icon }: any) => {
                       <Text fontSize='sm' fontWeight='regular'>
                         Required
                       </Text>
-                      <Text
-                        color='gray.900'
-                        fontSize='sm'
-                        fontWeight='semibold'
-                      >
+                      <Text color='gray.900' fontSize='sm' fontWeight='regular'>
                         {Number(proposeData?.proposeThreshold)} {token?.symbol}
                       </Text>
                     </Stack>
@@ -238,11 +234,7 @@ export const SocialProposalModal = ({ icon }: any) => {
                       <Text fontSize='sm' fontWeight='regular'>
                         Author
                       </Text>
-                      <Text
-                        color='gray.900'
-                        fontSize='sm'
-                        fontWeight='semibold'
-                      >
+                      <Text color='gray.900' fontSize='sm' fontWeight='regular'>
                         {currentStxAddress && truncate(currentStxAddress, 4, 4)}
                       </Text>
                     </Stack>
@@ -368,11 +360,7 @@ export const SocialProposalModal = ({ icon }: any) => {
                       <Text fontSize='sm' fontWeight='regular'>
                         Required
                       </Text>
-                      <Text
-                        color='gray.900'
-                        fontSize='sm'
-                        fontWeight='semibold'
-                      >
+                      <Text color='gray.900' fontSize='sm' fontWeight='regular'>
                         {Number(proposeData?.proposeThreshold)} {token?.symbol}
                       </Text>
                     </Stack>
@@ -380,11 +368,7 @@ export const SocialProposalModal = ({ icon }: any) => {
                       <Text fontSize='sm' fontWeight='regular'>
                         Author
                       </Text>
-                      <Text
-                        color='gray.900'
-                        fontSize='sm'
-                        fontWeight='semibold'
-                      >
+                      <Text color='gray.900' fontSize='sm' fontWeight='regular'>
                         {currentStxAddress && truncate(currentStxAddress, 4, 4)}
                       </Text>
                     </Stack>
