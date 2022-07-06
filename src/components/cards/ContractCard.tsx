@@ -13,11 +13,15 @@ import { truncate } from '@common/helpers';
 // Icons
 import { FiExternalLink } from 'react-icons/fi';
 
+// Mutations
+import { useDisableProposal } from '@common/mutations/proposals';
+
 export const ContractCard = ({
   proposalContractAddress,
   contractData,
 }: any) => {
   const [state, setState] = useState({ isRemoving: false });
+  const { mutate: disableProposal } = useDisableProposal();
   const [_, execute] = useUpdate('Proposals');
   const onFinishUpdate = async (contractAddress: string) => {
     try {
@@ -32,10 +36,7 @@ export const ContractCard = ({
 
   const onDisable = async (contractAddress: string) => {
     try {
-      const { error } = await execute({ disabled: true }, (q) =>
-        q.eq('contractAddress', contractAddress),
-      );
-      if (error) throw error;
+      disableProposal({ contractAddress, disabled: true });
     } catch (e: any) {
       console.error({ e });
     }

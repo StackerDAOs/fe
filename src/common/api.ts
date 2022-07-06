@@ -50,6 +50,38 @@ export async function getExtension(name: string) {
   }
 };
 
+export async function getContractProposalByAddress(contractAddress: string) {
+  try {
+    const { data, error } = await supabase
+      .from('Proposals')
+      .select(
+        'id, contractAddress',
+      )
+      .eq('contractAddress', contractAddress)
+      .limit(1);
+    if (error) throw error;
+    return data[0];
+  } catch (e: any) {
+    console.error({ e });
+  }
+};
+
+export async function getContractProposalByTx(transactionId: string) {
+  try {
+    const { data, error } = await supabase
+      .from('Proposals')
+      .select(
+        'id, contractAddress',
+      )
+      .eq('transactionId', transactionId)
+      .limit(1);
+    if (error) throw error;
+    return data[0];
+  } catch (e: any) {
+    console.error({ e });
+  }
+};
+
 export async function getTokenMetadata(contractId: string) {
   try {
     const network = new stacksNetwork();
@@ -262,6 +294,23 @@ export async function getParameter(contractAddress: string, parameterName: strin
       functionName: 'get-parameter',
     });
     return parameter;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getContractsToDeploy(organizationId: number) {
+  try {
+    const { data, error } = await supabase
+      .from('Proposals')
+      .select(
+        'contractAddress, type, transactionId, submittedBy, Organizations (id, name)',
+      )
+      .eq('Organizations.id', organizationId)
+      .eq('submitted', false)
+      .eq('disabled', false);
+    if (error) throw error;
+    return data;
   } catch (e: any) {
     console.error({ e });
   }

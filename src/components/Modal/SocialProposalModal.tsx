@@ -46,6 +46,9 @@ import Avatar from 'boring-avatars';
 // Store
 import { useStore } from 'store/TransactionStore';
 
+// Api
+import { getContractProposalByTx } from '@common/api';
+
 export const SocialProposalModal = ({ icon }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStxAddress } = useUser();
@@ -54,6 +57,7 @@ export const SocialProposalModal = ({ icon }: any) => {
   const { proposeData } = useAuth();
   const { token } = useToken();
   const { transaction, setTransaction } = useStore();
+  const [proposal, setProposal] = useState<any>({});
   const [state, setState] = useState<any>({
     name: '',
     symbol: '',
@@ -65,13 +69,13 @@ export const SocialProposalModal = ({ icon }: any) => {
     register,
     handleSubmit,
     getValues,
+    reset,
     formState: { isSubmitting },
   } = useForm();
   const { description } = getValues();
 
   useEffect(() => {
     setTransaction({ txId: '', data: {} });
-    console.log({ proposeData });
   }, [dao, isOpen]);
 
   const onSubmit = (data: any) => {
@@ -82,6 +86,14 @@ export const SocialProposalModal = ({ icon }: any) => {
   usePolling(() => {
     fetchTransactionData(transaction?.txId);
   }, transaction.txId);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const proposal = await getContractProposalByTx(state?.transactionId);
+      setProposal(proposal);
+    };
+    fetch();
+  }, [state?.transactionId]);
 
   async function fetchTransactionData(transactionId: string) {
     try {
@@ -105,7 +117,10 @@ export const SocialProposalModal = ({ icon }: any) => {
   }
 
   const onCloseModal = () => {
-    setState({ ...state, inReview: false });
+    reset({
+      description: '',
+    });
+    setState({ ...state, isDeployed: false, inReview: false });
     onClose();
   };
 
@@ -298,7 +313,8 @@ export const SocialProposalModal = ({ icon }: any) => {
                         {state.isDeployed && (
                           <ProposeButton
                             organization={dao}
-                            transactionId={state.transactionId}
+                            transactionId={transaction?.txId}
+                            proposalContractAddress={proposal?.contractAddress}
                             _hover={{ opacity: 0.9 }}
                             _active={{ opacity: 1 }}
                           />

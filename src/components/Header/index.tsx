@@ -19,7 +19,7 @@ import { Stat } from '@components/Stat';
 
 import { useBlocks } from '@common/hooks';
 
-import { defaultTo, sumBy } from 'lodash';
+import { defaultTo, filter } from 'lodash';
 
 import {
   useDAO,
@@ -54,19 +54,21 @@ export const Header = () => {
   };
 
   const Proposals = () => {
-    const activeProposalCount = sumBy(proposals, (p): any => {
+    const activeProposalCount = filter(proposals, (p): any => {
       return (
         currentBlockHeight <= p?.data?.proposal?.endBlockHeight &&
         currentBlockHeight >= p?.data?.proposal?.startBlockHeight
       );
-    });
+    }).length;
+
+    const proposalSize = defaultTo(activeProposalCount, 0);
 
     return (
       <Stat
         flex='1'
         borderRadius='lg'
         label='Proposals'
-        value={activeProposalCount}
+        value={proposalSize}
         info={`Active`}
         path='proposals'
       />
@@ -75,7 +77,11 @@ export const Header = () => {
 
   const Governance = () => {
     const balance = defaultTo(userBalance, 0);
-    const tokenBalance = defaultTo(convertToken(balance.toString(), 2), 0);
+    const decimals = defaultTo(token?.decimals, 0);
+    const tokenBalance = defaultTo(
+      convertToken(balance.toString(), decimals),
+      0,
+    );
     return (
       <Stat
         flex='1'

@@ -14,8 +14,8 @@ import {
 // Web3
 import { useUser } from '@micro-stacks/react';
 
-// Hooks
-import { useSubmissions } from '@common/hooks';
+// Queries
+import { useContracts } from '@common/queries';
 
 // Components
 import { EmptyState } from '@components/EmptyState';
@@ -32,7 +32,15 @@ import { truncate } from '@common/helpers';
 export const NotificationModal = ({ title }: any) => {
   const { currentStxAddress } = useUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { proposals: submissions } = useSubmissions();
+  const { isLoading, isFetching, isIdle, contracts }: any = useContracts();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isFetching || isIdle) {
+    return null;
+  }
 
   return (
     <>
@@ -145,8 +153,8 @@ export const NotificationModal = ({ title }: any) => {
                   transition={{ duration: 0.25, type: 'linear' }}
                 >
                   <Stack w='auto' spacing='5'>
-                    {submissions?.length > 0 ? (
-                      <ContractCardList submissions={submissions} />
+                    {contracts?.length > 0 ? (
+                      <ContractCardList submissions={contracts} />
                     ) : (
                       <EmptyState heading='No action items found.' />
                     )}

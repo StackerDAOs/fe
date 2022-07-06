@@ -69,6 +69,7 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
   const onFinish = useCallback((data: FinishedTxData) => {
     setTransaction({ txId: data.txId, isPending: true });
     if (onContractCall) {
+      console.log('onFinish', { data });
       onContractCall();
     }
     toast({

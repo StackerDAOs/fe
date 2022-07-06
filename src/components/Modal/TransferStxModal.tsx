@@ -77,6 +77,7 @@ export const TransferStxModal = () => {
     control,
     handleSubmit,
     getValues,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm();
   const { transferAmount, transferTo, description } = getValues();
@@ -116,7 +117,12 @@ export const TransferStxModal = () => {
   }
 
   const onCloseModal = () => {
-    setState({ ...state, inReview: false });
+    reset({
+      transferAmount: '',
+      transferTo: '',
+      description: '',
+    });
+    setState({ ...state, isDeployed: false, inReview: false });
     onClose();
   };
 

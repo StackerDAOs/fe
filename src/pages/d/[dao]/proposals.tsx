@@ -10,13 +10,14 @@ import {
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
+import { ContractCardList } from '@components/ContractCardList';
 import { EmptyState } from '@components/EmptyState';
 import { Header } from '@components/Header';
 import { ProposalCard } from '@components/cards';
 import { Wrapper } from '@components/Wrapper';
 
 // Queries
-import { useProposals } from '@common/queries';
+import { useContracts, useProposals } from '@common/queries';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -31,7 +32,21 @@ const MotionGrid = motion(SimpleGrid);
 const MotionProposalCard = motion(ProposalCard);
 
 const Proposals = () => {
+  const {
+    isLoading: isLoadingContracts,
+    isFetching,
+    isIdle,
+    contracts,
+  }: any = useContracts();
   const { isLoading, proposals } = useProposals();
+
+  if (isLoadingContracts) {
+    return <div>Loading...</div>;
+  }
+
+  if (isFetching || isIdle) {
+    return null;
+  }
 
   return (
     <motion.div
@@ -42,6 +57,37 @@ const Proposals = () => {
       transition={{ duration: 0.75, type: 'linear' }}
     >
       <Wrapper>
+        {contracts?.length > 0 ? (
+          <>
+            <SectionHeader justify='space-between' align='center' color='white'>
+              <Box>
+                <Text color='gray.900' fontSize='sm'>
+                  Review your contracts and submit for proposals.
+                </Text>
+              </Box>
+              <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
+                <Stack align='center' direction='row' spacing='3'>
+                  <IconButton
+                    display='none'
+                    aria-label='action-item'
+                    bg='base.800'
+                    variant='outline'
+                    color='light.900'
+                    borderColor='base.500'
+                    size='md'
+                    icon={
+                      <Icon as={FaEllipsisH} color='whiteAlpha' fontSize='sm' />
+                    }
+                    _hover={{
+                      bg: 'base.800',
+                    }}
+                  />
+                </Stack>
+              </ButtonGroup>
+            </SectionHeader>
+            <ContractCardList submissions={contracts} />
+          </>
+        ) : null}
         {isLoading ? (
           <SectionHeader justify='space-between' align='center' color='white'>
             <Box>

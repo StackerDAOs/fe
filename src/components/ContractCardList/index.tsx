@@ -1,31 +1,23 @@
-import { useRouter } from 'next/router';
-
 // Web3
 import { contractPrincipalCV, uintCV } from 'micro-stacks/clarity';
 
 // Hooks
-import {
-  useGovernanceTokenExtension,
-  useSubmissionExtension,
-  useBlocks,
-  useOrganization,
-} from '@common/hooks';
+import { useBlocks } from '@common/hooks';
+
+// Queries
+import { useExtension } from '@common/queries';
 
 // Components
 import { ContractCard } from '@components/cards/ContractCard';
 
 export const ContractCardList = ({ submissions }: any) => {
-  const router = useRouter();
-  const { dao } = router.query as any;
-  const { organization } = useOrganization({ name: dao });
+  const { extension: submission } = useExtension('Submission');
+  const { extension: governance } = useExtension('Governance Token');
   const { currentBlockHeight } = useBlocks();
-  const {
-    contractName: governanceContractName,
-    contractAddress: governanceContractAddress,
-  } = useGovernanceTokenExtension({ organization: organization });
-  const { contractName, contractAddress } = useSubmissionExtension({
-    organization: organization,
-  });
+  const [contractAddress, contractName] =
+    submission?.contractAddress.split('.');
+  const [governanceContractAddress, governanceContractName] =
+    governance?.contractAddress.split('.');
 
   const startHeight = currentBlockHeight + 315; // TODO: 30 needs to be dynamic startBlockHeight min
   return submissions?.map(

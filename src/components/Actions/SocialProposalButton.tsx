@@ -60,7 +60,7 @@ export const SocialProposalButton = ({ organization, description }: any) => {
     name,
   }: any) => {
     try {
-      const { error } = await execute({
+      const { data, error } = await execute({
         organizationId,
         contractAddress,
         submittedBy,
@@ -68,6 +68,7 @@ export const SocialProposalButton = ({ organization, description }: any) => {
         transactionId,
         name,
       });
+      console.log('deploying proposal', { data });
       if (error) throw error;
     } catch (e: any) {
       console.error({ e });

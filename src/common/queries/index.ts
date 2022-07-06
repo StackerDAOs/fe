@@ -1,4 +1,5 @@
 export { useAuth } from './use-auth';
+export { useContracts } from './use-contracts';
 export { useDAO } from './use-dao';
 export { useExtension } from './use-extension';
 export { useEvents } from './use-events';

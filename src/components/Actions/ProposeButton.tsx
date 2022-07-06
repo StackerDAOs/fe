@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { supabase } from '@utils/supabase';
 
 // Components
@@ -8,52 +8,37 @@ import { ContractCallButton } from '@widgets/ContractCallButton';
 import { contractPrincipalCV, uintCV } from 'micro-stacks/clarity';
 
 // Hooks
-import {
-  useBlocks,
-  useGovernanceTokenExtension,
-  useSubmissionExtension,
-} from '@common/hooks';
+import { useBlocks } from '@common/hooks';
 
-export const ProposeButton = ({ organization, transactionId }: any) => {
-  const [state, setState] = useState<any>({ proposalContractAddress: null });
+// Queries
+import { useExtension } from '@common/queries';
+
+export const ProposeButton = ({ proposalContractAddress }: any) => {
   const { currentBlockHeight } = useBlocks();
-  const {
-    contractName: governanceContractName,
-    contractAddress: governanceContractAddress,
-  } = useGovernanceTokenExtension({ organization: organization });
-  const { contractName, contractAddress } = useSubmissionExtension({
-    organization: organization,
-  });
+  const { isLoading: isLoadingGovernance, extension: governance } =
+    useExtension('Governance Token');
+  const { isLoading: isLoadingSubmission, extension: submission } =
+    useExtension('Submission');
+
+  const contractAddress = submission?.contractAddress?.split('.')[0];
+  const contractName = submission?.contractAddress?.split('.')[1];
+
+  const governanceContractAddress = governance?.contractAddress?.split('.')[0];
+  const governanceContractName = governance?.contractAddress?.split('.')[1];
 
   useEffect(() => {
-    const fetchProposal = async (transactionId: string) => {
-      try {
-        const { data: Proposals, error } = await supabase
-          .from('Proposals')
-          .select('contractAddress')
-          .eq('transactionId', transactionId);
-        if (error) throw error;
-        if (Proposals.length > 0) {
-          const proposal = Proposals[0];
-          setState({
-            ...state,
-            proposalContractAddress: proposal.contractAddress,
-          });
-        }
-      } catch (e: any) {
-        console.error({ e });
-      }
-    };
-    fetchProposal(transactionId);
-  }, [transactionId]);
+    console.log('rendered');
+  }, [proposalContractAddress]);
 
-  const { proposalContractAddress } = state;
-  const onFinishUpdate = async () => {
+  const onFinishUpdate = async (contractAddress: string) => {
     try {
+      console.log('onFinishUpdate', { contractAddress });
       const { data, error } = await supabase
         .from('Proposals')
         .update({ submitted: true })
-        .match({ contractAddress: proposalContractAddress });
+        .match({
+          contractAddress: contractAddress,
+        });
       if (error) throw error;
       console.log({ data });
     } catch (e: any) {
@@ -63,15 +48,11 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
 
   const startHeight = currentBlockHeight + 315; // TODO: 50 needs to be dynamic startBlockHeight min
 
-  const isLoading =
-    proposalContractAddress &&
-    governanceContractAddress &&
-    governanceContractName;
   const functionName = 'propose';
-  const functionArgs = isLoading && [
+  const functionArgs = proposalContractAddress && [
     contractPrincipalCV(
-      proposalContractAddress.split('.')[0],
-      proposalContractAddress.split('.')[1],
+      proposalContractAddress?.split('.')[0],
+      proposalContractAddress?.split('.')[1],
     ),
     uintCV(startHeight),
     contractPrincipalCV(governanceContractAddress, governanceContractName),
@@ -93,7 +74,7 @@ export const ProposeButton = ({ organization, transactionId }: any) => {
       bg='secondary.900'
       size='md'
       isFullWidth
-      onContractCall={onFinishUpdate}
+      onContractCall={() => onFinishUpdate(proposalContractAddress)}
       {...contractData}
     />
   );
