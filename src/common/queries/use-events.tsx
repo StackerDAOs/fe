@@ -21,6 +21,7 @@ export function useEvents(
     },
     {
       enabled: !!extensionAddress,
+      refetchOnWindowFocus: false,
     },
   );
 

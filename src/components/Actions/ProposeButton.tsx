@@ -15,10 +15,8 @@ import { useExtension } from '@common/queries';
 
 export const ProposeButton = ({ proposalContractAddress }: any) => {
   const { currentBlockHeight } = useBlocks();
-  const { isLoading: isLoadingGovernance, extension: governance } =
-    useExtension('Governance Token');
-  const { isLoading: isLoadingSubmission, extension: submission } =
-    useExtension('Submission');
+  const { extension: governance } = useExtension('Governance Token');
+  const { extension: submission } = useExtension('Submission');
 
   const contractAddress = submission?.contractAddress?.split('.')[0];
   const contractName = submission?.contractAddress?.split('.')[1];

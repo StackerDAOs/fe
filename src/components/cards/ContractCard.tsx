@@ -1,8 +1,13 @@
 import { useState } from 'react';
-import { Button, HStack, Stack, IconButton, Text } from '@chakra-ui/react';
-
-// Hooks
-import { useUpdate } from 'react-supabase';
+import {
+  Button,
+  ButtonGroup,
+  HStack,
+  Stack,
+  IconButton,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 
 // Components
 import { ContractCallButton } from '@widgets/ContractCallButton';
@@ -13,22 +18,28 @@ import { truncate } from '@common/helpers';
 // Icons
 import { FiExternalLink } from 'react-icons/fi';
 
+// Queries
+import { useTransaction } from '@common/queries';
+
 // Mutations
-import { useDisableProposal } from '@common/mutations/proposals';
+import {
+  useSubmitProposal,
+  useDisableProposal,
+} from '@common/mutations/proposals';
 
 export const ContractCard = ({
   proposalContractAddress,
+  transactionId,
   contractData,
 }: any) => {
   const [state, setState] = useState({ isRemoving: false });
+  const { mutate: submitProposal } = useSubmitProposal();
   const { mutate: disableProposal } = useDisableProposal();
-  const [_, execute] = useUpdate('Proposals');
+  const { data: transaction } = useTransaction(transactionId);
+
   const onFinishUpdate = async (contractAddress: string) => {
     try {
-      const { error } = await execute({ submitted: true }, (q) =>
-        q.eq('contractAddress', contractAddress),
-      );
-      if (error) throw error;
+      submitProposal({ contractAddress, submitted: true });
     } catch (e: any) {
       console.error({ e });
     }
@@ -44,44 +55,19 @@ export const ContractCard = ({
 
   return (
     <Stack
-      color='white'
+      px='3'
+      py='3'
       bg='base.900'
+      borderRadius='lg'
       border='1px solid'
       borderColor='base.500'
-      py='2'
-      px='3'
-      borderRadius='lg'
-      _even={{
-        bg: 'base.800',
-        border: '1px solid',
-        borderColor: 'base.500',
-      }}
-      _last={{ mb: '0' }}
+      _hover={{ bg: 'base.800' }}
     >
-      <Stack
-        direction='row'
-        spacing='5'
-        display='flex'
-        justifyContent='space-between'
-      >
+      <HStack justify='space-between'>
         <HStack spacing='3'>
-          <Text color='light.900' fontSize='sm'>
-            {proposalContractAddress &&
-              truncate(`${proposalContractAddress}`, 4, 14)}
-          </Text>
-        </HStack>
-        <HStack spacing='3'>
-          <ContractCallButton
-            title='Propose'
-            color='white'
-            bg='secondary.900'
-            size='sm'
-            onContractCall={() => onFinishUpdate(proposalContractAddress)}
-            {...contractData}
-          />
-          {state.isRemoving ? (
+          {transaction?.tx_status === 'pending' && (
             <Button
-              bg='red.900'
+              bg='base.900'
               color='white'
               size='sm'
               fontWeight='semibold'
@@ -89,19 +75,55 @@ export const ContractCard = ({
               _hover={{ opacity: 0.9 }}
               _active={{ opacity: 1 }}
             >
-              Confirm
+              <Spinner size='xs' speed='0.5s' />
             </Button>
-          ) : (
-            <Button
-              bg='red.600'
-              color='white'
-              size='sm'
-              onClick={() => setState({ isRemoving: true })}
-              _hover={{ opacity: 0.9 }}
-              _active={{ opacity: 1 }}
-            >
-              Disable
-            </Button>
+          )}
+          <Text color='light.900' fontSize='sm'>
+            {proposalContractAddress &&
+              truncate(`${proposalContractAddress}`, 4, 14)}
+          </Text>
+        </HStack>
+        <HStack spacing='3'>
+          {transaction?.tx_status === 'success' && (
+            <>
+              <ContractCallButton
+                title='Propose'
+                color='white'
+                bg='secondary.900'
+                size='sm'
+                onContractCall={() => onFinishUpdate(proposalContractAddress)}
+                {...contractData}
+              />
+              <ButtonGroup>
+                <>
+                  {state.isRemoving ? (
+                    <Button
+                      bg='red.900'
+                      color='white'
+                      size='sm'
+                      variant='outline'
+                      fontWeight='semibold'
+                      onClick={() => onDisable(proposalContractAddress)}
+                      _hover={{ opacity: 0.9 }}
+                      _active={{ opacity: 1 }}
+                    >
+                      Confirm
+                    </Button>
+                  ) : (
+                    <Button
+                      bg='red.600'
+                      color='white'
+                      size='sm'
+                      onClick={() => setState({ isRemoving: true })}
+                      _hover={{ opacity: 0.9 }}
+                      _active={{ opacity: 1 }}
+                    >
+                      Disable
+                    </Button>
+                  )}
+                </>
+              </ButtonGroup>
+            </>
           )}
           <IconButton
             icon={<FiExternalLink />}
@@ -120,7 +142,7 @@ export const ContractCard = ({
             _hover={{ bg: 'base.500' }}
           />
         </HStack>
-      </Stack>
+      </HStack>
     </Stack>
   );
 };

@@ -23,6 +23,15 @@ export async function createProposalContract(proposal: Proposal) {
   }
 }
 
+export const useAddProposal = () => {
+  const queryClient = useQueryClient();
+  return useMutation(createProposalContract, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('contracts');
+    }
+  });
+}
+
 export async function updateSubmittedProposal(proposal: { contractAddress: string, submitted: boolean }) {
   try {
     const { data, error } = await supabase
@@ -67,8 +76,13 @@ export async function updateDisabledProposal(proposal: { contractAddress: string
 export const useDisableProposal = () => {
   const queryClient = useQueryClient();
   return useMutation(updateDisabledProposal, {
-    onSuccess: () => {
-      queryClient.invalidateQueries('contracts');
+    onSuccess: (data: any) => {
+      console.log('onSuccess', { data })
+      const [disabledContract] = data;
+      queryClient.setQueryData('contracts', (contracts: any) => {
+        const filteredContracts = contracts.filter((contract: any) => contract.id !== disabledContract.id);
+        return [...filteredContracts];
+      });
     }
   });
 }

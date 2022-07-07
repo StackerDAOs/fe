@@ -38,7 +38,7 @@ const Vault = () => {
       initial={FADE_IN_VARIANTS.hidden}
       animate={FADE_IN_VARIANTS.enter}
       exit={FADE_IN_VARIANTS.exit}
-      transition={{ duration: 1, type: 'linear' }}
+      transition={{ duration: 0.25, type: 'linear' }}
     >
       <Wrapper>
         <SectionHeader justify='space-between' align='center' color='white'>

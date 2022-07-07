@@ -24,6 +24,7 @@ export function useExtension(name: string) {
     },
     {
       enabled: !!dao,
+      refetchOnWindowFocus: false,
     },
   );
 

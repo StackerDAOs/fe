@@ -16,6 +16,7 @@ export function useProposal(id: string) {
     },
     {
       enabled: !!voting?.contractAddress,
+      refetchOnWindowFocus: false,
     },
   );
 

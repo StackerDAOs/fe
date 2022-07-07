@@ -73,7 +73,7 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
       onContractCall();
     }
     toast({
-      duration: 3500,
+      duration: null,
       isClosable: true,
       position: 'bottom-right',
       render: () => (

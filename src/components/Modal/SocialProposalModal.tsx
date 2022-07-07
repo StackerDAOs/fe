@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import {
-  Badge,
   Button,
   ButtonGroup,
   CloseButton,
@@ -10,7 +9,6 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  Spinner,
   Stack,
   Text,
   Textarea,
@@ -20,12 +18,10 @@ import {
 } from '@chakra-ui/react';
 
 // Web3
-import { useUser, useNetwork } from '@micro-stacks/react';
-import { fetchTransaction } from 'micro-stacks/api';
+import { useUser } from '@micro-stacks/react';
 
 // Hooks
 import { useForm } from 'react-hook-form';
-import { usePolling } from '@common/hooks';
 
 // Queries
 import { useAuth, useDAO, useToken } from '@common/queries';
@@ -33,7 +29,6 @@ import { useAuth, useDAO, useToken } from '@common/queries';
 // Components
 import { Card } from '@components/Card';
 import { SocialProposalButton } from '@components/Actions';
-import { ProposeButton } from '@components/Actions/ProposeButton';
 
 // Animation
 import { motion } from 'framer-motion';
@@ -43,21 +38,12 @@ import { FADE_IN_VARIANTS } from '@utils/animation';
 import { truncate, formatComments } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
-// Store
-import { useStore } from 'store/TransactionStore';
-
-// Api
-import { getContractProposalByTx } from '@common/api';
-
 export const SocialProposalModal = ({ icon }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStxAddress } = useUser();
-  const { network } = useNetwork();
   const { dao } = useDAO();
   const { proposeData } = useAuth();
   const { token } = useToken();
-  const { transaction, setTransaction } = useStore();
-  const [proposal, setProposal] = useState<any>({});
   const [state, setState] = useState<any>({
     name: '',
     symbol: '',
@@ -65,56 +51,19 @@ export const SocialProposalModal = ({ icon }: any) => {
     tokenUri: '',
     isDeployed: false,
   });
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    reset,
-    formState: { isSubmitting },
-  } = useForm();
+  const { register, handleSubmit, getValues, reset } = useForm();
   const { description } = getValues();
 
   useEffect(() => {
-    setTransaction({ txId: '', data: {} });
+    reset({
+      description: '',
+    });
   }, [dao, isOpen]);
 
   const onSubmit = (data: any) => {
     console.log({ data });
     setState({ ...state, inReview: true });
   };
-
-  usePolling(() => {
-    fetchTransactionData(transaction?.txId);
-  }, transaction.txId);
-
-  useEffect(() => {
-    const fetch = async () => {
-      const proposal = await getContractProposalByTx(state?.transactionId);
-      setProposal(proposal);
-    };
-    fetch();
-  }, [state?.transactionId]);
-
-  async function fetchTransactionData(transactionId: string) {
-    try {
-      const transaction = await fetchTransaction({
-        url: network.getCoreApiUrl(),
-        txid: transactionId,
-        event_offset: 0,
-        event_limit: 0,
-      });
-      if (transaction?.tx_status === 'success') {
-        setState({
-          ...state,
-          isDeployed: true,
-          transactionId: transaction?.tx_id,
-        });
-        setTransaction({ txId: '', data: {} });
-      }
-    } catch (e: any) {
-      console.error({ e });
-    }
-  }
 
   const onCloseModal = () => {
     reset({
@@ -156,7 +105,6 @@ export const SocialProposalModal = ({ icon }: any) => {
       <Modal
         blockScrollOnMount={true}
         isCentered
-        closeOnOverlayClick={transaction?.txId ? false : true}
         isOpen={isOpen}
         onClose={onCloseModal}
         size='xl'
@@ -214,26 +162,6 @@ export const SocialProposalModal = ({ icon }: any) => {
                     >
                       Social Proposal
                     </Heading>
-                    {transaction?.txId && !state.isDeployed && (
-                      <Stack spacing='2' direction='row'>
-                        <Badge
-                          variant='subtle'
-                          bg='base.800'
-                          color='secondary.900'
-                          px='4'
-                          py='1'
-                        >
-                          <HStack spacing='2'>
-                            <Spinner
-                              size='xs'
-                              color='secondary.900'
-                              speed='0.75s'
-                            />
-                            <Text>Deploying contract</Text>
-                          </HStack>
-                        </Badge>
-                      </Stack>
-                    )}
                   </HStack>
                   <HStack spacing='3'>
                     <Stack spacing='2' direction='row'>
@@ -310,23 +238,11 @@ export const SocialProposalModal = ({ icon }: any) => {
                         alignItems='space-between'
                         justifyContent='space-between'
                       >
-                        {state.isDeployed && (
-                          <ProposeButton
-                            organization={dao}
-                            transactionId={transaction?.txId}
-                            proposalContractAddress={proposal?.contractAddress}
-                            _hover={{ opacity: 0.9 }}
-                            _active={{ opacity: 1 }}
-                          />
-                        )}
-
-                        {state.isDeployed || transaction?.txId ? null : (
-                          <SocialProposalButton
-                            organization={dao}
-                            isSubmitting={isSubmitting}
-                            description={formatComments(description)}
-                          />
-                        )}
+                        <SocialProposalButton
+                          organization={dao}
+                          closeOnDeploy={onCloseModal}
+                          description={formatComments(description)}
+                        />
                       </ButtonGroup>
                     </Stack>
                   </motion.div>

@@ -34,6 +34,7 @@ export function useAuth() {
         !!voting?.contractAddress &&
         !!submission?.contractAddress &&
         balance >= 0,
+      refetchOnWindowFocus: false,
     },
   );
 
@@ -54,6 +55,7 @@ export function useAuth() {
         !!voting?.contractAddress &&
         !!submission?.contractAddress &&
         balance >= 0,
+      refetchOnWindowFocus: false,
     },
   );
 

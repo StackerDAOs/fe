@@ -25,6 +25,7 @@ export function useProposals() {
         return data;
       },
       enabled: !!voting?.contractAddress,
+      refetchOnWindowFocus: true,
     });
   }
   const results = useQueries(proposalAddresses);
@@ -36,6 +37,7 @@ export function useProposals() {
         return data;
       },
       enabled: !!results && !!voting?.contractAddress && !!result?.data,
+      refetchOnWindowFocus: true,
     };
   });
 

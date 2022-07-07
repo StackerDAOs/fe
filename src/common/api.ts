@@ -5,7 +5,8 @@ import {
   fetchContractEventsById,
   fetchReadOnlyFunction,
   fetchAccountBalances,
-  fetchFtMetadataForContractId
+  fetchFtMetadataForContractId,
+  fetchTransaction,
 } from 'micro-stacks/api';
 import {
   contractPrincipalCV,
@@ -31,6 +32,31 @@ export async function getDAO(name: string){
     console.error({ e });
   }
 };
+
+export async function generateContractName(organization: any) {
+  try {
+    const { data: Proposals, error } = await supabase
+      .from('Proposals')
+      .select('contractAddress, Organizations!inner(id, name, prefix)')
+      .eq('Organizations.id', organization?.id);
+    if (error) throw error;
+    if (Proposals.length > 0) {
+      const proposalSize = (Proposals?.length + 1).toString();
+      const [proposal] = Proposals;
+      const targetLength = Proposals?.length + 1 < 1000 ? 3 : 4;
+      const contractName = `${
+        proposal?.Organizations?.prefix
+      }-${proposalSize.padStart(targetLength, '0')}`;
+      return contractName;
+      
+    } else {
+      const contractName = `${organization?.prefix}-001`;
+      return contractName;
+    }
+  } catch (error) {
+    
+  }
+}
 
 export async function getExtension(name: string) {
   try {
@@ -299,18 +325,34 @@ export async function getParameter(contractAddress: string, parameterName: strin
   }
 }
 
-export async function getContractsToDeploy(organizationId: number) {
+export async function getContractsToDeploy(organizationId: number, currentStxAddress: string) {
   try {
     const { data, error } = await supabase
       .from('Proposals')
       .select(
-        'contractAddress, type, transactionId, submittedBy, Organizations (id, name)',
+        'id, contractAddress, type, transactionId, submitted, disabled, submittedBy, Organizations (id, name)',
       )
       .eq('Organizations.id', organizationId)
+      .eq('submittedBy', currentStxAddress)
       .eq('submitted', false)
       .eq('disabled', false);
     if (error) throw error;
     return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getTransaction(transactionId: string) {
+  try {
+    const network = new stacksNetwork();
+    const transaction = await fetchTransaction({
+      url: network.getCoreApiUrl(),
+      txid: transactionId,
+      event_offset: 0,
+      event_limit: 1,
+    });
+    return transaction;
   } catch (e: any) {
     console.error({ e });
   }

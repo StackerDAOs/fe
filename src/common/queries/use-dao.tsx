@@ -12,10 +12,17 @@ export function useDAO() {
     isLoading,
     isError,
     data: dao,
-  }: any = useQuery(['dao', slug], async () => {
-    const data = await getDAO(slug);
-    return data;
-  });
+  }: any = useQuery(
+    ['dao', slug],
+    async () => {
+      const data = await getDAO(slug);
+      return data;
+    },
+    {
+      enabled: !!slug,
+      refetchOnWindowFocus: false,
+    },
+  );
 
   return { isFetching, isIdle, isLoading, isError, dao };
 }

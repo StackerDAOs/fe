@@ -26,6 +26,7 @@ export function useToken() {
     },
     {
       enabled: !!governanceToken?.contractAddress,
+      refetchOnWindowFocus: false,
     },
   );
 
@@ -42,6 +43,7 @@ export function useToken() {
     },
     {
       enabled: !!vault?.contractAddress,
+      refetchOnWindowFocus: false,
     },
   );
 

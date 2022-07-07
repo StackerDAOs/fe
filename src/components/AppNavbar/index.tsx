@@ -28,7 +28,7 @@ import { FaEllipsisH } from 'react-icons/fa';
 
 // Components
 import { WalletConnectButton } from '@components/WalletConnectButton';
-import { NotificationModal } from '@components/Modal';
+import { ActionItemModal } from '@components/Modal';
 
 // Web3
 import { useUser, useAuth, useNetwork } from '@micro-stacks/react';
@@ -152,30 +152,7 @@ export const AppNavbar = () => {
                           justify='center'
                           color='light.900'
                         >
-                          {/* <HStack>
-                            <Text
-                              color='secondary.900'
-                              fontSize='sm'
-                              fontWeight='medium'
-                            >
-                              {NETWORK_CHAIN_ID[network.chainId]}
-                            </Text>
-                            <Box
-                              minW='1'
-                              maxW='1'
-                              h='1'
-                              w='1'
-                              bg='secondary.900'
-                              borderRadius='50%'
-                            />
-                            <Text
-                              color='secondary.900'
-                              fontSize='sm'
-                              fontWeight='regular'
-                            >
-                              {blockHeight}
-                            </Text>
-                          </HStack> */}
+                          <ActionItemModal />
                         </HStack>
                         <HStack spacing='1'>
                           <Text
@@ -207,14 +184,17 @@ export const AppNavbar = () => {
                               '#25C2A0',
                             ]}
                           />
-                          <NotificationModal
-                            title={
-                              bns
-                                ? bns
-                                : currentStxAddress &&
-                                  truncate(currentStxAddress, 4, 4)
-                            }
-                          />
+                          <Text
+                            cursor='pointer'
+                            color='light.900'
+                            fontWeight='regular'
+                            fontSize='sm'
+                          >
+                            {bns
+                              ? bns
+                              : currentStxAddress &&
+                                truncate(currentStxAddress, 4, 4)}
+                          </Text>
                         </HStack>
                       </HStack>
                     ) : null}

@@ -24,6 +24,7 @@ export function useTokenBalance() {
     },
     {
       enabled: !!currentStxAddress && !!governanceToken?.contractAddress,
+      refetchOnWindowFocus: false,
     },
   );
 

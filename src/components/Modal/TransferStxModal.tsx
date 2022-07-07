@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import {
-  Badge,
   Button,
   ButtonGroup,
   CloseButton,
@@ -13,7 +12,6 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  Spinner,
   Stack,
   Text,
   Textarea,
@@ -24,12 +22,10 @@ import {
 import { ErrorMessage } from '@hookform/error-message';
 
 // Web3
-import { useUser, useNetwork } from '@micro-stacks/react';
-import { fetchTransaction } from 'micro-stacks/api';
+import { useUser } from '@micro-stacks/react';
 
 // Hooks
 import { useForm, Controller } from 'react-hook-form';
-import { usePolling } from '@common/hooks';
 
 // Queries
 import { useAuth, useDAO, useToken } from '@common/queries';
@@ -37,7 +33,6 @@ import { useAuth, useDAO, useToken } from '@common/queries';
 // Components
 import { Card } from '@components/Card';
 import { TransferStxButton } from '@components/Actions';
-import { ProposeButton } from '@components/Actions/ProposeButton';
 
 // Animation
 import { motion } from 'framer-motion';
@@ -52,19 +47,14 @@ import {
 } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
-// Store
-import { useStore } from 'store/TransactionStore';
-
 import { FaArrowRight } from 'react-icons/fa';
 
 export const TransferStxModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStxAddress } = useUser();
-  const { network } = useNetwork();
   const { dao } = useDAO();
   const { proposeData } = useAuth();
   const { token, balance } = useToken();
-  const { transaction, setTransaction } = useStore();
   const [state, setState] = useState<any>({
     name: '',
     symbol: '',
@@ -78,43 +68,22 @@ export const TransferStxModal = () => {
     handleSubmit,
     getValues,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm();
   const { transferAmount, transferTo, description } = getValues();
 
   useEffect(() => {
-    setTransaction({ txId: '', data: {} });
+    reset({
+      transferAmount: '',
+      transferTo: '',
+      description: '',
+    });
   }, [dao, isOpen]);
 
   const onSubmit = (data: any) => {
     console.log({ data });
     setState({ ...state, inReview: true });
   };
-
-  usePolling(() => {
-    fetchTransactionData(transaction?.txId);
-  }, transaction.txId);
-
-  async function fetchTransactionData(transactionId: string) {
-    try {
-      const transaction = await fetchTransaction({
-        url: network.getCoreApiUrl(),
-        txid: transactionId,
-        event_offset: 0,
-        event_limit: 0,
-      });
-      if (transaction?.tx_status === 'success') {
-        setState({
-          ...state,
-          isDeployed: true,
-          transactionId: transaction?.tx_id,
-        });
-        setTransaction({ txId: '', data: {} });
-      }
-    } catch (e: any) {
-      console.error({ e });
-    }
-  }
 
   const onCloseModal = () => {
     reset({
@@ -156,7 +125,6 @@ export const TransferStxModal = () => {
       <Modal
         blockScrollOnMount={true}
         isCentered
-        closeOnOverlayClick={transaction?.txId ? false : true}
         isOpen={isOpen}
         onClose={onCloseModal}
         size='xl'
@@ -214,26 +182,6 @@ export const TransferStxModal = () => {
                     >
                       Transfer STX Proposal
                     </Heading>
-                    {transaction?.txId && !state.isDeployed && (
-                      <Stack spacing='2' direction='row'>
-                        <Badge
-                          variant='subtle'
-                          bg='base.800'
-                          color='secondary.900'
-                          px='4'
-                          py='1'
-                        >
-                          <HStack spacing='2'>
-                            <Spinner
-                              size='xs'
-                              color='secondary.900'
-                              speed='0.75s'
-                            />
-                            <Text>Deploying contract</Text>
-                          </HStack>
-                        </Badge>
-                      </Stack>
-                    )}
                   </HStack>
                   <HStack spacing='3'>
                     <Stack spacing='2' direction='row'>
@@ -380,24 +328,13 @@ export const TransferStxModal = () => {
                         alignItems='space-between'
                         justifyContent='space-between'
                       >
-                        {state.isDeployed && (
-                          <ProposeButton
-                            organization={dao}
-                            transactionId={state.transactionId}
-                            _hover={{ opacity: 0.9 }}
-                            _active={{ opacity: 1 }}
-                          />
-                        )}
-
-                        {state.isDeployed || transaction?.txId ? null : (
-                          <TransferStxButton
-                            organization={dao}
-                            isSubmitting={isSubmitting}
-                            description={formatComments(description)}
-                            transferAmount={transferAmount}
-                            transferTo={transferTo}
-                          />
-                        )}
+                        <TransferStxButton
+                          organization={dao}
+                          description={formatComments(description)}
+                          transferAmount={transferAmount}
+                          transferTo={transferTo}
+                          closeOnDeploy={onCloseModal}
+                        />
                       </ButtonGroup>
                     </Stack>
                   </motion.div>

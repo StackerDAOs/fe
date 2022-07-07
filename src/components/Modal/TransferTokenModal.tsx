@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import {
-  Badge,
   Button,
   ButtonGroup,
   CloseButton,
@@ -12,7 +11,6 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  Spinner,
   Stack,
   Text,
   Textarea,
@@ -23,11 +21,10 @@ import {
 
 // Web3
 import { useUser, useNetwork } from '@micro-stacks/react';
-import { fetchTransaction, fetchReadOnlyFunction } from 'micro-stacks/api';
+import { fetchReadOnlyFunction } from 'micro-stacks/api';
 
 // Hooks
 import { useForm, Controller } from 'react-hook-form';
-import { usePolling } from '@common/hooks';
 
 // Queries
 import { useAuth, useDAO, useToken } from '@common/queries';
@@ -35,7 +32,6 @@ import { useAuth, useDAO, useToken } from '@common/queries';
 // Components
 import { Card } from '@components/Card';
 import { TransferTokenButton } from '@components/Actions';
-import { ProposeButton } from '@components/Actions/ProposeButton';
 
 // Animation
 import { motion } from 'framer-motion';
@@ -44,9 +40,6 @@ import { FADE_IN_VARIANTS } from '@utils/animation';
 // Utils
 import { truncate, formatComments } from '@common/helpers';
 import Avatar from 'boring-avatars';
-
-// Store
-import { useStore } from 'store/TransactionStore';
 
 import { FaArrowRight } from 'react-icons/fa';
 
@@ -57,7 +50,6 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
   const { dao } = useDAO();
   const { proposeData } = useAuth();
   const { token } = useToken();
-  const { transaction, setTransaction } = useStore();
   const [state, setState] = useState<any>({
     name: '',
     symbol: '',
@@ -76,7 +68,6 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
   const { transferAmount, transferTo, description } = getValues();
 
   useEffect(() => {
-    setTransaction({ txId: '', data: {} });
     const fetchAssetData = async ({ contractAddress, contractName }: any) => {
       const senderAddress = `${contractAddress}.${contractName}`;
       const name = await fetchReadOnlyFunction({
@@ -126,8 +117,8 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
           contractName: contractAddress?.split('.')[1],
         });
       }
-    } catch (error) {
-      console.error(error);
+    } catch (e: any) {
+      console.error({ e });
     }
   }, [dao, isOpen]);
 
@@ -135,31 +126,6 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
     console.log({ data });
     setState({ ...state, inReview: true });
   };
-
-  usePolling(() => {
-    fetchTransactionData(transaction?.txId);
-  }, transaction.txId);
-
-  async function fetchTransactionData(transactionId: string) {
-    try {
-      const transaction = await fetchTransaction({
-        url: network.getCoreApiUrl(),
-        txid: transactionId,
-        event_offset: 0,
-        event_limit: 0,
-      });
-      if (transaction?.tx_status === 'success') {
-        setState({
-          ...state,
-          isDeployed: true,
-          transactionId: transaction?.tx_id,
-        });
-        setTransaction({ txId: '', data: {} });
-      }
-    } catch (e: any) {
-      console.error({ e });
-    }
-  }
 
   const onCloseModal = () => {
     reset({
@@ -203,7 +169,6 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
       <Modal
         blockScrollOnMount={true}
         isCentered
-        closeOnOverlayClick={transaction?.txId ? false : true}
         isOpen={isOpen}
         onClose={onCloseModal}
         size='xl'
@@ -261,26 +226,6 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                     >
                       Transfer Tokens Proposal
                     </Heading>
-                    {transaction?.txId && !state.isDeployed && (
-                      <Stack spacing='2' direction='row'>
-                        <Badge
-                          variant='subtle'
-                          bg='base.800'
-                          color='secondary.900'
-                          px='4'
-                          py='1'
-                        >
-                          <HStack spacing='2'>
-                            <Spinner
-                              size='xs'
-                              color='secondary.900'
-                              speed='0.75s'
-                            />
-                            <Text>Deploying contract</Text>
-                          </HStack>
-                        </Badge>
-                      </Stack>
-                    )}
                   </HStack>
                   <HStack spacing='3'>
                     <Stack spacing='2' direction='row'>
@@ -433,28 +378,18 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                         alignItems='space-between'
                         justifyContent='space-between'
                       >
-                        {state.isDeployed && (
-                          <ProposeButton
-                            organization={dao}
-                            transactionId={state.transactionId}
-                            _hover={{ opacity: 0.9 }}
-                            _active={{ opacity: 1 }}
-                          />
-                        )}
-
-                        {state.isDeployed || transaction?.txId ? null : (
-                          <TransferTokenButton
-                            organization={dao}
-                            isSubmitting={isSubmitting}
-                            description={
-                              description && formatComments(description)
-                            }
-                            assetAddress={contractAddress}
-                            tokenDecimals={Number(state?.decimals)}
-                            transferAmount={transferAmount}
-                            transferTo={transferTo}
-                          />
-                        )}
+                        <TransferTokenButton
+                          organization={dao}
+                          isSubmitting={isSubmitting}
+                          description={
+                            description && formatComments(description)
+                          }
+                          assetAddress={contractAddress}
+                          tokenDecimals={Number(state?.decimals)}
+                          transferAmount={transferAmount}
+                          transferTo={transferTo}
+                          closeOnDeploy={onCloseModal}
+                        />
                       </ButtonGroup>
                     </Stack>
                   </motion.div>
