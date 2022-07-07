@@ -1,5 +1,4 @@
-import { useCurrentStxAddress } from '@micro-stacks/react';
-import { size } from 'lodash';
+import { map, size } from 'lodash';
 import {
   falseCV,
   contractPrincipalCV,
@@ -13,14 +12,14 @@ import { generateWithDelegators, getDelegators } from '@common/functions';
 export const VoteManyAgainstButton = ({
   proposalContractAddress,
   proposalContractName,
-  delegatorEvents,
+  delegatorData,
   contractAddress,
   contractName,
 }: any) => {
-  const currentStxAddress = useCurrentStxAddress();
-  const currentVoterDelegators = delegatorEvents?.filter(
-    (item: any) => item?.who?.value === currentStxAddress,
-  );
+  const delegatorAddresses = map(delegatorData, 'delegatorAddress');
+  // const currentVoterDelegators = delegatorEvents?.filter(
+  //   (item: any) => item?.who?.value === currentStxAddress,
+  // );
   const delegateVoteAgainst =
     proposalContractAddress &&
     proposalContractName &&
@@ -39,7 +38,7 @@ export const VoteManyAgainstButton = ({
     voteFor: false,
     proposalContractAddress,
     proposalContractName,
-    currentVoterDelegators,
+    delegatorAddresses,
   });
   const hasDelegators = size(delegators) > 0;
 

@@ -3,3 +3,5 @@ export {
   updateSubmittedProposal,
   updateDisabledProposal
 } from './proposals';
+
+export { createDelegate } from './delegates';

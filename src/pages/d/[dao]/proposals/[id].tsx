@@ -57,6 +57,7 @@ import {
 // Queries
 import {
   useAuth,
+  useDelegates,
   useExtension,
   useEvents,
   useProposal,
@@ -98,14 +99,13 @@ const ProposalView = () => {
     isIdle,
     data: proposalInfo,
   } = useProposal(proposalPrincipal);
-
-  const { data: delegatorEvents } = useEvents(
-    voting?.contractAddress,
-    'delegate',
-    undefined,
-    0,
-  );
-
+  const { data: delegators } = useDelegates();
+  // const { data: delegatorEvents } = useEvents(
+  //   voting?.contractAddress,
+  //   'delegate',
+  //   undefined,
+  //   0,
+  // );
   const { data: voterEvents } = useEvents(
     voting?.contractAddress,
     'vote',
@@ -180,7 +180,7 @@ const ProposalView = () => {
     contractName: voting?.contractAddress.split('.')[1],
     proposalContractAddress: proposalInfo?.contractAddress.split('.')[0],
     proposalContractName: proposalInfo?.contractAddress.split('.')[1],
-    delegatorEvents,
+    delegatorData: delegators,
   };
 
   const concludeData = {

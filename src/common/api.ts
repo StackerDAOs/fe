@@ -357,3 +357,20 @@ export async function getTransaction(transactionId: string) {
     console.error({ e });
   }
 }
+
+export async function getDelegates(organizationId: number, currentStxAddress: string) {
+  try {
+    const { data, error } = await supabase
+      .from('Delegates')
+      .select(
+        'id, delegatorAddress, delegateAddress, Organizations!inner(id, name, prefix)',
+      )
+      .eq('Organizations.id', organizationId)
+      .eq('delegateAddress', currentStxAddress)
+      .limit(100);
+    if (error) throw error;
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}

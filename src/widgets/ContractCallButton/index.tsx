@@ -10,7 +10,6 @@ import {
 } from '@chakra-ui/react';
 
 // Stacks
-import type { FinishedTxData } from 'micro-stacks/connect';
 import { useNetwork, useContractCall } from '@micro-stacks/react';
 import { fetchTransaction } from 'micro-stacks/api';
 
@@ -63,57 +62,8 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
     functionName,
     functionArgs,
     postConditions,
-    onContractCall,
+    onFinish,
   }: any = props;
-
-  const onFinish = useCallback((data: FinishedTxData) => {
-    setTransaction({ txId: data.txId, isPending: true });
-    if (onContractCall) {
-      console.log('onFinish', { data });
-      onContractCall();
-    }
-    toast({
-      duration: null,
-      isClosable: true,
-      position: 'bottom-right',
-      render: () => (
-        <Notification>
-          <Stack direction='row' p='4' spacing='3'>
-            <Stack spacing='2.5'>
-              <Stack spacing='1'>
-                <Text fontSize='md' color='light.900' fontWeight='medium'>
-                  Transaction Submitted
-                </Text>
-                <Text fontSize='sm' color='gray.900'>
-                  Your transaction was submitted successfully.
-                </Text>
-              </Stack>
-              <ButtonGroup variant='link' size='sm' spacing='2'>
-                <Button
-                  color='secondary.900'
-                  as='a'
-                  target='_blank'
-                  href={
-                    process.env.NODE_ENV !== 'production'
-                      ? `http://localhost:8000/txid/${data.txId}?chain=testnet`
-                      : `https://explorer.stacks.co/txid/${data.txId}?chain=mainnet`
-                  }
-                >
-                  View transaction
-                </Button>
-              </ButtonGroup>
-            </Stack>
-            <CloseButton
-              aria-label='close'
-              transform='translateY(-6px)'
-              color='white'
-              onClick={() => toast.closeAll()}
-            />
-          </Stack>
-        </Notification>
-      ),
-    });
-  }, []);
 
   const onComplete = useCallback((data: any) => {
     toast({

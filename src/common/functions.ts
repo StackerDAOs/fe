@@ -16,8 +16,8 @@ import {
 } from 'micro-stacks/transactions';
 import { stxToUstx, tokenToDecimals } from './helpers';
 
-export const getDelegators = ({voteFor, proposalContractAddress, proposalContractName, currentVoterDelegators}: any) => {
-  return currentVoterDelegators?.map((item: any) => {
+export const getDelegators = ({voteFor, proposalContractAddress, proposalContractName, delegatorAddresses}: any) => {
+  return delegatorAddresses?.map((address: any) => {
     const delegatorVotes =
       proposalContractAddress &&
       proposalContractName &&
@@ -27,7 +27,7 @@ export const getDelegators = ({voteFor, proposalContractAddress, proposalContrac
           proposalContractAddress,
           proposalContractName,
         ),
-        delegator: someCV(standardPrincipalCV(item?.delegator?.value)),
+        delegator: someCV(standardPrincipalCV(address)),
       });
     return delegatorVotes;
   });
