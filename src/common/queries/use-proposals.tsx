@@ -42,9 +42,6 @@ export function useProposals() {
   });
 
   const proposals = useQueries(addresses);
-  const isLoading = proposals.every(
-    (proposal) => proposal.isIdle || proposal.isLoading,
-  );
 
-  return { isLoading, proposals, hasMore: proposals.length < Number(data) };
+  return { proposals, hasMore: proposals.length < Number(data) };
 }

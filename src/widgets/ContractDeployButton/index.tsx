@@ -24,7 +24,6 @@ export const ContractDeployButton = (
   return (
     <Button
       {...props}
-      type='submit'
       disabled
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}

@@ -31,7 +31,7 @@ const MotionGrid = motion(SimpleGrid);
 const MotionProposalCard = motion(ProposalCard);
 
 const Proposals = () => {
-  const { isLoading, proposals } = useProposals();
+  const { proposals } = useProposals();
 
   return (
     <motion.div
@@ -42,42 +42,7 @@ const Proposals = () => {
       transition={{ duration: 0.25, type: 'linear' }}
     >
       <Wrapper>
-        {isLoading ? (
-          <SectionHeader justify='space-between' align='center' color='white'>
-            <Box>
-              <Text fontSize='lg' fontWeight='medium'>
-                Proposals
-              </Text>
-              <Text color='gray.900' fontSize='sm'>
-                View all pending, active, and completed proposals.
-              </Text>
-            </Box>
-            <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
-              <Stack align='center' direction='row' spacing='3'>
-                <SocialProposalModal
-                  icon={
-                    <Icon as={FaPlusCircle} color='whiteAlpha' fontSize='sm' />
-                  }
-                />
-                <IconButton
-                  display='none'
-                  aria-label='action-item'
-                  bg='base.800'
-                  variant='outline'
-                  color='light.900'
-                  borderColor='base.500'
-                  size='md'
-                  icon={
-                    <Icon as={FaEllipsisH} color='whiteAlpha' fontSize='sm' />
-                  }
-                  _hover={{
-                    bg: 'base.800',
-                  }}
-                />
-              </Stack>
-            </ButtonGroup>
-          </SectionHeader>
-        ) : proposals?.length === 0 ? (
+        {proposals?.length === 0 ? (
           <>
             <SectionHeader justify='space-between' align='center' color='white'>
               <Box>

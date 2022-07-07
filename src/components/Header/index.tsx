@@ -31,7 +31,7 @@ import {
 export const Header = () => {
   const { dao } = useDAO();
   const { currentBlockHeight } = useBlocks();
-  const { isLoading: isLoadingProposals, proposals } = useProposals();
+  const { proposals } = useProposals();
   const { dao: DAO } = useDAO();
   const { isLoading, isIdle, isError, token, balance } = useToken();
   const { balance: userBalance } = useTokenBalance();
@@ -104,7 +104,7 @@ export const Header = () => {
     );
   }
 
-  if (isLoading || isLoadingProposals || isIdle) {
+  if (isLoading || isIdle) {
     <Container maxW='5xl'>
       <Stack spacing={{ base: '6', lg: '4' }} mt='5'>
         <Container>

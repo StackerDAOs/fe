@@ -17,7 +17,6 @@ import { map } from 'lodash';
 
 // Components
 import { ContractCardList } from '@components/ContractCardList';
-import { EmptyState } from '@components/EmptyState';
 
 // Queries
 import { useContracts, useTransaction } from '@common/queries';
@@ -40,12 +39,12 @@ export const ActionItemModal = () => {
     useTransaction(latestTransactionId);
 
   if (isLoadingContracts) {
-    return <EmptyState heading='Loading contracts...' />;
+    return null;
   }
 
   return (
     <>
-      {contracts?.length > 0 ? (
+      {!isLoadingContracts && contracts?.length > 0 ? (
         <HStack onClick={onOpen} cursor='pointer'>
           <Badge bg='base.800' color='secondary.900' size='xs' py='1' px='3'>
             <HStack spacing='2'>
@@ -92,38 +91,7 @@ export const ActionItemModal = () => {
             right='2'
             top='2'
           />
-          {/* <motion.div
-            variants={FADE_IN_VARIANTS}
-            initial={FADE_IN_VARIANTS.hidden}
-            animate={FADE_IN_VARIANTS.enter}
-            exit={FADE_IN_VARIANTS.exit}
-            transition={{ duration: 0.75, type: 'linear' }}
-          >
-            <VStack spacing='4' align='flex-start'>
-              <Stack
-                spacing='2'
-                direction={{ base: 'column', md: 'column' }}
-                justify='flex-start'
-                color='white'
-              >
-                <Text color='gray.900' fontSize='sm'>
-                  Submit and review contracts you deploy before submitting them
-                  as proposals.
-                </Text>
-              </Stack>
-            </VStack>
-            <motion.div
-              variants={FADE_IN_VARIANTS}
-              initial={FADE_IN_VARIANTS.hidden}
-              animate={FADE_IN_VARIANTS.enter}
-              exit={FADE_IN_VARIANTS.exit}
-              transition={{ duration: 0.25, type: 'linear' }}
-            >
-              <Stack w='auto' spacing='5' my='3'>
-                <ContractCardList />
-              </Stack>
-            </motion.div>
-          </motion.div> */}
+
           <motion.div
             variants={FADE_IN_VARIANTS}
             initial={FADE_IN_VARIANTS.hidden}

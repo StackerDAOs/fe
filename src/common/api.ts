@@ -330,7 +330,7 @@ export async function getContractsToDeploy(organizationId: number, currentStxAdd
     const { data, error } = await supabase
       .from('Proposals')
       .select(
-        'id, contractAddress, type, transactionId, submitted, disabled, submittedBy, Organizations (id, name)',
+        'id, contractAddress, type, transactionId, submitted, disabled, submittedBy, Organizations!inner(id, name, prefix)',
       )
       .eq('Organizations.id', organizationId)
       .eq('submittedBy', currentStxAddress)
