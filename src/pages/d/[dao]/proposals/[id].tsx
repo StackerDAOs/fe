@@ -331,7 +331,7 @@ const ProposalView = () => {
                             </Text>
                           </HStack>
                         </Badge>
-                      ) : !isEligible ? (
+                      ) : !isEligible && currentStxAddress ? (
                         <Badge
                           bg='base.800'
                           color='secondary.900'
@@ -416,7 +416,7 @@ const ProposalView = () => {
                   </Stack>
                   {!isSignedIn ? (
                     <WalletConnectButton
-                      color='baes.900'
+                      color='base.900'
                       isFullWidth
                       fontWeight='medium'
                       bg='light.900'

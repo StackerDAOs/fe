@@ -135,6 +135,23 @@ export async function getVaultBalance(address: string) {
   }
 };
 
+export async function getBalanceOf(vaultAddress: string, assetAddress: string) {
+  try {
+    const network = new stacksNetwork();
+    const balance: any = await fetchReadOnlyFunction({
+      network,
+      contractAddress: vaultAddress.split('.')[0],
+      contractName: vaultAddress.split('.')[1],
+      senderAddress: vaultAddress.split('.')[0],
+      functionArgs: [standardPrincipalCV(assetAddress)],
+      functionName: 'get-balance-of',
+    });
+    return balance;
+  } catch (e: any) {
+    console.error({ e });
+  }
+};
+
 export async function getTokenBalance(address: string, contractAddress: string) {
   try {
     const network = new stacksNetwork();

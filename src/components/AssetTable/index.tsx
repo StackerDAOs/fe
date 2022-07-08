@@ -268,7 +268,10 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
                   <Td borderColor='base.500'>{totalReceived}</Td>
                   <Td borderColor='base.500'>
                     {contractAddress ? (
-                      <TransferTokenModal contractAddress={contractAddress} />
+                      <TransferTokenModal
+                        contractAddress={contractAddress}
+                        balance={item.balance}
+                      />
                     ) : (
                       <TransferStxModal />
                     )}

@@ -8,7 +8,6 @@ export async function createDelegate({ organizationId, delegatorAddress, delegat
       .from('Delegates')
       .insert([{organizationId, delegatorAddress, delegateAddress}])
     if (error) throw error;
-    console.log(data);
     return data;
   } catch (e: any) {
     console.error({ e });
