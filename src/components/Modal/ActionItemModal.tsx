@@ -49,11 +49,16 @@ export const ActionItemModal = () => {
           <Badge bg='base.800' color='secondary.900' size='xs' py='1' px='3'>
             <HStack spacing='2'>
               {!isLoadingTransaction && transaction?.tx_status === 'pending' ? (
-                <Spinner size='xs' />
+                <>
+                  <Spinner size='xs' speed='0.5s' />
+                  <Text fontSize='xs'>Deploying proposal...</Text>
+                </>
               ) : (
-                <FaExclamationCircle />
+                <>
+                  <FaExclamationCircle />{' '}
+                  <Text fontSize='xs'>Ready for submission</Text>
+                </>
               )}
-              <Text fontSize='xs'>You have action items to complete</Text>
             </HStack>
           </Badge>
         </HStack>

@@ -461,11 +461,11 @@ export const TransferStxModal = () => {
                                 />
                                 <ErrorMessage
                                   errors={errors}
-                                  name='transferTo'
+                                  name='transferAmount'
                                   render={() => (
                                     <p>
                                       {errors?.transferAmount?.type
-                                        ? 'This is required'
+                                        ? 'Not enough STX to transfer'
                                         : ''}
                                     </p>
                                   )}

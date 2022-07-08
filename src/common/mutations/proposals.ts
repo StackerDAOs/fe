@@ -16,7 +16,6 @@ export async function createProposalContract(proposal: Proposal) {
       .from('Proposals')
       .insert([{...proposal}])
     if (error) throw error;
-    console.log(data);
     return data;
   } catch (e: any) {
     console.error({ e });
@@ -41,7 +40,6 @@ export async function updateSubmittedProposal(proposal: { contractAddress: strin
         contractAddress: proposal.contractAddress,
       });
     if (error) throw error;
-    console.log({ data });
     return data;
   } catch (e: any) {
     console.error({ e });
@@ -66,7 +64,6 @@ export async function updateDisabledProposal(proposal: { contractAddress: string
         contractAddress: proposal.contractAddress,
       });
     if (error) throw error;
-    console.log({ data });
     return data;
   } catch (e: any) {
     console.error({ e });
@@ -77,7 +74,6 @@ export const useDisableProposal = () => {
   const queryClient = useQueryClient();
   return useMutation(updateDisabledProposal, {
     onSuccess: (data: any) => {
-      console.log('onSuccess', { data })
       const [disabledContract] = data;
       queryClient.setQueryData('contracts', (contracts: any) => {
         const filteredContracts = contracts.filter((contract: any) => contract.id !== disabledContract.id);

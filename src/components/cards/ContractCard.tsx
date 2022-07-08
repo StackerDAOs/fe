@@ -91,7 +91,7 @@ export const ContractCard = ({
                 color='white'
                 bg='secondary.900'
                 size='sm'
-                onContractCall={() => onFinishUpdate(proposalContractAddress)}
+                onFinish={() => onFinishUpdate(proposalContractAddress)}
                 {...contractData}
               />
               <ButtonGroup>

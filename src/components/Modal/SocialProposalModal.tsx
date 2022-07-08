@@ -22,6 +22,7 @@ import { useUser } from '@micro-stacks/react';
 
 // Hooks
 import { useForm } from 'react-hook-form';
+import { ErrorMessage } from '@hookform/error-message';
 
 // Queries
 import { useAuth, useDAO, useToken } from '@common/queries';
@@ -51,7 +52,13 @@ export const SocialProposalModal = ({ icon }: any) => {
     tokenUri: '',
     isDeployed: false,
   });
-  const { register, handleSubmit, getValues, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    reset,
+    formState: { errors },
+  } = useForm();
   const { description } = getValues();
 
   useEffect(() => {
@@ -354,11 +361,24 @@ export const SocialProposalModal = ({ icon }: any) => {
                                   autoComplete='off'
                                   placeholder='Provide some additional context for the proposal'
                                   {...register('description', {
-                                    required: 'This is required',
+                                    required: {
+                                      value: true,
+                                      message: 'Proposal details are required.',
+                                    },
+                                    minLength: {
+                                      value: 25,
+                                      message:
+                                        'Proposal details must be at least 25 characters.',
+                                    },
                                   })}
                                   _focus={{
                                     border: 'none',
                                   }}
+                                />
+                                <ErrorMessage
+                                  errors={errors}
+                                  name='description'
+                                  render={({ message }) => <p>{message}</p>}
                                 />
                               </FormControl>
                             </Stack>

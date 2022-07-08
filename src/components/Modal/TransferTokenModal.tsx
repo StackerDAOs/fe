@@ -25,6 +25,7 @@ import { fetchReadOnlyFunction } from 'micro-stacks/api';
 
 // Hooks
 import { useForm, Controller } from 'react-hook-form';
+import { ErrorMessage } from '@hookform/error-message';
 
 // Queries
 import { useAuth, useDAO, useToken } from '@common/queries';
@@ -38,12 +39,17 @@ import { motion } from 'framer-motion';
 import { FADE_IN_VARIANTS } from '@utils/animation';
 
 // Utils
-import { truncate, formatComments } from '@common/helpers';
+import {
+  truncate,
+  formatComments,
+  tokenToNumber,
+  validateStacksAddress,
+} from '@common/helpers';
 import Avatar from 'boring-avatars';
 
 import { FaArrowRight } from 'react-icons/fa';
 
-export const TransferTokenModal = ({ contractAddress }: any) => {
+export const TransferTokenModal = ({ balance, contractAddress }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStxAddress } = useUser();
   const { network } = useNetwork();
@@ -63,7 +69,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
     handleSubmit,
     getValues,
     reset,
-    formState: { isSubmitting },
+    formState: { errors },
   } = useForm();
   const { transferAmount, transferTo, description } = getValues();
 
@@ -380,7 +386,6 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                       >
                         <TransferTokenButton
                           organization={dao}
-                          isSubmitting={isSubmitting}
                           description={
                             description && formatComments(description)
                           }
@@ -502,10 +507,27 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                                   placeholder='0'
                                   {...register('transferAmount', {
                                     required: 'This is required',
+                                    validate: (value) =>
+                                      Number(value) <=
+                                      tokenToNumber(
+                                        balance,
+                                        Number(state.decimals),
+                                      ),
                                   })}
                                   _focus={{
                                     border: 'none',
                                   }}
+                                />
+                                <ErrorMessage
+                                  errors={errors}
+                                  name='transferAmount'
+                                  render={() => (
+                                    <p>
+                                      {errors?.transferAmount?.type
+                                        ? `Not enough ${state.symbol} to transfer`
+                                        : ''}
+                                    </p>
+                                  )}
                                 />
                               </FormControl>
                               <HStack>
@@ -527,7 +549,7 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                                   fontWeight='regular'
                                   color='light.900'
                                 >
-                                  {transferAmount} {state.symbol}
+                                  {state.symbol}
                                 </Text>
                               </HStack>
                             </Stack>
@@ -549,6 +571,15 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                                 <Controller
                                   control={control}
                                   name='transferTo'
+                                  rules={{
+                                    required: {
+                                      value: true,
+                                      message:
+                                        'Destination address is required.',
+                                    },
+                                    validate: (value) =>
+                                      validateStacksAddress(value),
+                                  }}
                                   render={({
                                     field: { onChange, onBlur, value },
                                   }) => (
@@ -597,6 +628,11 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                                     </>
                                   )}
                                 />
+                                <ErrorMessage
+                                  errors={errors}
+                                  name='transferTo'
+                                  render={() => <p>Invalid Stacks Address</p>}
+                                />
                               </FormControl>
                             </Stack>
                             <Stack
@@ -626,11 +662,24 @@ export const TransferTokenModal = ({ contractAddress }: any) => {
                                   autoComplete='off'
                                   placeholder='Provide some additional context for the proposal'
                                   {...register('description', {
-                                    required: 'This is required',
+                                    required: {
+                                      value: true,
+                                      message: 'Proposal details are required.',
+                                    },
+                                    minLength: {
+                                      value: 25,
+                                      message:
+                                        'Proposal details must be at least 25 characters.',
+                                    },
                                   })}
                                   _focus={{
                                     border: 'none',
                                   }}
+                                />
+                                <ErrorMessage
+                                  errors={errors}
+                                  name='description'
+                                  render={({ message }) => <p>{message}</p>}
                                 />
                               </FormControl>
                             </Stack>
