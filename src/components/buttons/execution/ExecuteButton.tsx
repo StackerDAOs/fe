@@ -88,7 +88,7 @@ export const ExecuteButton = (props: TExecuteButtonProps) => {
         console.log('Cancelled vote');
       },
     });
-  }, [conditions]);
+  }, [conditions, fungibleToken]);
 
   const onFinish = async (data: any) => {
     setTransactionId(data.txId);
