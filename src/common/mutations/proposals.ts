@@ -8,6 +8,7 @@ type Proposal = {
   type: string,
   transactionId: string,
   name: string,
+  postConditions?: any;
 }
 
 export async function createProposalContract(proposal: Proposal) {

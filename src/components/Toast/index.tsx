@@ -1,30 +1,39 @@
 import {
-  useToast,
-  UseToastOptions,
-  Box,
-  useColorModeValue as mode,
+  Button,
+  ButtonGroup,
+  CloseButton,
+  Stack,
+  Text,
 } from '@chakra-ui/react';
 
-export const Toast = () => {
-  const toast = useToast();
+import { Notification } from '@components/Notification';
 
-  const toastImplementation = (props: UseToastOptions) => {
-    return toast({
-      position: 'top-right',
-      isClosable: true,
-      render: () => (
-        <Box
-          bg={mode('base.800', 'light.800')}
-          color={mode('light.900', 'base.900')}
-          w='100%'
-          p={4}
-          borderRadius='8px'
-        >
-          {props.title}
-        </Box>
-      ),
-    });
-  };
-
-  return toastImplementation;
+export const TxToast = ({ message, body, url, closeAll }: any) => {
+  return (
+    <Notification>
+      <Stack direction='row' p='4' spacing='3'>
+        <Stack spacing='2.5'>
+          <Stack spacing='1'>
+            <Text fontSize='md' color='light.900' fontWeight='medium'>
+              {message}
+            </Text>
+            <Text fontSize='sm' color='gray.900'>
+              {body}
+            </Text>
+          </Stack>
+          <ButtonGroup variant='link' size='sm' spacing='2'>
+            <Button color='secondary.900' as='a' target='_blank' href={url}>
+              View transaction
+            </Button>
+          </ButtonGroup>
+        </Stack>
+        <CloseButton
+          aria-label='close'
+          transform='translateY(-6px)'
+          color='white'
+          onClick={closeAll}
+        />
+      </Stack>
+    </Notification>
+  );
 };

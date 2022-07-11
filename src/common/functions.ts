@@ -49,12 +49,12 @@ export const generateWithDelegators = ({voteFor, proposalContractAddress, propos
   }
 };
 
-export const generatePostConditions = ({postConditions, isPassing, assetName}: any) => {
+export const generatePostConditions = ({postConditions, isPassing, assetName, fungibleTokenDecimals}: any) => {
   if (postConditions) {
     const { from, amount } = postConditions;
     const isFungible = has(postConditions, 'assetAddress');
     if (isFungible) {
-      // Fungible Post Conditions
+      // Token Post Condition
       const { assetAddress } = postConditions;
       const contractAddress = from?.split('.')[0];
       const contractName = from?.split('.')[1];
@@ -64,21 +64,16 @@ export const generatePostConditions = ({postConditions, isPassing, assetName}: a
         contractAssetAddress &&
         contractAssetName &&
         createAssetInfo(contractAssetAddress, contractAssetName, assetName);
-      const pc =
-        contractAddress &&
-        contractName &&
-        fungibleAssetInfo &&
-        isPassing
-      ? [
+      const pc = isPassing ?
+        [
           makeContractFungiblePostCondition(
             contractAddress,
             contractName,
             FungibleConditionCode.Equal,
-            tokenToDecimals(Number(amount), 2),
+            tokenToDecimals(Number(amount), fungibleTokenDecimals),
             fungibleAssetInfo,
           ),
-        ]
-      : [];
+        ] : [];
       return pc;
     } else {
       // STX Post Condition
@@ -86,20 +81,15 @@ export const generatePostConditions = ({postConditions, isPassing, assetName}: a
       const contractName = from?.split('.')[1];
       const postConditionCode = FungibleConditionCode.Equal;
       const postConditionAmount = stxToUstx(amount);
-      const postConditions =
-        contractAddress &&
-        contractName &&
-        isPassing
-          ? [
-              makeContractSTXPostCondition(
-                contractAddress,
-                contractName,
-                postConditionCode,
-                postConditionAmount,
-              ),
-            ]
-          : [];
-          return postConditions;
+      const postConditions = isPassing ? [
+          makeContractSTXPostCondition(
+            contractAddress,
+            contractName,
+            postConditionCode,
+            postConditionAmount,
+          ),
+        ] : [];
+      return postConditions;
     }
   }
 };

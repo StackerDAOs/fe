@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 
 // Web3
-import { useUser } from '@micro-stacks/react';
+import { useAccount } from '@micro-stacks/react';
 
 // Components
 import { DepositButton, InitButton } from '@components/Actions';
@@ -25,8 +25,8 @@ import { adminAddress } from '@common/constants';
 export const AppFooter = () => {
   const [depositAmount, setDepositAmount] = useState('');
   const [bootstrap, setBootstrap] = useState('');
-  const { currentStxAddress } = useUser();
-  if (currentStxAddress === adminAddress) {
+  const { stxAddress } = useAccount();
+  if (stxAddress === adminAddress) {
     return (
       <Box as='section'>
         <Box

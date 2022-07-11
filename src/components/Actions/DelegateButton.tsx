@@ -13,7 +13,7 @@ import { Notification } from '@components/Notification';
 
 // Web3
 import { standardPrincipalCV } from 'micro-stacks/clarity';
-import { useUser } from '@micro-stacks/react';
+import { useAccount } from '@micro-stacks/react';
 
 // Utils
 import { validateStacksAddress } from '@common/helpers';
@@ -33,9 +33,9 @@ export const DelegateButton = ({
   isDisabled,
 }: any) => {
   const { dao } = useDAO();
-  const { currentStxAddress }: any = useUser();
-  const { mutate: createDelegate } = useAddDelegate(currentStxAddress);
-  const { mutate: deleteDelegate } = useDeleteDelegate(currentStxAddress);
+  const { stxAddress } = useAccount();
+  const { mutate: createDelegate } = useAddDelegate(stxAddress);
+  const { mutate: deleteDelegate } = useDeleteDelegate(stxAddress);
   const toast = useToast();
 
   const onFinish: any = async (data: any) => {
@@ -43,13 +43,13 @@ export const DelegateButton = ({
       if (functionName === 'delegate') {
         createDelegate({
           organizationId: dao?.id,
-          delegatorAddress: currentStxAddress,
+          delegatorAddress: stxAddress,
           delegateAddress: delegateAddress,
         });
       } else {
         deleteDelegate({
           organizationId: dao?.id,
-          delegatorAddress: currentStxAddress,
+          delegatorAddress: stxAddress,
         });
       }
       toast({

@@ -1,5 +1,5 @@
 // Web3
-import { useUser } from '@micro-stacks/react';
+import { useAccount } from '@micro-stacks/react';
 
 // Components
 import { ContractDeployButton } from '@widgets/ContractDeployButton';
@@ -18,7 +18,7 @@ export const SocialProposalButton = ({
   description,
   closeOnDeploy,
 }: any) => {
-  const { currentStxAddress } = useUser();
+  const { stxAddress } = useAccount();
   const { mutate: createProposal } = useAddProposal();
   const { data: contractName } = useGenerateName();
 
@@ -26,8 +26,8 @@ export const SocialProposalButton = ({
     try {
       createProposal({
         organizationId: organization?.id,
-        contractAddress: `${currentStxAddress}.${contractName}` || '',
-        submittedBy: currentStxAddress || '',
+        contractAddress: `${stxAddress}.${contractName}`,
+        submittedBy: stxAddress || '',
         type: 'Social',
         transactionId: `0x${data.txId}`,
         name: contractName,
@@ -38,7 +38,7 @@ export const SocialProposalButton = ({
     }
   };
 
-  const contract = socialProposal(contractName, description, currentStxAddress);
+  const contract = socialProposal(contractName, description, stxAddress);
 
   return (
     <ContractDeployButton

@@ -18,7 +18,7 @@ import {
 import { defaultTo } from 'lodash';
 
 // Web3
-import { useAuth, useUser, useNetwork } from '@micro-stacks/react';
+import { useAuth, useAccount, useNetwork } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
 import { standardPrincipalCV } from 'micro-stacks/clarity';
 
@@ -54,7 +54,7 @@ const Governance = () => {
   });
   const router = useRouter();
   const { dao } = router.query as any;
-  const { currentStxAddress } = useUser();
+  const { stxAddress } = useAccount();
   const { isSignedIn } = useAuth();
   const { network } = useNetwork();
   const { organization } = useOrganization({ name: dao });
@@ -76,16 +76,16 @@ const Governance = () => {
           network,
           contractAddress,
           contractName,
-          senderAddress: currentStxAddress,
-          functionArgs: [standardPrincipalCV(currentStxAddress || '')],
+          senderAddress: contractAddress,
+          functionArgs: [standardPrincipalCV(stxAddress || '')],
           functionName: 'is-delegating',
         });
         const currentDelegate: any = await fetchReadOnlyFunction({
           network,
           contractAddress,
           contractName,
-          senderAddress: currentStxAddress,
-          functionArgs: [standardPrincipalCV(currentStxAddress || '')],
+          senderAddress: contractAddress,
+          functionArgs: [standardPrincipalCV(stxAddress || '')],
           functionName: 'get-delegate',
         });
         setState({
@@ -98,13 +98,7 @@ const Governance = () => {
       }
     };
     fetch();
-  }, [
-    organization,
-    contractAddress,
-    contractName,
-    currentStxAddress,
-    isSignedIn,
-  ]);
+  }, [organization, contractAddress, contractName, stxAddress, isSignedIn]);
 
   return (
     <motion.div
@@ -221,7 +215,7 @@ const Governance = () => {
                   state.isDelegating ? 'revoke-delegation' : 'delegate'
                 }
                 delegateAddress={
-                  state.isDelegating ? currentStxAddress : state.delegateAddress
+                  state.isDelegating ? stxAddress : state.delegateAddress
                 }
                 isDisabled={
                   state.isDelegating

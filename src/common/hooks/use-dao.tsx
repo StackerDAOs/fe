@@ -1,6 +1,6 @@
 // Hook (use-dao.tsx)
 import { useCallback, useEffect, useState } from 'react';
-import { useUser, useNetwork } from '@micro-stacks/react';
+import { useAccount, useNetwork } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
 import { standardPrincipalCV, stringAsciiCV } from 'micro-stacks/clarity';
 import { tokenToNumber } from '@common/helpers';
@@ -24,7 +24,7 @@ export function useDAO({ organization }: IDAO = {}) {
     canVote: false,
   });
   const { network } = useNetwork();
-  const { currentStxAddress: senderAddress } = useUser();
+  const { stxAddress } = useAccount();
   const {
     contractAddress: governanceTokenContractAddress,
     contractName: governanceTokenContractName,
@@ -41,12 +41,13 @@ export function useDAO({ organization }: IDAO = {}) {
   async function fetchBalance() {
     if (governanceTokenContractName && governanceTokenContractName) {
       try {
+        const senderAddress: any = stxAddress;
         const balance: any = await fetchReadOnlyFunction({
           network,
           contractAddress: governanceTokenContractAddress,
           contractName: governanceTokenContractName,
           senderAddress,
-          functionArgs: [standardPrincipalCV(senderAddress || '')],
+          functionArgs: [standardPrincipalCV(senderAddress)],
           functionName: 'get-balance',
         });
         const decimals: any = await fetchReadOnlyFunction({
@@ -75,6 +76,7 @@ export function useDAO({ organization }: IDAO = {}) {
   async function fetchCanPropose() {
     if (submissionContractAddress && submissionContractName) {
       try {
+        const senderAddress: any = stxAddress;
         const canPropose: any = await fetchReadOnlyFunction({
           network,
           contractAddress: submissionContractAddress,
@@ -93,6 +95,7 @@ export function useDAO({ organization }: IDAO = {}) {
   async function fetchCanVote() {
     if (votingContractAddress && votingContractName) {
       try {
+        const senderAddress: any = stxAddress;
         const canVote: any = await fetchReadOnlyFunction({
           network,
           contractAddress: votingContractAddress,

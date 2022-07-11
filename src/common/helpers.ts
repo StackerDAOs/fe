@@ -1,5 +1,15 @@
 import { c32addressDecode } from 'c32check';
 
+export const contractPrincipal = (address: string) => {
+  return address.split('.');
+}
+
+export const getExplorerLink = (txId: string) => {
+  return process.env.NODE_ENV !== 'production'
+  ? `http://localhost:8000/txid/${txId}?chain=testnet`
+  : `https://explorer.stacks.co/txid/${txId}?chain=mainnet`
+}
+
 export const truncate = (str: string, firstCharCount = str.length, endCharCount = 0, dotCount = 3) => {
   let convertedStr='';
   convertedStr+=str.substring(0, firstCharCount);

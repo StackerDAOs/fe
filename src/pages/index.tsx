@@ -11,7 +11,7 @@ import {
 import { supabase } from '@utils/supabase';
 
 // Web3
-import { useAuth, useUser } from '@micro-stacks/react';
+import { useAuth, useAccount } from '@micro-stacks/react';
 
 // Animation
 import { motion } from 'framer-motion';
@@ -47,7 +47,7 @@ const initialState = {
 
 const Index = () => {
   const { isSignedIn } = useAuth();
-  const { currentStxAddress } = useUser();
+  const { stxAddress } = useAccount();
   const [state, setState] = useState<TProjectsTable>(initialState);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const Index = () => {
       }
     };
     fetchProjects();
-  }, [currentStxAddress]);
+  }, [stxAddress]);
 
   if (state.isLoading) {
     return null;

@@ -8,7 +8,7 @@ import { ConnectWalletModal } from '@components/Modal/ConnectWalletModal';
 
 export const WalletConnectButton = (props: ButtonProps) => {
   const [installed, setInstalled] = useState(false);
-  const { isSignedIn, handleSignIn, handleSignOut, isLoading } = useAuth();
+  const { isSignedIn, openAuthRequest, signOut, isRequestPending } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -21,18 +21,18 @@ export const WalletConnectButton = (props: ButtonProps) => {
 
   const handleClick = () => {
     if (isSignedIn) {
-      handleSignOut();
+      signOut();
       localStorage.setItem('chakra-ui-color-mode', 'dark');
       router.push('/');
     } else {
-      handleSignIn();
+      openAuthRequest();
     }
   };
 
   if (installed) {
     return (
       <Button {...props} onClick={handleClick}>
-        {isLoading ? (
+        {isRequestPending ? (
           'Loading...'
         ) : isSignedIn ? (
           <Text isTruncated>Disconnect</Text>

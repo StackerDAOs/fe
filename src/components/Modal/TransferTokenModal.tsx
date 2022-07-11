@@ -20,7 +20,7 @@ import {
 } from '@chakra-ui/react';
 
 // Web3
-import { useUser, useNetwork } from '@micro-stacks/react';
+import { useAccount, useNetwork } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
 
 // Hooks
@@ -51,7 +51,7 @@ import { FaArrowRight } from 'react-icons/fa';
 
 export const TransferTokenModal = ({ balance, contractAddress }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { currentStxAddress } = useUser();
+  const { stxAddress } = useAccount();
   const { network } = useNetwork();
   const { dao } = useDAO();
   const { proposeData } = useAuth();
@@ -247,7 +247,7 @@ export const TransferTokenModal = ({ balance, contractAddress }: any) => {
                         Author
                       </Text>
                       <Text color='gray.900' fontSize='sm' fontWeight='regular'>
-                        {currentStxAddress && truncate(currentStxAddress, 4, 4)}
+                        {stxAddress && truncate(stxAddress, 4, 4)}
                       </Text>
                     </Stack>
                   </HStack>
@@ -390,6 +390,7 @@ export const TransferTokenModal = ({ balance, contractAddress }: any) => {
                             description && formatComments(description)
                           }
                           assetAddress={contractAddress}
+                          assetName={state.name}
                           tokenDecimals={Number(state?.decimals)}
                           transferAmount={transferAmount}
                           transferTo={transferTo}
@@ -451,7 +452,7 @@ export const TransferTokenModal = ({ balance, contractAddress }: any) => {
                         Author
                       </Text>
                       <Text color='gray.900' fontSize='sm' fontWeight='regular'>
-                        {currentStxAddress && truncate(currentStxAddress, 4, 4)}
+                        {stxAddress && truncate(stxAddress, 4, 4)}
                       </Text>
                     </Stack>
                   </HStack>
