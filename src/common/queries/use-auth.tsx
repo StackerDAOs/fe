@@ -10,6 +10,15 @@ export function useAuth() {
   const { extension: submission } = useExtension('Submission');
   const { extension: voting } = useExtension('Voting');
   const { isSignedIn } = useMicroStacks();
+  const signedInOptions = {
+    enabled:
+      !!voting?.contractAddress && !!submission?.contractAddress && !!balance,
+    refetchOnWindowFocus: false,
+  };
+  const signedOutOptions = {
+    enabled: !!voting?.contractAddress && !!submission?.contractAddress,
+    refetchOnWindowFocus: false,
+  };
 
   const {
     isFetching,
@@ -29,13 +38,7 @@ export function useAuth() {
       const canPropose = balance >= Number(proposeThreshold);
       return { proposeThreshold, canPropose };
     },
-    {
-      enabled:
-        !!voting?.contractAddress &&
-        !!submission?.contractAddress &&
-        balance >= 0,
-      refetchOnWindowFocus: false,
-    },
+    isSignedIn ? signedInOptions : signedOutOptions,
   );
 
   const { data: voteData } = useQuery(
@@ -50,13 +53,7 @@ export function useAuth() {
       const canVote = balance >= Number(voteThreshold);
       return { voteThreshold, canVote };
     },
-    {
-      enabled:
-        !!voting?.contractAddress &&
-        !!submission?.contractAddress &&
-        balance >= 0,
-      refetchOnWindowFocus: false,
-    },
+    isSignedIn ? signedInOptions : signedOutOptions,
   );
 
   return {
