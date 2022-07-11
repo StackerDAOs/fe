@@ -1,7 +1,7 @@
 import { Button, ButtonProps, Spinner } from '@chakra-ui/react';
 
 // Stacks
-import { useContractDeploy } from '@micro-stacks/react';
+import { useOpenContractDeploy } from '@micro-stacks/react';
 
 type ContractDeployType = {
   title?: string;
@@ -13,13 +13,19 @@ type ContractDeployType = {
 export const ContractDeployButton = (
   props: ButtonProps & ContractDeployType,
 ) => {
+  const { openContractDeploy, isRequestPending } = useOpenContractDeploy();
   const { title, contractName, codeBody, onFinish } = props;
 
-  const { handleContractDeploy, isLoading } = useContractDeploy({
-    codeBody,
-    contractName,
-    onFinish,
-  });
+  const handleContractDeploy = async () => {
+    await openContractDeploy({
+      contractName,
+      codeBody,
+      onFinish,
+      onCancel: () => {
+        console.log('popup closed!');
+      },
+    });
+  };
 
   return (
     <Button
@@ -28,7 +34,7 @@ export const ContractDeployButton = (
       _active={{ opacity: 1 }}
       onClick={() => handleContractDeploy()}
     >
-      {isLoading ? <Spinner /> : title || 'Deploy'}
+      {isRequestPending ? <Spinner /> : title || 'Deploy'}
     </Button>
   );
 };

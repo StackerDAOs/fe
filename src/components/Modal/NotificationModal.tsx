@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 
 // Web3
-import { useUser } from '@micro-stacks/react';
+import { useAccount } from '@micro-stacks/react';
 
 // Components
 import { ContractCardList } from '@components/ContractCardList';
@@ -26,7 +26,7 @@ import Avatar from 'boring-avatars';
 import { truncate } from '@common/helpers';
 
 export const NotificationModal = ({ title }: any) => {
-  const { currentStxAddress } = useUser();
+  const { stxAddress }: any = useAccount();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -82,7 +82,7 @@ export const NotificationModal = ({ title }: any) => {
               <VStack maxW='xl' spacing='2' align='flex-start'>
                 <Avatar
                   size={50}
-                  name={currentStxAddress}
+                  name={stxAddress}
                   variant='beam'
                   colors={[
                     '#50DDC3',
@@ -93,7 +93,7 @@ export const NotificationModal = ({ title }: any) => {
                   ]}
                 />
                 <Heading size='sm' pb='2' fontWeight='light' color='light.900'>
-                  {currentStxAddress && truncate(currentStxAddress, 4, 4)}
+                  {stxAddress && truncate(stxAddress, 4, 4)}
                 </Heading>
                 <HStack spacing='3'>
                   <Stack spacing='2' direction='row'>

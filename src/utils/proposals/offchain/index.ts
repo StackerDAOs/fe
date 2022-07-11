@@ -1,6 +1,6 @@
 import { traitPrincipal } from "@common/constants";
 
-export const socialProposal = (title: string, description: string, proposer: string | undefined = 'StackerDAOs') => `
+export const socialProposal = (title: string, description: string, proposer: string | null = 'StackerDAOs') => `
 ;; Type: Social
 ;; Author: ${proposer}
 ;; Title: ${title}

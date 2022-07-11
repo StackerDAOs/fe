@@ -4,8 +4,6 @@ export { useContractEvents } from './use-contract-events';
 export { useDAO } from './use-dao';
 export { useExecutorEvents } from './use-executor-events';
 export { useOrganization } from './use-organization';
-export { useProposal } from './use-proposal';
-export { useProposals } from './use-proposals';
 export { useGovernanceToken } from './use-governance-token';
 export { useGovernanceTokenExtension } from './use-governance-token-extension';
 export { useMempool } from './use-mempool';

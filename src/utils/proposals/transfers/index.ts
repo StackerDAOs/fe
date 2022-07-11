@@ -1,6 +1,6 @@
 import { traitPrincipal } from "@common/constants";
 
-export const sendFunds = (title: string, contractAddress: string, description: string, amount: string, recipientAddress: string, proposer: string | undefined = 'StackerDAOs') => `
+export const sendFunds = (title: string, contractAddress: string, description: string, amount: string, recipientAddress: string, proposer: string | null = 'StackerDAOs') => `
 ;; Type: Transfer STX  
 ;; Author: ${proposer}
 ;; Title: ${title}
@@ -20,7 +20,7 @@ export const sendFunds = (title: string, contractAddress: string, description: s
   )
 `;
 
-export const sendTokens = (title: string, contractAddress: string, tokenContract: string, description: string, decimals: string = '6', amount: string, recipientAddress: string, proposer: string | undefined = 'StackerDAOs') => `
+export const sendTokens = (title: string, contractAddress: string, tokenContract: string, description: string, decimals: string = '6', amount: string, recipientAddress: string, proposer: string | null = 'StackerDAOs') => `
 ;; Type: Transfer Tokens  
 ;; Author: ${proposer}
 ;; Title: ${title}

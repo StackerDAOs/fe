@@ -9,7 +9,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useNetwork, useUser } from '@micro-stacks/react';
+import { useNetwork, useAccount } from '@micro-stacks/react';
 import { fetchAccountStxBalance } from 'micro-stacks/api';
 
 // Components
@@ -23,14 +23,14 @@ export const DepositCard = () => {
   const [balance, setBalance] = useState<string | undefined>('');
   const [depositAmount, setDepositAmount] = useState('');
   const { network } = useNetwork();
-  const { currentStxAddress } = useUser();
+  const { stxAddress } = useAccount();
   useEffect(() => {
     const fetch = async () => {
-      if (currentStxAddress) {
+      if (stxAddress) {
         try {
           const data = await fetchAccountStxBalance({
             url: network.getCoreApiUrl(),
-            principal: currentStxAddress || '',
+            principal: stxAddress || '',
           });
           const balance = data?.balance?.toString() || '0';
           setBalance(ustxToStx(balance));

@@ -22,7 +22,7 @@ import {
 import { ErrorMessage } from '@hookform/error-message';
 
 // Web3
-import { useUser } from '@micro-stacks/react';
+import { useAccount } from '@micro-stacks/react';
 
 // Hooks
 import { useForm, Controller } from 'react-hook-form';
@@ -51,7 +51,7 @@ import { FaArrowRight } from 'react-icons/fa';
 
 export const TransferStxModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { currentStxAddress } = useUser();
+  const { stxAddress } = useAccount();
   const { dao } = useDAO();
   const { proposeData } = useAuth();
   const { token, balance } = useToken();
@@ -197,7 +197,7 @@ export const TransferStxModal = () => {
                         Author
                       </Text>
                       <Text color='gray.900' fontSize='sm' fontWeight='regular'>
-                        {currentStxAddress && truncate(currentStxAddress, 4, 4)}
+                        {stxAddress && truncate(stxAddress, 4, 4)}
                       </Text>
                     </Stack>
                   </HStack>
@@ -391,7 +391,7 @@ export const TransferStxModal = () => {
                         Author
                       </Text>
                       <Text color='gray.900' fontSize='sm' fontWeight='regular'>
-                        {currentStxAddress && truncate(currentStxAddress, 4, 4)}
+                        {stxAddress && truncate(stxAddress, 4, 4)}
                       </Text>
                     </Stack>
                   </HStack>

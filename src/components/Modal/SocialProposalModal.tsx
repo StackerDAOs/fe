@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 
 // Web3
-import { useUser } from '@micro-stacks/react';
+import { useAccount } from '@micro-stacks/react';
 
 // Hooks
 import { useForm } from 'react-hook-form';
@@ -41,7 +41,7 @@ import Avatar from 'boring-avatars';
 
 export const SocialProposalModal = ({ icon }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { currentStxAddress } = useUser();
+  const { stxAddress } = useAccount();
   const { dao } = useDAO();
   const { proposeData } = useAuth();
   const { token } = useToken();
@@ -184,7 +184,7 @@ export const SocialProposalModal = ({ icon }: any) => {
                         Author
                       </Text>
                       <Text color='gray.900' fontSize='sm' fontWeight='regular'>
-                        {currentStxAddress && truncate(currentStxAddress, 4, 4)}
+                        {stxAddress && truncate(stxAddress, 4, 4)}
                       </Text>
                     </Stack>
                   </HStack>
@@ -306,7 +306,7 @@ export const SocialProposalModal = ({ icon }: any) => {
                         Author
                       </Text>
                       <Text color='gray.900' fontSize='sm' fontWeight='regular'>
-                        {currentStxAddress && truncate(currentStxAddress, 4, 4)}
+                        {stxAddress && truncate(stxAddress, 4, 4)}
                       </Text>
                     </Stack>
                   </HStack>

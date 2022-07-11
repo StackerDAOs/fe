@@ -55,7 +55,7 @@ export const ProposalCard = ({
         </Badge>
       ) : isClosed ? (
         <Badge bg='base.800' color='secondary.900' size='sm' py='1' px='3'>
-          Voting compeleted
+          Ready to execute
         </Badge>
       ) : isOpen ? (
         <Badge bg='base.800' color='secondary.900' size='sm' py='1' px='3'>

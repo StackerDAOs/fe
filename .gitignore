@@ -39,3 +39,7 @@ public/workbox-*.js
 
 # scripts
 tsconfig.tsbuildinfo
+
+# Supabase
+**/supabase/.branches
+**/supabase/.temp

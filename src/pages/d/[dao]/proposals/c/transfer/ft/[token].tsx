@@ -580,6 +580,7 @@ const Token = () => {
               isSubmitting={isSubmitting}
               description={formatComments(description)}
               assetAddress={token}
+              assetName={state.name}
               tokenDecimals={Number(state?.decimals)}
               transferAmount={transferAmount}
               transferTo={transferTo}
@@ -737,6 +738,7 @@ const Token = () => {
               isSubmitting={isSubmitting}
               description={formatComments(description)}
               assetAddress={token}
+              assetName={state.name}
               tokenDecimals={Number(state?.decimals)}
               transferAmount={transferAmount}
               transferTo={transferTo}

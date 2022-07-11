@@ -72,13 +72,13 @@ export const ProposalActivityTable = (
                   Name
                 </Th>
                 <Th bg='transparent' border='none'>
-                  Weight
+                  Tokens
                 </Th>
                 <Th bg='transparent' border='none'>
                   Voter
                 </Th>
                 <Th bg='transparent' border='none'>
-                  Voted by
+                  Delegate
                 </Th>
               </Tr>
             </Thead>
@@ -117,9 +117,7 @@ export const ProposalActivityTable = (
                         {delegate?.value && truncate(delegate?.value, 4, 4)}
                       </Td>
                     ) : (
-                      <Td borderColor='base.500'>
-                        {from && truncate(from, 4, 4)}
-                      </Td>
+                      <Td borderColor='base.500'>NA</Td>
                     )}
                   </Tr>
                 );

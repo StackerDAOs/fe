@@ -2,7 +2,7 @@
 import { ContractCallButton } from '@widgets/ContractCallButton';
 
 // Web3
-import { useUser } from '@micro-stacks/react';
+import { useAccount } from '@micro-stacks/react';
 import { uintCV } from 'micro-stacks/clarity';
 import {
   FungibleConditionCode,
@@ -14,7 +14,7 @@ import { stxToUstx } from '@common/helpers';
 import { vaultAddress } from '@common/constants';
 
 export const DepositButton = ({ title, amount }: any) => {
-  const { currentStxAddress } = useUser();
+  const { stxAddress } = useAccount();
 
   // TODO: make calls to get vault address of organization
   const getDepositData = ({ amount }: any) => {
@@ -24,10 +24,10 @@ export const DepositButton = ({ title, amount }: any) => {
         contractName: vaultAddress.split('.')[1],
         functionName: 'deposit',
         functionArgs: [uintCV(stxToUstx(amount))],
-        postConditions: currentStxAddress
+        postConditions: stxAddress
           ? [
               makeStandardSTXPostCondition(
-                currentStxAddress || '', // Post condition address
+                stxAddress, // Post condition address
                 FungibleConditionCode.Equal, // Post condition code
                 stxToUstx(amount), // Post condition amount
               ),

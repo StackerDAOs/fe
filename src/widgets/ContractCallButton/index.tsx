@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 
 // Stacks
-import { useNetwork, useContractCall } from '@micro-stacks/react';
+import { useNetwork, useOpenContractCall } from '@micro-stacks/react';
 import { fetchTransaction } from 'micro-stacks/api';
 
 // Hooks
@@ -25,6 +25,7 @@ type ContractCallType = {
 };
 
 export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
+  const { openContractCall, isRequestPending } = useOpenContractCall();
   const { network } = useNetwork();
   const toast = useToast();
   const [transaction, setTransaction] = useState({
@@ -56,14 +57,28 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
     }
   }
 
-  const {
-    contractAddress,
-    contractName,
-    functionName,
-    functionArgs,
-    postConditions,
-    onFinish,
-  }: any = props;
+  const handleOpenContractCall = async () => {
+    const {
+      contractAddress,
+      contractName,
+      functionName,
+      functionArgs,
+      postConditions,
+      onFinish,
+    }: any = props;
+
+    await openContractCall({
+      contractAddress,
+      contractName,
+      functionName,
+      functionArgs,
+      postConditions,
+      onFinish,
+      onCancel: () => {
+        console.log('popup closed!');
+      },
+    });
+  };
 
   const onComplete = useCallback((data: any) => {
     toast({
@@ -109,15 +124,6 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
     });
   }, []);
 
-  const { handleContractCall, isLoading } = useContractCall({
-    contractAddress,
-    contractName,
-    functionName,
-    functionArgs,
-    postConditions,
-    onFinish,
-  });
-
   return (
     <Button
       {...props}
@@ -127,10 +133,10 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
       onClick={
         transaction?.isPending
           ? () => console.log(null)
-          : () => handleContractCall()
+          : () => handleOpenContractCall()
       }
     >
-      {isLoading ? (
+      {isRequestPending ? (
         <Spinner />
       ) : transaction?.isPending ? (
         <Spinner size='xs' />
