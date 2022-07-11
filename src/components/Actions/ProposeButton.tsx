@@ -44,7 +44,7 @@ export const ProposeButton = ({ proposalContractAddress }: any) => {
     }
   };
 
-  const startHeight = currentBlockHeight + 300; // TODO: 50 needs to be dynamic startBlockHeight min
+  const startHeight = currentBlockHeight + 350; // TODO: 50 needs to be dynamic startBlockHeight min
 
   const functionName = 'propose';
   const functionArgs = proposalContractAddress && [
