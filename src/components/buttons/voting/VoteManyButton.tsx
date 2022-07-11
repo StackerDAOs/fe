@@ -84,7 +84,7 @@ export const VoteManyButton = (props: TVoteManyButtonProps) => {
         console.log('Cancelled vote');
       },
     });
-  }, [proposalPrincipal]);
+  }, [proposalPrincipal, delegatorData]);
 
   const decisionText = voteFor ? 'approve' : 'reject';
   const onFinish = async (data: any) => {
