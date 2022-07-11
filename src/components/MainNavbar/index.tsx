@@ -5,7 +5,6 @@ import {
   ButtonGroup,
   Flex,
   HStack,
-  IconButton,
   Image,
   Popover,
   PopoverContent,
@@ -245,12 +244,16 @@ export const MainNavbar = () => {
               </Flex>
             </>
           ) : (
-            <IconButton
-              display='none'
-              color='white'
-              icon={<FaEllipsisH fontSize='1.25rem' />}
-              aria-label='Open Menu'
-            />
+            stxAddress && (
+              <WalletConnectButton
+                color='base.900'
+                size='sm'
+                fontWeight='medium'
+                bg='light.900'
+                _hover={{ opacity: 0.9 }}
+                _active={{ opacity: 1 }}
+              />
+            )
           )}
         </HStack>
       </Box>
