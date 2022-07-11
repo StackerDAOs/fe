@@ -26,9 +26,8 @@ import { supabase } from '@utils/supabase';
 import { AppLayout } from '@components/Layout/AppLayout';
 import { ProposalActivityTable } from '@components/tables';
 import { Card } from '@components/Card';
-import { ExecuteProposalButton } from '@components/Actions';
-import { VoteManyForButton } from '@components/Actions';
-import { VoteManyAgainstButton } from '@components/Actions';
+import { ExecuteButton } from '@components/buttons';
+import { VoteManyButton } from '@components/buttons';
 import { WalletConnectButton } from '@components/WalletConnectButton';
 
 //  Animation
@@ -57,7 +56,6 @@ import {
 // Queries
 import {
   useAuth,
-  useDelegates,
   useExtension,
   useEvents,
   useProposal,
@@ -99,13 +97,6 @@ const ProposalView = () => {
     isIdle,
     data: proposalInfo,
   } = useProposal(proposalPrincipal);
-  const { data: delegators } = useDelegates();
-  // const { data: delegatorEvents } = useEvents(
-  //   voting?.contractAddress,
-  //   'delegate',
-  //   undefined,
-  //   0,
-  // );
   const { data: voterEvents } = useEvents(
     voting?.contractAddress,
     'vote',
@@ -151,11 +142,11 @@ const ProposalView = () => {
     currentBlockHeight < proposalInfo?.proposal?.startBlockHeight;
   const isClosed =
     currentBlockHeight > Number(proposalInfo?.proposal?.endBlockHeight);
-
-  const canExecute =
+  const isExecutable =
     currentBlockHeight >=
     Number(proposalInfo?.proposal?.endBlockHeight) +
       Number(proposalInfo?.executionDelay);
+  const canExecute = isEligible && isExecutable;
   const isOpen =
     currentBlockHeight <= proposalInfo?.proposal?.endBlockHeight &&
     currentBlockHeight >= proposalInfo?.proposal?.startBlockHeight;
@@ -174,27 +165,6 @@ const ProposalView = () => {
   const isPassing =
     convertedVotesFor > convertedVotesAgainst &&
     convertedTotalVotes >= Number(proposalInfo?.quorumThreshold);
-
-  const voteData = {
-    contractAddress: voting?.contractAddress.split('.')[0],
-    contractName: voting?.contractAddress.split('.')[1],
-    proposalContractAddress: proposalInfo?.contractAddress.split('.')[0],
-    proposalContractName: proposalInfo?.contractAddress.split('.')[1],
-    delegatorData: delegators,
-  };
-
-  const concludeData = {
-    contractAddress: voting?.contractAddress.split('.')[0],
-    contractName: voting?.contractAddress.split('.')[1],
-    votingData: {
-      votesFor: proposalInfo?.proposal?.votesFor,
-      votesAgainst: proposalInfo?.proposal?.votesAgainst,
-      totalVotes,
-      quorumThreshold: proposalInfo?.quorumThreshold,
-    },
-    proposalContractAddress: proposalInfo?.contractAddress.split('.')[0],
-    proposalContractName: proposalInfo?.contractAddress.split('.')[1],
-  };
 
   if (isLoading || isIdle) {
     return null;
@@ -260,6 +230,22 @@ const ProposalView = () => {
                             <FaInfoCircle fontSize='0.9rem' />
                             <Text fontSize='sm' fontWeight='medium'>
                               Proposal is concluded
+                            </Text>
+                          </HStack>
+                        </Badge>
+                      ) : isExecutable && !isEligible ? (
+                        <Badge
+                          bg='base.800'
+                          color='secondary.900'
+                          size='sm'
+                          px='3'
+                          py='1'
+                        >
+                          <HStack>
+                            <FaExclamationCircle fontSize='0.9rem' />
+                            <Text fontSize='sm' fontWeight='medium'>
+                              At least {Number(votingData?.voteThreshold)}{' '}
+                              {token?.symbol} required to execute
                             </Text>
                           </HStack>
                         </Badge>
@@ -437,12 +423,67 @@ const ProposalView = () => {
                         justifyContent='flex-start'
                         spacing='6'
                       >
-                        <VoteManyForButton {...voteData} />
-                        <VoteManyAgainstButton {...voteData} />
+                        <VoteManyButton
+                          text='Approve'
+                          color='white'
+                          bg='secondary.900'
+                          isFullWidth
+                          proposalPrincipal={proposalPrincipal}
+                          voteFor={true}
+                          _hover={{ opacity: 0.9 }}
+                          _active={{ opacity: 1 }}
+                          _disabled={{
+                            bg: 'secondary.900',
+                            opacity: 0.5,
+                            cursor: 'not-allowed',
+                            _hover: {
+                              bg: 'secondary.900',
+                              opacity: 0.5,
+                              cursor: 'not-allowed',
+                            },
+                          }}
+                        />
+                        <VoteManyButton
+                          text='Reject'
+                          color='white'
+                          bg='base.800'
+                          isFullWidth
+                          proposalPrincipal={proposalPrincipal}
+                          voteFor={false}
+                          _hover={{ opacity: 0.9 }}
+                          _active={{ opacity: 1 }}
+                          _disabled={{
+                            bg: 'base.800',
+                            opacity: 0.5,
+                            cursor: 'not-allowed',
+                            _hover: {
+                              bg: 'base.800',
+                              opacity: 0.5,
+                              cursor: 'not-allowed',
+                            },
+                          }}
+                        />
                       </HStack>
                     </motion.div>
                   ) : canExecute && !proposalInfo?.proposal?.concluded ? (
-                    <ExecuteProposalButton {...concludeData} />
+                    <ExecuteButton
+                      color='white'
+                      bg='secondary.900'
+                      isFullWidth
+                      proposalPrincipal={proposalPrincipal}
+                      _hover={{ opacity: 0.9 }}
+                      _active={{ opacity: 1 }}
+                      _disabled={{
+                        bg: 'secondary.900',
+                        opacity: 0.5,
+                        cursor: 'not-allowed',
+                        _hover: {
+                          bg: 'secondary.900',
+                          opacity: 0.5,
+                          cursor: 'not-allowed',
+                        },
+                      }}
+                    />
                   ) : null}
                 </VStack>
               </Box>
@@ -497,6 +538,16 @@ const ProposalView = () => {
                             py='1'
                           >
                             Executed
+                          </Badge>
+                        ) : isExecutable && !isEligible ? (
+                          <Badge
+                            bg='base.800'
+                            color='secondary.900'
+                            size='sm'
+                            px='3'
+                            py='1'
+                          >
+                            Ready to {isPassing ? `execute` : `conclude`}
                           </Badge>
                         ) : isClosed && !canExecute ? (
                           <Badge

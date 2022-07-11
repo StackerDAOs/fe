@@ -18,7 +18,7 @@ import {
 import { EmptyState } from '@components/EmptyState';
 
 // Web3
-import { useUser } from '@micro-stacks/react';
+import { useAccount } from '@micro-stacks/react';
 
 // Utils
 import Avatar from 'boring-avatars';
@@ -42,7 +42,7 @@ const initialState = {
 
 export const ProjectsTable = (props: TableProps) => {
   const [state, setState] = useState<TProjectsTable>(initialState);
-  const { currentStxAddress } = useUser();
+  const { stxAddress } = useAccount();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -60,7 +60,7 @@ export const ProjectsTable = (props: TableProps) => {
       }
     };
     fetchProjects();
-  }, [currentStxAddress]);
+  }, [stxAddress]);
 
   if (state.projects.length === 0) {
     return <EmptyState heading='No projects found' />;

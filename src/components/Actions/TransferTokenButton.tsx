@@ -1,11 +1,11 @@
 // Web3
-import { useUser } from '@micro-stacks/react';
+import { useAccount } from '@micro-stacks/react';
 
 // Components
 import { ContractDeployButton } from '@widgets/ContractDeployButton';
 
 /// Queries
-import { useGenerateName } from '@common/queries';
+import { useExtension, useGenerateName } from '@common/queries';
 
 // Mutations
 import { useAddProposal } from '@common/mutations/proposals';
@@ -17,24 +17,32 @@ export const TransferTokenButton = ({
   organization,
   description,
   assetAddress,
+  assetName,
   tokenDecimals,
   transferAmount,
   transferTo,
   closeOnDeploy,
 }: any) => {
-  const { currentStxAddress } = useUser();
+  const { stxAddress } = useAccount();
   const { mutate: createProposal } = useAddProposal();
   const { data: contractName } = useGenerateName();
+  const { extension: vault } = useExtension('Vault');
 
   const onFinishInsert: any = async (data: any) => {
     try {
       createProposal({
         organizationId: organization?.id,
-        contractAddress: `${currentStxAddress}.${contractName}` || '',
-        submittedBy: currentStxAddress || '',
+        contractAddress: `${stxAddress}.${contractName}` || '',
+        submittedBy: stxAddress || '',
         type: 'Transfer Token',
         transactionId: `0x${data.txId}`,
         name: contractName,
+        postConditions: {
+          from: vault?.contractAddress,
+          assetAddress,
+          assetName,
+          amount: transferAmount,
+        },
       });
       closeOnDeploy();
     } catch (e: any) {
@@ -50,7 +58,7 @@ export const TransferTokenButton = ({
     tokenDecimals,
     transferAmount,
     transferTo,
-    currentStxAddress,
+    stxAddress,
   );
 
   return (

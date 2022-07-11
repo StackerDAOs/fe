@@ -1,6 +1,6 @@
 // Hook (use-organization.tsx)
 import { useEffect, useState } from 'react';
-import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
+import { useAccount, useNetwork } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
 import { standardPrincipalCV } from 'micro-stacks/clarity';
 
@@ -31,7 +31,7 @@ export function useGovernanceToken({ organization }: IVotingExtension = {}) {
   // TODO: check if oranization exists before checking balance
   const [state, setState] = useState<TVotingExtension>(initialState);
   const { network } = useNetwork();
-  const currentStxAddress = useCurrentStxAddress();
+  const { stxAddress }: any = useAccount();
 
   useEffect(() => {
     async function fetchGovernanceToken() {
@@ -41,13 +41,13 @@ export function useGovernanceToken({ organization }: IVotingExtension = {}) {
       );
       const contractAddress = governanceToken?.contractAddress?.split('.')[0];
       const contractName = governanceToken?.contractAddress?.split('.')[1];
-      const senderAddress = currentStxAddress;
+      const senderAddress = stxAddress;
 
-      const functionArgsForBalance = currentStxAddress
-        ? [standardPrincipalCV(currentStxAddress || '')]
+      const functionArgsForBalance = stxAddress
+        ? [standardPrincipalCV(stxAddress || '')]
         : [];
       try {
-        if (currentStxAddress && contractAddress && contractName) {
+        if (stxAddress && contractAddress && contractName) {
           const balance: any = await fetchReadOnlyFunction({
             network,
             contractAddress,
@@ -87,7 +87,7 @@ export function useGovernanceToken({ organization }: IVotingExtension = {}) {
       }
     }
     fetchGovernanceToken();
-  }, [organization, currentStxAddress]);
+  }, [organization, stxAddress]);
 
   return {
     isLoading: state.isLoading,

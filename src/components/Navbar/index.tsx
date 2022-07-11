@@ -18,23 +18,23 @@ import { FiMenu } from 'react-icons/fi';
 import { ProjectsPopover } from '@components/ProjectsPopover';
 
 // Web3
-import { useUser, useNetwork, useIsSignedIn } from '@micro-stacks/react';
+import { useAccount, useAuth, useNetwork } from '@micro-stacks/react';
 import { fetchNamesByAddress } from 'micro-stacks/api';
 
 export const Navbar = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [bns, setBns] = useState<string | undefined>('');
-  const { currentStxAddress } = useUser();
-  const isSignedIn = useIsSignedIn();
+  const { stxAddress } = useAccount();
+  const { isSignedIn } = useAuth();
   const { network } = useNetwork();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   useEffect(() => {
     async function fetch() {
-      if (isSignedIn && currentStxAddress) {
+      if (isSignedIn && stxAddress) {
         const data = await fetchNamesByAddress({
           url: network.getCoreApiUrl(),
           blockchain: 'stacks',
-          address: currentStxAddress || '',
+          address: stxAddress || '',
         });
         const { names } = data;
         if (names?.length > 0) {
@@ -45,7 +45,7 @@ export const Navbar = () => {
       setLoading(false);
     }
     fetch();
-  }, [currentStxAddress, network]);
+  }, [stxAddress, network]);
 
   if (loading) {
     return null;

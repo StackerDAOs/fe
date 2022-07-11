@@ -31,7 +31,7 @@ import { WalletConnectButton } from '@components/WalletConnectButton';
 import { ActionItemModal } from '@components/Modal';
 
 // Web3
-import { useUser, useAuth, useNetwork } from '@micro-stacks/react';
+import { useAccount, useAuth, useNetwork } from '@micro-stacks/react';
 import { fetchAccountStxBalance, fetchNamesByAddress } from 'micro-stacks/api';
 
 // Utils
@@ -44,8 +44,8 @@ export const AppNavbar = () => {
   const { network } = useNetwork();
   const [bns, setBns] = useState<string | undefined>('');
   const [balance, setBalance] = useState<string | undefined>('');
-  const { currentStxAddress } = useUser();
-  const { isSignedIn, handleSignIn, handleSignOut } = useAuth();
+  const { stxAddress }: any = useAccount();
+  const { isSignedIn, openAuthRequest, signOut } = useAuth();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   // const NETWORK_CHAIN_ID: any = {
   //   1: 'Mainnet',
@@ -54,10 +54,10 @@ export const AppNavbar = () => {
   //     : 'Devnet',
   // };
   const switchAccount = () => {
-    handleSignIn();
+    openAuthRequest();
   };
-  const signOut = () => {
-    handleSignOut();
+  const handleSignOut = () => {
+    signOut();
     localStorage.setItem('chakra-ui-color-mode', 'dark');
   };
   const isSelected = (path: string) => {
@@ -66,17 +66,17 @@ export const AppNavbar = () => {
 
   useEffect(() => {
     async function fetch() {
-      if (isSignedIn && currentStxAddress) {
+      if (isSignedIn && stxAddress) {
         const stxBalance = await fetchAccountStxBalance({
           url: network.getCoreApiUrl(),
-          principal: currentStxAddress || '',
+          principal: stxAddress || '',
         });
         const balance = stxBalance?.balance?.toString() || '0';
         setBalance(ustxToStx(balance));
         const data = await fetchNamesByAddress({
           url: network.getCoreApiUrl(),
           blockchain: 'stacks',
-          address: currentStxAddress || '',
+          address: stxAddress || '',
         });
         const { names } = data;
         if (names?.length > 0) {
@@ -85,7 +85,7 @@ export const AppNavbar = () => {
       }
     }
     fetch();
-  }, [currentStxAddress, balance, network]);
+  }, [isSignedIn, stxAddress, balance, network]);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -174,7 +174,7 @@ export const AppNavbar = () => {
                         <HStack spacing='1'>
                           <Avatar
                             size={15}
-                            name={currentStxAddress}
+                            name={stxAddress}
                             variant='beam'
                             colors={[
                               '#50DDC3',
@@ -192,13 +192,12 @@ export const AppNavbar = () => {
                           >
                             {bns
                               ? bns
-                              : currentStxAddress &&
-                                truncate(currentStxAddress, 4, 4)}
+                              : stxAddress && truncate(stxAddress, 4, 4)}
                           </Text>
                         </HStack>
                       </HStack>
                     ) : null}
-                    {currentStxAddress && (
+                    {stxAddress && (
                       <Popover
                         trigger='click'
                         openDelay={0}
@@ -262,7 +261,7 @@ export const AppNavbar = () => {
                                           fontSize='sm'
                                           fontWeight='regular'
                                           color='white'
-                                          onClick={signOut}
+                                          onClick={handleSignOut}
                                         >
                                           Disconnect
                                         </Text>
@@ -276,7 +275,7 @@ export const AppNavbar = () => {
                         )}
                       </Popover>
                     )}
-                    {!currentStxAddress && (
+                    {!stxAddress && (
                       <WalletConnectButton
                         color='base.900'
                         size='sm'

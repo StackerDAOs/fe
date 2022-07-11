@@ -375,7 +375,7 @@ export async function getTransaction(transactionId: string) {
   }
 }
 
-export async function getDelegates(organizationId: number, currentStxAddress: string) {
+export async function getDelegates(organizationId: number, currentStxAddress: string | null) {
   try {
     const { data, error } = await supabase
       .from('Delegates')
@@ -387,6 +387,28 @@ export async function getDelegates(organizationId: number, currentStxAddress: st
       .limit(100);
     if (error) throw error;
     return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getPostConditions(proposalPrincipal: string) {
+  try {
+    const { data, error } = await supabase
+      .from('Proposals')
+      .select('postConditions')
+      .eq(
+        'contractAddress',
+        proposalPrincipal,
+      );
+    if (error) throw error;
+    if (data) {
+      const [postConditions] = data;
+      // If postCondition?.asset return postConditions
+      // If postConditions?.assetName then... 
+      // // TODO: Need to fetchReadOnly function to `get-name` of token contract
+      return postConditions;
+    }
   } catch (e: any) {
     console.error({ e });
   }
