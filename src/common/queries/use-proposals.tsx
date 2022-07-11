@@ -16,11 +16,11 @@ export function useProposals() {
 
   for (let proposalCount = Number(data); proposalCount > 0; proposalCount--) {
     proposalAddresses.push({
-      queryKey: ['proposal-address', proposalCount.toString()],
+      queryKey: ['proposal-address', proposalCount?.toString()],
       queryFn: async () => {
         const data = await getProposalAddress(
           voting?.contractAddress,
-          proposalCount.toString(),
+          proposalCount?.toString(),
         );
         return data;
       },

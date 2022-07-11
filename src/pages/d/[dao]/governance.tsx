@@ -67,7 +67,7 @@ const Governance = () => {
   };
 
   const balance = defaultTo(userBalance, 0);
-  const tokenBalance = defaultTo(convertToken(balance.toString(), 2), 0);
+  const tokenBalance = defaultTo(convertToken(balance?.toString(), 2), 0);
 
   useEffect(() => {
     const fetch = async () => {

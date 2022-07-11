@@ -79,7 +79,7 @@ export const Header = () => {
     const balance = defaultTo(userBalance, 0);
     const decimals = defaultTo(token?.decimals, 0);
     const tokenBalance = defaultTo(
-      convertToken(balance.toString(), decimals),
+      convertToken(balance?.toString(), decimals),
       0,
     );
     return (

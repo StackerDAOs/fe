@@ -509,7 +509,7 @@ const ProposalView = () => {
                         </Text>
                         <Text color='light.900' fontWeight='regular'>
                           {convertToken(
-                            defaultTo(balance, 0).toString(),
+                            defaultTo(balance, 0)?.toString(),
                             Number(token?.decimals),
                           )}{' '}
                           <Text as='span' color='gray.900' fontWeight='medium'>

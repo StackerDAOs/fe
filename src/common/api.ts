@@ -16,6 +16,7 @@ import {
   stringAsciiCV,
   uintCV
 } from 'micro-stacks/clarity';
+import { defaultTo } from 'lodash';
 import { pluckSourceCode } from './helpers';
 
 export async function getDAO(name: string){
@@ -41,7 +42,7 @@ export async function generateContractName(organization: any) {
       .eq('Organizations.id', organization?.id);
     if (error) throw error;
     if (Proposals.length > 0) {
-      const proposalSize = (Proposals?.length + 1).toString();
+      const proposalSize = (defaultTo(Proposals?.length, 0) + 1)?.toString();
       const [proposal] = Proposals;
       const targetLength = Proposals?.length + 1 < 1000 ? 3 : 4;
       const contractName = `${
@@ -294,7 +295,7 @@ export async function getEvents({
     const url = network.getCoreApiUrl();
       const data = await fetchContractEventsById({
         url,
-        limit: 50,
+        limit: 20,
         contract_id: extensionAddress,
         offset: offset,
         unanchored: false,
