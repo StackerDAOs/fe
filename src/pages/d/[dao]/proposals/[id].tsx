@@ -21,6 +21,7 @@ import {
 } from '@chakra-ui/react';
 
 import { supabase } from '@utils/supabase';
+import { defaultTo } from 'lodash';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
@@ -508,7 +509,7 @@ const ProposalView = () => {
                         </Text>
                         <Text color='light.900' fontWeight='regular'>
                           {convertToken(
-                            balance?.toString(),
+                            defaultTo(balance, 0).toString(),
                             Number(token?.decimals),
                           )}{' '}
                           <Text as='span' color='gray.900' fontWeight='medium'>
