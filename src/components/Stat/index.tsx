@@ -33,7 +33,7 @@ export const Stat = (props: Props) => {
   const currentPath = router.pathname.split('/').filter((p) => p === path)[0];
   const isActivePath = currentPath === path;
   return (
-    <Link href={`/d/${dao}/${path}`}>
+    <Link passHref href={`/d/${dao}/${path}`}>
       <Card
         bg='base.800'
         minW='auto'
