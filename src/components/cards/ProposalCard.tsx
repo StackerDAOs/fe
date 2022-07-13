@@ -96,7 +96,7 @@ export const ProposalCard = ({
               cursor: 'pointer',
             }}
           >
-            <Stack direction='row'>
+            <Stack direction='row' maxH='20vh' justify='center'>
               <Stack
                 spacing='4'
                 direction={{
