@@ -96,7 +96,7 @@ export const ProposalCard = ({
               cursor: 'pointer',
             }}
           >
-            <Stack direction='row' maxH='20vh' justify='center'>
+            <Stack direction='row' minH='15vh' justify='center'>
               <Stack
                 spacing='4'
                 direction={{
@@ -145,7 +145,7 @@ export const ProposalCard = ({
                         </Text>
                       </HStack>
                       <Text fontWeight='regular' fontSize='sm' color='gray.900'>
-                        {description && truncate(description, 125)}
+                        {description && truncate(description, 50)}
                       </Text>
                     </Stack>
                   </HStack>
