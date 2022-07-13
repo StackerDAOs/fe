@@ -22,10 +22,7 @@ import { FiExternalLink } from 'react-icons/fi';
 import { useTransaction } from '@common/queries';
 
 // Mutations
-import {
-  useSubmitProposal,
-  useDisableProposal,
-} from '@common/mutations/proposals';
+import { useDisableProposal } from '@common/mutations/proposals';
 
 export const ContractCard = ({
   proposalContractAddress,
@@ -33,13 +30,14 @@ export const ContractCard = ({
   contractData,
 }: any) => {
   const [state, setState] = useState({ isRemoving: false });
-  const { mutate: submitProposal } = useSubmitProposal();
+  // const { mutate: submitProposal } = useSubmitProposal();
   const { mutate: disableProposal } = useDisableProposal();
   const { data: transaction } = useTransaction(transactionId);
 
   const onFinishUpdate = async (contractAddress: string) => {
     try {
-      submitProposal({ contractAddress, submitted: true });
+      console.log({ contractAddress });
+      // submitProposal({ contractAddress, submitted: true });
     } catch (e: any) {
       console.error({ e });
     }

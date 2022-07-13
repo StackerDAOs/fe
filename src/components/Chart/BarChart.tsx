@@ -4,8 +4,8 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const data: any = [
   {
-    name: 'Proposals Executed',
-    data: [4, 2, 1, 1, 3, 2, 3],
+    name: 'Votes',
+    data: [4, 2, 1],
   },
 ];
 
@@ -29,7 +29,7 @@ const options: any = {
     theme: 'dark',
   },
   xaxis: {
-    categories: ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'],
+    categories: ['Sounds good', 'Nah', 'Idk'],
     show: false,
     labels: {
       show: true,

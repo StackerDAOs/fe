@@ -14,6 +14,8 @@ import { TxToast } from '@components/Toast';
 import { generateWithDelegators, getDelegators } from '@common/functions';
 import { useDelegates, useExtension, useTransaction } from '@common/queries';
 
+import { useVoteFor, useVoteAgainst } from '@common/mutations/votes';
+
 // utils
 import { map, size } from 'lodash';
 import { contractPrincipal, getExplorerLink } from '@common/helpers';
@@ -35,6 +37,20 @@ export const VoteManyButton = (props: TVoteManyButtonProps) => {
   const { openContractCall, isRequestPending } = useOpenContractCall();
   const [proposalContractAddress, proposalContractName] =
     contractPrincipal(proposalPrincipal);
+  const { mutate: voteForMutation } = useVoteFor();
+  const { mutate: voteAgainstMutation } = useVoteAgainst();
+
+  const updateVote: any = async () => {
+    try {
+      if (voteFor) {
+        await voteForMutation({ proposalPrincipal, amount: 1000000 });
+      } else {
+        await voteAgainstMutation({ proposalPrincipal, amount: 1000000 });
+      }
+    } catch (e: any) {
+      console.error({ e });
+    }
+  };
 
   const handleVote = useCallback(async () => {
     const delegatorAddresses = map(delegatorData, 'delegatorAddress');
@@ -88,6 +104,7 @@ export const VoteManyButton = (props: TVoteManyButtonProps) => {
 
   const decisionText = voteFor ? 'approve' : 'reject';
   const onFinish = async (data: any) => {
+    updateVote();
     setTransactionId(data.txId);
     toast({
       duration: 5000,

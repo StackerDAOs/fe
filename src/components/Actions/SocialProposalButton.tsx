@@ -8,7 +8,7 @@ import { ContractDeployButton } from '@widgets/ContractDeployButton';
 import { socialProposal } from '@utils/proposals/offchain';
 
 // Queries
-import { useGenerateName } from '@common/queries';
+import { useGenerateName, useVotingExtension } from '@common/queries';
 
 // Mutations
 import { useAddProposal } from '@common/mutations/proposals';
@@ -21,16 +21,20 @@ export const SocialProposalButton = ({
   const { stxAddress } = useAccount();
   const { mutate: createProposal } = useAddProposal();
   const { data: contractName } = useGenerateName();
+  const { data: votingData } = useVotingExtension();
 
   const onFinishInsert: any = async (data: any) => {
+    const executionDelay = Number(votingData?.executionDelay);
     try {
       createProposal({
         organizationId: organization?.id,
         contractAddress: `${stxAddress}.${contractName}`,
-        submittedBy: stxAddress || '',
+        proposer: stxAddress || '',
         type: 'Social',
         transactionId: `0x${data.txId}`,
-        name: contractName,
+        title: contractName,
+        description,
+        executionDelay,
       });
       closeOnDeploy();
     } catch (e: any) {

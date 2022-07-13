@@ -1,7 +1,10 @@
 export {
   createProposalContract,
   updateSubmittedProposal,
-  updateDisabledProposal
+  updateDisabledProposal,
+  concludeProposal,
 } from './proposals';
 
-export { createDelegate } from './delegates';
+export { createDelegate, useAddDelegate, deleteDelegate, useDeleteDelegate  } from './delegates';
+
+export { voteFor, voteAgainst } from './votes';

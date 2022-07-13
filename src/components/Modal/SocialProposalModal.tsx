@@ -6,6 +6,7 @@ import {
   FormControl,
   Heading,
   HStack,
+  Icon,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -38,8 +39,9 @@ import { FADE_IN_VARIANTS } from '@utils/animation';
 // Utils
 import { truncate, formatComments } from '@common/helpers';
 import Avatar from 'boring-avatars';
+import { FaPlusCircle } from 'react-icons/fa';
 
-export const SocialProposalModal = ({ icon }: any) => {
+export const SocialProposalModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { stxAddress } = useAccount();
   const { dao } = useDAO();
@@ -65,7 +67,7 @@ export const SocialProposalModal = ({ icon }: any) => {
     reset({
       description: '',
     });
-  }, [dao, isOpen]);
+  }, [dao, isOpen, proposeData]);
 
   const onSubmit = (data: any) => {
     console.log({ data });
@@ -87,28 +89,23 @@ export const SocialProposalModal = ({ icon }: any) => {
 
   return (
     <>
-      <Tooltip
-        bg='base.900'
-        color='light.900'
-        label={`${proposeData?.proposeThreshold} ${token?.symbol} required for proposals`}
-        my='3'
-        w='sm'
-        {...tooltipProps}
-      >
-        <Button
-          onClick={onOpen}
-          leftIcon={icon}
-          size='sm'
-          bg='base.800'
-          border='1px solid'
-          borderColor='base.500'
-          aria-label='Transfer'
-          disabled={!proposeData?.canPropose}
-          _hover={{ bg: 'base.500' }}
+      <Stack align='center' minH='15px'>
+        <Tooltip
+          bg='base.900'
+          color='light.900'
+          label={`${proposeData?.proposeThreshold} ${token?.symbol} required for proposals`}
+          w='sm'
+          {...tooltipProps}
         >
-          Social proposal
-        </Button>
-      </Tooltip>
+          <Icon
+            cursor='pointer'
+            onClick={proposeData?.canPropose ? onOpen : () => console.log(null)}
+            as={FaPlusCircle}
+            color='whiteAlpha'
+            fontSize='sm'
+          />
+        </Tooltip>
+      </Stack>
       <Modal
         blockScrollOnMount={true}
         isCentered

@@ -27,7 +27,6 @@ import { FaEllipsisH } from 'react-icons/fa';
 
 // Components
 import { WalletConnectButton } from '@components/WalletConnectButton';
-import { ActionItemModal } from '@components/Modal';
 
 // Web3
 import { useAccount, useAuth, useNetwork } from '@micro-stacks/react';
@@ -145,14 +144,14 @@ export const AppNavbar = () => {
                   <ButtonGroup spacing='6' alignItems='center'>
                     {isSignedIn ? (
                       <HStack cursor='pointer' spacing='5' color='light.900'>
-                        <HStack
+                        {/* <HStack
                           cursor='default'
                           align='center'
                           justify='center'
                           color='light.900'
                         >
                           <ActionItemModal />
-                        </HStack>
+                        </HStack> */}
                         <HStack spacing='1'>
                           <Text
                             as='span'

@@ -77,6 +77,40 @@ export async function getExtension(name: string) {
   }
 };
 
+export async function getDBProposals(organizationId: string, filter: string) {
+  const query = supabase
+  .from('Proposals')
+  .select(
+    '*, Organizations!inner(id, name)',
+  )
+  .order('createdAt', {ascending: false})
+  .eq('Organizations.id', organizationId);
+  try {
+    if (filter === 'inactive') {
+      const { data: Proposals, error } = await query.filter('submitted', 'in', `("false")`);
+      if (error) throw error;
+      return Proposals;
+    }
+    if (filter === 'active') {
+      const { data: Proposals, error } = await query
+        .filter('submitted', 'in', `("true")`)
+        .filter('concluded', 'in', `("false")`);
+      if (error) throw error;
+      return Proposals;
+    }
+    if (filter === 'executed') {
+      const { data: Proposals, error } = await query.filter('concluded', 'in', `("true")`);
+      if (error) throw error;
+      return Proposals;
+    }
+    const { data: Proposals, error } = await query;
+    if (error) throw error;
+    return Proposals;
+  } catch (e: any) {
+    console.error({ e });
+  }
+};
+
 export async function getContractProposalByAddress(contractAddress: string) {
   try {
     const { data, error } = await supabase
@@ -348,10 +382,10 @@ export async function getContractsToDeploy(organizationId: number, currentStxAdd
     const { data, error } = await supabase
       .from('Proposals')
       .select(
-        'id, contractAddress, type, transactionId, submitted, disabled, submittedBy, Organizations!inner(id, name, prefix)',
+        'id, contractAddress, type, transactionId, submitted, disabled, proposer, Organizations!inner(id, name, prefix)',
       )
       .eq('Organizations.id', organizationId)
-      .eq('submittedBy', currentStxAddress)
+      .eq('proposer', currentStxAddress)
       .eq('submitted', false)
       .eq('disabled', false);
     if (error) throw error;

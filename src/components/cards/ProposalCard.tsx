@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Badge, HStack, Icon, Progress, Stack, Text } from '@chakra-ui/react';
+import { Badge, HStack, Icon, Stack, Text } from '@chakra-ui/react';
 
 // Hooks
 import { useBlocks } from '@common/hooks';
@@ -13,7 +13,7 @@ import { Card } from '@components/Card';
 import { motion } from 'framer-motion';
 
 // Utils
-import { getPercentage, tokenToNumber, truncate } from '@common/helpers';
+import { truncate } from '@common/helpers';
 import Avatar from 'boring-avatars';
 import { FiArrowUpRight } from 'react-icons/fi';
 
@@ -28,28 +28,26 @@ export const ProposalCard = ({
   title,
   type,
   description,
-  proposal,
+  startBlockHeight,
+  endBlockHeight,
+  concluded,
 }: any) => {
   const [isHovered, setHovered] = useState(false);
   const { currentBlockHeight } = useBlocks();
   const router = useRouter();
   const { dao } = router.query as any;
-  const totalVotes =
-    Number(proposal?.votesFor) + Number(proposal?.votesAgainst);
-  const isClosed = currentBlockHeight > proposal?.endBlockHeight;
+  const isClosed = currentBlockHeight > endBlockHeight;
   const isOpen =
-    currentBlockHeight <= proposal?.endBlockHeight &&
-    currentBlockHeight >= proposal?.startBlockHeight;
-
-  const convertedVotesFor = tokenToNumber(Number(proposal?.votesFor), 2);
-  const convertedVotesAgainst = tokenToNumber(
-    Number(proposal?.votesAgainst),
-    2,
-  );
+    currentBlockHeight <= endBlockHeight &&
+    currentBlockHeight >= startBlockHeight;
 
   const statusBadge = (
     <>
-      {proposal?.concluded ? (
+      {!startBlockHeight ? (
+        <Badge bg='base.800' color='secondary.900' size='sm' py='1' px='3'>
+          Inactive
+        </Badge>
+      ) : concluded ? (
         <Badge bg='base.800' color='secondary.900' size='sm' py='1' px='3'>
           Executed
         </Badge>
@@ -140,33 +138,30 @@ export const ProposalCard = ({
                         />
                         <Text
                           fontWeight='medium'
-                          fontSize='md'
+                          fontSize='lg'
                           lineHeight='1.15'
                         >
                           {title} {type}
                         </Text>
                       </HStack>
                       <Text fontWeight='regular' fontSize='sm' color='gray.900'>
-                        {description && truncate(description, 50)}
+                        {description && truncate(description, 125)}
                       </Text>
                     </Stack>
                   </HStack>
-                  <Stack direction='column' spacing='3'>
+                  {/* <Stack direction='column' spacing='3'>
                     <Stack spacing='3' mt='2'>
                       <Text
                         color='gray.900'
                         fontSize='sm'
                         fontWeight='semibold'
                       >
-                        Yes ({convertedVotesFor})
+                        Yes ({tokenToNumber(Number(votesFor), token?.decimals)})
                       </Text>
                       <Progress
                         colorScheme='secondary'
                         size='md'
-                        value={getPercentage(
-                          totalVotes,
-                          Number(proposal?.votesFor),
-                        )}
+                        value={getPercentage(totalVotes, Number(votesFor))}
                         bg='base.500'
                       />
                     </Stack>
@@ -176,19 +171,16 @@ export const ProposalCard = ({
                         fontSize='sm'
                         fontWeight='semibold'
                       >
-                        No ({convertedVotesAgainst})
+                        No ({Number(votesAgainst)})
                       </Text>
                       <Progress
                         colorScheme='whiteAlpha'
                         size='md'
-                        value={getPercentage(
-                          totalVotes,
-                          Number(proposal?.votesAgainst),
-                        )}
+                        value={getPercentage(totalVotes, Number(votesAgainst))}
                         bg='base.500'
                       />
                     </Stack>
-                  </Stack>
+                  </Stack> */}
                 </Stack>
               </Stack>
             </Stack>

@@ -17,9 +17,7 @@ import Avatar from 'boring-avatars';
 import { EmptyState } from '@components/EmptyState';
 import { Stat } from '@components/Stat';
 
-import { useBlocks } from '@common/hooks';
-
-import { defaultTo, filter } from 'lodash';
+import { defaultTo } from 'lodash';
 
 import {
   useDAO,
@@ -30,8 +28,7 @@ import {
 
 export const Header = () => {
   const { dao } = useDAO();
-  const { currentBlockHeight } = useBlocks();
-  const { proposals } = useProposals();
+  const { data } = useProposals();
   const { dao: DAO } = useDAO();
   const { isLoading, isIdle, isError, token, balance } = useToken();
   const { balance: userBalance } = useTokenBalance();
@@ -54,22 +51,14 @@ export const Header = () => {
   };
 
   const Proposals = () => {
-    const activeProposalCount = filter(proposals, (p): any => {
-      return (
-        currentBlockHeight <= p?.data?.proposal?.endBlockHeight &&
-        currentBlockHeight >= p?.data?.proposal?.startBlockHeight
-      );
-    }).length;
-
-    const proposalSize = defaultTo(activeProposalCount, 0);
-
+    const proposalSize = defaultTo(data?.length, 0);
     return (
       <Stat
         flex='1'
         borderRadius='lg'
         label='Proposals'
         value={proposalSize}
-        info={`Active`}
+        info={`Total`}
         path='proposals'
       />
     );

@@ -19,6 +19,7 @@ import {
   useProposal,
   usePostConditions,
 } from '@common/queries';
+import { useConcludeProposal } from '@common/mutations/proposals';
 import { FaCheck } from 'react-icons/fa';
 
 type TExecuteButtonProps = ButtonProps & {
@@ -45,6 +46,17 @@ export const ExecuteButton = (props: TExecuteButtonProps) => {
   const { data: fungibleToken } = useFungibleToken(
     conditions?.postConditions?.assetAddress,
   );
+  const { mutate: concludeProposal } = useConcludeProposal();
+
+  const onFinishInsert: any = async () => {
+    try {
+      concludeProposal({
+        contractAddress: proposalPrincipal,
+      });
+    } catch (e: any) {
+      console.error({ e });
+    }
+  };
 
   const handleExecute = useCallback(async () => {
     const { votesFor, votesAgainst } = data?.proposal;
@@ -91,6 +103,7 @@ export const ExecuteButton = (props: TExecuteButtonProps) => {
   }, [conditions, fungibleToken]);
 
   const onFinish = async (data: any) => {
+    onFinishInsert();
     setTransactionId(data.txId);
     toast({
       duration: 5000,

@@ -5,7 +5,11 @@ import { useAccount } from '@micro-stacks/react';
 import { ContractDeployButton } from '@widgets/ContractDeployButton';
 
 /// Queries
-import { useExtension, useGenerateName } from '@common/queries';
+import {
+  useExtension,
+  useVotingExtension,
+  useGenerateName,
+} from '@common/queries';
 
 // Mutations
 import { useAddProposal } from '@common/mutations/proposals';
@@ -27,22 +31,26 @@ export const TransferTokenButton = ({
   const { mutate: createProposal } = useAddProposal();
   const { data: contractName } = useGenerateName();
   const { extension: vault } = useExtension('Vault');
+  const { data: votingData } = useVotingExtension();
 
   const onFinishInsert: any = async (data: any) => {
+    const executionDelay = Number(votingData?.executionDelay);
     try {
       createProposal({
         organizationId: organization?.id,
         contractAddress: `${stxAddress}.${contractName}` || '',
-        submittedBy: stxAddress || '',
+        proposer: stxAddress || '',
         type: 'Transfer Token',
         transactionId: `0x${data.txId}`,
-        name: contractName,
+        title: contractName,
+        description,
         postConditions: {
           from: vault?.contractAddress,
           assetAddress,
           assetName,
           amount: transferAmount,
         },
+        executionDelay,
       });
       closeOnDeploy();
     } catch (e: any) {

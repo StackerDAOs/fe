@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import {
   Box,
   ButtonGroup,
+  HStack,
   Icon,
   IconButton,
+  Radio,
+  RadioGroup,
   Stack,
   SimpleGrid,
   Text,
@@ -24,14 +28,15 @@ import { FADE_IN_VARIANTS } from '@utils/animation';
 import { SectionHeader } from '@components/SectionHeader';
 
 // Icons
-import { FaArrowRight, FaEllipsisH, FaPlusCircle } from 'react-icons/fa';
+import { FaArrowRight, FaEllipsisH } from 'react-icons/fa';
 import { SocialProposalModal } from '@components/Modal/SocialProposalModal';
 
 const MotionGrid = motion(SimpleGrid);
 const MotionProposalCard = motion(ProposalCard);
 
 const Proposals = () => {
-  const { proposals } = useProposals();
+  const [filter, setFilter] = useState('all');
+  const { data: proposals } = useProposals(filter);
 
   return (
     <motion.div
@@ -46,24 +51,80 @@ const Proposals = () => {
           <>
             <SectionHeader justify='space-between' align='center' color='white'>
               <Box>
-                <Text fontSize='lg' fontWeight='medium'>
-                  Proposals
-                </Text>
+                <HStack align='center'>
+                  <Text fontSize='lg' fontWeight='medium'>
+                    Proposals
+                  </Text>
+                  <SocialProposalModal />
+                </HStack>
                 <Text color='gray.900' fontSize='sm'>
-                  View all pending, active, and completed proposals.
+                  View the latest proposals.
                 </Text>
               </Box>
               <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
                 <Stack align='center' direction='row' spacing='3'>
-                  <SocialProposalModal
-                    icon={
-                      <Icon
-                        as={FaPlusCircle}
-                        color='whiteAlpha'
-                        fontSize='sm'
-                      />
-                    }
-                  />
+                  <RadioGroup onChange={setFilter} value={filter}>
+                    <Stack direction='row'>
+                      <Radio
+                        bg='base.900'
+                        size='sm'
+                        borderColor='base.500'
+                        value='all'
+                        _focus={{ outline: 'none' }}
+                        _checked={{
+                          bg: 'secondary.900',
+                          color: 'white',
+                          borderColor: 'base.500',
+                        }}
+                      >
+                        All
+                      </Radio>
+                      <Radio
+                        bg='base.900'
+                        size='sm'
+                        borderColor='base.500'
+                        value='inactive'
+                        _focus={{ outline: 'none' }}
+                        _checked={{
+                          bg: 'secondary.900',
+                          color: 'white',
+                          borderColor: 'base.500',
+                        }}
+                      >
+                        Inactive
+                      </Radio>
+                      <Radio
+                        bg='base.900'
+                        size='sm'
+                        borderColor='base.500'
+                        value='active'
+                        _focus={{ outline: 'none' }}
+                        _checked={{
+                          bg: 'secondary.900',
+                          color: 'white',
+                          borderColor: 'base.500',
+                        }}
+                      >
+                        Active
+                      </Radio>
+                      <Radio
+                        bg='base.900'
+                        size='sm'
+                        borderColor='base.500'
+                        value='executed'
+                        _focus={{ outline: 'none' }}
+                        _checked={{
+                          bg: 'secondary.900',
+                          color: 'white',
+                          borderColor: 'base.500',
+                        }}
+                      >
+                        Executed
+                      </Radio>
+                    </Stack>
+                  </RadioGroup>
+                </Stack>
+                <Stack align='center' direction='row' spacing='3'>
                   <IconButton
                     display='none'
                     aria-label='action-item'
@@ -88,24 +149,80 @@ const Proposals = () => {
           <>
             <SectionHeader justify='space-between' align='center' color='white'>
               <Box>
-                <Text fontSize='lg' fontWeight='medium'>
-                  Proposals
-                </Text>
+                <HStack align='center'>
+                  <Text fontSize='lg' fontWeight='medium'>
+                    Proposals
+                  </Text>
+                  <SocialProposalModal />
+                </HStack>
                 <Text color='gray.900' fontSize='sm'>
-                  View all pending, active, and completed proposals.
+                  View the latest proposals.
                 </Text>
               </Box>
               <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
                 <Stack align='center' direction='row' spacing='3'>
-                  <SocialProposalModal
-                    icon={
-                      <Icon
-                        as={FaPlusCircle}
-                        color='whiteAlpha'
-                        fontSize='md'
-                      />
-                    }
-                  />
+                  <RadioGroup onChange={setFilter} value={filter}>
+                    <Stack direction='row'>
+                      <Radio
+                        bg='base.900'
+                        size='sm'
+                        borderColor='base.500'
+                        value='all'
+                        _focus={{ outline: 'none' }}
+                        _checked={{
+                          bg: 'secondary.900',
+                          color: 'white',
+                          borderColor: 'base.500',
+                        }}
+                      >
+                        All
+                      </Radio>
+                      <Radio
+                        bg='base.900'
+                        size='sm'
+                        borderColor='base.500'
+                        value='inactive'
+                        _focus={{ outline: 'none' }}
+                        _checked={{
+                          bg: 'secondary.900',
+                          color: 'white',
+                          borderColor: 'base.500',
+                        }}
+                      >
+                        Inactive
+                      </Radio>
+                      <Radio
+                        bg='base.900'
+                        size='sm'
+                        borderColor='base.500'
+                        value='active'
+                        _focus={{ outline: 'none' }}
+                        _checked={{
+                          bg: 'secondary.900',
+                          color: 'white',
+                          borderColor: 'base.500',
+                        }}
+                      >
+                        Active
+                      </Radio>
+                      <Radio
+                        bg='base.900'
+                        size='sm'
+                        borderColor='base.500'
+                        value='executed'
+                        _focus={{ outline: 'none' }}
+                        _checked={{
+                          bg: 'secondary.900',
+                          color: 'white',
+                          borderColor: 'base.500',
+                        }}
+                      >
+                        Executed
+                      </Radio>
+                    </Stack>
+                  </RadioGroup>
+                </Stack>
+                <Stack align='center' direction='row' spacing='3'>
                   <IconButton
                     display='none'
                     aria-label='action-item'
@@ -135,14 +252,14 @@ const Proposals = () => {
               spacing='6'
               color='white'
             >
-              {proposals?.map(({ data }: any, index: number) => (
+              {proposals?.map((proposal: any, index: number) => (
                 <MotionProposalCard
                   variants={{
                     hidden: { opacity: 0 },
                     enter: { opacity: 1 },
                   }}
                   key={index}
-                  {...data}
+                  {...proposal}
                 />
               ))}
             </MotionGrid>

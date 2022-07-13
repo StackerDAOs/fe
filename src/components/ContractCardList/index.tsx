@@ -34,7 +34,7 @@ export const ContractCardList = () => {
   const contractName = submission?.contractAddress.split('.')[1];
   const governanceContractAddress = governance?.contractAddress.split('.')[0];
   const governanceContractName = governance?.contractAddress.split('.')[1];
-  const startHeight = currentBlockHeight + 350;
+  const startHeight = currentBlockHeight + 30;
 
   if (isLoadingContracts) {
     return <div>Loading...</div>;

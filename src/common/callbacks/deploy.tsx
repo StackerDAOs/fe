@@ -3,18 +3,6 @@ import { Button, ButtonGroup, Stack, Text, useToast } from '@chakra-ui/react';
 import { Notification } from '@components/Notification';
 import { CloseButton } from '@components/CloseButton';
 
-// import { useSubmitProposal } from '@common/mutations/proposals';
-
-// const { mutate: submitProposal } = useSubmitProposal();
-
-// const onFinishUpdate = async (contractAddress: string) => {
-//   try {
-//     submitProposal({ contractAddress, submitted: true });
-//   } catch (e: any) {
-//     console.error({ e });
-//   }
-// };
-
 export const onFinish = useCallback((data: any) => {
   const toast = useToast();
   toast({
