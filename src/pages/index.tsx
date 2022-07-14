@@ -112,7 +112,7 @@ const Index = () => {
                         letterSpacing='tight'
                         color='light.900'
                       >
-                        DAOs on {''}
+                        Bitcoin {''}
                         <Text
                           as='span'
                           pr='2'
@@ -123,7 +123,7 @@ const Index = () => {
                           bgClip='text'
                           fontStyle='italic'
                         >
-                          Bitcoin
+                          DAOs
                         </Text>
                       </Heading>
                       <Text
@@ -134,7 +134,7 @@ const Index = () => {
                         fontSize='lg'
                         color='gray.900'
                       >
-                        One-stop shop to to launch and manage DAOs secured by
+                        One-stop shop to create and manage DAOs secured by
                         Bitcoin via Stacks.
                       </Text>
                     </Box>
@@ -231,7 +231,7 @@ const Index = () => {
                         fontSize='lg'
                         color='gray.900'
                       >
-                        One-stop shop to to launch and manage DAOs secured by
+                        One-stop shop to create and manage DAOs secured by
                         Bitcoin via Stacks.
                       </Text>
                       <Stack
