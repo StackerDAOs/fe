@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '@utils/supabase';
 import {
   Alert,
   AlertIcon,
@@ -6,8 +8,30 @@ import {
   Box,
 } from '@chakra-ui/react';
 
-export const ErrorAlertBanner = () => {
-  return (
+export const ErrorAlertBanner = (props: any) => {
+  const [state, setState] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data, error }: any = await supabase
+          .from('Proposals')
+          .select('isVerified')
+          .eq('contractAddress', props.id);
+        if (error) throw error;
+        if (data[0].isVerified) {
+          setState(true);
+        } else {
+          setState(false);
+        }
+      } catch (e: any) {
+        console.error({ e });
+      }
+    };
+    fetchData();
+  }, []);
+
+  const displayError = (
     <Alert status='error'>
       <AlertIcon />
       <Box>
@@ -20,4 +44,10 @@ export const ErrorAlertBanner = () => {
       </Box>
     </Alert>
   );
+
+  if (state) {
+    return null;
+  } else {
+    return displayError;
+  }
 };

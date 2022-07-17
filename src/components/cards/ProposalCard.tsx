@@ -32,6 +32,7 @@ export const ProposalCard = ({
   startBlockHeight,
   endBlockHeight,
   concluded,
+  isVerified,
 }: any) => {
   const [isHovered, setHovered] = useState(false);
   const { currentBlockHeight } = useBlocks();
@@ -67,8 +68,6 @@ export const ProposalCard = ({
       )}
     </>
   );
-
-  const badProposal = true;
 
   return (
     <motion.div
@@ -110,7 +109,7 @@ export const ProposalCard = ({
                 color='white'
               >
                 <HStack>
-                  {badProposal ? <ErrorAlertIcon /> : ''}
+                  {isVerified ? '' : <ErrorAlertIcon />}
                   {statusBadge}
                   <Stack style={{ marginLeft: 'auto' }}>
                     {isHovered && (

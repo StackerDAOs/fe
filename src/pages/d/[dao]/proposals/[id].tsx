@@ -183,8 +183,6 @@ const ProposalView = () => {
     return null;
   }
 
-  const badProposal = true;
-
   return (
     <motion.div
       variants={FADE_IN_VARIANTS}
@@ -223,7 +221,11 @@ const ProposalView = () => {
                     <FaArrowLeft fontSize='0.9rem' />
                     <Text>Back</Text>
                   </HStack>
-                  <HStack>{badProposal ? <ErrorAlertBanner /> : ''}</HStack>
+                  <HStack>
+                    {proposalPrincipal && (
+                      <ErrorAlertBanner id={proposalPrincipal} />
+                    )}
+                  </HStack>
                   <HStack>
                     <Text fontSize='4xl' fontWeight='medium' color='light.600'>
                       {proposalInfo?.title} {proposalInfo?.type}
