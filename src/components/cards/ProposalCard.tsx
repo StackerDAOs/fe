@@ -111,8 +111,8 @@ export const ProposalCard = ({
               >
                 <HStack>
                   {badProposal ? <ErrorAlertIcon /> : ''}
-                  <HStack justify='space-between'>
-                    {statusBadge}
+                  {statusBadge}
+                  <Stack style={{ marginLeft: 'auto' }}>
                     {isHovered && (
                       <motion.div
                         variants={FADE_IN_VARIANTS}
@@ -128,7 +128,7 @@ export const ProposalCard = ({
                         />
                       </motion.div>
                     )}
-                  </HStack>
+                  </Stack>
                 </HStack>
                 <Stack>
                   <HStack spacing='3' justify='space-between'>

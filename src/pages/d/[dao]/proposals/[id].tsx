@@ -184,9 +184,6 @@ const ProposalView = () => {
   }
 
   const badProposal = true;
-  const errorAlertTitle = 'Warning:';
-  const errorAlertDescription =
-    "This proposal was submitted outside of the UI and it's code has not been verified by StackerDAOs";
 
   return (
     <motion.div
@@ -226,16 +223,7 @@ const ProposalView = () => {
                     <FaArrowLeft fontSize='0.9rem' />
                     <Text>Back</Text>
                   </HStack>
-                  <HStack>
-                    {badProposal ? (
-                      <ErrorAlertBanner
-                        title={errorAlertTitle}
-                        description={errorAlertDescription}
-                      />
-                    ) : (
-                      ''
-                    )}
-                  </HStack>
+                  <HStack>{badProposal ? <ErrorAlertBanner /> : ''}</HStack>
                   <HStack>
                     <Text fontSize='4xl' fontWeight='medium' color='light.600'>
                       {proposalInfo?.title} {proposalInfo?.type}

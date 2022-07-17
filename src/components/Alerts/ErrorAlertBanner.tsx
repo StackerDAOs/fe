@@ -3,21 +3,21 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  Box,
 } from '@chakra-ui/react';
 
-export const ErrorAlertBanner = (props: any) => {
-  const { title, description } = props;
+export const ErrorAlertBanner = () => {
   return (
-    <Alert
-      status='error'
-      flexDirection='column'
-      alignItems='center'
-      justifyContent='center'
-      textAlign='center'
-    >
+    <Alert status='error'>
       <AlertIcon />
-      <AlertTitle>{title}</AlertTitle>
-      <AlertDescription>{description}</AlertDescription>
+      <Box>
+        <AlertTitle>Warning</AlertTitle>
+        <AlertDescription fontSize='sm'>
+          This proposal was submitted outside of the UI and its code has not
+          been verified by StackerDAOs. Executing this proposal may have
+          unintended consequences.
+        </AlertDescription>
+      </Box>
     </Alert>
   );
 };
