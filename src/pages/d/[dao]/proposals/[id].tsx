@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -20,7 +20,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { supabase } from '@utils/supabase';
 import { defaultTo } from 'lodash';
 
 // Components
@@ -58,6 +57,7 @@ import {
 // Queries
 import {
   useAuth,
+  useContractSource,
   useExtension,
   useEvents,
   useProposal,
@@ -83,12 +83,7 @@ const SLIDE_UP_BUTTON_VARIANTS = {
   exit: { opacity: 0, x: 0, y: -15 },
 };
 
-type TProposal = {
-  postConditions?: any;
-};
-
 const ProposalView = () => {
-  const [state, setState] = useState<TProposal>({ postConditions: [] });
   const [isRemoving, setIsRemoving] = useState(false);
   const currentStxAddress = useCurrentStxAddress();
   const router = useRouter();
@@ -99,6 +94,7 @@ const ProposalView = () => {
   const { token } = useToken();
   const { balance } = useTokenBalance();
   const { extension: voting } = useExtension('Voting');
+  const { data: contractSource } = useContractSource(proposalPrincipal);
   const {
     isLoading,
     isIdle,
@@ -121,27 +117,6 @@ const ProposalView = () => {
       console.error({ e });
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data, error }: any = await supabase
-          .from('Proposals')
-          .select('postConditions')
-          .eq('contractAddress', proposalPrincipal);
-        if (error) throw error;
-        if (data) {
-          setState({
-            ...state,
-            postConditions: data ?? data[0]?.postConditions,
-          });
-        }
-      } catch (e: any) {
-        console.error({ e });
-      }
-    };
-    fetchData();
-  }, [currentStxAddress, proposalPrincipal]);
 
   const isEligible = votingData?.canVote;
   const totalVotes =
@@ -222,7 +197,7 @@ const ProposalView = () => {
                   </HStack>
                   <HStack>
                     <Text fontSize='4xl' fontWeight='medium' color='light.600'>
-                      {proposalInfo?.title} {proposalInfo?.type}
+                      {contractSource?.title} {contractSource?.type}
                     </Text>
                   </HStack>
                   <HStack>
@@ -442,11 +417,11 @@ const ProposalView = () => {
                         bg: 'base.800',
                         opacity: 0.5,
                         cursor: 'not-allowed',
-                      }}
-                      _hover={{
-                        bg: 'base.800',
-                        opacity: 0.5,
-                        cursor: 'not-allowed',
+                        _hover: {
+                          bg: 'base.800',
+                          opacity: 0.5,
+                          cursor: 'not-allowed',
+                        },
                       }}
                       notDeployer={
                         proposalContractAddress !== currentStxAddress
@@ -804,7 +779,7 @@ const ProposalView = () => {
                                       color: 'secondary.900',
                                     }}
                                   >
-                                    {proposalInfo?.description}
+                                    {contractSource?.description}
                                   </Text>
                                 </Stack>
                                 <Stack align='flex-start'>

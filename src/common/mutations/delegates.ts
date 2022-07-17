@@ -31,7 +31,7 @@ export async function deleteDelegate({ organizationId, delegatorAddress }: any) 
       .delete()
       .match({organizationId, delegatorAddress})
     if (error) throw error;
-    console.log(data);
+    console.log({data});
     return data;
   } catch (e: any) {
     console.error({ e });

@@ -3,15 +3,16 @@ import { useQuery } from 'react-query';
 import { useExtension } from '@common/queries';
 import { getProposal } from '@common/api';
 
-export function useProposal(id: string) {
+export function useProposal(proposalPrincipal: string) {
   const { extension: voting } = useExtension('Voting');
 
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
-    ['proposal', id],
+    ['proposal', proposalPrincipal],
     async () => {
-      const contractAddress = voting?.contractAddress.split('.')[0];
-      const contractName = voting?.contractAddress.split('.')[1];
-      const data = await getProposal(`${contractAddress}.${contractName}`, id);
+      const data = await getProposal(
+        voting?.contractAddress,
+        proposalPrincipal,
+      );
       return data;
     },
     {

@@ -116,7 +116,7 @@ export const useDisableProposal = () => {
     onSuccess: (data: any) => {
       const [disabledContract] = data;
       queryClient.setQueryData('contracts', (contracts: any) => {
-        const filteredContracts = contracts.filter((contract: any) => contract.id !== disabledContract.id);
+        const filteredContracts = contracts?.filter((contract: any) => contract.id !== disabledContract.id);
         return [...filteredContracts];
       });
     }

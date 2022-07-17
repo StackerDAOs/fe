@@ -1,6 +1,7 @@
 export { useAuth } from './use-auth';
 export { useBalance } from './use-balance';
 export { useContracts } from './use-contracts';
+export { useContractSource } from './use-contract-source';
 export { useDAO } from './use-dao';
 export { useDelegates } from './use-delegates';
 export { useExtension } from './use-extension';

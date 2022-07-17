@@ -17,7 +17,7 @@ import {
   uintCV
 } from 'micro-stacks/clarity';
 import { defaultTo } from 'lodash';
-import { pluckSourceCode } from './helpers';
+import { contractPrincipal, pluckSourceCode } from './helpers';
 
 export async function getDAO(name: string){
   try {
@@ -84,7 +84,8 @@ export async function getDBProposals(organizationId: string, filter: string) {
     '*, Organizations!inner(id, name)',
   )
   .order('createdAt', {ascending: false})
-  .eq('Organizations.id', organizationId);
+  .eq('Organizations.id', organizationId)
+  .filter('disabled', 'in', `("false")`);
   try {
     if (filter === 'inactive') {
       const { data: Proposals, error } = await query.filter('submitted', 'in', `("false")`);
@@ -142,6 +143,27 @@ export async function getContractProposalByTx(transactionId: string) {
     console.error({ e });
   }
 };
+
+export async function getContractSourceCode(contractAddress: string) {
+  try {
+    const network = new stacksNetwork();
+    const [contract_address, contract_name] = contractPrincipal(contractAddress);
+    const contractSource = await fetchContractSource({
+      url: network.getCoreApiUrl(),
+      contract_address,
+      contract_name,
+      proof: 0x0,
+      tip: '',
+    });
+    const { source } = contractSource;
+    const title = pluckSourceCode(source, 'title');
+    const description = pluckSourceCode(source, 'description');
+    const type = pluckSourceCode(source, 'type');
+    return { title, description, type };
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
 
 export async function getTokenMetadata(contractId: string) {
   try {
@@ -241,42 +263,27 @@ export async function getProposalAddress(contractAddress: string, id: string) {
 export async function getProposal(contractAddress: string, proposalAddress: string) {
   try {
     const network = new stacksNetwork();
+    const [extensionContractAddress, extensionContractName] = contractPrincipal(contractAddress)
+    const [proposalContractAddress, proposalContractName] = contractPrincipal(proposalAddress)
     const proposal: any = await fetchReadOnlyFunction({
       network,
-      contractAddress: contractAddress?.split('.')[0],
-      contractName: contractAddress?.split('.')[1],
+      contractAddress: extensionContractAddress,
+      contractName: extensionContractName,
       senderAddress: contractAddress,
       functionArgs: [
         contractPrincipalCV(
-          proposalAddress?.split('.')[0],
-          proposalAddress?.split('.')[1],
+          proposalContractAddress,
+          proposalContractName,
         ),
       ],
       functionName: 'get-proposal-data',
     });
 
-    const proposalContractAddress = proposalAddress?.split('.')[0];
-    const proposalContractName = proposalAddress?.split('.')[1];
-
-    // Fetch the source code for the proposal
-    const contractSource = await fetchContractSource({
-      url: network.getCoreApiUrl(),
-      contract_address: proposalContractAddress,
-      contract_name:  proposalContractName,
-      proof: 0x0,
-      tip: '',
-    });
-    const { source } = contractSource;
-    const title = pluckSourceCode(source, 'title');
-    const description = pluckSourceCode(source, 'description');
-    const type = pluckSourceCode(source, 'type');
-
-    // Fetch quorum threshold for proposals
     const quorumThreshold: any = await fetchReadOnlyFunction({
       network,
-      contractAddress: contractAddress.split('.')[0],
-      contractName: contractAddress?.split('.')[1],
-      senderAddress: contractAddress.split('.')[0],
+      contractAddress: extensionContractAddress,
+      contractName: extensionContractName,
+      senderAddress: contractAddress,
       functionArgs: [stringAsciiCV('quorumThreshold')],
       functionName: 'get-parameter',
     });
@@ -284,17 +291,14 @@ export async function getProposal(contractAddress: string, proposalAddress: stri
     // Fetch execution delay for executing proposals
     const executionDelay: any = await fetchReadOnlyFunction({
       network,
-      contractAddress: contractAddress.split('.')[0],
-      contractName: contractAddress?.split('.')[1],
-      senderAddress: contractAddress.split('.')[0],
+      contractAddress: extensionContractAddress,
+      contractName: extensionContractName,
+      senderAddress: contractAddress,
       functionArgs: [stringAsciiCV('executionDelay')],
       functionName: 'get-parameter',
     });
     return {
       contractAddress: proposalAddress,
-      title,
-      description,
-      type,
       proposal,
       quorumThreshold,
       executionDelay
