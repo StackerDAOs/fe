@@ -7,6 +7,7 @@ import {
   AlertDescription,
   Box,
 } from '@chakra-ui/react';
+import { redirect } from 'next/dist/server/api-utils';
 
 export const ErrorAlertBanner = (props: any) => {
   const [state, setState] = useState<boolean>(true);
@@ -32,8 +33,12 @@ export const ErrorAlertBanner = (props: any) => {
   }, []);
 
   const displayError = (
-    <Alert status='error'>
-      <AlertIcon />
+    <Alert
+      status='error'
+      backgroundColor='rgba(254,178,178,0.16)'
+      textColor='white'
+    >
+      <AlertIcon color='red.200' />
       <Box>
         <AlertTitle>Warning</AlertTitle>
         <AlertDescription fontSize='sm'>
