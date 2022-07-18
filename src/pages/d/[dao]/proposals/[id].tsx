@@ -590,7 +590,6 @@ const ProposalView = () => {
                     bg='base.800'
                     borderTopLeftRadius='lg'
                     borderTopRightRadius='lg'
-                    align='center'
                   >
                     <HStack justify='space-between'>
                       <Text fontSize='sm' fontWeight='medium' color='gray.900'>
@@ -760,7 +759,6 @@ const ProposalView = () => {
                               borderRadius='lg'
                               color='gray.900'
                               px='5'
-                              isFullWidth
                               w='50%'
                               _selected={{
                                 bg: 'base.500',

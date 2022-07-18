@@ -200,7 +200,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
       transition={{ duration: 1, type: 'linear' }}
     >
       <TableContainer>
-        <Table {...props}>
+        <Table {...props} bg='transparent'>
           <Thead color='gray.900'>
             <Tr>
               <Th bg='transparent' border='none'>

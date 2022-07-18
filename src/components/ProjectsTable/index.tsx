@@ -75,7 +75,7 @@ export const ProjectsTable = (props: TableProps) => {
         exit={FADE_IN_VARIANTS.exit}
         transition={{ duration: 1, type: 'linear' }}
       >
-        <Table {...props}>
+        <Table {...props} bg='transparent'>
           <Thead color='gray.900'>
             <Tr>
               <Th bg='transparent' border='none'>

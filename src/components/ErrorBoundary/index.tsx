@@ -43,7 +43,6 @@ class ErrorBoundary extends Component {
     }
 
     // Return children components in case of no error
-
     return this.props.children;
   }
 }

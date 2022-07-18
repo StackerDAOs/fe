@@ -65,7 +65,7 @@ export const ProposalActivityTable = (
         transition={{ duration: 1, type: 'linear' }}
       >
         <TableContainer>
-          <Table {...props}>
+          <Table {...props} bg='transparent'>
             <Thead color='gray.900'>
               <Tr>
                 <Th bg='transparent' border='none'>

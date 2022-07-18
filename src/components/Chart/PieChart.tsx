@@ -1,6 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
-const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+const Chart: any = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const data: any = {
   series: [987, 2500, 600],
