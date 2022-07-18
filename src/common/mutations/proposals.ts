@@ -2,15 +2,15 @@ import { supabase } from '@utils/supabase';
 import { useMutation, useQueryClient } from 'react-query';
 
 type Proposal = {
-  organizationId: string,
-  contractAddress: string,
-  proposer: string,
-  type: string,
-  transactionId: string,
-  title: string,
-  description: string,
+  organizationId: string;
+  contractAddress: string;
+  proposer: string;
+  type: string;
+  transactionId: string;
+  title: string;
+  description: string;
   postConditions?: any;
-  executionDelay: number,
+  executionDelay: number;
 }
 
 export async function createProposalContract(proposal: Proposal) {
@@ -87,12 +87,12 @@ try {
 }
 
 export const useSubmitProposal = () => {
-const queryClient = useQueryClient();
-return useMutation(updateSubmittedProposal, {
-  onSuccess: () => {
-    queryClient.invalidateQueries('contracts');
-  }
-});
+  const queryClient = useQueryClient();
+  return useMutation(updateSubmittedProposal, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('contracts');
+    }
+  });
 }
 
 export async function updateDisabledProposal(proposal: { contractAddress: string, disabled: boolean }) {
@@ -116,7 +116,9 @@ export const useDisableProposal = () => {
     onSuccess: (data: any) => {
       const [disabledContract] = data;
       queryClient.setQueryData('contracts', (contracts: any) => {
-        const filteredContracts = contracts?.filter((contract: any) => contract.id !== disabledContract.id);
+        const filteredContracts = contracts?.filter(
+          (contract: any) => contract.id !== disabledContract.id,
+        );
         return [...filteredContracts];
       });
     }

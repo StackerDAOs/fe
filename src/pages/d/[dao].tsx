@@ -66,7 +66,6 @@ const DAODashboard = () => {
                   borderRadius='lg'
                   color='gray.900'
                   px='5'
-                  isFullWidth
                   w='50%'
                   _selected={{ bg: 'base.500', color: 'light.900' }}
                 >

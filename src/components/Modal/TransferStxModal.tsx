@@ -584,7 +584,6 @@ export const TransferStxModal = () => {
                               </Stack>
                               <FormControl>
                                 <Textarea
-                                  type='text'
                                   color='light.900'
                                   fontSize='lg'
                                   py='1'

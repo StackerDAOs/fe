@@ -22,9 +22,7 @@ export const TransactionNotification = () => {
                 </Text>
               </Stack>
               <ButtonGroup variant='link' size='sm' spacing='2'>
-                <Button color='secondary.900' target='_blank'>
-                  View transaction
-                </Button>
+                <Button color='secondary.900'>View transaction</Button>
               </ButtonGroup>
             </Stack>
           </Stack>

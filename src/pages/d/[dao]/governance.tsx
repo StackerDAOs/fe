@@ -241,7 +241,6 @@ const Governance = () => {
                     bg='base.800'
                     borderTopLeftRadius='lg'
                     borderTopRightRadius='lg'
-                    align='center'
                   >
                     <HStack justify='space-between'>
                       <Text fontSize='sm' fontWeight='medium' color='gray.900'>

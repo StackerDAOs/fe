@@ -327,7 +327,6 @@ const Stx = () => {
         <Stack color='light.900' spacing='6' direction='column' maxW='xl'>
           <FormControl>
             <Textarea
-              type='text'
               color='light.900'
               fontSize='xl'
               py='1'
