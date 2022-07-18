@@ -35,6 +35,7 @@ export const SocialProposalButton = ({
         title: contractName,
         description,
         executionDelay,
+        isVerified: true,
       });
       closeOnDeploy();
     } catch (e: any) {

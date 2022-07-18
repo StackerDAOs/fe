@@ -30,6 +30,7 @@ import { ExecuteButton } from '@components/buttons';
 import { ProposeButton } from '@components/buttons';
 import { VoteManyButton } from '@components/buttons';
 import { WalletConnectButton } from '@components/WalletConnectButton';
+import { ErrorAlertBanner } from '@components/Alerts';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -194,6 +195,11 @@ const ProposalView = () => {
                   >
                     <FaArrowLeft fontSize='0.9rem' />
                     <Text>Back</Text>
+                  </HStack>
+                  <HStack>
+                    {proposalPrincipal && (
+                      <ErrorAlertBanner id={proposalPrincipal} />
+                    )}
                   </HStack>
                   <HStack>
                     <Text fontSize='4xl' fontWeight='medium' color='light.600'>
