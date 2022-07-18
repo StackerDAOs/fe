@@ -345,7 +345,6 @@ export const SocialProposalModal = () => {
                             >
                               <FormControl>
                                 <Textarea
-                                  type='text'
                                   color='light.900'
                                   fontSize='md'
                                   py='1'
