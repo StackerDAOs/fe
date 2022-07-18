@@ -1,6 +1,6 @@
 import { Alert, AlertIcon, AlertDescription, Box } from '@chakra-ui/react';
 
-export const ConfirmedAlertBanner = () => {
+export const VerifiedAlertBanner = () => {
   return (
     <Alert colorScheme='white' status='success'>
       <AlertIcon />
