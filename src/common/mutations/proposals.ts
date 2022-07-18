@@ -11,12 +11,8 @@ type Proposal = {
   description: string;
   postConditions?: any;
   executionDelay: number;
-<<<<<<< HEAD
   isVerified: boolean;
 };
-=======
-}
->>>>>>> develop
 
 export async function createProposalContract(proposal: Proposal) {
   try {
