@@ -8,6 +8,7 @@ import { useBlocks } from '@common/hooks';
 
 // Components
 import { Card } from '@components/Card';
+import { ErrorAlertIcon } from '@components/Alerts';
 
 // Animation
 import { motion } from 'framer-motion';
@@ -31,6 +32,7 @@ export const ProposalCard = ({
   startBlockHeight,
   endBlockHeight,
   concluded,
+  isVerified,
 }: any) => {
   const [isHovered, setHovered] = useState(false);
   const { currentBlockHeight } = useBlocks();
@@ -107,18 +109,27 @@ export const ProposalCard = ({
                 color='white'
               >
                 <HStack justify='space-between'>
-                  {statusBadge}
-                  {isHovered && (
-                    <motion.div
-                      variants={FADE_IN_VARIANTS}
-                      initial={FADE_IN_VARIANTS.hidden}
-                      animate={FADE_IN_VARIANTS.enter}
-                      exit={FADE_IN_VARIANTS.exit}
-                      transition={{ duration: 0.5, type: 'linear' }}
-                    >
-                      <Icon as={FiArrowUpRight} boxSize='5' color='light.900' />
-                    </motion.div>
-                  )}
+                  <HStack>
+                    {!isVerified && <ErrorAlertIcon />}
+                    {statusBadge}
+                  </HStack>
+                  <HStack>
+                    {isHovered && (
+                      <motion.div
+                        variants={FADE_IN_VARIANTS}
+                        initial={FADE_IN_VARIANTS.hidden}
+                        animate={FADE_IN_VARIANTS.enter}
+                        exit={FADE_IN_VARIANTS.exit}
+                        transition={{ duration: 0.5, type: 'linear' }}
+                      >
+                        <Icon
+                          as={FiArrowUpRight}
+                          boxSize='5'
+                          color='light.900'
+                        />
+                      </motion.div>
+                    )}
+                  </HStack>
                 </HStack>
                 <Stack>
                   <HStack spacing='3' justify='space-between'>
