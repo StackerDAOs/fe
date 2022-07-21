@@ -11,15 +11,13 @@ export const VaultAddress = () => {
     extension: vault,
   } = useExtension('Vault');
 
-  console.log('F', isFetching, 'i', isIdle, 'L', isLoading, 'e', isError);
-
   if (isFetching || isIdle || isLoading || isError) {
     return null;
   } else {
     return (
       <>
-        <HStack>
-          <Text fontSize='sm'>
+        <HStack align='baseline'>
+          <Text fontSize='xs' color='light.600'>
             {vault.contractAddress.slice(0, 5) +
               '...' +
               vault.contractAddress.slice(37)}

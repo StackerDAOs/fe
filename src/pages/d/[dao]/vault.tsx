@@ -45,7 +45,7 @@ const Vault = () => {
       <Wrapper>
         <SectionHeader justify='space-between' align='center' color='white'>
           <Box>
-            <HStack justify='space-between'>
+            <HStack justify='flex-start'>
               <Text fontSize='lg' fontWeight='medium'>
                 Vault
               </Text>
