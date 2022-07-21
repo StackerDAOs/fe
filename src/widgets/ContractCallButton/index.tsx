@@ -127,7 +127,6 @@ export const ContractCallButton = (props: ButtonProps & ContractCallType) => {
   return (
     <Button
       {...props}
-      type='submit'
       _hover={{ opacity: 0.9 }}
       _active={{ opacity: 1 }}
       onClick={
