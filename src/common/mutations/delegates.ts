@@ -14,7 +14,7 @@ export async function createDelegate({ organizationId, delegatorAddress, delegat
   }
 }
 
-export const useAddDelegate = (delegateAddress: string | null) => {
+export const useAddDelegate = (delegateAddress: string | undefined) => {
   const { dao } = useDAO()
   const queryClient = useQueryClient();
   return useMutation(createDelegate, {
@@ -38,7 +38,7 @@ export async function deleteDelegate({ organizationId, delegatorAddress }: any) 
   }
 }
 
-export const useDeleteDelegate = (delegateAddress: string | null) => {
+export const useDeleteDelegate = (delegateAddress: string | undefined) => {
   const { dao } = useDAO()
   const queryClient = useQueryClient();
   return useMutation(deleteDelegate, {

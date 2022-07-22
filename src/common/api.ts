@@ -410,7 +410,7 @@ export async function getTransaction(transactionId: string) {
   }
 }
 
-export async function getDelegates(organizationId: number, currentStxAddress: string | null) {
+export async function getDelegates(organizationId: number, currentStxAddress: string | undefined) {
   try {
     const { data, error } = await supabase
       .from('Delegates')
