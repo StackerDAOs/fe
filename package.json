@@ -21,7 +21,7 @@
     "@emotion/styled": "11.1.5",
     "@hookform/error-message": "^2.0.0",
     "@micro-stacks/nextjs": "^0.0.15",
-    "@micro-stacks/react": "^1.0.0-beta.11",
+    "@micro-stacks/react": "^1.0.0",
     "@supabase/supabase-js": "^1.35.3",
     "apexcharts": "^3.35.3",
     "boring-avatars": "^1.6.3",
