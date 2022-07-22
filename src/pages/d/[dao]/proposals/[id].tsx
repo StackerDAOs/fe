@@ -479,7 +479,6 @@ const ProposalView = () => {
                       _hover={{
                         bg: 'base.800',
                         opacity: 0.5,
-                        cursor: 'not-allowed',
                       }}
                       notDeployer={
                         proposalContractAddress !== currentStxAddress
