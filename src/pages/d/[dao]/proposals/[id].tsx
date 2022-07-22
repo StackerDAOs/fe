@@ -142,21 +142,19 @@ const ProposalView = () => {
           .eq('contractAddress', proposalPrincipal);
         if (error) throw error;
         if (data) {
-          console.log('data', data);
           setState({
             ...state,
             postConditions: data[0]?.postConditions,
             title: data[0]?.title,
-            description: data[0].description,
-            type: data[0].type,
-            submitted: data[0].submitted,
+            description: data[0]?.description,
+            type: data[0]?.type,
+            submitted: data[0]?.submitted,
           });
         }
       } catch (e: any) {
         console.error({ e });
       }
     };
-    console.log('state', state?.title);
     fetchData();
   }, [currentStxAddress, proposalPrincipal]);
 
@@ -198,8 +196,6 @@ const ProposalView = () => {
   if (isLoading || isIdle) {
     return null;
   }
-
-  console.log(state);
 
   return (
     <motion.div
