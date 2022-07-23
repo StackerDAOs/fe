@@ -86,10 +86,20 @@ const SLIDE_UP_BUTTON_VARIANTS = {
 
 type TProposal = {
   postConditions?: any;
+  title: string;
+  description: string;
+  type: string;
+  submitted: boolean;
 };
 
 const ProposalView = () => {
-  const [state, setState] = useState<TProposal>({ postConditions: [] });
+  const [state, setState] = useState<TProposal>({
+    postConditions: [],
+    title: '',
+    description: '',
+    type: '',
+    submitted: false,
+  });
   const [isRemoving, setIsRemoving] = useState(false);
   const currentStxAddress = useCurrentStxAddress();
   const router = useRouter();
@@ -128,13 +138,17 @@ const ProposalView = () => {
       try {
         const { data, error }: any = await supabase
           .from('Proposals')
-          .select('postConditions')
+          .select('postConditions, title, description, type, submitted')
           .eq('contractAddress', proposalPrincipal);
         if (error) throw error;
         if (data) {
           setState({
             ...state,
-            postConditions: data ?? data[0]?.postConditions,
+            postConditions: data[0]?.postConditions,
+            title: data[0]?.title,
+            description: data[0]?.description,
+            type: data[0]?.type,
+            submitted: data[0]?.submitted,
           });
         }
       } catch (e: any) {
@@ -227,9 +241,23 @@ const ProposalView = () => {
                     )}
                   </HStack>
                   <HStack>
-                    <Text fontSize='4xl' fontWeight='medium' color='light.600'>
-                      {proposalInfo?.title} {proposalInfo?.type}
-                    </Text>
+                    {state?.submitted ? (
+                      <Text
+                        fontSize='4xl'
+                        fontWeight='medium'
+                        color='light.600'
+                      >
+                        {proposalInfo?.title} {proposalInfo?.type}
+                      </Text>
+                    ) : (
+                      <Text
+                        fontSize='4xl'
+                        fontWeight='medium'
+                        color='light.600'
+                      >
+                        {state?.title} {state?.type}
+                      </Text>
+                    )}
                   </HStack>
                   <HStack>
                     {!proposalInfo?.proposal ? (
@@ -452,7 +480,6 @@ const ProposalView = () => {
                       _hover={{
                         bg: 'base.800',
                         opacity: 0.5,
-                        cursor: 'not-allowed',
                       }}
                       notDeployer={
                         proposalContractAddress !== currentStxAddress
@@ -808,7 +835,9 @@ const ProposalView = () => {
                                       color: 'secondary.900',
                                     }}
                                   >
-                                    {proposalInfo?.description}
+                                    {state?.submitted
+                                      ? proposalInfo?.description
+                                      : state?.description}
                                   </Text>
                                 </Stack>
                                 <Stack align='flex-start'>
