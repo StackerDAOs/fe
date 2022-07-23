@@ -29,7 +29,3 @@ export const VaultAddress = () => {
     );
   }
 };
-
-// {vault.contractAddress.slice(0, 5) +
-//   '...' +
-//   vault.contractAddress.slice(37)}
