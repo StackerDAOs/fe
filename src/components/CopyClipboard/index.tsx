@@ -26,9 +26,9 @@ export const CopyClipboard = (props: any) => {
       whileHover={{
         scale: 1.1,
       }}
-      // whileTap={{
-      //   scale: 1,
-      // }}
+      whileTap={{
+        scale: 1,
+      }}
       onClick={onCopy}
     >
       {hasCopied ? (
