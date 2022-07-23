@@ -47,6 +47,7 @@ export const TransferStxButton = ({
           amount: transferAmount,
         },
         executionDelay,
+        isVerified: true,
       });
       closeOnDeploy();
     } catch (e: any) {
