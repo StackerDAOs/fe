@@ -10,6 +10,7 @@ import {
   TabList,
   TabPanel,
   TabPanels,
+  HStack,
 } from '@chakra-ui/react';
 
 // Components
@@ -18,6 +19,7 @@ import { AssetTable } from '@components/AssetTable';
 import { Header } from '@components/Header';
 import { SectionHeader } from '@components/SectionHeader';
 import { Wrapper } from '@components/Wrapper';
+import { VaultAddress } from '@components/VaultAddress';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -43,9 +45,12 @@ const Vault = () => {
       <Wrapper>
         <SectionHeader justify='space-between' align='center' color='white'>
           <Box>
-            <Text fontSize='lg' fontWeight='medium'>
-              Assets
-            </Text>
+            <HStack justify='flex-start'>
+              <Text fontSize='lg' fontWeight='medium'>
+                Vault
+              </Text>
+              {<VaultAddress />}
+            </HStack>
             <Text color='gray.900' fontSize='sm'>
               View and initiate proposals from a list of assets managed by the
               DAO
