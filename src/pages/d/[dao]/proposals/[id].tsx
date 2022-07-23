@@ -236,6 +236,11 @@ const ProposalView = () => {
                     <Text>Back</Text>
                   </HStack>
                   <HStack>
+                    {proposalPrincipal && (
+                      <ErrorAlertBanner id={proposalPrincipal} />
+                    )}
+                  </HStack>
+                  <HStack>
                     {state?.submitted ? (
                       <Text
                         fontSize='4xl'
@@ -253,14 +258,6 @@ const ProposalView = () => {
                         {state?.title} {state?.type}
                       </Text>
                     )}
-                    {proposalPrincipal && (
-                      <ErrorAlertBanner id={proposalPrincipal} />
-                    )}
-                  </HStack>
-                  <HStack>
-                    <Text fontSize='4xl' fontWeight='medium' color='light.600'>
-                      {proposalInfo?.title} {proposalInfo?.type}
-                    </Text>
                   </HStack>
                   <HStack>
                     {!proposalInfo?.proposal ? (
