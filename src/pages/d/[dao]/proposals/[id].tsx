@@ -70,7 +70,6 @@ import { useBlocks } from '@common/hooks';
 
 // Mutations
 import { useDisableProposal } from '@common/mutations/proposals';
-import { title } from 'process';
 
 const FADE_IN_VARIANTS = {
   hidden: { opacity: 0, x: 0, y: 0 },
@@ -86,10 +85,10 @@ const SLIDE_UP_BUTTON_VARIANTS = {
 
 type TProposal = {
   postConditions?: any;
-  title?: string;
-  description?: string;
-  type?: string;
-  submitted?: boolean;
+  title: string;
+  description: string;
+  type: string;
+  submitted: boolean;
 };
 
 const ProposalView = () => {
@@ -138,7 +137,7 @@ const ProposalView = () => {
       try {
         const { data, error }: any = await supabase
           .from('Proposals')
-          .select('postConditions,title,description,type,submitted')
+          .select('postConditions, title, description, type, submitted')
           .eq('contractAddress', proposalPrincipal);
         if (error) throw error;
         if (data) {
