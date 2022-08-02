@@ -83,20 +83,6 @@ const Proposals = () => {
                         bg='base.900'
                         size='sm'
                         borderColor='base.500'
-                        value='inactive'
-                        _focus={{ outline: 'none' }}
-                        _checked={{
-                          bg: 'secondary.900',
-                          color: 'white',
-                          borderColor: 'base.500',
-                        }}
-                      >
-                        Inactive
-                      </Radio>
-                      <Radio
-                        bg='base.900'
-                        size='sm'
-                        borderColor='base.500'
                         value='active'
                         _focus={{ outline: 'none' }}
                         _checked={{
@@ -176,20 +162,6 @@ const Proposals = () => {
                         }}
                       >
                         All
-                      </Radio>
-                      <Radio
-                        bg='base.900'
-                        size='sm'
-                        borderColor='base.500'
-                        value='inactive'
-                        _focus={{ outline: 'none' }}
-                        _checked={{
-                          bg: 'secondary.900',
-                          color: 'white',
-                          borderColor: 'base.500',
-                        }}
-                      >
-                        Inactive
                       </Radio>
                       <Radio
                         bg='base.900'

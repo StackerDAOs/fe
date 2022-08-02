@@ -84,6 +84,7 @@ export async function getDBProposals(organizationId: string, filter: string) {
     '*, Organizations!inner(id, name)',
   )
   .order('createdAt', {ascending: false})
+  .eq('submitted', true)
   .eq('Organizations.id', organizationId);
   try {
     if (filter === 'inactive') {

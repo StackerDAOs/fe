@@ -30,7 +30,7 @@ import { useAuth, useDAO, useToken } from '@common/queries';
 
 // Components
 import { Card } from '@components/Card';
-import { SocialProposalButton } from '@components/Actions';
+import { DeployProposalButton } from '@components/buttons';
 
 // Animation
 import { motion } from 'framer-motion';
@@ -242,10 +242,11 @@ export const SocialProposalModal = () => {
                         alignItems='space-between'
                         justifyContent='space-between'
                       >
-                        <SocialProposalButton
-                          organization={dao}
-                          closeOnDeploy={onCloseModal}
+                        <DeployProposalButton
+                          title='Deploy'
+                          proposalType='Social'
                           description={formatComments(description)}
+                          closeOnDeploy={onCloseModal}
                         />
                       </ButtonGroup>
                     </Stack>
