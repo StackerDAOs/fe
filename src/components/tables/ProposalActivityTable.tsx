@@ -21,11 +21,11 @@ import { convertToken, truncate } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
 // Queries
-import { useEvents, useExtension, useToken } from '@common/queries';
+import { useEvents, useExtension, useToken } from '@common/hooks';
 
 // Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from '@utils/animation';
+import { FADE_IN_VARIANTS } from 'lib/animation';
 
 type TProposalTableProps = {
   proposalPrincipal: string;
@@ -34,7 +34,7 @@ type TProposalTableProps = {
 export const ProposalActivityTable = (
   props: TableProps & TProposalTableProps,
 ) => {
-  const { extension: voting } = useExtension('Voting');
+  const { data: voting } = useExtension('Voting');
   const { isLoading, isIdle, isError, token } = useToken();
   const { data: contractEvents } = useEvents(
     voting?.contractAddress,

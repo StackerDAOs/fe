@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import React from 'react';
 import type { ButtonProps } from '@chakra-ui/react';
 import { Button, Spinner, useToast } from '@chakra-ui/react';
 import { useOpenContractCall } from '@micro-stacks/react';
@@ -9,7 +9,7 @@ import {
   useExtension,
   useSubmissionExtension,
   useTransaction,
-} from '@common/queries';
+} from '@common/hooks';
 
 // Mutations
 import { useSubmitProposal } from '@common/mutations/proposals';
@@ -27,10 +27,10 @@ type TProposeButtonProps = ButtonProps & {
 export const ProposeButton = (props: TProposeButtonProps) => {
   const toast = useToast();
   const { text, notDeployer, proposalPrincipal } = props;
-  const [transactionId, setTransactionId] = useState('');
+  const [transactionId, setTransactionId] = React.useState('');
   const { currentBlockHeight } = useBlocks();
-  const { extension: submission } = useExtension('Submission');
-  const { extension: governance } = useExtension('Governance Token');
+  const { data: submission } = useExtension('Submission');
+  const { data: governance } = useExtension('Governance Token');
   const { data: submissionData } = useSubmissionExtension();
   const { data: transaction } = useTransaction(transactionId);
   const { openContractCall, isRequestPending } = useOpenContractCall();
@@ -53,7 +53,7 @@ export const ProposeButton = (props: TProposeButtonProps) => {
     }
   };
 
-  const handleVote = useCallback(async () => {
+  const handleVote = React.useCallback(async () => {
     const [contractAddress, contractName] = contractPrincipal(
       submission?.contractAddress,
     );

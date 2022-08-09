@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
   Box,
@@ -35,8 +35,8 @@ import Avatar from 'boring-avatars';
 
 export const MainNavbar = () => {
   const { network } = useNetwork();
-  const [bns, setBns] = useState<string | undefined>('');
-  const [balance, setBalance] = useState<string | undefined>('');
+  const [bns, setBns] = React.useState<string | undefined>('');
+  const [balance, setBalance] = React.useState<string | undefined>('');
   const { stxAddress }: any = useAccount();
   const { isSignedIn, openAuthRequest, signOut } = useAuth();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
@@ -54,7 +54,7 @@ export const MainNavbar = () => {
     localStorage.setItem('chakra-ui-color-mode', 'dark');
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     async function fetch() {
       if (isSignedIn && stxAddress) {
         const stxBalance = await fetchAccountStxBalance({

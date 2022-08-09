@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Button,
   ButtonGroup,
@@ -28,7 +28,7 @@ import { useAccount } from '@micro-stacks/react';
 import { useForm, Controller } from 'react-hook-form';
 
 // Queries
-import { useAuth, useDAO, useToken } from '@common/queries';
+import { useAuth, useDAO, useToken } from '@common/hooks';
 
 // Components
 import { Card } from '@components/Card';
@@ -36,14 +36,14 @@ import { TransferStxButton } from '@components/Actions';
 
 // Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from '@utils/animation';
+import { FADE_IN_VARIANTS } from 'lib/animation';
 
 // Utils
+import { microToStacks } from '@stacks-os/utils';
 import {
   truncate,
   formatComments,
   validateStacksAddress,
-  microToStacks,
 } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
@@ -52,10 +52,10 @@ import { FaArrowRight } from 'react-icons/fa';
 export const TransferStxModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { stxAddress } = useAccount();
-  const { dao } = useDAO();
+  const { data: dao } = useDAO();
   const { proposeData } = useAuth();
   const { token, balance } = useToken();
-  const [state, setState] = useState<any>({
+  const [state, setState] = React.useState<any>({
     name: '',
     symbol: '',
     decimals: '',
@@ -72,7 +72,7 @@ export const TransferStxModal = () => {
   } = useForm();
   const { transferAmount, transferTo, description } = getValues();
 
-  useEffect(() => {
+  React.useEffect(() => {
     reset({
       transferAmount: '',
       transferTo: '',

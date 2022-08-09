@@ -8,7 +8,6 @@ import {
 } from '@chakra-ui/react';
 
 // Components
-import { ContractCallButton } from '@widgets/ContractCallButton';
 import { Notification } from '@components/Notification';
 
 // Web3
@@ -19,7 +18,7 @@ import { useAccount } from '@micro-stacks/react';
 import { validateStacksAddress } from '@common/helpers';
 
 // Queries
-import { useDAO } from '@common/queries';
+import { useDAO } from '@common/hooks';
 
 // Mutations
 import { useAddDelegate, useDeleteDelegate } from '@common/mutations/delegates';
@@ -32,7 +31,7 @@ export const DelegateButton = ({
   functionName,
   isDisabled,
 }: any) => {
-  const { dao } = useDAO();
+  const { data: dao } = useDAO();
   const { stxAddress } = useAccount();
   const { mutate: createDelegate } = useAddDelegate(stxAddress);
   const { mutate: deleteDelegate } = useDeleteDelegate(stxAddress);
@@ -111,7 +110,7 @@ export const DelegateButton = ({
   };
 
   return (
-    <ContractCallButton
+    <Button
       title={title}
       color='white'
       bg='secondary.900'

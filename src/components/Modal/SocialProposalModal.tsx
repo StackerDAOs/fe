@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Button,
   ButtonGroup,
@@ -26,7 +26,7 @@ import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 
 // Queries
-import { useAuth, useDAO, useToken } from '@common/queries';
+import { useAuth, useDAO, useToken } from '@common/hooks';
 
 // Components
 import { Card } from '@components/Card';
@@ -34,7 +34,7 @@ import { DeployProposalButton } from '@components/buttons';
 
 // Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from '@utils/animation';
+import { FADE_IN_VARIANTS } from 'lib/animation';
 
 // Utils
 import { truncate, formatComments } from '@common/helpers';
@@ -44,10 +44,10 @@ import { FaPlusCircle } from 'react-icons/fa';
 export const SocialProposalModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { stxAddress } = useAccount();
-  const { dao } = useDAO();
+  const { data: dao } = useDAO();
   const { proposeData } = useAuth();
   const { token } = useToken();
-  const [state, setState] = useState<any>({
+  const [state, setState] = React.useState<any>({
     name: '',
     symbol: '',
     decimals: '',
@@ -63,7 +63,7 @@ export const SocialProposalModal = () => {
   } = useForm();
   const { description } = getValues();
 
-  useEffect(() => {
+  React.useEffect(() => {
     reset({
       description: '',
     });

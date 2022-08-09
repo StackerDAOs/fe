@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import {
   Box,
   FormControl,
@@ -20,11 +20,11 @@ import { DepositButton, InitButton } from '@components/Actions';
 import { DevToolModal } from '@components/Modal';
 
 // Utils
-import { adminAddress } from '@common/constants';
+import { adminAddress } from 'lib/constants';
 
 export const AppFooter = () => {
-  const [depositAmount, setDepositAmount] = useState('');
-  const [bootstrap, setBootstrap] = useState('');
+  const [depositAmount, setDepositAmount] = React.useState('');
+  const [bootstrap, setBootstrap] = React.useState('');
   const { stxAddress } = useAccount();
   if (stxAddress === adminAddress) {
     return (

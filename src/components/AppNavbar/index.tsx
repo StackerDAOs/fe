@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
@@ -40,8 +40,8 @@ export const AppNavbar = () => {
   const router = useRouter();
   const { dao } = router.query as any;
   const { network } = useNetwork();
-  const [bns, setBns] = useState<string | undefined>('');
-  const [balance, setBalance] = useState<string | undefined>('');
+  const [bns, setBns] = React.useState<string | undefined>('');
+  const [balance, setBalance] = React.useState<string | undefined>('');
   const { stxAddress }: any = useAccount();
   const { isSignedIn, openAuthRequest, signOut } = useAuth();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
@@ -62,7 +62,7 @@ export const AppNavbar = () => {
     return router.pathname.split('/')[3] === path;
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     async function fetch() {
       if (isSignedIn && stxAddress) {
         const stxBalance = await fetchAccountStxBalance({
@@ -144,14 +144,6 @@ export const AppNavbar = () => {
                   <ButtonGroup spacing='6' alignItems='center'>
                     {isSignedIn ? (
                       <HStack cursor='pointer' spacing='5' color='light.900'>
-                        {/* <HStack
-                          cursor='default'
-                          align='center'
-                          justify='center'
-                          color='light.900'
-                        >
-                          <ActionItemModal />
-                        </HStack> */}
                         <HStack spacing='1'>
                           <Text
                             as='span'

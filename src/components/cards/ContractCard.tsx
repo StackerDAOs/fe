@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import {
   Button,
   ButtonGroup,
@@ -9,9 +9,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-// Components
-import { ContractCallButton } from '@widgets/ContractCallButton';
-
 // Utils
 import { truncate } from '@common/helpers';
 
@@ -19,7 +16,7 @@ import { truncate } from '@common/helpers';
 import { FiExternalLink } from 'react-icons/fi';
 
 // Queries
-import { useTransaction } from '@common/queries';
+import { useTransaction } from '@common/hooks';
 
 // Mutations
 import { useDisableProposal } from '@common/mutations/proposals';
@@ -29,19 +26,20 @@ export const ContractCard = ({
   transactionId,
   contractData,
 }: any) => {
-  const [state, setState] = useState({ isRemoving: false });
+  const [state, setState] = React.useState({ isRemoving: false });
+  console.log({ contractData });
   // const { mutate: submitProposal } = useSubmitProposal();
   const { mutate: disableProposal } = useDisableProposal();
   const { data: transaction } = useTransaction(transactionId);
 
-  const onFinishUpdate = async (contractAddress: string) => {
-    try {
-      console.log({ contractAddress });
-      // submitProposal({ contractAddress, submitted: true });
-    } catch (e: any) {
-      console.error({ e });
-    }
-  };
+  // const onFinishUpdate = async (contractAddress: string) => {
+  //   try {
+  //     console.log({ contractAddress });
+  //     // submitProposal({ contractAddress, submitted: true });
+  //   } catch (e: any) {
+  //     console.error({ e });
+  //   }
+  // };
 
   const onDisable = async (contractAddress: string) => {
     try {
@@ -84,14 +82,15 @@ export const ContractCard = ({
         <HStack spacing='3'>
           {transaction?.tx_status === 'success' && (
             <>
-              <ContractCallButton
-                title='Propose'
-                color='white'
+              <Button
                 bg='secondary.900'
+                color='white'
                 size='sm'
-                onFinish={() => onFinishUpdate(proposalContractAddress)}
-                {...contractData}
-              />
+                _hover={{ opacity: 0.9 }}
+                _active={{ opacity: 1 }}
+              >
+                Deploy
+              </Button>
               <ButtonGroup>
                 <>
                   {state.isRemoving ? (

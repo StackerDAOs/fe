@@ -19,11 +19,11 @@ import { map } from 'lodash';
 import { ContractCardList } from '@components/ContractCardList';
 
 // Queries
-import { useContracts, useTransaction } from '@common/queries';
+import { useContracts, useTransaction } from '@common/hooks';
 
 // Animations
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from '@utils/animation';
+import { FADE_IN_VARIANTS } from 'lib/animation';
 import { FaInfoCircle, FaExclamationCircle } from 'react-icons/fa';
 
 // Utils

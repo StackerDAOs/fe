@@ -9,7 +9,7 @@ import {
   useExtension,
   useVotingExtension,
   useGenerateName,
-} from '@common/queries';
+} from '@common/hooks';
 
 // Mutations
 import { useAddProposal } from '@common/mutations/proposals';
@@ -27,11 +27,11 @@ export const TransferStxButton = ({
   const { stxAddress } = useAccount();
   const { mutate: createProposal } = useAddProposal();
   const { data: contractName } = useGenerateName();
-  const { extension: vault } = useExtension('Vault');
-  const { data: votingData } = useVotingExtension();
+  const { data: vault } = useExtension('Vault');
+  const { data: delay } = useVotingExtension();
 
   const onFinishInsert: any = async (data: any) => {
-    const executionDelay = Number(votingData?.executionDelay);
+    const executionDelay = Number(delay);
     try {
       createProposal({
         organizationId: organization?.id,

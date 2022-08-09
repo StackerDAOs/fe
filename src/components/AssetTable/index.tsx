@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import {
   HStack,
   Table,
@@ -24,11 +24,11 @@ import { ustxToStx, convertToken } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
 // Queries
-import { useDAO, useToken } from '@common/queries';
+import { useDAO, useToken } from '@common/hooks';
 
 // Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from '@utils/animation';
+import { FADE_IN_VARIANTS } from 'lib/animation';
 
 // Icons
 import { TransferTokenModal, TransferStxModal } from '@components/Modal';
@@ -48,11 +48,11 @@ const initialState = {
 };
 
 export const AssetTable = (props: TableProps & AssetTableProps) => {
-  const [state, setState] = useState<TAssetTable>(initialState);
+  const [state, setState] = React.useState<TAssetTable>(initialState);
   const { type } = props;
   const { network } = useNetwork();
 
-  const { dao: DAO } = useDAO();
+  const { data: dao } = useDAO();
   const { isLoading, isIdle, isError, balance } = useToken();
 
   const fungibleTokens: any = Object.assign({}, balance?.fungible_tokens);
@@ -71,7 +71,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
     };
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchAssets = async () => {
       try {
         const fetchAssetData = async (
@@ -156,7 +156,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
       }
     };
     fetchAssets();
-  }, [DAO, balance]);
+  }, [dao, balance]);
 
   const listItems =
     type === 'fungible' ? state.fungibleTokensList : nonFungibleTokensList;

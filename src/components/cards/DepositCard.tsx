@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Button,
   HStack,
@@ -20,11 +20,11 @@ import { DepositButton } from '@components/Actions';
 import { ustxToStx } from '@common/helpers';
 
 export const DepositCard = () => {
-  const [balance, setBalance] = useState<string | undefined>('');
-  const [depositAmount, setDepositAmount] = useState('');
+  const [balance, setBalance] = React.useState<string | undefined>('');
+  const [depositAmount, setDepositAmount] = React.useState('');
   const { network } = useNetwork();
   const { stxAddress } = useAccount();
-  useEffect(() => {
+  React.useEffect(() => {
     const fetch = async () => {
       if (stxAddress) {
         try {

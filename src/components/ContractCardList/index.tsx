@@ -7,7 +7,7 @@ import { contractPrincipalCV, uintCV } from 'micro-stacks/clarity';
 import { useBlocks } from '@common/hooks';
 
 // Queries
-import { useExtension, useContracts } from '@common/queries';
+import { useExtension, useContracts } from '@common/hooks';
 
 // Components
 import { ContractCard } from '@components/cards/ContractCard';
@@ -15,14 +15,14 @@ import { EmptyState } from '@components/EmptyState';
 
 // Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from '@utils/animation';
+import { FADE_IN_VARIANTS } from 'lib/animation';
 
 const MotionStack = motion(Stack);
 const MotionContractCard = motion(ContractCard);
 
 export const ContractCardList = () => {
-  const { extension: submission } = useExtension('Submission');
-  const { extension: governance } = useExtension('Governance Token');
+  const { data: submission } = useExtension('Submission');
+  const { data: governance } = useExtension('Governance Token');
   const {
     isLoading: isLoadingContracts,
     isFetching,

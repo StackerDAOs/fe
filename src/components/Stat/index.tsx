@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { BoxProps, Heading, HStack, Icon, Stack, Text } from '@chakra-ui/react';
@@ -27,7 +27,7 @@ const FADE_IN_VARIANTS = {
 
 export const Stat = (props: Props) => {
   const { path, label, value, assetSymbol, info, ...boxProps } = props;
-  const [isHovered, setHovered] = useState(false);
+  const [isHovered, setHovered] = React.useState(false);
   const router = useRouter();
   const { dao } = router.query;
   const currentPath = router.pathname.split('/').filter((p) => p === path)[0];

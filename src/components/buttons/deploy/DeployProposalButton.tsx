@@ -4,7 +4,7 @@ import { Button, Spinner } from '@chakra-ui/react';
 
 import { useAccount, useOpenContractDeploy } from '@micro-stacks/react';
 import { socialProposal } from '@utils/proposals/offchain';
-import { useDAO, useGenerateName, useVotingExtension } from '@common/queries';
+import { useDAO, useGenerateName, useVotingExtension } from '@common/hooks';
 import { useAddProposal } from '@common/mutations/proposals';
 
 type TDeployButtonProps = ButtonProps & {
@@ -15,12 +15,12 @@ type TDeployButtonProps = ButtonProps & {
 };
 
 export const DeployProposalButton = (props: TDeployButtonProps) => {
-  const { dao } = useDAO();
+  const { data: dao } = useDAO();
   const { openContractDeploy, isRequestPending } = useOpenContractDeploy();
   const { stxAddress } = useAccount();
   const createProposal = useAddProposal();
-  const { data: contractName } = useGenerateName();
-  const { data: votingData } = useVotingExtension();
+  const { data: contractName }: any = useGenerateName();
+  const { data: votingData }: any = useVotingExtension();
   const codeBody = socialProposal(contractName, props?.description, stxAddress);
 
   const deploySocialProposal = React.useCallback(async () => {

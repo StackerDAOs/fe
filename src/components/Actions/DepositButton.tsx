@@ -1,5 +1,5 @@
-// Components
-import { ContractCallButton } from '@widgets/ContractCallButton';
+import React from 'react';
+import { Button } from '@chakra-ui/react';
 
 // Web3
 import { useAccount } from '@micro-stacks/react';
@@ -11,7 +11,7 @@ import {
 
 // Utils
 import { stxToUstx } from '@common/helpers';
-import { vaultAddress } from '@common/constants';
+import { vaultAddress } from 'lib/constants';
 
 export const DepositButton = ({ title, amount }: any) => {
   const { stxAddress } = useAccount();
@@ -38,7 +38,7 @@ export const DepositButton = ({ title, amount }: any) => {
   };
 
   return (
-    <ContractCallButton
+    <Button
       title={!amount ? 'Enter an amount' : title}
       color='white'
       bg='base.800'

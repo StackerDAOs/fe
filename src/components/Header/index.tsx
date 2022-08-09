@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from '@utils/animation';
+import { FADE_IN_VARIANTS } from 'lib/animation';
 
 import { ustxToStx, convertToken } from '@common/helpers';
 import Avatar from 'boring-avatars';
@@ -19,19 +19,13 @@ import { Stat } from '@components/Stat';
 
 import { defaultTo } from 'lodash';
 
-import {
-  useDAO,
-  useToken,
-  useTokenBalance,
-  useProposals,
-} from '@common/queries';
+import { useDAO, useToken, useTokenBalance, useProposals } from '@common/hooks';
 
 export const Header = () => {
-  const { dao } = useDAO();
+  const { data: dao } = useDAO();
   const { data } = useProposals();
-  const { dao: DAO } = useDAO();
   const { isLoading, isIdle, isError, token, balance } = useToken();
-  const { balance: userBalance } = useTokenBalance();
+  const { data: userBalance } = useTokenBalance();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const Vault = () => {
@@ -111,7 +105,7 @@ export const Header = () => {
                   <HStack align='baseline'>
                     <Avatar
                       size={40}
-                      name={DAO?.name}
+                      name={dao?.name}
                       variant='marble'
                       colors={[
                         '#50DDC3',
@@ -127,7 +121,7 @@ export const Header = () => {
                       fontWeight='light'
                       color='light.900'
                     >
-                      {DAO?.name}
+                      {dao?.name}
                     </Heading>
                   </HStack>
                 </a>
@@ -175,7 +169,7 @@ export const Header = () => {
                   <HStack align='baseline'>
                     <Avatar
                       size={40}
-                      name={DAO?.name}
+                      name={dao?.name}
                       variant='marble'
                       colors={[
                         '#50DDC3',
@@ -191,7 +185,7 @@ export const Header = () => {
                       fontWeight='light'
                       color='light.900'
                     >
-                      {DAO?.name}
+                      {dao?.name}
                     </Heading>
                   </HStack>
                 </a>

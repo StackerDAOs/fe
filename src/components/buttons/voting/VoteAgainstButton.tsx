@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import React from 'react';
 import type { ButtonProps } from '@chakra-ui/react';
 import { Button, Spinner, useToast } from '@chakra-ui/react';
 import { map, size } from 'lodash';
@@ -11,21 +11,21 @@ import {
   noneCV,
 } from 'micro-stacks/clarity';
 import { TxToast } from '@components/Toast';
-import { generateWithDelegators, getDelegators } from '@common/functions';
-import { useDelegates, useExtension, useTransaction } from '@common/queries';
+import { generateWithDelegators, getDelegators } from 'lib/functions';
+import { useDelegates, useExtension, useTransaction } from '@common/hooks';
 import { contractPrincipal, getExplorerLink } from '@common/helpers';
 
 export const VoteAgainstButton = (props: ButtonProps & any) => {
   const toast = useToast();
   const { text, proposalPrincipal, voteFor } = props;
-  const [transactionId, setTransactionId] = useState('');
-  const { extension: voting } = useExtension('Voting');
+  const [transactionId, setTransactionId] = React.useState('');
+  const { data: voting } = useExtension('Voting');
   const { data: transaction } = useTransaction(transactionId);
   const { data: delegatorData } = useDelegates();
   const { openContractCall, isRequestPending } = useOpenContractCall();
   const [proposalContractAddress, proposalContractName] =
     contractPrincipal(proposalPrincipal);
-  const handleVoteAgainst = useCallback(async () => {
+  const handleVoteAgainst = React.useCallback(async () => {
     const delegatorAddresses = map(delegatorData, 'delegatorAddress');
     const delegateVoteFor = listCV([
       tupleCV({

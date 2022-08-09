@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { HStack, Stack, Text } from '@chakra-ui/react';
 
 // Web3
@@ -7,8 +7,8 @@ import { fetchTransaction } from 'micro-stacks/api';
 
 export const TransactionCard = ({ transactionId }: any) => {
   const { network } = useNetwork();
-  const [state, setState] = useState<any>({});
-  useEffect(() => {
+  const [state, setState] = React.useState<any>({});
+  React.useEffect(() => {
     fetchTransactionData(transactionId);
   }, [transactionId]);
 

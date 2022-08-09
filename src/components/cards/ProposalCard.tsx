@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Badge, HStack, Icon, Stack, Text } from '@chakra-ui/react';
@@ -8,7 +8,7 @@ import { useBlocks } from '@common/hooks';
 
 // Components
 import { Card } from '@components/Card';
-import { ErrorAlertIcon } from '@components/Alerts';
+import { AlertIcon } from '@components/alerts';
 
 // Animation
 import { motion } from 'framer-motion';
@@ -34,7 +34,7 @@ export const ProposalCard = ({
   concluded,
   isVerified,
 }: any) => {
-  const [isHovered, setHovered] = useState(false);
+  const [isHovered, setHovered] = React.useState(false);
   const { currentBlockHeight } = useBlocks();
   const router = useRouter();
   const { dao } = router.query as any;
@@ -110,7 +110,7 @@ export const ProposalCard = ({
               >
                 <HStack justify='space-between'>
                   <HStack>
-                    {!isVerified && <ErrorAlertIcon />}
+                    {!isVerified && <AlertIcon />}
                     {statusBadge}
                   </HStack>
                   <HStack>

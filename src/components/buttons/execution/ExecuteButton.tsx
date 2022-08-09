@@ -1,10 +1,10 @@
-import { useCallback, useState } from 'react';
+import React from 'react';
 import { Button, Spinner, useToast } from '@chakra-ui/react';
 import type { ButtonProps } from '@chakra-ui/react';
 import { useOpenContractCall } from '@micro-stacks/react';
 import { contractPrincipalCV } from 'micro-stacks/clarity';
 import { TxToast } from '@components/Toast';
-import { generatePostConditions } from '@common/functions';
+import { generatePostConditions } from 'lib/functions';
 import { defaultTo } from 'lodash';
 import {
   contractPrincipal,
@@ -18,7 +18,7 @@ import {
   useTransaction,
   useProposal,
   usePostConditions,
-} from '@common/queries';
+} from '@common/hooks';
 import { useConcludeProposal } from '@common/mutations/proposals';
 import { FaCheck } from 'react-icons/fa';
 
@@ -31,9 +31,9 @@ type TExecuteButtonProps = ButtonProps & {
 export const ExecuteButton = (props: TExecuteButtonProps) => {
   const toast = useToast();
   const { proposalPrincipal } = props;
-  const [transactionId, setTransactionId] = useState('');
+  const [transactionId, setTransactionId] = React.useState('');
   const { token } = useToken();
-  const { extension: voting } = useExtension('Voting');
+  const { data: voting } = useExtension('Voting');
   const { data: transaction } = useTransaction(transactionId);
   const [proposalContractAddress, proposalContractName] =
     contractPrincipal(proposalPrincipal);
@@ -58,7 +58,7 @@ export const ExecuteButton = (props: TExecuteButtonProps) => {
     }
   };
 
-  const handleExecute = useCallback(async () => {
+  const handleExecute = React.useCallback(async () => {
     const { votesFor, votesAgainst } = data?.proposal;
     const fungibleTokenDecimals = defaultTo(fungibleToken?.decimals, 6);
     const totalVotes = Number(votesFor) + Number(votesAgainst);

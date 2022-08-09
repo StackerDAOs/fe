@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
   Box,
@@ -22,13 +22,13 @@ import { useAccount, useAuth, useNetwork } from '@micro-stacks/react';
 import { fetchNamesByAddress } from 'micro-stacks/api';
 
 export const Navbar = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [bns, setBns] = useState<string | undefined>('');
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const [bns, setBns] = React.useState<string | undefined>('');
   const { stxAddress } = useAccount();
   const { isSignedIn } = useAuth();
   const { network } = useNetwork();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
-  useEffect(() => {
+  React.useEffect(() => {
     async function fetch() {
       if (isSignedIn && stxAddress) {
         const data = await fetchNamesByAddress({

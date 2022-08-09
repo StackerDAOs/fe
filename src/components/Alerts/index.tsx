@@ -1,2 +1,2 @@
-export * from './ErrorAlertBanner';
-export * from './ErrorAlertIcon';
+export * from './AlertBanner';
+export * from './AlertIcon';

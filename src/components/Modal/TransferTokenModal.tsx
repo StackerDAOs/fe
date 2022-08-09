@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Button,
   ButtonGroup,
@@ -28,7 +28,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 
 // Queries
-import { useAuth, useDAO, useToken } from '@common/queries';
+import { useAuth, useDAO, useToken } from '@common/hooks';
 
 // Components
 import { Card } from '@components/Card';
@@ -36,7 +36,7 @@ import { TransferTokenButton } from '@components/Actions';
 
 // Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from '@utils/animation';
+import { FADE_IN_VARIANTS } from 'lib/animation';
 
 // Utils
 import {
@@ -53,10 +53,10 @@ export const TransferTokenModal = ({ balance, contractAddress }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { stxAddress } = useAccount();
   const { network } = useNetwork();
-  const { dao } = useDAO();
+  const { data: dao } = useDAO();
   const { proposeData } = useAuth();
   const { token } = useToken();
-  const [state, setState] = useState<any>({
+  const [state, setState] = React.useState<any>({
     name: '',
     symbol: '',
     decimals: '',
@@ -73,7 +73,7 @@ export const TransferTokenModal = ({ balance, contractAddress }: any) => {
   } = useForm();
   const { transferAmount, transferTo, description } = getValues();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchAssetData = async ({ contractAddress, contractName }: any) => {
       const senderAddress = `${contractAddress}.${contractName}`;
       const name = await fetchReadOnlyFunction({

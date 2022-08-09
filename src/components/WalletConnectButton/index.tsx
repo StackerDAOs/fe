@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { Button, ButtonProps, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@micro-stacks/react';
@@ -7,11 +7,11 @@ import { useAuth } from '@micro-stacks/react';
 import { ConnectWalletModal } from '@components/Modal/ConnectWalletModal';
 
 export const WalletConnectButton = (props: ButtonProps) => {
-  const [installed, setInstalled] = useState(false);
+  const [installed, setInstalled] = React.useState(false);
   const { isSignedIn, openAuthRequest, signOut, isRequestPending } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
+  React.useEffect(() => {
     setTimeout(() => {
       if (window?.StacksProvider) {
         setInstalled(true);

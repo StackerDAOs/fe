@@ -1,5 +1,5 @@
-// Components
-import { ContractCallButton } from '@widgets/ContractCallButton';
+import React from 'react';
+import { Button } from '@chakra-ui/react';
 
 // Web3
 import { contractPrincipalCV } from 'micro-stacks/clarity';
@@ -25,7 +25,7 @@ export const InitButton = ({ address }: any) => {
   };
 
   return (
-    <ContractCallButton
+    <Button
       title='Init'
       color='white'
       size='sm'
