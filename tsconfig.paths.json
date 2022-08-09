@@ -4,10 +4,10 @@
     "paths": {
       "@common/*": ["common/*"],
       "@components/*": ["components/*"],
-      "@contexts/*": ["contexts/*"],
+      "@lib/*": ["lib/*"],
       "@utils/*": ["utils/*"],
       "@widgets/*": ["widgets/*"],
-      "@images/*": ["public/img/*"],
+      "@images/*": ["public/img/*"]
     }
   }
 }
