@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -20,7 +20,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { supabase } from '@utils/supabase';
+import { supabase } from 'lib/supabase';
 import { defaultTo } from 'lodash';
 
 // Components
@@ -31,7 +31,7 @@ import { ExecuteButton } from '@components/buttons';
 import { ProposeButton } from '@components/buttons';
 import { VoteManyButton } from '@components/buttons';
 import { WalletConnectButton } from '@components/WalletConnectButton';
-import { ErrorAlertBanner } from '@components/Alerts';
+import { AlertBanner } from '@components/alerts';
 
 //  Animation
 import { motion } from 'framer-motion';
@@ -64,7 +64,7 @@ import {
   useProposal,
   useToken,
   useTokenBalance,
-} from '@common/queries';
+} from '@common/hooks';
 
 // Hooks
 import { useBlocks } from '@common/hooks';
@@ -93,14 +93,14 @@ type TProposal = {
 };
 
 const ProposalView = () => {
-  const [state, setState] = useState<TProposal>({
+  const [state, setState] = React.useState<TProposal>({
     postConditions: [],
     title: '',
     description: '',
     type: '',
     submitted: false,
   });
-  const [isRemoving, setIsRemoving] = useState(false);
+  const [isRemoving, setIsRemoving] = React.useState(false);
   const currentStxAddress = useCurrentStxAddress();
   const router = useRouter();
   const { id: proposalPrincipal } = router.query as any;
@@ -108,8 +108,8 @@ const ProposalView = () => {
   const { currentBlockHeight } = useBlocks();
   const { isSignedIn, voteData: votingData } = useAuth();
   const { token } = useToken();
-  const { balance } = useTokenBalance();
-  const { extension: voting } = useExtension('Voting');
+  const { data: balance } = useTokenBalance();
+  const { data: voting } = useExtension('Voting');
   const {
     isLoading,
     isIdle,
@@ -133,7 +133,7 @@ const ProposalView = () => {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       try {
         const { data, error }: any = await supabase
@@ -237,7 +237,13 @@ const ProposalView = () => {
                   </HStack>
                   <HStack>
                     {proposalPrincipal && (
-                      <ErrorAlertBanner id={proposalPrincipal} />
+                      <AlertBanner
+                        title='Notice'
+                        description='This proposal was submitted outside of the UI and its code has not
+                      been verified by StackerDAOs. Executing this proposal may have
+                      unintended consequences.'
+                        proposalPrincipal={proposalPrincipal}
+                      />
                     )}
                   </HStack>
                   <HStack>

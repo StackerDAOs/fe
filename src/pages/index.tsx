@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
   Box,
@@ -8,7 +8,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { supabase } from '@utils/supabase';
+import { supabase } from 'lib/supabase';
 
 // Web3
 import { useAuth, useAccount } from '@micro-stacks/react';
@@ -23,7 +23,7 @@ import { SectionHeader } from '@components/SectionHeader';
 import { WalletConnectButton } from '@components/WalletConnectButton';
 import { Wrapper } from '@components/Wrapper';
 
-// Utils
+// Lib
 import { truncate } from '@common/helpers';
 
 // Icons
@@ -48,9 +48,9 @@ const initialState = {
 const Index = () => {
   const { isSignedIn } = useAuth();
   const { stxAddress } = useAccount();
-  const [state, setState] = useState<TProjectsTable>(initialState);
+  const [state, setState] = React.useState<TProjectsTable>(initialState);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchProjects = async () => {
       try {
         const { data: Organizations, error } = await supabase

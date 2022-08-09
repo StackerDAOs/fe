@@ -1,20 +1,16 @@
-import { Badge, Box, Stack, HStack, SimpleGrid, Text } from '@chakra-ui/react';
-
-// Data
-import { extensions } from '@utils/data';
+import React from 'react';
+import { Box, SimpleGrid, Text } from '@chakra-ui/react';
 
 // Components
 import { AppLayout } from '@components/Layout/AppLayout';
-import { Card } from '@components/Card';
 import { Header } from '@components/Header';
 import { Wrapper } from '@components/Wrapper';
 
 //  Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from '@utils/animation';
+import { FADE_IN_VARIANTS } from 'lib/animation';
 
 // Icons
-import { FaCheck, FaTimes } from 'react-icons/fa';
 import { SectionHeader } from '@components/SectionHeader';
 
 const Extensions = () => {
@@ -44,7 +40,7 @@ const Extensions = () => {
           pb='4'
           color='white'
         >
-          {extensions.map(({ type, description, status, result }) => {
+          {/* {extensions.map(({ type, description, status, result }) => {
             return (
               <Card
                 key={type}
@@ -111,7 +107,7 @@ const Extensions = () => {
                 </Stack>
               </Card>
             );
-          })}
+          })} */}
         </SimpleGrid>
       </Wrapper>
     </motion.div>

@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import React from 'react';
 import {
   Box,
   ButtonGroup,
@@ -30,15 +29,11 @@ import { Header } from '@components/Header';
 import { SectionHeader } from '@components/SectionHeader';
 import { Wrapper } from '@components/Wrapper';
 
-import {
-  useOrganization,
-  useGovernanceToken,
-  useVotingExtension,
-} from '@common/hooks';
+import { useDAO, useExtension, useToken, useTokenBalance } from '@common/hooks';
 
 //  Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from '@utils/animation';
+import { FADE_IN_VARIANTS } from 'lib/animation';
 
 // Icons
 import { FaEllipsisH } from 'react-icons/fa';
@@ -47,21 +42,18 @@ import { FaEllipsisH } from 'react-icons/fa';
 import { convertToken, truncate, validateStacksAddress } from '@common/helpers';
 
 const Governance = () => {
-  const [state, setState] = useState<any>({
+  const [state, setState] = React.useState<any>({
     isDelegating: false,
     currentDelegate: null,
     delegateAddress: null,
   });
-  const router = useRouter();
-  const { dao } = router.query as any;
+  const { data: dao } = useDAO();
   const { stxAddress } = useAccount();
   const { isSignedIn } = useAuth();
   const { network } = useNetwork();
-  const { organization } = useOrganization({ name: dao });
-  const { balance: userBalance, symbol } = useGovernanceToken({ organization });
-  const { contractAddress, contractName } = useVotingExtension({
-    organization,
-  });
+  const { data: userBalance } = useTokenBalance();
+  const { token } = useToken();
+  const { data: extension } = useExtension('Voting');
   const handleDelegateAddress = (e: any) => {
     setState({ ...state, delegateAddress: e.target.value });
   };
@@ -69,22 +61,22 @@ const Governance = () => {
   const balance = defaultTo(userBalance, 0);
   const tokenBalance = defaultTo(convertToken(balance?.toString(), 2), 0);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetch = async () => {
       try {
         const isDelegating: any = await fetchReadOnlyFunction({
           network,
-          contractAddress,
-          contractName,
-          senderAddress: contractAddress,
+          contractAddress: extension.contractAddress,
+          contractName: extension.contractName,
+          senderAddress: extension.contractAddress,
           functionArgs: [standardPrincipalCV(stxAddress || '')],
           functionName: 'is-delegating',
         });
         const currentDelegate: any = await fetchReadOnlyFunction({
           network,
-          contractAddress,
-          contractName,
-          senderAddress: contractAddress,
+          contractAddress: extension.contractAddress,
+          contractName: extension.contractName,
+          senderAddress: extension.contractAddress,
           functionArgs: [standardPrincipalCV(stxAddress || '')],
           functionName: 'get-delegate',
         });
@@ -98,7 +90,7 @@ const Governance = () => {
       }
     };
     fetch();
-  }, [organization, contractAddress, contractName, stxAddress, isSignedIn]);
+  }, [dao, extension, stxAddress, isSignedIn]);
 
   return (
     <motion.div
@@ -209,8 +201,8 @@ const Governance = () => {
               </Stack>
               <DelegateButton
                 title={state.isDelegating ? 'Revoke' : 'Delegate'}
-                contractAddress={contractAddress}
-                contractName={contractName}
+                contractAddress={extension?.contractAddress}
+                contractName={extension?.contractName}
                 functionName={
                   state.isDelegating ? 'revoke-delegation' : 'delegate'
                 }
@@ -273,7 +265,7 @@ const Governance = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            {tokenBalance} {symbol}
+                            {tokenBalance} {token?.symbol}
                           </Text>
                         ) : (
                           <Text
@@ -281,7 +273,7 @@ const Governance = () => {
                             fontWeight='medium'
                             color='light.900'
                           >
-                            0 {symbol}
+                            0 {token?.symbol}
                           </Text>
                         )}
                       </HStack>

@@ -3,15 +3,19 @@ import Head from 'next/head';
 import { ClientProvider } from '@micro-stacks/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Provider } from 'react-supabase';
-import { supabase } from '@utils/supabase';
+import { supabase } from 'lib/supabase';
 import { AnimatePresence } from 'framer-motion';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { StacksMocknet } from 'micro-stacks/network';
-import { devnet, appDetails } from '@common/constants';
+import { devnet, appDetails } from 'lib/constants';
 import theme from 'theme';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { refetchOnWindowFocus: false, staleTime: 120000 },
+  },
+});
 const network = new StacksMocknet();
 
 function App({ Component, pageProps }: any) {

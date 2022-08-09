@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import {
   Box,
   ButtonGroup,
@@ -20,11 +20,11 @@ import { ProposalCard } from '@components/cards';
 import { Wrapper } from '@components/Wrapper';
 
 // Queries
-import { useProposals } from '@common/queries';
+import { useProposals } from '@common/hooks';
 
 //  Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from '@utils/animation';
+import { FADE_IN_VARIANTS } from 'lib/animation';
 import { SectionHeader } from '@components/SectionHeader';
 
 // Icons
@@ -35,7 +35,7 @@ const MotionGrid = motion(SimpleGrid);
 const MotionProposalCard = motion(ProposalCard);
 
 const Proposals = () => {
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = React.useState('all');
   const { data: proposals } = useProposals(filter);
 
   return (
