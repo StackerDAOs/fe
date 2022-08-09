@@ -1,1 +1,0 @@
-export { onFinish } from './deploy';

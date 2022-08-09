@@ -1,18 +1,18 @@
 // Hook (use-proposal.tsx)
 import { useQuery } from 'react-query';
 import { useExtension } from '@common/hooks';
-import { getParameter } from 'lib/api';
+import { getProposal } from 'lib/api';
 
-export function useVotingExtension() {
+export function useProposal(id: string) {
   const { data: voting } = useExtension('Voting');
 
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
-    ['voting-extension', voting?.contractAddress],
+    ['proposal', id],
     async () => {
-      return await getParameter(voting?.contractAddress, 'executionDelay');
+      return await getProposal(voting?.contractAddress, id);
     },
     {
-      enabled: !!voting,
+      enabled: !!voting?.contractAddress,
     },
   );
 

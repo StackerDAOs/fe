@@ -1,57 +1,24 @@
-// Hook (use-transaction.tsx)
-import { useEffect, useState } from 'react';
-import { fetchTransaction } from 'micro-stacks/api';
-import { useNetwork } from '@micro-stacks/react';
+// Hook (use-tranaction.tsx)
+import React from 'react';
+import { useQuery } from 'react-query';
+import { getTransaction } from 'lib/api';
 
-interface TransactionProps {
-  txId: string;
-  isPolling: boolean;
+export function useTransaction(transactionId: string) {
+  const [interval, setInterval] = React.useState(5000);
+  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
+    ['transaction', transactionId],
+    async () => {
+      const data = await getTransaction(transactionId);
+      if (data.tx_status === 'success') {
+        setInterval(0);
+      }
+      return data;
+    },
+    {
+      enabled: !!transactionId,
+      refetchInterval: interval,
+    },
+  );
+
+  return { isFetching, isIdle, isLoading, isError, data };
 }
-
-export const useTransaction = ({ txId }: TransactionProps) => {
-  const [transaction, setTransaction] = useState<any>({});
-  const [isPending, setIsPending] = useState(true);
-  const [isPolling, setIsPolling] = useState(false);
-  const [error, setError] = useState(null);
-
-  async function fetch() {
-    const { network } = useNetwork();
-    try {
-      const transaction = await fetchTransaction({
-        url: network.getCoreApiUrl(),
-        txid: txId,
-        event_offset: 0,
-        event_limit: 1,
-      });
-      setIsPending(transaction?.tx_status === 'success' ? false : true);
-      setTransaction(transaction);
-    } catch (e: any) {
-      setError(e);
-    }
-  }
-
-  useEffect(() => {
-    fetch();
-  }, [txId]);
-
-  useEffect(() => {
-    if (isPolling) {
-      const interval = setInterval(() => {
-        fetch();
-      }, 2500);
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [isPolling]);
-
-  return {
-    transaction,
-    setTransaction,
-    isPending,
-    setIsPending,
-    isPolling,
-    setIsPolling,
-    error,
-  };
-};

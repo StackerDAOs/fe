@@ -1,78 +1,42 @@
-// Hook (use-organization.tsx)
-import { useEffect, useState } from 'react';
-import { useNetwork, useCurrentStxAddress } from '@micro-stacks/react';
-import { fetchReadOnlyFunction } from 'micro-stacks/api';
-import { standardPrincipalCV } from 'micro-stacks/clarity';
+// Hook (use-token.tsx)
+import { useQuery } from 'react-query';
+import { useExtension } from '@common/hooks';
+import { getTokenMetadata, getVaultBalance } from 'lib/api';
+import { splitContractAddress } from '@stacks-os/utils';
 
-type TVotingExtension = {
-  isLoading: boolean;
-  contractAddress: string;
-  contractName: string;
-  balance: number;
-  symbol: string;
-};
+export function useToken() {
+  const { data: governanceToken } = useExtension('Governance Token');
+  const { data: vault } = useExtension('Vault');
 
-interface IVotingExtension {
-  tokenAddress: string;
-}
+  const {
+    isFetching,
+    isIdle,
+    isLoading,
+    isError,
+    data: token,
+  } = useQuery(
+    ['token', `${governanceToken?.contractAddress}`],
+    async () => {
+      const [contractAddress, contractName] = splitContractAddress(
+        governanceToken?.contractAddress,
+      );
+      const data = await getTokenMetadata(governanceToken?.contractAddress);
+      return { contractAddress, contractName, ...data };
+    },
+    {
+      enabled: !!governanceToken?.contractAddress,
+    },
+  );
 
-const initialState = {
-  isLoading: true,
-  contractAddress: '',
-  contractName: '',
-  balance: 0,
-  symbol: '',
-};
+  const { data: balance } = useQuery(
+    'vault-balance',
+    async () => {
+      return await getVaultBalance(vault?.contractAddress);
+    },
+    {
+      enabled: !!vault?.contractAddress,
+    },
+  );
 
-export function useToken(
-  { tokenAddress }: IVotingExtension = { tokenAddress: '' },
-) {
-  const [state, setState] = useState<TVotingExtension>(initialState);
-  const { network } = useNetwork();
-  const currentStxAddress = useCurrentStxAddress();
-
-  useEffect(() => {
-    async function fetchGovernanceToken() {
-      try {
-        const [contractAddress, contractName] = tokenAddress.split('.');
-        if (currentStxAddress && tokenAddress) {
-          const balance: any = await fetchReadOnlyFunction({
-            network,
-            contractAddress,
-            contractName,
-            senderAddress: currentStxAddress,
-            functionArgs: [standardPrincipalCV(currentStxAddress || '')],
-            functionName: 'get-balance',
-          });
-          const symbol: any = await fetchReadOnlyFunction({
-            network,
-            contractAddress,
-            contractName,
-            senderAddress: currentStxAddress,
-            functionArgs: [],
-            functionName: 'get-symbol',
-          });
-          setState({
-            ...state,
-            isLoading: false,
-            contractAddress,
-            contractName,
-            symbol,
-            balance,
-          });
-        }
-      } catch (e: any) {
-        console.error({ e });
-      }
-    }
-    fetchGovernanceToken();
-  }, [tokenAddress, currentStxAddress]);
-
-  return {
-    isLoading: state.isLoading,
-    contractAddress: state.contractAddress,
-    contractName: state.contractName,
-    balance: state.balance,
-    symbol: state.symbol,
-  };
+  return { isFetching, isIdle, isLoading, isError, token, balance };
 }

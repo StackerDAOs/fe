@@ -1,12 +1,16 @@
-import { supabase } from '@utils/supabase';
+import { supabase } from 'lib/supabase';
 import { useMutation, useQueryClient } from 'react-query';
-import { useDAO } from '@common/queries';
+import { useDAO } from '@common/hooks';
 
-export async function createDelegate({ organizationId, delegatorAddress, delegateAddress }: any) {
+export async function createDelegate({
+  organizationId,
+  delegatorAddress,
+  delegateAddress,
+}: any) {
   try {
     const { data, error } = await supabase
       .from('Delegates')
-      .insert([{organizationId, delegatorAddress, delegateAddress}])
+      .insert([{ organizationId, delegatorAddress, delegateAddress }]);
     if (error) throw error;
     return data;
   } catch (e: any) {
@@ -15,21 +19,24 @@ export async function createDelegate({ organizationId, delegatorAddress, delegat
 }
 
 export const useAddDelegate = (delegateAddress: string | undefined) => {
-  const { dao } = useDAO()
+  const { data: dao } = useDAO();
   const queryClient = useQueryClient();
   return useMutation(createDelegate, {
     onSuccess: () => {
       queryClient.invalidateQueries(['delegates', dao?.name, delegateAddress]);
-    }
+    },
   });
-}
+};
 
-export async function deleteDelegate({ organizationId, delegatorAddress }: any) {
+export async function deleteDelegate({
+  organizationId,
+  delegatorAddress,
+}: any) {
   try {
     const { data, error } = await supabase
       .from('Delegates')
       .delete()
-      .match({organizationId, delegatorAddress})
+      .match({ organizationId, delegatorAddress });
     if (error) throw error;
     console.log(data);
     return data;
@@ -39,11 +46,11 @@ export async function deleteDelegate({ organizationId, delegatorAddress }: any) 
 }
 
 export const useDeleteDelegate = (delegateAddress: string | undefined) => {
-  const { dao } = useDAO()
+  const { data: dao } = useDAO();
   const queryClient = useQueryClient();
   return useMutation(deleteDelegate, {
     onSuccess: () => {
       queryClient.invalidateQueries(['delegates', dao?.name, delegateAddress]);
-    }
+    },
   });
-}
+};

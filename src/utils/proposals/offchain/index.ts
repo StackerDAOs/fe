@@ -1,6 +1,10 @@
-import { traitPrincipal } from "@common/constants";
+import { traitPrincipal } from 'lib/constants';
 
-export const socialProposal = (title: string, description: string, proposer: string | null = 'StackerDAOs') => `
+export const socialProposal = (
+  title: string | undefined,
+  description: string,
+  proposer: string | null = 'StackerDAOs',
+) => `
 ;; Type: Social
 ;; Author: ${proposer}
 ;; Title: ${title}

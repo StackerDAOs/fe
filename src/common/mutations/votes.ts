@@ -1,6 +1,6 @@
-import { supabase } from '@utils/supabase';
+import { supabase } from 'lib/supabase';
 import { useMutation } from 'react-query';
-import { useDAO } from '@common/queries';
+import { useDAO } from '@common/hooks';
 
 export async function voteFor({ proposalPrincipal, amount }: any) {
   try {
@@ -30,13 +30,13 @@ export async function voteFor({ proposalPrincipal, amount }: any) {
 }
 
 export const useVoteFor = () => {
-  const { dao } = useDAO()
+  const { data: dao } = useDAO();
   return useMutation(voteFor, {
     onSuccess: () => {
       console.log('Successfully voted for', dao);
-    }
+    },
   });
-}
+};
 
 export async function voteAgainst({ proposalPrincipal, amount }: any) {
   try {
@@ -65,11 +65,11 @@ export async function voteAgainst({ proposalPrincipal, amount }: any) {
   }
 }
 
-export const useVoteAgainst= () => {
-  const { dao } = useDAO()
+export const useVoteAgainst = () => {
+  const { data: dao } = useDAO();
   return useMutation(voteAgainst, {
     onSuccess: () => {
       console.log('Successfully voted against', dao);
-    }
+    },
   });
-}
+};

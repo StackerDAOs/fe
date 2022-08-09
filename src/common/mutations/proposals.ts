@@ -1,4 +1,4 @@
-import { supabase } from '@utils/supabase';
+import { supabase } from 'lib/supabase';
 import { useMutation, useQueryClient } from 'react-query';
 
 type Proposal = {
@@ -7,8 +7,8 @@ type Proposal = {
   proposer: string;
   type: string;
   transactionId: string;
-  title: string;
-  description: string;
+  title: string | undefined;
+  description: string | undefined;
   postConditions?: any;
   executionDelay: number;
   isVerified: boolean;

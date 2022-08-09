@@ -1,14 +1,14 @@
 // Hook (use-auth.tsx)
 import { useQuery } from 'react-query';
 import { useAuth as useMicroStacks } from '@micro-stacks/react';
-import { useDAO, useExtension, useTokenBalance } from '@common/queries';
-import { getParameter } from '@common/api';
+import { useDAO, useExtension, useTokenBalance } from '@common/hooks';
+import { getParameter } from 'lib/api';
 
 export function useAuth() {
-  const { dao } = useDAO();
-  const { balance } = useTokenBalance();
-  const { extension: submission } = useExtension('Submission');
-  const { extension: voting } = useExtension('Voting');
+  const { data: dao } = useDAO();
+  const { data: balance } = useTokenBalance();
+  const { data: submission } = useExtension('Submission');
+  const { data: voting } = useExtension('Voting');
   const { isSignedIn } = useMicroStacks();
   const signedInOptions = {
     enabled:

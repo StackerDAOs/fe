@@ -145,7 +145,7 @@ export const members = [
     status: 'Send',
     role: 'Frontend UI Engineer',
   },
-]
+];
 
 export const whitelistAssets = [
   {
@@ -158,15 +158,17 @@ export const whitelistAssets = [
     asset: 'New York Coin',
     symbol: 'NYC',
     icon: 'https://uploads-ssl.webflow.com/6183fee77b05811a9e7eff91/6183fee77b05813bd67f001c_CC_NYCCoin_StandAloneCoin.png',
-    contractAddress: 'SP2H8PY27SEZ03MWRKS5XABZYQN17ETGQS3527SA5.newyorkcitycoin-token',
+    contractAddress:
+      'SP2H8PY27SEZ03MWRKS5XABZYQN17ETGQS3527SA5.newyorkcitycoin-token',
   },
   {
     asset: 'ALEX',
     symbol: 'ALEX',
     icon: 'https://uploads-ssl.webflow.com/61202e49cdb38130154c0900/613eca73cd6715469da40555_ALEX_logo_TM_stacked_large.png',
-    contractAddress: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.age000-governance-token',
+    contractAddress:
+      'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.age000-governance-token',
   },
-]
+];
 
 export const items = [
   {
@@ -190,13 +192,12 @@ export const items = [
     href: '/p/mfers',
     icon: 'https://stxnft.mypinata.cloud/ipfs/QmUL7yELAmF1wnbqt6yaNLmCVbBa7BSbSNXYKijpku2r45/1.png?img-width=240&img-fit=contain&img-quality=60&img-onerror=redirect&img-fit=pad&img-format=webp',
   },
-]
+];
 
 export const inbox = [
   {
     type: 'Transfer assets',
-    description:
-      'This proposal transfers assets from one account to another.',
+    description: 'This proposal transfers assets from one account to another.',
     status: 'ACTIVE',
     logo: 'https://assets.website-files.com/618b0aafa4afde65f2fe38fe/618b0aafa4afde5f2afe3a33_icons-cards%20(2).svg',
     result: null,
@@ -234,8 +235,7 @@ export const stats = [
 export const proposals = [
   {
     type: 'Transfer assets',
-    description:
-      'This proposal transfers assets from one account to another.',
+    description: 'This proposal transfers assets from one account to another.',
     status: 'ACTIVE',
     logo: 'https://assets.website-files.com/618b0aafa4afde65f2fe38fe/618b0aafa4afde5f2afe3a33_icons-cards%20(2).svg',
     result: null,
@@ -280,8 +280,7 @@ export const extensions = [
   },
   {
     type: 'Governance Token',
-    description:
-      'Launch your own Governance Token to manage your community.',
+    description: 'Launch your own Governance Token to manage your community.',
     status: 'PENDING',
     result: false,
   },

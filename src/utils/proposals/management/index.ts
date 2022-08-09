@@ -1,6 +1,12 @@
-import { traitPrincipal } from "@common/constants";
+import { traitPrincipal } from 'lib/constants';
 
-export const whitelistAsset = (contractAddress: string, description: string, tokenContract: string, enabled: string = 'true', proposer: string | undefined = 'StackerDAOs') => `
+export const whitelistAsset = (
+  contractAddress: string,
+  description: string,
+  tokenContract: string,
+  enabled = 'true',
+  proposer: string | undefined = 'StackerDAOs',
+) => `
   ;; Title: SDP Whitelist Asset
   ;; Author: ${proposer}
   ;; Description: ${description}

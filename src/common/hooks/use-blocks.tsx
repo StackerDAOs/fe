@@ -1,18 +1,15 @@
 // Hook (use-blocks.tsx)
-import { useCallback, useEffect, useState } from 'react';
-
+import React from 'react';
 import { useNetwork } from '@micro-stacks/react';
 import { fetchBlocks } from 'micro-stacks/api';
 
 export function useBlocks() {
-  // TODO: check if slug is present and return error if not
-  // TODO: check if oranization exists before checking balance
-  const [state, setState] = useState<any>({
+  const [state, setState] = React.useState<any>({
     blocks: [],
     currentBlockHeight: 0,
   });
   const { network } = useNetwork();
-  const getBlocks = useCallback(async () => {
+  const getBlocks = React.useCallback(async () => {
     try {
       const url = network.getCoreApiUrl();
       const limit = 1;
@@ -32,7 +29,7 @@ export function useBlocks() {
     }
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     getBlocks();
   }, []);
 

@@ -1,20 +1,18 @@
-// Hook (use-contracts.tsx)
+// Hook (use-post-conditions.tsx)
 import { useQuery } from 'react-query';
-import { useDAO } from '@common/queries';
-import { getPostConditions } from '@common/api';
+import { useDAO } from '@common/hooks';
+import { getPostConditions } from 'lib/api';
 
 export function usePostConditions(proposalPrincipal: string) {
-  const { dao } = useDAO();
+  const { data: dao } = useDAO();
 
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
     ['post-conditions', proposalPrincipal],
     async () => {
-      const data: any = await getPostConditions(proposalPrincipal);
-      return data;
+      return await getPostConditions(proposalPrincipal);
     },
     {
       enabled: !!dao && !!proposalPrincipal,
-      refetchOnWindowFocus: false,
     },
   );
 

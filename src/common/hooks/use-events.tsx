@@ -1,6 +1,6 @@
 // Hook (use-events.tsx)
 import { useQuery } from 'react-query';
-import { getEvents } from '@common/api';
+import { getEvents } from 'lib/api';
 
 export function useEvents(
   extensionAddress: string,
@@ -8,20 +8,18 @@ export function useEvents(
   filterByProposal: string | undefined,
   offset: number,
 ) {
-  const { isFetching, isIdle, isLoading, isError, data }: any = useQuery(
+  const { isFetching, isIdle, isLoading, isError, data } = useQuery(
     `events-${extensionAddress}-${eventName}`,
     async () => {
-      const data = await getEvents({
+      return await getEvents({
         extensionAddress,
         eventName,
         filterByProposal,
         offset,
       });
-      return data;
     },
     {
       enabled: !!extensionAddress,
-      refetchOnWindowFocus: false,
     },
   );
 

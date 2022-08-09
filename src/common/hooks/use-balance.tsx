@@ -1,46 +1,20 @@
 // Hook (use-balance.tsx)
-import { useCallback, useEffect, useState } from 'react';
-import { useNetwork } from '@micro-stacks/react';
-import { fetchAccountBalances } from 'micro-stacks/api';
+import { useQuery } from 'react-query';
+import { useExtension } from '@common/hooks';
+import { getBalanceOf } from 'lib/api';
 
-type TBalance = {
-  isLoading: boolean;
-  balance: any;
-};
+export function useBalance(assetAddress: string) {
+  const { data: vault } = useExtension('Vault');
 
-interface IBalance {
-  organization?: any;
-}
+  const { isFetching, isIdle, isLoading, data } = useQuery(
+    ['vault-balance', vault?.contractAddress, assetAddress],
+    async () => {
+      return await getBalanceOf(vault?.contractAddress, assetAddress);
+    },
+    {
+      enabled: !!assetAddress && !!vault?.contractAddress,
+    },
+  );
 
-const initialState = {
-  isLoading: true,
-  balance: [],
-};
-
-export function useBalance({ organization }: IBalance = {}) {
-  const [state, setState] = useState<TBalance>(initialState);
-  const { network } = useNetwork();
-
-  const fetchBalance = useCallback(async () => {
-    try {
-      const vault = organization?.Extensions?.find(
-        (extension: any) => extension?.ExtensionTypes?.name === 'Vault',
-      );
-      const url = network.getCoreApiUrl();
-      const principal = vault?.contractAddress;
-      const balance = await fetchAccountBalances({
-        url,
-        principal,
-      });
-      setState({ ...state, isLoading: false, balance: balance });
-    } catch (error) {
-      console.error({ error });
-    }
-  }, [organization]);
-
-  useEffect(() => {
-    fetchBalance();
-  }, [organization]);
-
-  return { isLoading: state.isLoading, balance: state.balance };
+  return { isFetching, isIdle, isLoading, data };
 }
