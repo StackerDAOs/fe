@@ -14,11 +14,11 @@ import {
 } from '@chakra-ui/react';
 
 // Components
-import { AppLayout } from '@components/Layout/AppLayout';
-import { AssetTable } from '@components/AssetTable';
-import { Header } from '@components/Header';
-import { SectionHeader } from '@components/SectionHeader';
-import { Wrapper } from '@components/Wrapper';
+import { AppLayout } from '@components/layouts';
+import { AssetTable } from '@components/tables';
+import { Header } from '@components/headers';
+import { SectionHeader } from '@components/containers';
+import { Wrapper } from '@components/containers';
 
 //  Animation
 import { motion } from 'framer-motion';

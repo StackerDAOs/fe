@@ -1,5 +1,5 @@
 import { supabase } from 'lib/supabase';
-import { stacksNetwork } from 'lib/constants';
+import { stacksNetwork } from '@common/constants';
 import {
   fetchContractSource,
   fetchContractEventsById,

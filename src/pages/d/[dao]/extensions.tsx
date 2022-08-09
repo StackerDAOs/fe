@@ -2,16 +2,16 @@ import React from 'react';
 import { Box, SimpleGrid, Text } from '@chakra-ui/react';
 
 // Components
-import { AppLayout } from '@components/Layout/AppLayout';
-import { Header } from '@components/Header';
-import { Wrapper } from '@components/Wrapper';
+import { AppLayout } from '@components/layouts';
+import { Header } from '@components/headers';
+import { Wrapper } from '@components/containers';
 
 //  Animation
 import { motion } from 'framer-motion';
 import { FADE_IN_VARIANTS } from 'lib/animation';
 
 // Icons
-import { SectionHeader } from '@components/SectionHeader';
+import { SectionHeader } from '@components/containers';
 
 const Extensions = () => {
   return (

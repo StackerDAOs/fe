@@ -24,13 +24,13 @@ import { supabase } from 'lib/supabase';
 import { defaultTo } from 'lodash';
 
 // Components
-import { AppLayout } from '@components/Layout/AppLayout';
+import { AppLayout } from '@components/layouts';
 import { ProposalActivityTable } from '@components/tables';
-import { Card } from '@components/Card';
+import { Card } from '@components/cards';
 import { ExecuteButton } from '@components/buttons';
 import { ProposeButton } from '@components/buttons';
 import { VoteManyButton } from '@components/buttons';
-import { WalletConnectButton } from '@components/WalletConnectButton';
+import { WalletConnectButton } from '@components/buttons';
 import { AlertBanner } from '@components/alerts';
 
 //  Animation

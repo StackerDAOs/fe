@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 
 // Components
-import { EmptyState } from '@components/EmptyState';
+import { EmptyState } from '@components/misc';
 
 // Utils
 import { convertToken, truncate } from '@common/helpers';

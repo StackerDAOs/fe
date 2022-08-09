@@ -1,4 +1,4 @@
-import { traitPrincipal } from 'lib/constants';
+import { traitPrincipal } from '@common/constants';
 
 export const sendFunds = (
   title: string,

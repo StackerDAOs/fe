@@ -3,7 +3,7 @@ import { Button, Spinner, useToast } from '@chakra-ui/react';
 import type { ButtonProps } from '@chakra-ui/react';
 import { useOpenContractCall } from '@micro-stacks/react';
 import { contractPrincipalCV } from 'micro-stacks/clarity';
-import { TxToast } from '@components/Toast';
+import { TxToast } from '@components/feedback';
 import { generatePostConditions } from 'lib/functions';
 import { defaultTo } from 'lodash';
 import {

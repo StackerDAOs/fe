@@ -7,7 +7,7 @@ import { Badge, HStack, Icon, Stack, Text } from '@chakra-ui/react';
 import { useBlocks } from '@common/hooks';
 
 // Components
-import { Card } from '@components/Card';
+import { Card } from '@components/cards';
 import { AlertIcon } from '@components/alerts';
 
 // Animation

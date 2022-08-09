@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { BoxProps, Heading, HStack, Icon, Stack, Text } from '@chakra-ui/react';
 
 // Components
-import { Card } from '@components/Card';
+import { Card } from '@components/cards';
 
 // Icons
 import { FiArrowUpRight } from 'react-icons/fi';

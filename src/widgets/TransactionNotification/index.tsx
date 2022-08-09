@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Stack, Text, useToast } from '@chakra-ui/react';
-import { Notification } from '@components/Notification';
+import { Notification } from '@components/feedback';
 
 export const TransactionNotification = () => {
   const toast = useToast();

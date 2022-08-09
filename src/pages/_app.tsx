@@ -8,15 +8,15 @@ import { AnimatePresence } from 'framer-motion';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { StacksMocknet } from 'micro-stacks/network';
-import { devnet, appDetails } from 'lib/constants';
+import { devnet, appDetails } from '@common/constants';
 import theme from 'theme';
 
+const devNetwork = new StacksMocknet();
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { refetchOnWindowFocus: false, staleTime: 120000 },
   },
 });
-const network = new StacksMocknet();
 
 function App({ Component, pageProps }: any) {
   const getLayout = Component.getLayout || ((page: any) => page);
@@ -24,7 +24,7 @@ function App({ Component, pageProps }: any) {
     <ClientProvider
       appName={appDetails.name}
       appIconUrl={appDetails.icon}
-      network={devnet ? network : 'mainnet'}
+      network={devnet ? devNetwork : 'mainnet'}
     >
       <ChakraProvider resetCSS theme={theme}>
         <Provider value={supabase}>

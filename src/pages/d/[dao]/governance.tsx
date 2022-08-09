@@ -22,12 +22,12 @@ import { fetchReadOnlyFunction } from 'micro-stacks/api';
 import { standardPrincipalCV } from 'micro-stacks/clarity';
 
 // Components
-import { AppLayout } from '@components/Layout/AppLayout';
-import { Card } from '@components/Card';
+import { AppLayout } from '@components/layouts';
+import { Card } from '@components/cards';
 import { DelegateButton } from '@components/Actions/DelegateButton';
-import { Header } from '@components/Header';
-import { SectionHeader } from '@components/SectionHeader';
-import { Wrapper } from '@components/Wrapper';
+import { Header } from '@components/headers';
+import { SectionHeader } from '@components/containers';
+import { Wrapper } from '@components/containers';
 
 import { useDAO, useExtension, useToken, useTokenBalance } from '@common/hooks';
 
@@ -61,36 +61,37 @@ const Governance = () => {
   const balance = defaultTo(userBalance, 0);
   const tokenBalance = defaultTo(convertToken(balance?.toString(), 2), 0);
 
+  const fetchDelegateInfo = React.useCallback(async () => {
+    try {
+      const isDelegating: any = await fetchReadOnlyFunction({
+        network,
+        contractAddress: extension.contractAddress,
+        contractName: extension.contractName,
+        senderAddress: extension.contractAddress,
+        functionArgs: [standardPrincipalCV(stxAddress || '')],
+        functionName: 'is-delegating',
+      });
+      const currentDelegate: any = await fetchReadOnlyFunction({
+        network,
+        contractAddress: extension.contractAddress,
+        contractName: extension.contractName,
+        senderAddress: extension.contractAddress,
+        functionArgs: [standardPrincipalCV(stxAddress || '')],
+        functionName: 'get-delegate',
+      });
+      setState({
+        ...state,
+        isDelegating,
+        currentDelegate: currentDelegate ?? null,
+      });
+    } catch (error) {
+      console.error({ error });
+    }
+  }, [extension, network, state, stxAddress]);
+
   React.useEffect(() => {
-    const fetch = async () => {
-      try {
-        const isDelegating: any = await fetchReadOnlyFunction({
-          network,
-          contractAddress: extension.contractAddress,
-          contractName: extension.contractName,
-          senderAddress: extension.contractAddress,
-          functionArgs: [standardPrincipalCV(stxAddress || '')],
-          functionName: 'is-delegating',
-        });
-        const currentDelegate: any = await fetchReadOnlyFunction({
-          network,
-          contractAddress: extension.contractAddress,
-          contractName: extension.contractName,
-          senderAddress: extension.contractAddress,
-          functionArgs: [standardPrincipalCV(stxAddress || '')],
-          functionName: 'get-delegate',
-        });
-        setState({
-          ...state,
-          isDelegating,
-          currentDelegate: currentDelegate ?? null,
-        });
-      } catch (error) {
-        console.error({ error });
-      }
-    };
-    fetch();
-  }, [dao, extension, stxAddress, isSignedIn]);
+    fetchDelegateInfo();
+  }, [dao, isSignedIn, fetchDelegateInfo]);
 
   return (
     <motion.div

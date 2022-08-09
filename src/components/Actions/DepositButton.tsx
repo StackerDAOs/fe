@@ -11,12 +11,12 @@ import {
 
 // Utils
 import { stxToUstx } from '@common/helpers';
-import { vaultAddress } from 'lib/constants';
+import { vaultAddress } from '@common/constants';
 
 export const DepositButton = ({ title, amount }: any) => {
   const { stxAddress } = useAccount();
 
-  // TODO: make calls to get vault address of organization
+  // TODO make calls to get vault address of organization
   const getDepositData = ({ amount }: any) => {
     if (amount) {
       return {

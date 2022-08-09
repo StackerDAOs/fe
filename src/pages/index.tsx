@@ -17,11 +17,11 @@ import { useAuth, useAccount } from '@micro-stacks/react';
 import { motion } from 'framer-motion';
 
 // Components
-import { EmptyState } from '@components/EmptyState';
-import { MainLayout } from '@components/Layout/MainLayout';
-import { SectionHeader } from '@components/SectionHeader';
-import { WalletConnectButton } from '@components/WalletConnectButton';
-import { Wrapper } from '@components/Wrapper';
+import { EmptyState } from '@components/misc';
+import { MainLayout } from '@components/layouts';
+import { SectionHeader } from '@components/containers';
+import { WalletConnectButton } from '@components/buttons';
+import { Wrapper } from '@components/containers';
 
 // Lib
 import { truncate } from '@common/helpers';
@@ -135,7 +135,7 @@ const Index = () => {
                         color='gray.900'
                       >
                         One-stop shop to create and manage DAOs secured by
-                        Bitcoin via Stacks.
+                        Bitcoin.
                       </Text>
                     </Box>
                   </Stack>
@@ -232,7 +232,7 @@ const Index = () => {
                         color='gray.900'
                       >
                         One-stop shop to create and manage DAOs secured by
-                        Bitcoin via Stacks.
+                        Bitcoin.
                       </Text>
                       <Stack
                         direction='row'

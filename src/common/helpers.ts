@@ -66,7 +66,7 @@ export const pluckSourceCode = (sourceCode: string, param: string) => {
 };
 
 export const estimateDays = (blocksUntil: number) => {
-  // TODO: estimate hours/minutes when blocksUntil is less than a day
+  // TODO: use a better estimate
   return Math.round((blocksUntil * 10) / 1440);
 };
 

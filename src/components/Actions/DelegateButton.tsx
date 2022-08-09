@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 
 // Components
-import { Notification } from '@components/Notification';
+import { Notification } from '@components/feedback';
 
 // Web3
 import { standardPrincipalCV } from 'micro-stacks/clarity';

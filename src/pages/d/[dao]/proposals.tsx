@@ -13,11 +13,11 @@ import {
 } from '@chakra-ui/react';
 
 // Components
-import { AppLayout } from '@components/Layout/AppLayout';
-import { EmptyState } from '@components/EmptyState';
-import { Header } from '@components/Header';
+import { AppLayout } from '@components/layouts';
+import { EmptyState } from '@components/misc';
+import { Header } from '@components/headers';
 import { ProposalCard } from '@components/cards';
-import { Wrapper } from '@components/Wrapper';
+import { Wrapper } from '@components/containers';
 
 // Queries
 import { useProposals } from '@common/hooks';
@@ -25,11 +25,11 @@ import { useProposals } from '@common/hooks';
 //  Animation
 import { motion } from 'framer-motion';
 import { FADE_IN_VARIANTS } from 'lib/animation';
-import { SectionHeader } from '@components/SectionHeader';
+import { SectionHeader } from '@components/containers';
 
 // Icons
 import { FaArrowRight, FaEllipsisH } from 'react-icons/fa';
-import { SocialProposalModal } from '@components/Modal/SocialProposalModal';
+import { SocialProposalModal } from '@components/modals';
 
 const MotionGrid = motion(SimpleGrid);
 const MotionProposalCard = motion(ProposalCard);

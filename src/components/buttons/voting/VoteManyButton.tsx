@@ -10,7 +10,7 @@ import {
   tupleCV,
   noneCV,
 } from 'micro-stacks/clarity';
-import { TxToast } from '@components/Toast';
+import { TxToast } from '@components/feedback';
 import { generateWithDelegators, getDelegators } from 'lib/functions';
 import { useDelegates, useExtension, useTransaction } from '@common/hooks';
 

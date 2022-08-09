@@ -3,7 +3,7 @@ import type { ButtonProps } from '@chakra-ui/react';
 import { Button, Spinner, useToast } from '@chakra-ui/react';
 import { useOpenContractCall } from '@micro-stacks/react';
 import { uintCV, contractPrincipalCV } from 'micro-stacks/clarity';
-import { TxToast } from '@components/Toast';
+import { TxToast } from '@components/feedback';
 import { useBlocks } from '@common/hooks';
 import {
   useExtension,

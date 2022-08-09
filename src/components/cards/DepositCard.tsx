@@ -13,7 +13,7 @@ import { useNetwork, useAccount } from '@micro-stacks/react';
 import { fetchAccountStxBalance } from 'micro-stacks/api';
 
 // Components
-import { Card } from '@components/Card';
+import { Card } from '@components/cards';
 import { DepositButton } from '@components/Actions';
 
 // Utils

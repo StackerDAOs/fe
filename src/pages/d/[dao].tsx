@@ -11,11 +11,11 @@ import {
 } from '@chakra-ui/react';
 
 // Components
-import { AppLayout } from '@components/Layout/AppLayout';
-import { Header } from '@components/Header';
-import { AssetTable } from '@components/AssetTable';
-import { SectionHeader } from '@components/SectionHeader';
-import { Wrapper } from '@components/Wrapper';
+import { AppLayout } from '@components/layouts';
+import { Header } from '@components/headers';
+import { AssetTable } from '@components/tables';
+import { SectionHeader } from '@components/containers';
+import { Wrapper } from '@components/containers';
 
 // Animation
 import { motion } from 'framer-motion';
