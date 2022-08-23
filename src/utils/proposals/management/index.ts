@@ -16,7 +16,7 @@ export const whitelistAsset = (
 
   (define-public (execute (sender principal))
     (begin
-      (try! (contract-call? '${contractAddress}.sde-vault '${tokenContract} ${enabled}))
+      (try! (contract-call? '${contractAddress} '${tokenContract} ${enabled}))
 
       (print {event: "execute", sender: sender})
       (ok true)

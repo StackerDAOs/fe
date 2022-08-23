@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Button,
   Modal,
@@ -8,7 +9,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 
-export const DevToolModal = ({ title, children }: any) => {
+type Props = {
+  title: string;
+  children?: React.ReactNode;
+};
+
+export const DevToolModal = ({ title, children }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

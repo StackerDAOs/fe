@@ -28,15 +28,15 @@ import { useForm, Controller } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 
 // Queries
-import { useAuth, useDAO, useToken } from '@common/hooks';
+import { useAuth, useDAO, useToken } from '@lib/hooks';
 
 // Components
 import { Card } from '@components/cards';
-import { TransferTokenButton } from '@components/Actions';
+import { DeployTransferTokenButton } from '@components/buttons';
 
 // Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from 'lib/animation';
+import { FADE_IN_VARIANTS } from '@lib/animation';
 
 // Utils
 import {
@@ -384,14 +384,15 @@ export const TransferTokenModal = ({ balance, contractAddress }: any) => {
                         alignItems='space-between'
                         justifyContent='space-between'
                       >
-                        <TransferTokenButton
+                        <DeployTransferTokenButton
+                          title='Deploy'
                           organization={dao}
                           description={
                             description && formatComments(description)
                           }
                           assetAddress={contractAddress}
                           assetName={state.name}
-                          tokenDecimals={Number(state?.decimals)}
+                          tokenDecimals={state?.decimals}
                           transferAmount={transferAmount}
                           transferTo={transferTo}
                           closeOnDeploy={onCloseModal}

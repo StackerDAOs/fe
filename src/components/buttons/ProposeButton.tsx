@@ -1,36 +1,25 @@
 import React from 'react';
-import type { ButtonProps } from '@chakra-ui/react';
 import { Button, Spinner, useToast } from '@chakra-ui/react';
 import { useOpenContractCall } from '@micro-stacks/react';
 import { uintCV, contractPrincipalCV } from 'micro-stacks/clarity';
 import { TxToast } from '@components/feedback';
-import { useBlocks } from '@common/hooks';
+import { useBlocks } from '@lib/hooks';
 import {
   useExtension,
   useSubmissionExtension,
   useTransaction,
-} from '@common/hooks';
-
-// Mutations
-import { useSubmitProposal } from '@common/mutations/proposals';
-
-// utils
+} from '@lib/hooks';
+import { useSubmitProposal } from '@lib/mutations/proposals';
 import { contractPrincipal, getExplorerLink } from '@common/helpers';
 import { FaCheck } from 'react-icons/fa';
+import { ProposeProps } from './types';
 
-type TProposeButtonProps = ButtonProps & {
-  text: string;
-  proposalPrincipal: string;
-  notDeployer: boolean;
-};
-
-export const ProposeButton = (props: TProposeButtonProps) => {
+export const ProposeButton = (props: ProposeProps) => {
   const toast = useToast();
   const { text, notDeployer, proposalPrincipal } = props;
   const [transactionId, setTransactionId] = React.useState('');
   const { currentBlockHeight } = useBlocks();
   const { data: submission } = useExtension('Submission');
-  const { data: governance } = useExtension('Governance Token');
   const { data: submissionData } = useSubmissionExtension();
   const { data: transaction } = useTransaction(transactionId);
   const { openContractCall, isRequestPending } = useOpenContractCall();
@@ -57,15 +46,12 @@ export const ProposeButton = (props: TProposeButtonProps) => {
     const [contractAddress, contractName] = contractPrincipal(
       submission?.contractAddress,
     );
-    const [governanceContractAddress, governanceContractName] =
-      contractPrincipal(governance?.contractAddress);
     const [proposalContractAddress, proposalContractName] =
       contractPrincipal(proposalPrincipal);
 
     const functionArgs = [
       contractPrincipalCV(proposalContractAddress, proposalContractName),
       uintCV(startBlockHeight),
-      contractPrincipalCV(governanceContractAddress, governanceContractName),
     ];
     const functionName = 'propose';
     const postConditions: any = [];
@@ -84,7 +70,6 @@ export const ProposeButton = (props: TProposeButtonProps) => {
   }, [
     proposalPrincipal,
     submission,
-    governance,
     currentBlockHeight,
     startBlockHeight,
     endBlockHeight,

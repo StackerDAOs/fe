@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { ClientProvider } from '@micro-stacks/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Provider } from 'react-supabase';
-import { supabase } from 'lib/supabase';
+import { supabase } from '@lib/supabase';
 import { AnimatePresence } from 'framer-motion';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -14,7 +14,7 @@ import theme from 'theme';
 const devNetwork = new StacksMocknet();
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { refetchOnWindowFocus: false, staleTime: 120000 },
+    queries: { refetchOnWindowFocus: false, staleTime: 3000 },
   },
 });
 
@@ -29,7 +29,7 @@ function App({ Component, pageProps }: any) {
       <ChakraProvider resetCSS theme={theme}>
         <Provider value={supabase}>
           <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools initialIsOpen={false} />
+            <ReactQueryDevtools />
             <Head>
               <title>StackerDAO Labs</title>
               <meta name='description' content='StackerDAO Labs' />

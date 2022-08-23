@@ -1,5 +1,5 @@
 import React from 'react';
-import { supabase } from 'lib/supabase';
+import { supabase } from '@lib/supabase';
 import {
   Alert,
   AlertIcon,
@@ -7,8 +7,9 @@ import {
   AlertDescription,
   Box,
 } from '@chakra-ui/react';
+import { AlertBannerProps } from './types';
 
-export const AlertBanner = (props: any) => {
+export const AlertBanner = (props: AlertBannerProps) => {
   const [isVerified, setVerified] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -34,11 +35,11 @@ export const AlertBanner = (props: any) => {
   if (isVerified) return null;
 
   return (
-    <Alert status='error' bg='secondary.900'>
-      <AlertIcon color='light.900' />
+    <Alert {...props}>
+      <AlertIcon />
       <Box>
         <AlertTitle>{props.title}</AlertTitle>
-        <AlertDescription fontSize='sm'>{props.description}</AlertDescription>
+        <AlertDescription>{props.description}</AlertDescription>
       </Box>
     </Alert>
   );

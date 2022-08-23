@@ -9,23 +9,16 @@ import {
   ModalBody,
   Stack,
 } from '@chakra-ui/react';
-
-// Web3
 import { useAccount } from '@micro-stacks/react';
-
-// Components
-import { DepositButton, InitButton } from '@components/Actions';
-
-// Components
+import { DepositButton, InitButton } from '@components/buttons';
 import { DevToolModal } from '@components/modals';
-
-// Utils
 import { adminAddress } from '@common/constants';
 
 export const AppFooter = () => {
   const [depositAmount, setDepositAmount] = React.useState('');
   const [bootstrap, setBootstrap] = React.useState('');
   const { stxAddress } = useAccount();
+
   if (stxAddress === adminAddress) {
     return (
       <Box as='section'>
@@ -56,7 +49,7 @@ export const AppFooter = () => {
                           onInput={(e: any) => setBootstrap(e.target.value)}
                         />
                       </FormControl>
-                      <InitButton address={bootstrap} />
+                      <InitButton title='Init' address={bootstrap} />
                     </VStack>
                     <VStack spacing='2' align='flex-start'>
                       <FormControl>

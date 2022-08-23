@@ -16,11 +16,11 @@ import {
 import { map } from 'lodash';
 
 // Queries
-import { useContracts, useTransaction } from '@common/hooks';
+import { useContracts, useTransaction } from '@lib/hooks';
 
 // Animations
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from 'lib/animation';
+import { FADE_IN_VARIANTS } from '@lib/animation';
 import { FaInfoCircle, FaExclamationCircle } from 'react-icons/fa';
 
 // Utils

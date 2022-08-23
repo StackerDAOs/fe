@@ -16,7 +16,7 @@ import { useAccount } from '@micro-stacks/react';
 
 //  Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from 'lib/animation';
+import { FADE_IN_VARIANTS } from '@lib/animation';
 import Avatar from 'boring-avatars';
 
 // Utils

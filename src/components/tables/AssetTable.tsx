@@ -11,26 +11,13 @@ import {
   Text,
   Tr,
 } from '@chakra-ui/react';
-
-// Components
 import { EmptyState } from '@components/misc';
-
-// Web3
 import { useNetwork } from '@micro-stacks/react';
 import { fetchReadOnlyFunction } from 'micro-stacks/api';
-
-// Utils
 import { ustxToStx, convertToken } from '@common/helpers';
-import Avatar from 'boring-avatars';
-
-// Queries
-import { useDAO, useToken } from '@common/hooks';
-
-// Animation
+import { useDAO, useToken } from '@lib/hooks';
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from 'lib/animation';
-
-// Icons
+import { FADE_IN_VARIANTS } from '@lib/animation';
 import { TransferTokenModal, TransferStxModal } from '@components/modals';
 
 type AssetTableProps = {
@@ -53,7 +40,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
   const { network } = useNetwork();
 
   const { data: dao } = useDAO();
-  const { isLoading, isIdle, isError, balance } = useToken();
+  const { isLoading, isError, balance } = useToken();
 
   const fungibleTokens: any = Object.assign({}, balance?.fungible_tokens);
   const nonFungibleTokens: any = Object.assign(
@@ -161,7 +148,7 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
   const listItems =
     type === 'fungible' ? state.fungibleTokensList : nonFungibleTokensList;
 
-  if ((state.isLoading && isLoading) || isIdle) {
+  if (state.isLoading && isLoading) {
     return (
       <EmptyState
         heading={
@@ -203,19 +190,19 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
         <Table {...props} bg='transparent'>
           <Thead color='gray.900'>
             <Tr>
-              <Th bg='transparent' border='none'>
+              <Th fontSize='md' bg='transparent' border='none'>
                 Name
               </Th>
-              <Th bg='transparent' border='none'>
+              <Th fontSize='md' bg='transparent' border='none'>
                 Balance
               </Th>
-              <Th bg='transparent' border='none'>
+              <Th fontSize='md' bg='transparent' border='none'>
                 Total sent
               </Th>
-              <Th bg='transparent' border='none'>
+              <Th fontSize='md' bg='transparent' border='none'>
                 Total received
               </Th>
-              <Th bg='transparent' border='none'></Th>
+              <Th fontSize='md' bg='transparent' border='none'></Th>
             </Tr>
           </Thead>
           <Tbody color='light.900'>
@@ -239,34 +226,26 @@ export const AssetTable = (props: TableProps & AssetTableProps) => {
               }
               return (
                 <Tr key={item.name} cursor='pointer'>
-                  <Td borderColor='base.500'>
+                  <Td fontSize='md' borderColor='base.500'>
                     <HStack spacing='2' align='center'>
-                      <Avatar
-                        size={15}
-                        name={item.symbol}
-                        variant='marble'
-                        colors={[
-                          '#50DDC3',
-                          '#624AF2',
-                          '#EB00FF',
-                          '#7301FA',
-                          '#25C2A0',
-                        ]}
-                      />
                       <HStack align='baseline'>
                         <Text color='light.900' fontWeight='medium'>
                           {item.name}
                         </Text>
-                        <Text fontSize='xs' color='gray.900'>
-                          ({symbol})
-                        </Text>
+                        <Text color='gray.900'>({symbol})</Text>
                       </HStack>
                     </HStack>
                   </Td>
-                  <Td borderColor='base.500'>{balance}</Td>
-                  <Td borderColor='base.500'>{totalSent}</Td>
-                  <Td borderColor='base.500'>{totalReceived}</Td>
-                  <Td borderColor='base.500'>
+                  <Td fontSize='md' borderColor='base.500'>
+                    {balance}
+                  </Td>
+                  <Td fontSize='md' borderColor='base.500'>
+                    {totalSent}
+                  </Td>
+                  <Td fontSize='md' borderColor='base.500'>
+                    {totalReceived}
+                  </Td>
+                  <Td fontSize='md' borderColor='base.500'>
                     {contractAddress ? (
                       <TransferTokenModal
                         contractAddress={contractAddress}

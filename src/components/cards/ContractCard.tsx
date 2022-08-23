@@ -16,10 +16,10 @@ import { truncate } from '@common/helpers';
 import { FiExternalLink } from 'react-icons/fi';
 
 // Queries
-import { useTransaction } from '@common/hooks';
+import { useTransaction } from '@lib/hooks';
 
 // Mutations
-import { useDisableProposal } from '@common/mutations/proposals';
+import { useDisableProposal } from '@lib/mutations/proposals';
 
 export const ContractCard = ({
   proposalContractAddress,

@@ -20,7 +20,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { supabase } from 'lib/supabase';
+import { supabase } from '@lib/supabase';
 import { defaultTo } from 'lodash';
 
 // Components
@@ -64,13 +64,13 @@ import {
   useProposal,
   useToken,
   useTokenBalance,
-} from '@common/hooks';
+} from '@lib/hooks';
 
 // Hooks
-import { useBlocks } from '@common/hooks';
+import { useBlocks } from '@lib/hooks';
 
 // Mutations
-import { useDisableProposal } from '@common/mutations/proposals';
+import { useDisableProposal } from '@lib/mutations/proposals';
 
 const FADE_IN_VARIANTS = {
   hidden: { opacity: 0, x: 0, y: 0 },
@@ -243,6 +243,13 @@ const ProposalView = () => {
                       been verified by StackerDAOs. Executing this proposal may have
                       unintended consequences.'
                         proposalPrincipal={proposalPrincipal}
+                        status='error'
+                        variant='subtle'
+                        color='secondary.900'
+                        colorScheme='secondary.900'
+                        border='1px solid'
+                        borderColor='base.800'
+                        fontSize='sm'
                       />
                     )}
                   </HStack>

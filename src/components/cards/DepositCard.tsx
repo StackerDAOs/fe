@@ -14,7 +14,7 @@ import { fetchAccountStxBalance } from 'micro-stacks/api';
 
 // Components
 import { Card } from '@components/cards';
-import { DepositButton } from '@components/Actions';
+import { DepositButton } from '@components/buttons';
 
 // Utils
 import { ustxToStx } from '@common/helpers';

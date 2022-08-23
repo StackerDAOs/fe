@@ -1,5 +1,4 @@
 import React from 'react';
-import type { ButtonProps } from '@chakra-ui/react';
 import { Button, Spinner, useToast } from '@chakra-ui/react';
 import { useOpenContractCall } from '@micro-stacks/react';
 import {
@@ -11,23 +10,15 @@ import {
   noneCV,
 } from 'micro-stacks/clarity';
 import { TxToast } from '@components/feedback';
-import { generateWithDelegators, getDelegators } from 'lib/functions';
-import { useDelegates, useExtension, useTransaction } from '@common/hooks';
-
-import { useVoteFor, useVoteAgainst } from '@common/mutations/votes';
-
-// utils
+import { generateWithDelegators, getDelegators } from '@lib/functions';
+import { useDelegates, useExtension, useTransaction } from '@lib/hooks';
+import { useVoteFor, useVoteAgainst } from '@lib/mutations/votes';
 import { map, size } from 'lodash';
 import { contractPrincipal, getExplorerLink } from '@common/helpers';
 import { FaCheck } from 'react-icons/fa';
+import { VoteProposalProps } from '../types';
 
-type TVoteManyButtonProps = ButtonProps & {
-  text: string;
-  proposalPrincipal: string;
-  voteFor: boolean;
-};
-
-export const VoteManyButton = (props: TVoteManyButtonProps) => {
+export const VoteManyButton = (props: VoteProposalProps) => {
   const toast = useToast();
   const { text, proposalPrincipal, voteFor } = props;
   const [transactionId, setTransactionId] = React.useState('');

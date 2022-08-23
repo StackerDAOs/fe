@@ -28,15 +28,15 @@ import { useAccount } from '@micro-stacks/react';
 import { useForm, Controller } from 'react-hook-form';
 
 // Queries
-import { useAuth, useDAO, useToken } from '@common/hooks';
+import { useAuth, useDAO, useToken } from '@lib/hooks';
 
 // Components
 import { Card } from '@components/cards';
-import { TransferStxButton } from '@components/Actions';
+import { DeployTransferStxButton } from '@components/buttons';
 
 // Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from 'lib/animation';
+import { FADE_IN_VARIANTS } from '@lib/animation';
 
 // Utils
 import { microToStacks } from '@stacks-os/utils';
@@ -328,7 +328,8 @@ export const TransferStxModal = () => {
                         alignItems='space-between'
                         justifyContent='space-between'
                       >
-                        <TransferStxButton
+                        <DeployTransferStxButton
+                          title='Deploy'
                           organization={dao}
                           description={formatComments(description)}
                           transferAmount={transferAmount}

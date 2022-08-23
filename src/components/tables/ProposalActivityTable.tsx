@@ -21,11 +21,11 @@ import { convertToken, truncate } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
 // Queries
-import { useEvents, useExtension, useToken } from '@common/hooks';
+import { useEvents, useExtension, useToken } from '@lib/hooks';
 
 // Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from 'lib/animation';
+import { FADE_IN_VARIANTS } from '@lib/animation';
 
 type TProposalTableProps = {
   proposalPrincipal: string;

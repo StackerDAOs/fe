@@ -1,11 +1,13 @@
-import { supabase } from 'lib/supabase';
+import { supabase } from '@lib/supabase';
 import { stacksNetwork } from '@common/constants';
 import {
   fetchContractSource,
   fetchContractEventsById,
   fetchReadOnlyFunction,
   fetchAccountBalances,
+  fetchAccountStxBalance,
   fetchFtMetadataForContractId,
+  fetchNamesByAddress,
   fetchTransaction,
 } from 'micro-stacks/api';
 import {
@@ -93,7 +95,7 @@ export async function getDBProposals({ queryKey }: any) {
     }
     if (filter === 'active') {
       const { data: Proposals, error } = await query
-        .filter('submitted', 'in', `("true")`)
+        .filter('submitted', 'in', `("false")`)
         .filter('concluded', 'in', `("false")`);
       if (error) throw error;
       return Proposals;
@@ -151,6 +153,45 @@ export async function getTokenMetadata(contractId: string) {
       contractId: contractId,
     });
     return tokenMetadata;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getBns(address: string) {
+  try {
+    const network = new stacksNetwork();
+    const data = await fetchNamesByAddress({
+      url: network.getCoreApiUrl(),
+      blockchain: 'stacks',
+      address: address,
+    });
+    return data;
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getAccountBalance(address: string) {
+  try {
+    const network = new stacksNetwork();
+    return await fetchAccountStxBalance({
+      url: network.getCoreApiUrl(),
+      principal: address,
+    });
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getAccountAndBns({ queryKey }: any) {
+  const [_, address] = queryKey;
+  try {
+    const [account, bns] = await Promise.all([
+      await getAccountBalance(address),
+      await getBns(address),
+    ]);
+    return { account, bns };
   } catch (e: any) {
     console.error({ e });
   }
@@ -421,6 +462,20 @@ export async function getPostConditions(proposalPrincipal: string) {
       // If postConditions?.assetName then...
       // // TODO: Need to fetchReadOnly function to `get-name` of token contract
       return postConditions;
+    }
+  } catch (e: any) {
+    console.error({ e });
+  }
+}
+
+export async function getProjects() {
+  try {
+    const { data: Organizations, error } = await supabase
+      .from('Organizations')
+      .select('id, name, slug, contractAddress');
+    if (error) throw error;
+    if (Organizations.length > 0) {
+      return Organizations;
     }
   } catch (e: any) {
     console.error({ e });

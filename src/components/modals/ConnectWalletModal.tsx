@@ -15,7 +15,7 @@ import {
 
 // Animations
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from 'lib/animation';
+import { FADE_IN_VARIANTS } from '@lib/animation';
 
 // Icons
 import { FaArrowRight } from 'react-icons/fa';

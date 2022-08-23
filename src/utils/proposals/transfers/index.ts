@@ -19,7 +19,7 @@ export const sendFunds = (
 
   (define-public (execute (sender principal))
     (begin
-      (try! (contract-call? '${contractAddress}.sde-vault transfer (* MICRO u${amount}) '${recipientAddress}))
+      (try! (contract-call? '${contractAddress} transfer (* MICRO u${amount}) '${recipientAddress}))
 
       (print {event: "execute", sender: sender})
       (ok true)
@@ -48,7 +48,7 @@ export const sendTokens = (
 
   (define-public (execute (sender principal))
     (begin
-      (try! (contract-call? '${contractAddress}.sde-vault transfer-ft '${tokenContract} (* MICRO u${amount}) '${recipientAddress}))
+      (try! (contract-call? '${contractAddress} transfer-ft '${tokenContract} (* MICRO u${amount}) '${recipientAddress}))
 
       (print {event: "execute", sender: sender})
       (ok true)

@@ -1,10 +1,6 @@
 import React from 'react';
 import {
-  Box,
-  ButtonGroup,
-  HStack,
-  Icon,
-  IconButton,
+  Heading,
   Radio,
   RadioGroup,
   Stack,
@@ -20,16 +16,14 @@ import { ProposalCard } from '@components/cards';
 import { Wrapper } from '@components/containers';
 
 // Queries
-import { useProposals } from '@common/hooks';
+import { useProposals } from '@lib/hooks';
+
+import { capitalize, isEmpty, map } from 'lodash';
 
 //  Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from 'lib/animation';
+import { FADE_IN_VARIANTS } from '@lib/animation';
 import { SectionHeader } from '@components/containers';
-
-// Icons
-import { FaArrowRight, FaEllipsisH } from 'react-icons/fa';
-import { SocialProposalModal } from '@components/modals';
 
 const MotionGrid = motion(SimpleGrid);
 const MotionProposalCard = motion(ProposalCard);
@@ -47,173 +41,46 @@ const Proposals = () => {
       transition={{ duration: 0.25, type: 'linear' }}
     >
       <Wrapper>
-        {proposals?.length === 0 ? (
-          <>
-            <SectionHeader justify='space-between' align='center' color='white'>
-              <Box>
-                <HStack align='center'>
-                  <Text fontSize='lg' fontWeight='medium'>
-                    Proposals
-                  </Text>
-                  <SocialProposalModal />
-                </HStack>
-                <Text color='gray.900' fontSize='sm'>
-                  View the latest proposals.
-                </Text>
-              </Box>
-              <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
-                <Stack align='center' direction='row' spacing='3'>
-                  <RadioGroup onChange={setFilter} value={filter}>
-                    <Stack direction='row'>
-                      <Radio
-                        bg='base.900'
-                        size='sm'
-                        borderColor='base.500'
-                        value='all'
-                        _focus={{ outline: 'none' }}
-                        _checked={{
-                          bg: 'secondary.900',
-                          color: 'white',
-                          borderColor: 'base.500',
-                        }}
-                      >
-                        All
-                      </Radio>
-                      <Radio
-                        bg='base.900'
-                        size='sm'
-                        borderColor='base.500'
-                        value='active'
-                        _focus={{ outline: 'none' }}
-                        _checked={{
-                          bg: 'secondary.900',
-                          color: 'white',
-                          borderColor: 'base.500',
-                        }}
-                      >
-                        Active
-                      </Radio>
-                      <Radio
-                        bg='base.900'
-                        size='sm'
-                        borderColor='base.500'
-                        value='executed'
-                        _focus={{ outline: 'none' }}
-                        _checked={{
-                          bg: 'secondary.900',
-                          color: 'white',
-                          borderColor: 'base.500',
-                        }}
-                      >
-                        Executed
-                      </Radio>
-                    </Stack>
-                  </RadioGroup>
+        <Stack spacing='1'>
+          <SectionHeader
+            justify={{ base: 'flex-start', md: 'space-between' }}
+            align={{ base: 'flex-start', md: 'space-between' }}
+            color='white'
+          >
+            <Stack spacing='3'>
+              <Text fontSize='md' fontWeight='light' color='gray.900'>
+                Discover ideas
+              </Text>
+              <Heading mt='0 !important' size='sm' fontWeight='regular'>
+                Proposals
+              </Heading>
+            </Stack>
+            <Stack align='center' direction='row' spacing='3'>
+              <RadioGroup onChange={setFilter} value={filter}>
+                <Stack direction='row'>
+                  {map(['all', 'active', 'executed'], (filter: string) => (
+                    <Radio
+                      bg='base.900'
+                      size='md'
+                      borderColor='base.500'
+                      value={filter}
+                      _focus={{ outline: 'none' }}
+                      _checked={{
+                        bg: 'secondary.900',
+                        color: 'white',
+                        borderColor: 'base.500',
+                      }}
+                    >
+                      {capitalize(filter)}
+                    </Radio>
+                  ))}
                 </Stack>
-                <Stack align='center' direction='row' spacing='3'>
-                  <IconButton
-                    display='none'
-                    aria-label='action-item'
-                    bg='base.800'
-                    variant='outline'
-                    color='light.900'
-                    borderColor='base.500'
-                    size='md'
-                    icon={
-                      <Icon as={FaEllipsisH} color='whiteAlpha' fontSize='sm' />
-                    }
-                    _hover={{
-                      bg: 'base.800',
-                    }}
-                  />
-                </Stack>
-              </ButtonGroup>
-            </SectionHeader>
-            <EmptyState heading='No proposals found.' />
-          </>
-        ) : (
-          <>
-            <SectionHeader justify='space-between' align='center' color='white'>
-              <Box>
-                <HStack align='center'>
-                  <Text fontSize='lg' fontWeight='medium'>
-                    Proposals
-                  </Text>
-                  <SocialProposalModal />
-                </HStack>
-                <Text color='gray.900' fontSize='sm'>
-                  View the latest proposals.
-                </Text>
-              </Box>
-              <ButtonGroup bg='base.900' borderRadius='lg' p='1' spacing='2'>
-                <Stack align='center' direction='row' spacing='3'>
-                  <RadioGroup onChange={setFilter} value={filter}>
-                    <Stack direction='row'>
-                      <Radio
-                        bg='base.900'
-                        size='sm'
-                        borderColor='base.500'
-                        value='all'
-                        _focus={{ outline: 'none' }}
-                        _checked={{
-                          bg: 'secondary.900',
-                          color: 'white',
-                          borderColor: 'base.500',
-                        }}
-                      >
-                        All
-                      </Radio>
-                      <Radio
-                        bg='base.900'
-                        size='sm'
-                        borderColor='base.500'
-                        value='active'
-                        _focus={{ outline: 'none' }}
-                        _checked={{
-                          bg: 'secondary.900',
-                          color: 'white',
-                          borderColor: 'base.500',
-                        }}
-                      >
-                        Active
-                      </Radio>
-                      <Radio
-                        bg='base.900'
-                        size='sm'
-                        borderColor='base.500'
-                        value='executed'
-                        _focus={{ outline: 'none' }}
-                        _checked={{
-                          bg: 'secondary.900',
-                          color: 'white',
-                          borderColor: 'base.500',
-                        }}
-                      >
-                        Executed
-                      </Radio>
-                    </Stack>
-                  </RadioGroup>
-                </Stack>
-                <Stack align='center' direction='row' spacing='3'>
-                  <IconButton
-                    display='none'
-                    aria-label='action-item'
-                    bg='base.800'
-                    variant='outline'
-                    color='light.900'
-                    borderColor='base.500'
-                    size='md'
-                    icon={
-                      <Icon as={FaEllipsisH} color='whiteAlpha' fontSize='sm' />
-                    }
-                    _hover={{
-                      bg: 'base.800',
-                    }}
-                  />
-                </Stack>
-              </ButtonGroup>
-            </SectionHeader>
-
+              </RadioGroup>
+            </Stack>
+          </SectionHeader>
+          {isEmpty(proposals) ? (
+            <EmptyState heading='No proposals found' />
+          ) : (
             <MotionGrid
               variants={FADE_IN_VARIANTS}
               initial={FADE_IN_VARIANTS.hidden}
@@ -221,10 +88,10 @@ const Proposals = () => {
               exit={FADE_IN_VARIANTS.exit}
               transition={{ duration: 0.5, type: 'linear' }}
               columns={{ base: 1, md: 3 }}
-              spacing='6'
+              spacing='3'
               color='white'
             >
-              {proposals?.map((proposal: any, index: number) => (
+              {map(proposals, (proposal: any, index: number) => (
                 <MotionProposalCard
                   variants={{
                     hidden: { opacity: 0 },
@@ -235,27 +102,8 @@ const Proposals = () => {
                 />
               ))}
             </MotionGrid>
-            <SectionHeader justify='flex-end'>
-              <Stack>
-                <IconButton
-                  display='none'
-                  aria-label='action-item'
-                  bg='base.800'
-                  variant='outline'
-                  color='light.900'
-                  borderColor='base.500'
-                  size='md'
-                  icon={
-                    <Icon as={FaArrowRight} color='whiteAlpha' fontSize='sm' />
-                  }
-                  _hover={{
-                    bg: 'base.800',
-                  }}
-                />
-              </Stack>
-            </SectionHeader>
-          </>
-        )}
+          )}
+        </Stack>
       </Wrapper>
     </motion.div>
   );

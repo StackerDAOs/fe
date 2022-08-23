@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { FADE_IN_VARIANTS } from '@lib/animation';
 
 // Components
-import { AppFooter } from '@components/footers';
+import { Footer } from '@components/footers';
 import { MainNavbar } from '@components/navbars';
 
 export const MainLayout = ({ header, children }: any) => {
@@ -25,7 +25,7 @@ export const MainLayout = ({ header, children }: any) => {
         </Container>
       </Box>
       {children}
-      <AppFooter />
+      <Footer />
     </motion.div>
   );
 };

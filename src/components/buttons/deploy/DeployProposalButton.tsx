@@ -1,27 +1,23 @@
 import React from 'react';
-import type { ButtonProps } from '@chakra-ui/react';
 import { Button, Spinner } from '@chakra-ui/react';
-
 import { useAccount, useOpenContractDeploy } from '@micro-stacks/react';
 import { socialProposal } from '@utils/proposals/offchain';
-import { useDAO, useGenerateName, useVotingExtension } from '@common/hooks';
-import { useAddProposal } from '@common/mutations/proposals';
+import { useDAO, useGenerateName, useVotingExtension } from '@lib/hooks';
+import { useAddProposal } from '@lib/mutations/proposals';
+import { DeployProposalProps } from '../types';
 
-type TDeployButtonProps = ButtonProps & {
-  title: string;
-  description: string;
+interface SocialProposalProps extends DeployProposalProps {
   proposalType: string;
   closeOnDeploy: () => void;
-};
+}
 
-export const DeployProposalButton = (props: TDeployButtonProps) => {
+export const DeployProposalButton = (props: SocialProposalProps) => {
   const { data: dao } = useDAO();
   const { openContractDeploy, isRequestPending } = useOpenContractDeploy();
   const { stxAddress } = useAccount();
   const createProposal = useAddProposal();
   const { data: contractName }: any = useGenerateName();
   const { data: votingData }: any = useVotingExtension();
-  const codeBody = socialProposal(contractName, props?.description, stxAddress);
 
   const deploySocialProposal = React.useCallback(async () => {
     const onFinish: any = async (data: any) => {
@@ -65,7 +61,7 @@ export const DeployProposalButton = (props: TDeployButtonProps) => {
         console.log('popup closed!');
       },
     });
-  }, [contractName, codeBody]);
+  }, [contractName]);
 
   return (
     <Button

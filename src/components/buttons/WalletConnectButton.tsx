@@ -1,9 +1,8 @@
 import React from 'react';
-import { Button, ButtonProps, Text } from '@chakra-ui/react';
+import { Button, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@micro-stacks/react';
-
-// Components
+import { ButtonProps } from './types';
 import { ConnectWalletModal } from '@components/modals';
 
 export const WalletConnectButton = (props: ButtonProps) => {
@@ -16,7 +15,7 @@ export const WalletConnectButton = (props: ButtonProps) => {
       if (window?.StacksProvider) {
         setInstalled(true);
       }
-    }, 250);
+    }, 350);
   }, [installed]);
 
   const handleClick = () => {

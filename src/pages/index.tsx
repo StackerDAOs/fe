@@ -2,272 +2,182 @@ import React from 'react';
 import Link from 'next/link';
 import {
   Box,
+  Button,
+  ButtonGroup,
   Heading,
   HStack,
-  IconButton,
+  Image,
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { supabase } from 'lib/supabase';
 
-// Web3
-import { useAuth, useAccount } from '@micro-stacks/react';
+// Hooks
+import { useProjects } from '@lib/hooks';
+
+// Utils
+import { isEmpty, map } from 'lodash';
+import { truncateAddress } from '@stacks-os/utils';
 
 // Animation
 import { motion } from 'framer-motion';
+import { FADE_IN_VARIANTS, SLIDE_UP_VARIANTS } from '@lib/animation';
 
 // Components
 import { EmptyState } from '@components/misc';
 import { MainLayout } from '@components/layouts';
 import { SectionHeader } from '@components/containers';
-import { WalletConnectButton } from '@components/buttons';
 import { Wrapper } from '@components/containers';
 
-// Lib
-import { truncate } from '@common/helpers';
-
-// Icons
-import { FaArrowRight } from 'react-icons/fa';
-
-const SLIDE_UP_VARIANTS = {
-  hidden: { opacity: 0, x: 0, y: 15 },
-  enter: { opacity: 1, x: 0, y: 0 },
-  exit: { opacity: 0, x: 0, y: -15 },
-};
-
-type TProjectsTable = {
-  isLoading: boolean;
-  projects: any[];
-};
-
-const initialState = {
-  isLoading: true,
-  projects: [],
-};
+const MotionBox = motion(Box);
 
 const Index = () => {
-  const { isSignedIn } = useAuth();
-  const { stxAddress } = useAccount();
-  const [state, setState] = React.useState<TProjectsTable>(initialState);
+  const projectsQuery = useProjects();
 
-  React.useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const { data: Organizations, error } = await supabase
-          .from('Organizations')
-          .select('id, name, slug, contractAddress');
-        if (error) throw error;
-        if (Organizations.length > 0) {
-          const projects = Organizations;
-          setState({ ...state, isLoading: false, projects });
-        }
-      } catch (e: any) {
-        console.error({ e });
-      }
-    };
-    fetchProjects();
-  }, [stxAddress]);
-
-  if (state.isLoading) {
-    return null;
-  }
-
-  if (state.projects.length === 0) {
+  if (isEmpty(projectsQuery?.data)) {
     return <EmptyState heading='No projects found' />;
   }
 
   return (
     <>
-      <Box as='section'>
-        <motion.div
-          variants={SLIDE_UP_VARIANTS}
-          initial={SLIDE_UP_VARIANTS.hidden}
-          animate={SLIDE_UP_VARIANTS.enter}
-          exit={SLIDE_UP_VARIANTS.exit}
-          transition={{ duration: 0.75, type: 'linear' }}
+      <motion.div
+        variants={FADE_IN_VARIANTS}
+        initial={FADE_IN_VARIANTS.hidden}
+        animate={FADE_IN_VARIANTS.enter}
+        exit={FADE_IN_VARIANTS.exit}
+        transition={{ duration: 0.75, type: 'linear' }}
+      >
+        <Box
+          as='section'
+          display='flex'
+          alignItems='center'
+          justifyContent='center'
+          mb='10'
         >
-          <Box
-            as='section'
-            display='flex'
-            alignItems='center'
-            justifyContent='center'
-          >
-            <Wrapper>
-              {isSignedIn ? (
-                <>
-                  <Stack
-                    spacing={{ base: '8', md: '10' }}
-                    align='center'
-                    maxW='3xl'
-                    mx='auto'
+          <Wrapper>
+            <Stack spacing='8'>
+              <Stack maxW='2xl' spacing='2'>
+                <HStack>
+                  <Text fontSize='md' fontWeight='light' color='light.900'>
+                    Protocol built on{' '}
+                  </Text>
+                  <Image
+                    src='https://assets-global.website-files.com/618b0aafa4afde65f2fe38fe/618b0aafa4afde159efe39d4_Stacks%20logo.svg'
+                    w='13'
+                    h='13'
+                  />
+                </HStack>
+                <Heading
+                  size='xl'
+                  fontWeight='regular'
+                  lineHeight='1.2'
+                  letterSpacing='tight'
+                  color='light.900'
+                >
+                  DAOs powered by {''}
+                  <Text
+                    color='light.900'
+                    fontWeight='black'
+                    fontSize='1.15em'
+                    bgGradient='linear(to-br, bitcoin.900, bitcoin.800)'
+                    bgClip='text'
                   >
-                    <Box textAlign='center' maxW='900px'>
-                      <Heading
-                        as='h1'
-                        size='xl'
-                        fontWeight='extrabold'
-                        maxW='48rem'
-                        mx='auto'
-                        lineHeight='1.2'
-                        letterSpacing='tight'
-                        color='light.900'
-                      >
-                        Bitcoin {''}
-                        <Text
-                          as='span'
-                          pr='2'
-                          maxW='xl'
-                          mx='auto'
-                          color='light.900'
-                          bgGradient='linear(to-br, secondary.900, secondaryGradient.900)'
-                          bgClip='text'
-                          fontStyle='italic'
-                        >
-                          DAOs
-                        </Text>
-                      </Heading>
-                      <Text
-                        mt='4'
-                        p='4'
-                        maxW='xl'
-                        mx='auto'
-                        fontSize='lg'
-                        color='gray.900'
-                      >
-                        One-stop shop to create and manage DAOs secured by
-                        Bitcoin.
-                      </Text>
-                    </Box>
-                  </Stack>
+                    Bitcoin
+                  </Text>
+                </Heading>
+                <Text fontSize='lg' color='gray.900'>
+                  Bring your ideas to life by submitting a proposal to a Prop
+                  House. Funding rounds are held regularly and are available to
+                  anyone, anywhere.
+                </Text>
+                <ButtonGroup>
+                  <a
+                    href={`https://form.typeform.com/to/zfYJYLgV`}
+                    target='_blank'
+                    rel='noreferrer'
+                  >
+                    <Button
+                      bg='light.900'
+                      color='base.900'
+                      p='6'
+                      size='md'
+                      fontWeight='medium'
+                      _hover={{
+                        opacity: 0.9,
+                      }}
+                    >
+                      Join our beta
+                    </Button>
+                  </a>
+                </ButtonGroup>
+              </Stack>
+              <motion.div
+                variants={SLIDE_UP_VARIANTS}
+                initial={SLIDE_UP_VARIANTS.hidden}
+                animate={SLIDE_UP_VARIANTS.enter}
+                exit={SLIDE_UP_VARIANTS.exit}
+                transition={{ duration: 0.8, type: 'linear' }}
+              >
+                <Stack spacing='2'>
                   <SectionHeader
                     justify='flex-start'
                     align='center'
                     color='white'
                   >
-                    <Box>
-                      <Text size='lg' fontWeight='regular'>
-                        Featured projects
+                    <Stack spacing='3'>
+                      <Text fontSize='md' fontWeight='light' color='gray.900'>
+                        Browse communities
                       </Text>
-                    </Box>
+                      <Heading mt='0 !important' size='sm' fontWeight='regular'>
+                        Explore DAOs
+                      </Heading>
+                    </Stack>
                   </SectionHeader>
-                  <Stack spacing='3'>
-                    {state?.projects?.map((project) => (
+                  <HStack spacing='6'>
+                    {map(projectsQuery.data, (project: any) => (
                       <Link key={project.name} href={`/d/${project.slug}`}>
-                        <Stack
-                          cursor='pointer'
-                          px='6'
-                          py='3'
-                          bg='base.900'
-                          borderRadius='lg'
-                          border='1px solid'
-                          borderColor='base.500'
-                          _hover={{ bg: 'base.800' }}
-                        >
-                          <HStack justify='space-between'>
-                            <HStack spacing='6'>
-                              <Stack spacing='0'>
-                                <Text color='light.900'>{project.name}</Text>
-                                <Text color='gray.900' size='xs'>
-                                  {truncate(project.contractAddress, 4, 14)}
-                                </Text>
-                              </Stack>
-                            </HStack>
-                            <Stack>
-                              <IconButton
-                                icon={<FaArrowRight fontSize='0.75em' />}
-                                bg='none'
-                                color='light.900'
-                                size='md'
-                                aria-label='Transfer'
-                                _active={{ bg: 'none' }}
-                                _hover={{ bg: 'none' }}
-                              />
-                            </Stack>
-                          </HStack>
+                        <Stack spacing='2' w='200px' h='200px' cursor='pointer'>
+                          <MotionBox
+                            whileHover={{
+                              scale: 1.025,
+                              transition: { duration: 0.25 },
+                            }}
+                            border='1px solid'
+                            borderColor='base.500'
+                            rounded='lg'
+                          >
+                            <Image
+                              src='https://images.gamma.io/cdn-cgi/image/quality=100,width=300,height=300/https://images.gamma.io/ipfs/QmZjrCc9836Njqw1Yx8ztM6FbJzvuZijwtZJSkKPxLTMWU/225f43251ea44'
+                              w='auto'
+                              h='auto'
+                              rounded='lg'
+                            />
+                          </MotionBox>
+                          <Stack spacing='0' px='2'>
+                            <Text
+                              fontSize='md'
+                              fontWeight='medium'
+                              color='light.900'
+                            >
+                              {project.name}
+                            </Text>
+                            <Text
+                              fontSize='sm'
+                              fontWeight='light'
+                              color='gray.900'
+                            >
+                              {truncateAddress(project.contractAddress)}
+                            </Text>
+                          </Stack>
                         </Stack>
                       </Link>
                     ))}
-                  </Stack>
-                </>
-              ) : (
-                <>
-                  <Stack
-                    spacing={{ base: '8', md: '10' }}
-                    align='center'
-                    justify='center'
-                    minH='xl'
-                    maxW='3xl'
-                    mx='auto'
-                  >
-                    <Box textAlign='center' maxW='900px'>
-                      <Heading
-                        as='h1'
-                        size='xl'
-                        fontWeight='extrabold'
-                        maxW='48rem'
-                        mx='auto'
-                        lineHeight='1.2'
-                        letterSpacing='tight'
-                        color='light.900'
-                      >
-                        DAOs on {''}
-                        <Text
-                          as='span'
-                          pr='2'
-                          maxW='xl'
-                          mx='auto'
-                          color='light.900'
-                          bgGradient='linear(to-br, secondary.900, secondaryGradient.900)'
-                          bgClip='text'
-                          fontStyle='italic'
-                        >
-                          Bitcoin
-                        </Text>
-                      </Heading>
-                      <Text
-                        p='4'
-                        maxW='xl'
-                        mx='auto'
-                        fontSize='lg'
-                        color='gray.900'
-                      >
-                        One-stop shop to create and manage DAOs secured by
-                        Bitcoin.
-                      </Text>
-                      <Stack
-                        direction='row'
-                        spacing={4}
-                        align='center'
-                        justify='center'
-                      >
-                        <motion.div
-                          variants={SLIDE_UP_VARIANTS}
-                          initial={SLIDE_UP_VARIANTS.hidden}
-                          animate={SLIDE_UP_VARIANTS.enter}
-                          exit={SLIDE_UP_VARIANTS.exit}
-                          transition={{ duration: 0.8, type: 'linear' }}
-                        >
-                          <Stack>
-                            <WalletConnectButton
-                              p='6'
-                              size='md'
-                              color='base.900'
-                              fontWeight='medium'
-                              bg='light.900'
-                              _hover={{ opacity: 0.9 }}
-                              _active={{ opacity: 1 }}
-                            />
-                          </Stack>
-                        </motion.div>
-                      </Stack>
-                    </Box>
-                  </Stack>
-                </>
-              )}
-            </Wrapper>
-          </Box>
-        </motion.div>
-      </Box>
+                  </HStack>
+                </Stack>
+              </motion.div>
+            </Stack>
+          </Wrapper>
+        </Box>
+      </motion.div>
     </>
   );
 };

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { Badge, HStack, Icon, Stack, Text } from '@chakra-ui/react';
 
 // Hooks
-import { useBlocks } from '@common/hooks';
+import { useBlocks } from '@lib/hooks';
 
 // Components
 import { Card } from '@components/cards';
@@ -15,7 +15,6 @@ import { motion } from 'framer-motion';
 
 // Utils
 import { truncate } from '@common/helpers';
-import Avatar from 'boring-avatars';
 import { FiArrowUpRight } from 'react-icons/fi';
 
 const FADE_IN_VARIANTS = {
@@ -135,18 +134,6 @@ export const ProposalCard = ({
                   <HStack spacing='3' justify='space-between'>
                     <Stack direction='column' spacing='3'>
                       <HStack align='center' spacing='2'>
-                        <Avatar
-                          size={15}
-                          name={type}
-                          variant='bauhaus'
-                          colors={[
-                            '#50DDC3',
-                            '#624AF2',
-                            '#EB00FF',
-                            '#7301FA',
-                            '#25C2A0',
-                          ]}
-                        />
                         <Text
                           fontWeight='medium'
                           fontSize='lg'

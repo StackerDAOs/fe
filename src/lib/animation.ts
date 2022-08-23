@@ -43,6 +43,12 @@ export const PAGE_TRANSITION = {
   duration: 0.3,
 };
 
+export const SLIDE_UP_VARIANTS = {
+  hidden: { opacity: 0, x: 0, y: 15 },
+  enter: { opacity: 1, x: 0, y: 0 },
+  exit: { opacity: 0, x: 0, y: -15 },
+};
+
 export const SLIDE_UP_ANIMATION = {
   initial: {
     opacity: 0,

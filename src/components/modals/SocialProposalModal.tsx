@@ -26,7 +26,7 @@ import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 
 // Queries
-import { useAuth, useDAO, useToken } from '@common/hooks';
+import { useAuth, useDAO, useToken } from '@lib/hooks';
 
 // Components
 import { Card } from '@components/cards';
@@ -34,7 +34,7 @@ import { DeployProposalButton } from '@components/buttons';
 
 // Animation
 import { motion } from 'framer-motion';
-import { FADE_IN_VARIANTS } from 'lib/animation';
+import { FADE_IN_VARIANTS } from '@lib/animation';
 
 // Utils
 import { truncate, formatComments } from '@common/helpers';

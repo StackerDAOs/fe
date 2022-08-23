@@ -16,7 +16,7 @@ export default {
     600: '#E5E9F2',
     700: '#EDF1FA',
     800: '#F4F6F8',
-    900: '#F9FAFB'
+    900: '#F9FAFB',
   },
   primary: {
     100: '#FFA4FF',
@@ -56,7 +56,7 @@ export default {
     600: '#624AF2',
     700: '#624AF2',
     800: '#624AF2',
-    900: '#624AF2'
+    900: '#624AF2',
   },
   secondaryGradient: {
     900: '#50DDC3',
@@ -71,5 +71,14 @@ export default {
     70: 'rgba(98, 74, 242, 0.7)',
     80: 'rgba(98, 74, 242, 0.8)',
     90: 'rgba(98, 74, 242, 0.9)',
+  },
+  bitcoin: {
+    900: '#F2A900',
+    800: '#FFC431',
+    700: '#FFE050',
+    600: '#FFFD6C',
+    500: '#FFFF89',
+    400: '#FFFFA5',
+    300: '#FFFFC2',
   },
 };

@@ -1,10 +1,9 @@
 import React from 'react';
 import { Button, Spinner, useToast } from '@chakra-ui/react';
-import type { ButtonProps } from '@chakra-ui/react';
 import { useOpenContractCall } from '@micro-stacks/react';
 import { contractPrincipalCV } from 'micro-stacks/clarity';
 import { TxToast } from '@components/feedback';
-import { generatePostConditions } from 'lib/functions';
+import { generatePostConditions } from '@lib/functions';
 import { defaultTo } from 'lodash';
 import {
   contractPrincipal,
@@ -18,17 +17,12 @@ import {
   useTransaction,
   useProposal,
   usePostConditions,
-} from '@common/hooks';
-import { useConcludeProposal } from '@common/mutations/proposals';
+} from '@lib/hooks';
+import { useConcludeProposal } from '@lib/mutations/proposals';
 import { FaCheck } from 'react-icons/fa';
+import { ExecuteProposalProps } from '../types';
 
-type TExecuteButtonProps = ButtonProps & {
-  proposalPrincipal: string;
-  postConditions?: any;
-  assetName?: string;
-};
-
-export const ExecuteButton = (props: TExecuteButtonProps) => {
+export const ExecuteButton = (props: ExecuteProposalProps) => {
   const toast = useToast();
   const { proposalPrincipal } = props;
   const [transactionId, setTransactionId] = React.useState('');
@@ -37,7 +31,7 @@ export const ExecuteButton = (props: TExecuteButtonProps) => {
   const { data: transaction } = useTransaction(transactionId);
   const [proposalContractAddress, proposalContractName] =
     contractPrincipal(proposalPrincipal);
-  const { isLoading, isIdle, data } = useProposal(proposalPrincipal);
+  const { isLoading, data } = useProposal(proposalPrincipal);
   const { data: conditions } = usePostConditions(proposalPrincipal);
   const [contractAddress, contractName] = contractPrincipal(
     voting?.contractAddress,
@@ -124,7 +118,7 @@ export const ExecuteButton = (props: TExecuteButtonProps) => {
   const isSuccessful = transaction?.tx_status === 'success';
   const isDisabled = isRequestPending || isPending || isSuccessful;
 
-  if (isLoading || isIdle) {
+  if (isLoading) {
     return null;
   }
 
