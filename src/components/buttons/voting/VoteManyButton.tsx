@@ -123,7 +123,7 @@ export const VoteManyButton = (props: TVoteManyButtonProps) => {
 
   const isPending = transaction?.tx_status === 'pending';
   const isSuccessful = transaction?.tx_status === 'success';
-  const isDisabled = isRequestPending || isPending || isSuccessful || true;
+  const isDisabled = isRequestPending || isPending || isSuccessful;
 
   return (
     <Button {...props} onClick={handleVote} disabled={isDisabled}>
