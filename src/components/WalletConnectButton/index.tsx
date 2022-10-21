@@ -16,10 +16,10 @@ export const WalletConnectButton = (props: ButtonProps) => {
       if (window?.StacksProvider) {
         setInstalled(true);
       }
-    }, 250);
+    }, 500);
   }, [installed]);
 
-  const handleClick = () => {
+  function handleClick() {
     if (isSignedIn) {
       signOut();
       localStorage.setItem('chakra-ui-color-mode', 'dark');
@@ -27,7 +27,7 @@ export const WalletConnectButton = (props: ButtonProps) => {
     } else {
       openAuthRequest();
     }
-  };
+  }
 
   if (installed) {
     return (

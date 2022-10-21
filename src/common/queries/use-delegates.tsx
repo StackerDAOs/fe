@@ -11,7 +11,7 @@ export function useDelegates() {
   const { isFetching, isIdle, isLoading, isError, data } = useQuery(
     ['delegates', dao?.name, stxAddress],
     async () => {
-      const data: any = await getDelegates(dao?.id, stxAddress);
+      const data: any = await getDelegates(dao?.id, stxAddress as string);
       return data;
     },
     {
