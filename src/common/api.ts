@@ -14,12 +14,12 @@ import {
   deserializeCV,
   standardPrincipalCV,
   stringAsciiCV,
-  uintCV
+  uintCV,
 } from 'micro-stacks/clarity';
 import { defaultTo } from 'lodash';
 import { pluckSourceCode } from './helpers';
 
-export async function getDAO(name: string){
+export async function getDAO(name: string) {
   try {
     const { data, error } = await supabase
       .from('Organizations')
@@ -32,7 +32,7 @@ export async function getDAO(name: string){
   } catch (e: any) {
     console.error({ e });
   }
-};
+}
 
 export async function generateContractName(organization: any) {
   try {
@@ -49,14 +49,11 @@ export async function generateContractName(organization: any) {
         proposal?.Organizations?.prefix
       }-${proposalSize.padStart(targetLength, '0')}`;
       return contractName;
-      
     } else {
       const contractName = `${organization?.prefix}-001`;
       return contractName;
     }
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
 export async function getExtension(name: string) {
@@ -64,42 +61,47 @@ export async function getExtension(name: string) {
     const normalizedName = name.toLowerCase();
     const { data, error } = await supabase
       .from('ExtensionTypes')
-      .select(
-        'id, name',
-      )
+      .select('id, name')
       .eq('name', normalizedName)
       .limit(1);
-      
+
     if (error) throw error;
     return data[0]?.name;
   } catch (e: any) {
     console.error({ e });
   }
-};
+}
 
 export async function getDBProposals(organizationId: string, filter: string) {
   const query = supabase
-  .from('Proposals')
-  .select(
-    '*, Organizations!inner(id, name)',
-  )
-  .order('createdAt', {ascending: false})
-  .eq('Organizations.id', organizationId);
+    .from('Proposals')
+    .select('*, Organizations!inner(id, name)')
+    .order('createdAt', { ascending: false })
+    .eq('Organizations.id', organizationId);
   try {
     if (filter === 'inactive') {
-      const { data: Proposals, error } = await query.filter('submitted', 'in', `("false")`);
+      const { data: Proposals, error } = await query.filter(
+        'submitted',
+        'in',
+        `("false")`,
+      );
       if (error) throw error;
       return Proposals;
     }
     if (filter === 'active') {
       const { data: Proposals, error } = await query
         .filter('submitted', 'in', `("true")`)
-        .filter('concluded', 'in', `("false")`);
+        .filter('concluded', 'in', `("false")`)
+        .filter('disabled', 'in', `("false")`);
       if (error) throw error;
       return Proposals;
     }
     if (filter === 'executed') {
-      const { data: Proposals, error } = await query.filter('concluded', 'in', `("true")`);
+      const { data: Proposals, error } = await query.filter(
+        'concluded',
+        'in',
+        `("true")`,
+      );
       if (error) throw error;
       return Proposals;
     }
@@ -109,15 +111,13 @@ export async function getDBProposals(organizationId: string, filter: string) {
   } catch (e: any) {
     console.error({ e });
   }
-};
+}
 
 export async function getContractProposalByAddress(contractAddress: string) {
   try {
     const { data, error } = await supabase
       .from('Proposals')
-      .select(
-        'id, contractAddress',
-      )
+      .select('id, contractAddress')
       .eq('contractAddress', contractAddress)
       .limit(1);
     if (error) throw error;
@@ -125,15 +125,13 @@ export async function getContractProposalByAddress(contractAddress: string) {
   } catch (e: any) {
     console.error({ e });
   }
-};
+}
 
 export async function getContractProposalByTx(transactionId: string) {
   try {
     const { data, error } = await supabase
       .from('Proposals')
-      .select(
-        'id, contractAddress',
-      )
+      .select('id, contractAddress')
       .eq('transactionId', transactionId)
       .limit(1);
     if (error) throw error;
@@ -141,7 +139,7 @@ export async function getContractProposalByTx(transactionId: string) {
   } catch (e: any) {
     console.error({ e });
   }
-};
+}
 
 export async function getTokenMetadata(contractId: string) {
   try {
@@ -149,16 +147,15 @@ export async function getTokenMetadata(contractId: string) {
     const tokenMetadata = await fetchFtMetadataForContractId({
       url: network.getCoreApiUrl(),
       contractId: contractId,
-    })
+    });
     return tokenMetadata;
   } catch (e: any) {
     console.error({ e });
   }
-};
+}
 
 export async function getVaultBalance(address: string) {
   try {
-    
     const network = new stacksNetwork();
     const balance = await fetchAccountBalances({
       url: network.getCoreApiUrl(),
@@ -168,7 +165,7 @@ export async function getVaultBalance(address: string) {
   } catch (e: any) {
     console.error({ e });
   }
-};
+}
 
 export async function getBalanceOf(vaultAddress: string, assetAddress: string) {
   try {
@@ -185,9 +182,12 @@ export async function getBalanceOf(vaultAddress: string, assetAddress: string) {
   } catch (e: any) {
     console.error({ e });
   }
-};
+}
 
-export async function getTokenBalance(address: string, contractAddress: string) {
+export async function getTokenBalance(
+  address: string,
+  contractAddress: string,
+) {
   try {
     const network = new stacksNetwork();
     const balance: any = await fetchReadOnlyFunction({
@@ -202,7 +202,7 @@ export async function getTokenBalance(address: string, contractAddress: string) 
   } catch (e: any) {
     console.error({ e });
   }
-};
+}
 
 export async function getProposalCount(contractAddress: string) {
   try {
@@ -219,7 +219,7 @@ export async function getProposalCount(contractAddress: string) {
   } catch (e: any) {
     console.error({ e });
   }
-};
+}
 
 export async function getProposalAddress(contractAddress: string, id: string) {
   try {
@@ -236,9 +236,12 @@ export async function getProposalAddress(contractAddress: string, id: string) {
   } catch (e: any) {
     console.error({ e });
   }
-};
+}
 
-export async function getProposal(contractAddress: string, proposalAddress: string) {
+export async function getProposal(
+  contractAddress: string,
+  proposalAddress: string,
+) {
   try {
     const network = new stacksNetwork();
     const proposal: any = await fetchReadOnlyFunction({
@@ -262,7 +265,7 @@ export async function getProposal(contractAddress: string, proposalAddress: stri
     const contractSource = await fetchContractSource({
       url: network.getCoreApiUrl(),
       contract_address: proposalContractAddress,
-      contract_name:  proposalContractName,
+      contract_name: proposalContractName,
       proof: 0x0,
       tip: '',
     });
@@ -297,70 +300,74 @@ export async function getProposal(contractAddress: string, proposalAddress: stri
       type,
       proposal,
       quorumThreshold,
-      executionDelay
+      executionDelay,
     };
   } catch (e: any) {
-    console.log('here', e)
+    console.log('here', e);
     console.error({ e });
   }
-};
-
-type TEvent = {
-  extensionAddress: string,
-  eventName?: string,
-  filterByProposal?: string,
-  offset: number,
 }
 
-export async function getEvents({
-    extensionAddress,
-    eventName,
-    filterByProposal,
-    offset
-  }: TEvent = {
+type TEvent = {
+  extensionAddress: string;
+  eventName?: string;
+  filterByProposal?: string;
+  offset: number;
+};
+
+export async function getEvents(
+  { extensionAddress, eventName, filterByProposal, offset }: TEvent = {
     extensionAddress: '',
     eventName: undefined,
-    filterByProposal:
-    undefined,
-    offset: 50
-  }) {
+    filterByProposal: undefined,
+    offset: 50,
+  },
+) {
   try {
     const network = new stacksNetwork();
     const url = network.getCoreApiUrl();
-      const data = await fetchContractEventsById({
-        url,
-        limit: 20,
-        contract_id: extensionAddress,
-        offset: offset,
-        unanchored: false,
-      });
-      const { results } = data as any;
-      const serializedEvents = results.map((event: any) => {
-        const hex = event?.contract_log?.value.hex;
-        const deserialized = deserializeCV(hex);
-        const decoded = cvToValue(deserialized);
-        return decoded;
-      });
-     
-      const filteredEvents = eventName && filterByProposal
-      ? serializedEvents?.filter(
-          (item: any) =>
-            item?.event?.value === eventName &&
-            item?.proposal?.value === filterByProposal,
-        )
-      : eventName
-      ? serializedEvents?.filter((item: any) => item?.event?.value === eventName)
-      : filterByProposal
-      ? serializedEvents?.filter((item: any) =>  item?.proposal?.value === filterByProposal)
-      : serializedEvents;
+    const data = await fetchContractEventsById({
+      url,
+      limit: 20,
+      contract_id: extensionAddress,
+      offset: offset,
+      unanchored: false,
+    });
+    const { results } = data as any;
+    const serializedEvents = results.map((event: any) => {
+      const hex = event?.contract_log?.value.hex;
+      const deserialized = deserializeCV(hex);
+      const decoded = cvToValue(deserialized);
+      return decoded;
+    });
 
-      return filteredEvents;
+    const filteredEvents =
+      eventName && filterByProposal
+        ? serializedEvents?.filter(
+            (item: any) =>
+              item?.event?.value === eventName &&
+              item?.proposal?.value === filterByProposal,
+          )
+        : eventName
+        ? serializedEvents?.filter(
+            (item: any) => item?.event?.value === eventName,
+          )
+        : filterByProposal
+        ? serializedEvents?.filter(
+            (item: any) => item?.proposal?.value === filterByProposal,
+          )
+        : serializedEvents;
+
+    return filteredEvents;
   } catch (e: any) {
     console.error({ e });
   }
 }
 
-export async function getParameter(contractAddress: string, parameterName: string) {
+export async function getParameter(
+  contractAddress: string,
+  parameterName: string,
+) {
   try {
     const network = new stacksNetwork();
     const parameter = await fetchReadOnlyFunction({
@@ -377,7 +384,10 @@ export async function getParameter(contractAddress: string, parameterName: strin
   }
 }
 
-export async function getContractsToDeploy(organizationId: number, currentStxAddress: string) {
+export async function getContractsToDeploy(
+  organizationId: number,
+  currentStxAddress: string,
+) {
   try {
     const { data, error } = await supabase
       .from('Proposals')
@@ -410,7 +420,10 @@ export async function getTransaction(transactionId: string) {
   }
 }
 
-export async function getDelegates(organizationId: number, currentStxAddress: string | null) {
+export async function getDelegates(
+  organizationId: number,
+  currentStxAddress: string | null,
+) {
   try {
     const { data, error } = await supabase
       .from('Delegates')
@@ -432,15 +445,12 @@ export async function getPostConditions(proposalPrincipal: string) {
     const { data, error } = await supabase
       .from('Proposals')
       .select('postConditions')
-      .eq(
-        'contractAddress',
-        proposalPrincipal,
-      );
+      .eq('contractAddress', proposalPrincipal);
     if (error) throw error;
     if (data) {
       const [postConditions] = data;
       // If postCondition?.asset return postConditions
-      // If postConditions?.assetName then... 
+      // If postConditions?.assetName then...
       // // TODO: Need to fetchReadOnly function to `get-name` of token contract
       return postConditions;
     }
