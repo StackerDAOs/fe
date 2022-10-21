@@ -43,6 +43,7 @@ import {
   truncate,
   formatComments,
   tokenToNumber,
+  tokenToDecimals,
   validateStacksAddress,
 } from '@common/helpers';
 import Avatar from 'boring-avatars';
@@ -153,7 +154,7 @@ export const TransferTokenModal = ({ balance, contractAddress }: any) => {
       <Tooltip
         bg='base.900'
         color='light.900'
-        label={`${Number(proposeData?.proposeThreshold)} ${
+        label={`${tokenToDecimals(Number(proposeData?.proposeThreshold), 2)} ${
           token?.symbol
         } required for proposals`}
         my='3'

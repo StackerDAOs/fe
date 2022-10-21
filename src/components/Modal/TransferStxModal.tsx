@@ -44,6 +44,7 @@ import {
   formatComments,
   validateStacksAddress,
   microToStacks,
+  tokenToDecimals,
 } from '@common/helpers';
 import Avatar from 'boring-avatars';
 
@@ -105,7 +106,9 @@ export const TransferStxModal = () => {
       <Tooltip
         bg='base.900'
         color='light.900'
-        label={`${proposeData?.proposeThreshold} ${token?.symbol} required for proposals`}
+        label={`${tokenToDecimals(Number(proposeData?.proposeThreshold), 2)} ${
+          token?.symbol
+        } required for proposals`}
         my='3'
         w='sm'
         {...tooltipProps}

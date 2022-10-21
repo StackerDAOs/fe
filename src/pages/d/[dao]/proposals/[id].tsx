@@ -53,6 +53,7 @@ import {
   convertToken,
   getPercentage,
   tokenToNumber,
+  tokenToDecimals,
 } from '@common/helpers';
 
 // Queries
@@ -350,7 +351,11 @@ const ProposalView = () => {
                         <HStack>
                           <FaExclamationCircle fontSize='0.9rem' />
                           <Text fontSize='sm' fontWeight='medium'>
-                            At least {Number(votingData?.voteThreshold)}{' '}
+                            At least{' '}
+                            {tokenToDecimals(
+                              Number(votingData?.voteThreshold),
+                              2,
+                            )}{' '}
                             {token?.symbol} required to vote
                           </Text>
                         </HStack>

@@ -37,7 +37,7 @@ import { motion } from 'framer-motion';
 import { FADE_IN_VARIANTS } from '@utils/animation';
 
 // Utils
-import { truncate, formatComments } from '@common/helpers';
+import { truncate, formatComments, tokenToDecimals } from '@common/helpers';
 import Avatar from 'boring-avatars';
 import { FaPlusCircle } from 'react-icons/fa';
 
@@ -93,7 +93,10 @@ export const SocialProposalModal = () => {
         <Tooltip
           bg='base.900'
           color='light.900'
-          label={`${proposeData?.proposeThreshold} ${token?.symbol} required for proposals`}
+          label={`${tokenToDecimals(
+            Number(proposeData?.proposeThreshold),
+            2,
+          )} ${token?.symbol} required for proposals`}
           w='sm'
           {...tooltipProps}
         >
@@ -173,7 +176,11 @@ export const SocialProposalModal = () => {
                         Required
                       </Text>
                       <Text color='gray.900' fontSize='sm' fontWeight='regular'>
-                        {Number(proposeData?.proposeThreshold)} {token?.symbol}
+                        {tokenToDecimals(
+                          Number(proposeData?.proposeThreshold),
+                          2,
+                        )}{' '}
+                        {token?.symbol}
                       </Text>
                     </Stack>
                     <Stack spacing='2' direction='row'>
