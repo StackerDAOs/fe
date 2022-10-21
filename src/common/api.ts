@@ -105,7 +105,11 @@ export async function getDBProposals(organizationId: string, filter: string) {
       if (error) throw error;
       return Proposals;
     }
-    const { data: Proposals, error } = await query;
+    const { data: Proposals, error } = await query.filter(
+      'disabled',
+      'in',
+      `("false")`,
+    );
     if (error) throw error;
     return Proposals;
   } catch (e: any) {
